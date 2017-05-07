@@ -124,6 +124,12 @@ class AdminUserAdmin(admin.ModelAdmin):
 admin.site.register(AdminUser, AdminUserAdmin)
 
 
+class WarehouseUserAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(WarehouseUser, WarehouseUserAdmin)
+
+
 class LocationAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()

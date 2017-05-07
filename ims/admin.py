@@ -118,6 +118,12 @@ class CustContactAdmin(admin.ModelAdmin):
 admin.site.register(CustContact, CustContactAdmin)
 
 
+class AdminUserAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(AdminUser, AdminUserAdmin)
+
+
 class LocationAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()

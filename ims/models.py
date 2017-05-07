@@ -132,7 +132,7 @@ class ClientUser(models.Model):
 class CustContact(models.Model):
     id = models.AutoField(primary_key=True, db_column='custcontactid')
     client = models.ForeignKey('Client', db_column='customerid')
-    email = models.EmailField(blank=True)
+    email = models.EmailField(max_length=192, blank=True)
     password = models.CharField(max_length=255, blank=True, db_column='pass')
     first_name = models.CharField(max_length=150, blank=True, db_column='fname')
     last_name = models.CharField(max_length=150, blank=True, db_column='lname')
@@ -151,6 +151,44 @@ class CustContact(models.Model):
 
     class Meta:
         db_table = 'CustContacts'
+
+
+class AdminUser(models.Model):
+    ACCESS_LEVEL_CHOICES = (
+        (1, 'Admin'),
+        (2, 'Customer Management'),
+        (3, 'Product Management'),
+        (4, 'Marketing Only'),
+        (5, 'BBS Only'),
+    )
+
+    TWO_FACTOR_CHOICES = (
+        (1, 'OTP auth'),
+        (2, 'SMS auth'),
+    )
+
+    id = models.AutoField(primary_key=True, db_column='adminid')
+    username = models.CharField(max_length=100, blank=True, db_column='user')
+    password = models.CharField(max_length=255, blank=True, db_column='pass')
+    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid')
+    is_authority = models.BooleanField(default=False, db_column='authority')
+    is_founder = models.BooleanField(default=False, db_column='founder')
+    full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
+    email = models.EmailField(max_length=192, blank=True)
+    about = models.TextField(blank=True)
+    access_level = models.IntegerField(choices=ACCESS_LEVEL_CHOICES, db_column='acclev')
+    is_sleeping = models.BooleanField(default=False, db_column='sleeping')
+    date_created = models.DateTimeField(auto_now_add=True)
+    pic_first_name = models.CharField(max_length=255, blank=True, db_column='picfname')
+    mobile_number = PhoneNumberField(max_length=30, blank=True, db_column='cell')
+    two_factor_type = models.IntegerField(choices=TWO_FACTOR_CHOICES, db_column='twofac')
+    is_active = models.BooleanField(default=True, db_column='enable')
+
+    def unicode(self):
+        return ('{0}'.format(self.username))
+
+    class Meta:
+        db_table = 'admin'
 
 
 class Location(models.Model):

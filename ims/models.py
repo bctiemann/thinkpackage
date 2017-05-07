@@ -148,10 +148,9 @@ class CustContact(models.Model):
         db_table = 'CustContacts'
 
 
-"""
 class Location(models.Model):
     id = models.AutoField(primary_key=True, db_column='locationid')
-    customer = models.ForeignKey('Customer', db_column='customerid')
+    client = models.ForeignKey('Client', db_column='customerid')
     name = models.CharField(max_length=255, blank=True)
     phone = PhoneNumberField(max_length=30, blank=True, db_column='tel')
     phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
@@ -172,4 +171,3 @@ class Location(models.Model):
 
     class Meta:
         db_table = 'Locations'
-"""

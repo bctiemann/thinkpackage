@@ -5,9 +5,9 @@ from django.db import models
 
 
 class Customer(models.Model):
-    customerid = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True, db_column='customerid')
     email = models.CharField(max_length=255, null=True, blank=True)
-    createdon = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateTimeField(auto_now_add=True, db_column='createdon')
     is_preferred = models.BooleanField(default=False, db_column='preferred')
     is_enabled = models.BooleanField(default=True, db_column='enabled')
     notes = models.TextField(blank=True)

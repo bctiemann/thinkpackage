@@ -191,6 +191,32 @@ class AdminUser(models.Model):
         db_table = 'admin'
 
 
+class WarehouseUser(models.Model):
+    ROLE_CHOICES = (
+        ('accounting', 'Accounting'),
+        ('warehouse', 'Warehouse'),
+    )
+
+    id = models.AutoField(primary_key=True, db_column='wuserid')
+    username = models.CharField(max_length=100, blank=True, db_column='user')
+    password = models.CharField(max_length=255, blank=True, db_column='pass')
+    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid')
+    full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
+    email = models.EmailField(max_length=192, blank=True)
+    about = models.TextField(blank=True)
+    date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+    last_login = models.DateTimeField(null=True, db_column='lastlogin')
+    login_count = models.IntegerField(default=0, db_column='logintimes')
+    is_active = models.BooleanField(default=True, db_column='enable')
+    role = models.CharField(max_length=30, choices=ROLE_CHOICES)
+
+    def unicode(self):
+        return ('{0}'.format(self.username))
+
+    class Meta:
+        db_table = 'wuser'
+
+
 class Location(models.Model):
     id = models.AutoField(primary_key=True, db_column='locationid')
     client = models.ForeignKey('Client', db_column='customerid')

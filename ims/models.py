@@ -57,6 +57,7 @@ class User(AbstractBaseUser):
     )
     is_admin = models.BooleanField(default=False)
     phone_number = PhoneNumberField(blank=True)
+    notes = models.TextField(blank=True)
 
     USERNAME_FIELD = 'email'
 
@@ -103,7 +104,7 @@ class Client(models.Model):
     notes = models.TextField(blank=True)
     company_name = models.CharField(max_length=150, blank=True, db_column='coname')
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
-    parent = models.ForeignKey('Client', null=True, blank=True)
+    parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent')
 
     def unicode(self):
         return (self.company_name)
@@ -112,6 +113,7 @@ class Client(models.Model):
         db_table = 'Customers'
 
 
+# Future model to map client contacts (formerly CustContacts) to clients, in a one-to-many relationship.
 class ClientUser(User):
     client = models.ForeignKey('Client', null=True)
     title = models.CharField(max_length=100, blank=True)
@@ -120,6 +122,30 @@ class ClientUser(User):
 
     def unicode(self):
         return ('{0} {1}'.format(self.first_name, self.last_name))
+
+
+class CustContact(models.Model):
+    id = models.AutoField(primary_key=True, db_column='custcontactid')
+    client = models.ForeignKey('Client', db_column='customerid')
+    email = models.EmailField(blank=True)
+    password = models.CharField(max_length=255, blank=True, db_column='pass')
+    first_name = models.CharField(max_length=150, blank=True, db_column='fname')
+    last_name = models.CharField(max_length=150, blank=True, db_column='lname')
+    title = models.CharField(max_length=100, blank=True)
+    phone_number = PhoneNumberField(max_length=30, blank=True, db_column='tel')
+    phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
+    fax = PhoneNumberField(max_length=30, blank=True)
+    mobile_number = PhoneNumberField(max_length=30, blank=True, db_column='mobile')
+    is_primary = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True, db_column='enabled')
+    last_login = models.DateTimeField(null=True, blank=True, db_column='lastlogin')
+    notes = models.TextField(blank=True)
+
+    def unicode(self):
+        return ('{0} {1}'.format(self.first_name, self.last_name))
+
+    class Meta:
+        db_table = 'CustContacts'
 
 
 """

@@ -135,3 +135,9 @@ class LocationAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(Location, LocationAdmin)
 
+
+class ProductAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(Product, ProductAdmin)
+

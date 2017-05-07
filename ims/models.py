@@ -240,3 +240,36 @@ class Location(models.Model):
 
     class Meta:
         db_table = 'Locations'
+
+
+class Product(models.Model):
+    PREPAY_CHOICES = (
+        (1, 'INVQ'),
+        (2, 'Prepaid'),
+    )
+
+    id = models.AutoField(primary_key=True, db_column='productid')
+    client = models.ForeignKey('Client', db_column='customerid')
+    product_id = models.CharField(max_length=10, db_column='PRID')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+    packing = models.IntegerField(null=True, blank=True)
+    cases_inventory = models.IntegerField(null=True, blank=True, db_column='remain')
+    units_inventory = models.IntegerField(null=True, blank=True, db_column='totalq')
+    gross_weight = models.IntegerField(null=True, blank=True, db_column='GW')
+    is_domestic = models.BooleanField(default=False, db_column='prodtype')
+    name = models.CharField(max_length=255, blank=True, db_column='pname'),
+    client_product_id = models.CharField(max_length=24, blank=True, db_column='ctag')
+    contracted_quantity = models.BigIntegerField(null=True, blank=True, db_column='contqty')
+    is_active = models.BooleanField(default=True, db_column='active')
+    length = models.CharField(max_length=10, blank=True)
+    width = models.CharField(max_length=10, blank=True)
+    height = models.CharField(max_length=10, blank=True)
+    item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
+    location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
+    account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, db_column='account')
+
+    def unicode(self):
+        return (self.name)
+
+    class Meta:
+        db_table = 'Products'

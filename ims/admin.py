@@ -111,3 +111,15 @@ class ClientUserAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(ClientUser, ClientUserAdmin)
 
+
+class CustContactAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(CustContact, CustContactAdmin)
+
+
+class LocationAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(Location, LocationAdmin)
+

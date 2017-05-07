@@ -7,12 +7,10 @@ For more information on this file, see
 https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 """
 
-application = get_wsgi_application()
-
 import os, sys
 from django.core.wsgi import get_wsgi_application
 
-sys.path.append('/usr/local/www/django/rebleep')
+sys.path.append('/usr/local/www/django/thinkpackage')
 
 env_variables_to_pass = [
     'SECRET_KEY',

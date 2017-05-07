@@ -25,7 +25,9 @@ SECRET_KEY = '*$1n5t3y-2=su!z0ijv9$gskc8+z%=tjo8vfp(qg6thxzr8z8m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'thinkpackage.lionking.org',
+]
 
 
 # Application definition

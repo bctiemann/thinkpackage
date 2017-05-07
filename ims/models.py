@@ -56,8 +56,12 @@ class User(AbstractBaseUser):
         ),
     )
     is_admin = models.BooleanField(default=False)
+    is_accounting = models.BooleanField(default=False)
+    is_warehouse = models.BooleanField(default=False)
     phone_number = PhoneNumberField(blank=True)
     notes = models.TextField(blank=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    date_deleted = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
 
@@ -97,7 +101,7 @@ class User(AbstractBaseUser):
 
 class Client(models.Model):
     id = models.AutoField(primary_key=True, db_column='customerid')
-    email = models.CharField(max_length=255, blank=True)
+    email = models.EmailField(max_length=192, blank=True)
     created_on = models.DateTimeField(auto_now_add=True, db_column='createdon')
     is_preferred = models.BooleanField(default=False, db_column='preferred')
     is_active = models.BooleanField(default=True, db_column='enabled')
@@ -113,9 +117,10 @@ class Client(models.Model):
         db_table = 'Customers'
 
 
-# Future model to map client contacts (formerly CustContacts) to clients, in a one-to-many relationship.
-class ClientUser(User):
+# Future model to map client contacts (formerly CustContacts) to clients, in a many-to-many relationship.
+class ClientUser(models.Model):
     client = models.ForeignKey('Client', null=True)
+    user = models.ForeignKey('User')
     title = models.CharField(max_length=100, blank=True)
     last_login_client = models.DateTimeField(null=True, blank=True)
     is_primary = models.BooleanField(default=False)

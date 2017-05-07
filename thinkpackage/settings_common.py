@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'phonenumber_field',
+
     'ims',
 ]
 
@@ -104,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'ims.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

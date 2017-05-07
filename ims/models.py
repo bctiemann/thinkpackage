@@ -99,7 +99,7 @@ class Client(models.Model):
     email = models.CharField(max_length=255, blank=True)
     created_on = models.DateTimeField(auto_now_add=True, db_column='createdon')
     is_preferred = models.BooleanField(default=False, db_column='preferred')
-    is_enabled = models.BooleanField(default=True, db_column='enabled')
+    is_active = models.BooleanField(default=True, db_column='enabled')
     notes = models.TextField(blank=True)
     company_name = models.CharField(max_length=150, blank=True, db_column='coname')
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
@@ -110,6 +110,16 @@ class Client(models.Model):
 
     class Meta:
         db_table = 'Customers'
+
+
+class ClientUser(User):
+    client = models.ForeignKey('Client', null=True)
+    title = models.CharField(max_length=100, blank=True)
+    last_login_client = models.DateTimeField(null=True, blank=True)
+    is_primary = models.BooleanField(default=False)
+
+    def unicode(self):
+        return ('{0} {1}'.format(self.first_name, self.last_name))
 
 
 """

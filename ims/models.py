@@ -7,6 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+import uuid
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -139,9 +141,9 @@ class CustContact(models.Model):
     title = models.CharField(max_length=100, blank=True)
     phone_number = PhoneNumberField(max_length=30, blank=True, db_column='tel')
     phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
-    fax = PhoneNumberField(max_length=30, blank=True)
+    fax_number = PhoneNumberField(max_length=30, blank=True, db_column='fax')
     mobile_number = PhoneNumberField(max_length=30, blank=True, db_column='mobile')
-    is_primary = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False, db_column='isprimary')
     is_active = models.BooleanField(default=True, db_column='enabled')
     last_login = models.DateTimeField(null=True, blank=True, db_column='lastlogin')
     notes = models.TextField(blank=True)
@@ -178,7 +180,7 @@ class AdminUser(models.Model):
     about = models.TextField(blank=True)
     access_level = models.IntegerField(choices=ACCESS_LEVEL_CHOICES, db_column='acclev')
     is_sleeping = models.BooleanField(default=False, db_column='sleeping')
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
     pic_first_name = models.CharField(max_length=255, blank=True, db_column='picfname')
     mobile_number = PhoneNumberField(max_length=30, blank=True, db_column='cell')
     two_factor_type = models.IntegerField(choices=TWO_FACTOR_CHOICES, db_column='twofac')
@@ -221,9 +223,9 @@ class Location(models.Model):
     id = models.AutoField(primary_key=True, db_column='locationid')
     client = models.ForeignKey('Client', db_column='customerid')
     name = models.CharField(max_length=255, blank=True)
-    phone = PhoneNumberField(max_length=30, blank=True, db_column='tel')
+    phone_number = PhoneNumberField(max_length=30, blank=True, db_column='tel')
     phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
-    fax = PhoneNumberField(max_length=30, blank=True)
+    fax_number = PhoneNumberField(max_length=30, blank=True)
     address = models.CharField(max_length=150, blank=True, db_column='addr')
     address_2 = models.CharField(max_length=150, blank=True, db_column='addr2')
     city = models.CharField(max_length=150, blank=True)
@@ -255,9 +257,10 @@ class Product(models.Model):
     packing = models.IntegerField(null=True, blank=True)
     cases_inventory = models.IntegerField(null=True, blank=True, db_column='remain')
     units_inventory = models.IntegerField(null=True, blank=True, db_column='totalq')
-    gross_weight = models.IntegerField(null=True, blank=True, db_column='GW')
+    unit_price = models.FloatField(null=True, blank=True, db_column='unitprice')
+    gross_weight = models.FloatField(null=True, blank=True, db_column='GW')
     is_domestic = models.BooleanField(default=False, db_column='prodtype')
-    name = models.CharField(max_length=255, blank=True, db_column='pname'),
+    name = models.CharField(max_length=255, blank=True, db_column='pname')
     client_product_id = models.CharField(max_length=24, blank=True, db_column='ctag')
     contracted_quantity = models.BigIntegerField(null=True, blank=True, db_column='contqty')
     is_active = models.BooleanField(default=True, db_column='active')
@@ -398,3 +401,25 @@ class PalletContents(models.Model):
     class Meta:
         db_table = 'OnPallet'
         verbose_name_plural = 'pallet contents'
+
+
+def get_image_path(instance, filename):
+    return 'docs/{0}/{1}'.format(instance.uuid, filename)
+
+class ShipmentDoc(models.Model):
+    id = models.AutoField(primary_key=True, db_column='docid')
+    shipment = models.ForeignKey('Shipment', db_column='shipmentid')
+    uuid = models.UUIDField(default=uuid.uuid4)
+#    file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
+    basename = models.CharField(max_length=255, blank=True)
+    ext = models.CharField(max_length=10, blank=True)
+    size = models.IntegerField(null=True, blank=True)
+    content_type = models.CharField(max_length=32, blank=True, db_column='mimetype')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
+
+    def unicode(self):
+        return (self.file)
+
+    class Meta:
+        db_table = 'ShipmentDocs'
+

@@ -177,3 +177,9 @@ class PalletContentsAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(PalletContents, PalletContentsAdmin)
 
+
+class ShipmentDocAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(ShipmentDoc, ShipmentDocAdmin)
+

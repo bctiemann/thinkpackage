@@ -112,7 +112,7 @@ class Client(models.Model):
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
     parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent')
 
-    def unicode(self):
+    def __unicode__(self):
         return (self.company_name)
 
     class Meta:
@@ -127,7 +127,7 @@ class ClientUser(models.Model):
     last_login_client = models.DateTimeField(null=True, blank=True)
     is_primary = models.BooleanField(default=False)
 
-    def unicode(self):
+    def __unicode__(self):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
 
@@ -148,7 +148,7 @@ class CustContact(models.Model):
     last_login = models.DateTimeField(null=True, blank=True, db_column='lastlogin')
     notes = models.TextField(blank=True)
 
-    def unicode(self):
+    def __unicode__(self):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
     class Meta:
@@ -186,7 +186,7 @@ class AdminUser(models.Model):
     two_factor_type = models.IntegerField(choices=TWO_FACTOR_CHOICES, db_column='twofac')
     is_active = models.BooleanField(default=True, db_column='enable')
 
-    def unicode(self):
+    def __unicode__(self):
         return ('{0}'.format(self.username))
 
     class Meta:
@@ -212,7 +212,7 @@ class WarehouseUser(models.Model):
     is_active = models.BooleanField(default=True, db_column='enable')
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
 
-    def unicode(self):
+    def __unicode__(self):
         return ('{0}'.format(self.username))
 
     class Meta:
@@ -237,7 +237,7 @@ class Location(models.Model):
     notes = models.TextField(blank=True)
     receiving_hours = models.CharField(max_length=100, blank=True, db_column='recvhours')
 
-    def unicode(self):
+    def __unicode__(self):
         return (self.name)
 
     class Meta:
@@ -271,7 +271,7 @@ class Product(models.Model):
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
     account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, db_column='account')
 
-    def unicode(self):
+    def __unicode__(self):
         return (self.name)
 
     class Meta:
@@ -282,7 +282,7 @@ class ShipperAddress(models.Model):
     name = models.CharField(max_length=100, blank=True)
     address = models.TextField(blank=True)
 
-    def unicode(self):
+    def __unicode__(self):
         return (self.name)
 
 
@@ -330,8 +330,8 @@ class Shipment(models.Model):
     accounting_status = models.IntegerField(choices=ACCOUNTING_STATUS_CHOICES, db_column='acctstatus')
     invoice_number = models.IntegerField(null=True, blank=True, db_column='invoice')
 
-    def unicode(self):
-        return (self.id)
+    def __unicode__(self):
+        return ('{0}'.format(self.id))
 
     class Meta:
         db_table = 'Shipments'
@@ -346,8 +346,8 @@ class Receivable(models.Model):
     product = models.ForeignKey('Product', db_column='productid')
     cases = models.IntegerField(null=True, blank=True)
 
-    def unicode(self):
-        return (self.id)
+    def __unicode__(self):
+        return ('{0}'.format(self.id))
 
     class Meta:
         db_table = 'Receivables'
@@ -368,8 +368,8 @@ class Transaction(models.Model):
     transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers')
     transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers')
 
-    def unicode(self):
-        return (self.id)
+    def __unicode__(self):
+        return ('{0}'.format(self.id))
 
     class Meta:
         db_table = 'Transactions'
@@ -382,8 +382,8 @@ class Pallet(models.Model):
     client = models.ForeignKey('Client', db_column='customerid')
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
 
-    def unicode(self):
-        return (self.id)
+    def __unicode__(self):
+        return ('{0}'.format(self.id))
 
     class Meta:
         db_table = 'Pallets'
@@ -395,8 +395,8 @@ class PalletContents(models.Model):
     product = models.ForeignKey('Product', db_column='productid')
     cases = models.IntegerField(db_column='qty')
 
-    def unicode(self):
-        return (self.id)
+    def __unicode__(self):
+        return ('{0}'.format(self.id))
 
     class Meta:
         db_table = 'OnPallet'
@@ -417,7 +417,7 @@ class ShipmentDoc(models.Model):
     content_type = models.CharField(max_length=32, blank=True, db_column='mimetype')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
 
-    def unicode(self):
+    def __unicode__(self):
         return (self.file)
 
     class Meta:

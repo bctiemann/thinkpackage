@@ -153,3 +153,15 @@ class ShipmentAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(Shipment, ShipmentAdmin)
 
+
+class ReceivableAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(Receivable, ReceivableAdmin)
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(Transaction, TransactionAdmin)
+

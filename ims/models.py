@@ -332,3 +332,42 @@ class Shipment(models.Model):
 
     class Meta:
         db_table = 'Shipments'
+
+
+class Receivable(models.Model):
+    id = models.AutoField(primary_key=True, db_column='receivableid')
+    client = models.ForeignKey('Client', db_column='customerid')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+    purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
+    shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
+    product = models.ForeignKey('Product', db_column='productid')
+    cases = models.IntegerField(null=True, blank=True)
+
+    def unicode(self):
+        return (self.id)
+
+    class Meta:
+        db_table = 'Receivables'
+
+
+class Transaction(models.Model):
+    id = models.AutoField(primary_key=True, db_column='transactionid')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
+    product = models.ForeignKey('Product', db_column='productid')
+    quantity = models.IntegerField(null=True, blank=True, db_column='qty')
+    quantity_remaining = models.BigIntegerField(null=True, blank=True, db_column='qtyremain')
+    is_outbound = models.BooleanField(default=False, db_column='direction')
+    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid')
+    client = models.ForeignKey('Client', db_column='customerid')
+    cases = models.IntegerField(null=True, blank=True)
+    shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
+    receivable = models.ForeignKey('Receivable', null=True, blank=True, db_column='receivableid')
+    transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers')
+    transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers')
+
+    def unicode(self):
+        return (self.id)
+
+    class Meta:
+        db_table = 'Transactions'
+

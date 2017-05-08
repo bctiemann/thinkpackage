@@ -371,3 +371,30 @@ class Transaction(models.Model):
     class Meta:
         db_table = 'Transactions'
 
+
+class Pallet(models.Model):
+    id = models.AutoField(primary_key=True, db_column='palletid')
+    product_id = models.CharField(max_length=10, db_column='PID')
+    shipment = models.ForeignKey('Shipment', db_column='shipmentid')
+    client = models.ForeignKey('Client', db_column='customerid')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+
+    def unicode(self):
+        return (self.id)
+
+    class Meta:
+        db_table = 'Pallets'
+
+
+class PalletContents(models.Model):
+    id = models.AutoField(primary_key=True, db_column='onpalletid')
+    pallet = models.ForeignKey('Pallet', db_column='palletid')
+    product = models.ForeignKey('Product', db_column='productid')
+    cases = models.IntegerField(db_column='qty')
+
+    def unicode(self):
+        return (self.id)
+
+    class Meta:
+        db_table = 'OnPallet'
+        verbose_name_plural = 'pallet contents'

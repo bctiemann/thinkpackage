@@ -165,3 +165,15 @@ class TransactionAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(Transaction, TransactionAdmin)
 
+
+class PalletAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(Pallet, PalletAdmin)
+
+
+class PalletContentsAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(PalletContents, PalletContentsAdmin)
+

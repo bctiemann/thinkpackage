@@ -141,3 +141,15 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(Product, ProductAdmin)
 
+
+class ShipperAddressAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(ShipperAddress, ShipperAddressAdmin)
+
+
+class ShipmentAdmin(admin.ModelAdmin):
+    list_editable = ()
+    list_filter = ()
+admin.site.register(Shipment, ShipmentAdmin)
+

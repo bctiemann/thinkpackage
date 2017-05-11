@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 
 from ims.models import Client
+from ims import utils
 
 
 def home(request):
@@ -41,6 +42,6 @@ def mgmt_customers_list(request):
         clients = clients.filter(is_active=True)
 
     context = {
-        'clients': clients,
+        'clients': utils.tree_to_list(clients, sort_by='company_name'),
     }
     return render(request, 'ims/mgmt_customers_list.html', context)

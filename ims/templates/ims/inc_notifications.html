@@ -7,16 +7,6 @@
 <div class="list_wrap minimized two" section="delivery_requests">
 <ul class="items_list" id="delivery_requests_list">
 
-<!--
-    <CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
-    SELECT *,Shipments.createdon as shipment_create_date FROM Shipments,Customers,Locations
-    WHERE status!=2
-    AND Customers.customerid=Shipments.customerid
-    AND Shipments.locationid=Locations.locationid
-    ORDER BY Shipments.createdon DESC
-    </CFQUERY>
--->
-
     {% for shipment in delivery_requests %}
     <a href="shipments.cfm?customerid={{ shipment.client.id }}&shipmentid={{ shipment.id }}"><li>
         <div class="date floatright">{{ shipment.date_created | date:"SHORT_DATE_FORMAT" }}</div>
@@ -40,26 +30,18 @@
 <div class="list_wrap minimized two" section="ready_to_ship">
 <ul class="items_list" id="ready_shipments_list">
 
-    <CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
-    SELECT *,Shipments.createdon as shipment_create_date FROM Shipments,Customers,Locations
-    WHERE status=1
-    AND Customers.customerid=Shipments.customerid
-    AND Shipments.locationid=Locations.locationid
-    ORDER BY Shipments.createdon DESC
-    </CFQUERY>
-
-    <CFOUTPUT QUERY="Shipments">
-    <a href="shipments.cfm?customerid=#customerid#&shipmentid=#shipmentid#"><li>
-        <div class="date floatright">#DateFormat(shipment_create_date,"MM/DD/YYYY")#</div>
-        <div class="dl">DL ## #shipmentid#</div>
+    {% for shipment in ready_to_ship %}
+    <a href="shipments.cfm?customerid={{ shipment.client.id }}&shipmentid={{ shipment.id }}"><li>
+        <div class="date floatright">{{ shipment.date_created | date:"SHORT_DATE_FORMAT" }}</div>
+        <div class="dl">DL # {{ shipment.id }}</div>
         <div class="items-list-content">
             <div class="coname">
-                <p>#coname#</p>
-                <p class="subtitle">#name#</p>
+                <p>{{ shipment.client.company_name }}</p>
+                <p class="subtitle">{{ shipment.location.name }}</p>
             </div>
         </div>    
     </li></a>
-    </CFOUTPUT>
+    {% endfor %}
 
 </ul>
 </div>
@@ -75,36 +57,17 @@
 <div class="list_wrap minimized three" section="inbound_receivables">
 <ul class="items_list" id="inbound_shipments_list">
                 
-    <CFQUERY NAME="Transactions" DATASOURCE="#DSN#">
-    SELECT Transactions.*,Customers.*,Products.*,Receivables.PO,Receivables.SO,Receivables.cases as cases_expected FROM Transactions,Customers,Products,Receivables
-    WHERE (direction=0 AND Transactions.cases IS NULL)
-    AND Customers.customerid=Transactions.customerid
-    AND Transactions.productid=Products.productid
-    AND Transactions.receivableid=Receivables.receivableid
-    ORDER BY Transactions.stamp DESC
-    </CFQUERY>
-
-    <CFOUTPUT QUERY="Transactions">
-    
-    <CFQUERY NAME="SplitReceivables" DATASOURCE="#DSN#">
-    SELECT * FROM Transactions,Receivables
-    WHERE Receivables.productid=#productid#
-    AND Transactions.receivableid=Receivables.receivableid
-    AND Receivables.PO=<CFQUERYPARAM value="#PO#" CFSQLType="CF_SQL_VARCHAR">
-    AND Receivables.SO=<CFQUERYPARAM value="#SO#" CFSQLType="CF_SQL_VARCHAR">
-    AND Transactions.cases IS NOT NULL
-    </CFQUERY>
-    
-    <a href="inventory.cfm?customerid=#customerid#&history=#productid#"><li>
-        <div class="date floatright">#DateFormat(stamp,"MM/DD/YYYY")#</div>
+    {% for receivable in inbound_receivables %}
+    <a href="inventory.cfm?customerid={{ receivable.obj.client.id }}&history={{ receivable.obj.product.id }}"><li>
+        <div class="date floatright">{{ receivable.obj.date_created | date:"SHORT_DATE_FORMAT" }}</div>
         <div class="items-list-content">
             <div class="coname">
-                <p>#coname#</p>
-                <p class="subtitle">#itemnum#: #pname# <CFIF SplitReceivables.recordCount GT 0><span class="partial_receivable">PARTIAL</span></CFIF></p>
+                <p>{{ receivable.obj.client.company_name }}</p>
+                <p class="subtitle">{{ receivable.obj.product.item_number }}: {{ receivable.obj.product.name }} {% if receivable.is_partial %}<span class="partial_receivable">PARTIAL</span>{% endif %}</p>
             </div>
         </div>
     </li></a>
-    </CFOUTPUT>
+    {% endfor %}
     
 </ul>
 </div>
@@ -115,31 +78,19 @@
 </div>
 <div class="list_wrap minimized three" section="outbound_shipments">
 <ul class="items_list" id="outbound_shipments_list">
-    <CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
-    SELECT *,Shipments.createdon as shipment_create_date FROM Shipments,Customers,Locations,Products,Transactions
-    WHERE status=2
-    AND Customers.customerid=Shipments.customerid
-    AND Shipments.locationid=Locations.locationid  
-    AND Transactions.productid=Products.productid
-    AND Transactions.shipmentid=Shipments.shipmentid
-    AND Products.account=1
-    AND acctstatus in (0,1)
-    GROUP BY Shipments.shipmentid
-    ORDER BY Shipments.createdon DESC
-    </CFQUERY>
-    
-    <CFOUTPUT QUERY="Shipments">
-    <a href="shipments.cfm?customerid=#customerid#&shipmentid=#shipmentid#"><li>
-        <div class="date floatright">#DateFormat(shipment_create_date,"MM/DD/YYYY")#</div>
-        <div class="dl">DL ## #shipmentid#</div>
+
+    {% for shipment in invq %}
+    <a href="shipments.cfm?customerid={{ shipment.client__id }}&shipmentid={{ shipment.id }}"><li>
+        <div class="date floatright">{{ shipment.date | date:"SHORT_DATE_FORMAT" }}</div>
+        <div class="dl">DL # {{ shipment.id }}</div>
         <div class="items-list-content">
             <div class="coname">
-                <p>#coname#</p>
-                <p class="subtitle">#name#</p>
+                <p>{{ shipment.client__company_name }}</p>
+                <p class="subtitle">{{ shipment.location__name }}</p>
             </div>
         </div>
     </li></a>
-    </CFOUTPUT>
+    {% endfor %}
     
 </ul>
 </div>
@@ -150,35 +101,18 @@
 </div>
 <div class="list_wrap minimized three" section="low_stock">
 <ul class="items_list" id="low_stock_list">
-    
-    <CFQUERY NAME="Products" DATASOURCE="#DSN#">
-    SELECT * FROM Customers,Products
-    WHERE remain * 2 < contqty
-    AND Customers.customerid=Products.customerid
-    AND Products.active = 1
-    ORDER BY Products.pname DESC
-    </CFQUERY>
 
-    <CFOUTPUT QUERY="Products">
-
-    <CFQUERY NAME="LastShipped" DATASOURCE="#DSN#">
-    SELECT * FROM Shipments,Transactions
-    WHERE Transactions.productid=<CFQUERYPARAM value="#productid#" CFSQLType="CF_SQL_NUMERIC">
-    AND Transactions.shipmentid=Shipments.shipmentid
-    ORDER BY createdon DESC
-    LIMIT 1
-    </CFQUERY>
-    
-    <a href="inventory.cfm?customerid=#customerid#&productid=#productid#"><li>
-        <div class="dl">DL ## #LastShipped.shipmentid#</div>
+    {% for product in low_stock %}
+    <a href="inventory.cfm?customerid={{ product.obj.client.id }}&productid={{ product.obj.id }}"><li>
+        <div class="dl">DL # {{ product.last_shipment.id }}</div>
         <div class="items-list-content">
             <div class="coname">
-                <p>#coname#</p>
-                <p class="subtitle">#pname#</p>
+                <p>{{ product.obj.client.company_name }}</p>
+                <p class="subtitle">{{ product.obj.name }}</p>
             </div>
         </div>
     </li></a>
-    </CFOUTPUT>
+    {% endfor %}
         
 </ul>
 </div>

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 
-from ims.models import Client
+from ims.models import Client, Shipment
 from ims import utils
 
 
@@ -13,7 +13,11 @@ def home(request):
     return render(request, 'ims/home.html', context)
 
 def mgmt(request):
+
+    delivery_requests = Shipment.objects.exclude(status=2)
+
     context = {
+        'delivery_requests': delivery_requests,
     }
     return render(request, 'ims/mgmt.html', context)
 

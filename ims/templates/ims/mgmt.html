@@ -7,7 +7,7 @@
 Notifications
 </div>
 
-<CFINCLUDE TEMPLATE="inc_notifications.cfm">
+{% include "ims/inc_notifications.html" %}
 </div>
 
 <div class="content">
@@ -30,7 +30,6 @@ Notifications
 Clients
 </div>
 <div class="list_wrap" id="customers_list_wrap" style="min-height: 596px; max-height: 596px;">
-<CFINCLUDE TEMPLATE="ajax_customers_list.cfm">
 </div>
 
 <div id="add_customer_wrap">

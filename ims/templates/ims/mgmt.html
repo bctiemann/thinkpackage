@@ -1,0 +1,47 @@
+{% extends "ims/base.html" %}
+
+{% block content %}
+<div id="notifications">
+<div class="list_title" style="background-image: url('images/icon_notifications.png');">
+Notifications
+</div>
+
+<CFINCLUDE TEMPLATE="inc_notifications.cfm">
+</div>
+
+<div class="content">
+
+<div class="customers_list">
+<div class="list_title" style="background-image: url('images/icon_customers.png');">
+<!---<button class="floatright" id="toggle_inactive">Toggle inactive customers</button>--->
+
+<ul class="buttonset customers_filter floatright">
+    <li id="customer_list_warehousing_yes" title="Warehousing"></li>
+    <li id="customer_list_warehousing_no" title="No warehousing"></li>
+    <li id="customer_list_inactive" title="Inactive"></li>
+<!---
+<input type="radio" name="customer_list" checkstate="false" title="Warehousing" id="customer_list_warehousing_yes" value="warehousing_yes" icon="ui-icon-pencil"><label for="customer_list_ware$
+<input type="radio" name="customer_list" checkstate="false" title="No warehousing" id="customer_list_warehousing_no" value="warehousing_no"><label for="customer_list_warehousing_no">No wareho$
+<input type="radio" name="customer_list" checkstate="false" title="Inactive" id="customer_list_inactive" value="inactive"><label for="customer_list_inactive">Inactive</label>
+--->
+</ul>
+
+Clients
+</div>
+<div class="list_wrap" id="customers_list_wrap" style="min-height: 596px; max-height: 596px;">
+<CFINCLUDE TEMPLATE="ajax_customers_list.cfm">
+</div>
+
+<div id="add_customer_wrap">
+<input id="customer_name_new" placeholder="Company name" maxlength="45" />
+<button id="add_customer">&nbsp;</button>
+</div>
+</div>
+
+</div>
+
+<div class="dialog" id="add_customer_confirm" title="Add customer">
+Are you sure you want to add this customer?
+</div>
+{% endblock %}
+

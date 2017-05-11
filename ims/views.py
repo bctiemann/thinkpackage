@@ -8,3 +8,8 @@ def home(request):
     context = {
     }
     return render(request, 'ims/home.html', context)
+
+def mgmt(request):
+    context = {
+    }
+    return render(request, 'ims/mgmt.html', context)

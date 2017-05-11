@@ -7,4 +7,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^$', ims_views.home, name='home'),
+
+    url(r'^mgmt/$', ims_views.mgmt, name='mgmt'),
 ]

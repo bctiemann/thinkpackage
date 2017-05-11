@@ -1,7 +1,7 @@
 <ul class="items_list" id="customers_list">
 
 {% for client in clients %}
-
+    {% with client.obj as client %}
     <a href="profile.cfm?customerid={{ client.id }}">
         <li
             class="{% if not client.is_active %}disabled{% endif %} {% if client.has_warehousing %}warehousing{% endif %}"
@@ -11,7 +11,7 @@
             </div>
         </li>
     </a>
-
+    {% endwith %}
 {% endfor %}
 
 </ul>

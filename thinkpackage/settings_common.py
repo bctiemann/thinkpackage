@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import sys
+import datetime
+from colorlog import ColoredFormatter
+from cloghandler import ConcurrentRotatingFileHandler
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -130,3 +134,63 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/usr/local/www/django/thinkpackage/static_root'
 MEDIA_ROOT = '/usr/local/www/django/thinkpackage/media'
 MEDIA_URL = '/media/'
+
+LOG_DIR = '/var/log/thinkpackage'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'colored': {
+            '()': 'colorlog.ColoredFormatter',
+            'datefmt' : "%d/%b/%Y %H:%M:%S",
+            'format': "%(purple)s[%(asctime)s] %(cyan)s[%(name)s:%(lineno)s] %(log_color)s%(levelname)-4s%(reset)s %(white)s%(message)s"
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        }
+    },
+    'handlers': {
+        'logfile': {
+            'level':'INFO',
+            'filters': [],
+            'class':'logging.handlers.ConcurrentRotatingFileHandler',
+            'filename': LOG_DIR + '/django.log',
+            'maxBytes': 1024*1024*64, # 64mb
+            'backupCount': 5,
+            'formatter': 'colored',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'filters': [],
+            'class': 'logging.StreamHandler',
+        },
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+    },
+    'loggers': {
+        # Log all app logger messages to the central logfile
+        '': {
+            'handlers': ['logfile'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        # Log database diagnostics at WARN level
+        'django.db.backends': {
+            'level': 'WARN',
+            'handlers': ['logfile'],
+        },
+        'django.security.DisallowedHost': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+    },
+}
+

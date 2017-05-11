@@ -1,17 +1,15 @@
 <ul class="items_list" id="customers_list">
 
 {% for client in clients %}
-    {% with client.obj as client %}
-    <a href="profile.cfm?customerid={{ client.id }}">
+    <a href="profile.cfm?customerid={{ client.obj.id }}">
         <li
-            class="{% if not client.is_active %}disabled{% endif %} {% if client.has_warehousing %}warehousing{% endif %}"
-            id="customer_{{ client.id }}">
-            <div class="items-list-content" style="padding-left: #20 * (Customer.depth)#px;">
-            {{ client.company_name }}
+            class="{% if not client.obj.is_active %}disabled{% endif %} {% if client.obj.has_warehousing %}warehousing{% endif %}"
+            id="customer_{{ client.obj.id }}">
+            <div class="items-list-content depth-{{ client.depth }}">
+            {{ client.obj.company_name }}
             </div>
         </li>
     </a>
-    {% endwith %}
 {% endfor %}
 
 </ul>

@@ -436,6 +436,18 @@ div.items-list-content {
 div.items-list-content.child {
 	padding-left: 20px;
 }
+div.items-list-content.depth-0 {
+	padding-left: 00px;
+}
+div.items-list-content.depth-1 {
+	padding-left: 20px;
+}
+div.items-list-content.depth-2 {
+	padding-left: 40px;
+}
+div.items-list-content.depth-3 {
+	padding-left: 60px;
+}
 ul.items_list div.date {
 	position: absolute;
 	top: 4px;

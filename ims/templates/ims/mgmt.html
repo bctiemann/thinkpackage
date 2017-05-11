@@ -1,8 +1,9 @@
 {% extends "ims/base.html" %}
+{% load static %}
 
 {% block content %}
 <div id="notifications">
-<div class="list_title" style="background-image: url('images/icon_notifications.png');">
+<div class="list_title" style="background-image: url('{% static "ims/images/icon_notifications.png" %}');">
 Notifications
 </div>
 
@@ -12,7 +13,7 @@ Notifications
 <div class="content">
 
 <div class="customers_list">
-<div class="list_title" style="background-image: url('images/icon_customers.png');">
+<div class="list_title" style="background-image: url('{% static "ims/images/icon_customers.png" %}');">
 <!---<button class="floatright" id="toggle_inactive">Toggle inactive customers</button>--->
 
 <ul class="buttonset customers_filter floatright">

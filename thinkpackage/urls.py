@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^$', ims_views.home, name='home'),
 
     url(r'^mgmt/$', ims_views.mgmt, name='mgmt-home'),
+    url(r'^mgmt/customers_list/$', ims_views.mgmt_customers_list, name='mgmt-customers-list'),
 
     url(r'^mgmt/(?P<client_id>\d+)/$', ims_views.mgmt_redirect, name='mgmt-redirect'),
 

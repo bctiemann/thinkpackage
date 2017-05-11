@@ -161,8 +161,8 @@ $.getJSON('cfc/miles.cfc', {
 
 
 function refreshCustomers(filter) {
-//    var url = cgiroot+'ajax_customers_list.cfm?showinactive='+globals['showinactive'];
-    var url = cgiroot+'ajax_customers_list.cfm?filter='+filter;
+//    var url = cgiroot+'ajax_customers_list.cfm?filter='+filter;
+    var url = cgiroot + 'customers_list/?filter=' + filter;
     $('#customers_list_wrap').load(url,function() {
     });
 }
@@ -764,7 +764,7 @@ function refreshInventory() {
     }
 
     $('#list_inventory tbody').empty().append($('<img>', {
-        src: 'images/loading_bar.gif',
+        src: '../static/ims/images/loading_bar.gif',
         class: 'loading',
     }));
 
@@ -838,7 +838,7 @@ function refreshShipments(shipmentid) {
     }
 
     $('#list_shipments tbody').empty().append($('<img>', {
-        src: 'images/loading_bar.gif',
+        src: '../static/ims/images/loading_bar.gif',
         class: 'loading',
     }));
 
@@ -1046,6 +1046,7 @@ $(document).ready(function() {
       text: false
     })
     setupAddCustomerButton();
+    refreshCustomers();
 
     refreshUI();
 

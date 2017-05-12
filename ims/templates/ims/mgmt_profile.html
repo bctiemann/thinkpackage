@@ -12,11 +12,6 @@
 {% endwith %}
 
                         
-<CFQUERY NAME="Locations" DATASOURCE="#DSN#">
-SELECT * FROM Locations
-WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-</CFQUERY>
-            
 <div class="profile_list">
 <div class="list_header">
 <CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustomer()">edit</a></CFOUTPUT>
@@ -58,97 +53,71 @@ Locations
 </div>
             
 <div class="objectform" id="customerform">
-    <cfform name="customer_{{ client.id }}" onSubmit="return false;">
+    <form name="customer_{{ client.id }}" onSubmit="return false;">
                 
     <div class="form_body">
                 
         <CFOUTPUT>
-        <button class="actionbtn floatright" id="coname_submit" onClick="updateCustomerName(#URL.customerid#)">Update</button>
-        <input type="text" id="coname" value="#Replace(Customer.coname,'"',"&quot;")#" placeholder="Customer name" style="width: 260px; margin: 7px;" maxlength="45" />
+        <button class="actionbtn floatright" id="coname_submit" onClick="updateCustomerName({{ client.id }})">Update</button>
+        <input type="text" id="coname" value="{{ client.company_name }}" placeholder="Customer name" style="width: 260px; margin: 7px;" maxlength="45" />
         </CFOUTPUT>
-                    
+
         <table>
             <tr>
                 <td>    
-                    <cfselect name="custcontactid_primary">
+                    <select name="custcontactid_primary">
                         <option value="0">(Select primary contact)</option>
-                        <CFQUERY NAME="CustContacts" DATASOURCE="#DSN#">
-                        SELECT * FROM CustContacts
-                        WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-                        AND enabled=1
-                        </CFQUERY>
                         {% for contact in client.custcontact_set.all %}
-                        <CFOUTPUT QUERY="CustContacts">
-                       <option value="#CustContacts.custcontactid#" <CFIF CustContacts.isprimary IS 1>selected</CFIF>>#fname# #lname#<CFIF CustContacts.title IS NOT ""> [#CustContacts.title#]</CFIF></option>
-                        </CFOUTPUT>
+                        <option value="{{ contact.id }}" {% if contact.is_primary %}selected{% endif %}>{{ contact.first_name }} {{ contact.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %}</option>
                         {% endfor %}
-                    </cfselect>
+                    </select>
                 </td>
             </tr>
             <tr>
-                <CFQUERY NAME="PrimaryContact" DATASOURCE="#DSN#">
-                SELECT * FROM CustContacts
-                WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-                AND isprimary=1
-                </CFQUERY>
-                <CFOUTPUT QUERY="PrimaryContact">
                 <td><div class="non-input" style="width: 469px;">
-                    <span id="email_primary"><a href="mailto:#PrimaryContact.email#">#PrimaryContact.email#</a></span>
-                    <span id="tel_primary">#PrimaryContact.tel# #PrimaryContact.telext#</span>
-                </td>
-                </CFOUTPUT>
-            </tr>
-            <tr>
-                <td>
-                    <cfselect name="enabled">
-                        <option value="1" <CFIF Customer.enabled IS 1>selected</CFIF>>Enabled</option>
-                        <option value="0" <CFIF Customer.enabled IS 0>selected</CFIF>>Disabled</option>
-                    </cfselect>
+                    <span id="email_primary"><a href="mailto:{{ primary_contact.email }}">{{ primary_contact.email }}</a></span>
+                    <span id="tel_primary">{% if primary_contact.phone_number %}{{ primary_contact.phone_number }}{% endif %} {% if primary_contact.phone_extension %}{{ primary_contact.phone_extension }}{% endif %}</span>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <cfselect name="warehousing">
-                        <option value="1" <CFIF Customer.warehousing IS 1>selected</CFIF>>Warehousing required</option>
-                        <option value="0" <CFIF Customer.warehousing IS 0>selected</CFIF>>No warehousing required</option>
-                    </cfselect>
+                    <select name="enabled">
+                        <option value="1" {% if client.is_active %}selected{% endif %}>Enabled</option>
+                        <option value="0" {% if not client.is_active %}selected{% endif %}>Disabled</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <CFQUERY NAME="Customers" DATASOURCE="#DSN#">
-                    SELECT * FROM Customers
-                    WHERE enabled=1
-                    ORDER BY coname
-                    </CFQUERY>
-
-                    <cfset sortedCustomers = treeToList(Customers, [URL.customerid])>
-
-                    <cfselect name="parent">
+                    <select name="warehousing">
+                        <option value="1" {% if client.has_warehousing %}selected{% endif %}>Warehousing required</option>
+                        <option value="0" {% if not client.has_warehousing %}selected{% endif %}>No warehousing required</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select name="parent">
                         <option value="0">Subsidiary of...</option>
                         <option value="0">(None)</option>
-                        <cfloop array="#sortedCustomers#" index="CustomerOption">
-                            <cfset indent = "">
-                            <cfloop from="0" to="#CustomerOption.depth#" index="i">
-                                <cfset indent = indent & "&nbsp;&nbsp;&nbsp;&nbsp;">
-                            </cfloop>
+                        {% for parent_client in all_clients %}
                             <cfoutput>
-                                <option value="#CustomerOption.customerid#" <CFIF Customer.parent IS CustomerOption.customerid>selected</CFIF>>#indent##CustomerOption.coname#</option>
+                                <option value="{{ parent_client.obj.id }}" {% if client.parent == parent_client.obj %}selected{% endif %}>{{ parent_client.indent|safe }}{{ parent_client.obj.company_name }}</option>
                             </cfoutput>
-                        </cfloop>
-                    </cfselect>
+                        {% endfor %}
+                    </select>
                 </td>
             </tr>
             <tr>
-                <td><textarea id="customer_notes" placeholder="Notes" class="smalltext" style="width: 469px;"><CFOUTPUT>#Customer.notes#</CFOUTPUT></textarea></td>
+                <td><textarea id="customer_notes" placeholder="Notes" class="smalltext" style="width: 469px;">{{ client.notes }}</textarea></td>
             </tr>   
 
         </table>
-                    
+
     </div>              
-                    
-    </cfform>           
-</div>                  
+
+    </form>
+</div>
                         
 <div class="objectform" id="locationform">
 <CFINCLUDE TEMPLATE="ajax_location_form.cfm">

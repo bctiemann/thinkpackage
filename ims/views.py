@@ -69,9 +69,16 @@ def mgmt_redirect(request, client_id=None):
 
 def mgmt_profile(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
+    all_clients = []
+    for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
+        indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(parent_client['depth'])])
+        parent_client['indent'] = indent
+        all_clients.append(parent_client)
 
     context = {
         'client': client,
+        'primary_contact': CustContact.objects.filter(client=client, is_primary=True).first(),
+        'all_clients': all_clients,
     }
     return render(request, 'ims/mgmt_profile.html', context)
 

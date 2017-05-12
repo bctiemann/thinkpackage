@@ -1,4 +1,4 @@
-var cgiroot = '';
+var cgiroot = '/mgmt/';
 var globals = {};
 var keyinput = '';
 var keyinput_timeout = null;
@@ -173,7 +173,8 @@ function toggleInactiveCustomers() {
 }
 
 function loadLocationsList(customerid,locationid) {
-    var url = cgiroot+'ajax_locations_list.cfm?customerid='+customerid;
+//    var url = cgiroot+'ajax_locations_list.cfm?customerid='+customerid;
+    var url = cgiroot + 'locations_list/' + customerid;
     $('#locations_list').load(url,function() {
         if (locationid) {
             loadLocation(locationid,customerid);
@@ -185,7 +186,8 @@ console.log(rowpos);
 }
 
 function loadContactsList(customerid,custcontactid) {
-    var url = cgiroot+'ajax_contacts_list.cfm?customerid='+customerid;
+//    var url = cgiroot+'ajax_contacts_list.cfm?customerid='+customerid;
+    var url = cgiroot + 'contacts_list/' + customerid;
     $('#contacts_list').load(url,function() {
         if (custcontactid) {
             loadCustContact(custcontactid,customerid);
@@ -205,7 +207,8 @@ function loadLocation(locationid,customerid,refresh_list) {
     $('#contactform').hide();
     $('#locationform').show();
     $('#customerform').hide();
-    var url = cgiroot+'ajax_location_form.cfm?customerid='+customerid+'&locationid='+locationid;
+//    var url = cgiroot+'ajax_location_form.cfm?customerid='+customerid+'&locationid='+locationid;
+    var url = cgiroot + 'location_form/?client_id=' + customerid + '&location_id=' + locationid;
     $('.items_list li').removeClass('selected');
     $('#locationform').load(url,function() {
         $('li#location_'+locationid).addClass('selected');
@@ -220,7 +223,8 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
     $('#contactform').show();
     $('#locationform').hide();
     $('#customerform').hide();
-    var url = cgiroot+'ajax_contact_form.cfm?customerid='+customerid+'&custcontactid='+custcontactid;
+//    var url = cgiroot+'ajax_contact_form.cfm?customerid='+customerid+'&custcontactid='+custcontactid;
+    var url = cgiroot + 'contact_form/?client_id=' + customerid + '&custcontact_id=' + custcontactid;
     $('.items_list li').removeClass('selected');
     $('#contactform').load(url,function() {
         $('li#custcontact_'+custcontactid).addClass('selected');
@@ -764,7 +768,7 @@ function refreshInventory() {
     }
 
     $('#list_inventory tbody').empty().append($('<img>', {
-        src: '../static/ims/images/loading_bar.gif',
+        src: '/static/ims/images/loading_bar.gif',
         class: 'loading',
     }));
 
@@ -838,7 +842,7 @@ function refreshShipments(shipmentid) {
     }
 
     $('#list_shipments tbody').empty().append($('<img>', {
-        src: '../static/ims/images/loading_bar.gif',
+        src: '/static/ims/images/loading_bar.gif',
         class: 'loading',
     }));
 

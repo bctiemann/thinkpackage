@@ -153,6 +153,7 @@ class CustContact(models.Model):
 
     class Meta:
         db_table = 'CustContacts'
+        ordering = ['-is_primary', 'last_name']
 
 
 class AdminUser(models.Model):
@@ -242,6 +243,7 @@ class Location(models.Model):
 
     class Meta:
         db_table = 'Locations'
+        ordering = ['name']
 
 
 class Product(models.Model):

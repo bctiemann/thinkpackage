@@ -1,0 +1,98 @@
+<CFIF IsDefined("URL.custcontactid") AND IsNumeric(URL.custcontactid)>
+    <CFQUERY NAME="CustContact" DATASOURCE="#DSN#">
+    SELECT * FROM CustContacts
+    WHERE custcontactid=<CFQUERYPARAM value="#URL.custcontactid#" CFSQLType="CF_SQL_NUMERIC">
+    </CFQUERY>
+</CFIF>
+            
+<CFSET CustContactStruct = {custcontactid="",
+                            customerid="",
+                            email="",
+                            pass="",
+                            fname="",
+                            lname="",
+                            title="",
+                            tel="",
+                            telext="",
+                            mobile="",
+                            fax="",
+                            isprimary="",
+                            enabled="",
+                            lastlogin="",
+                            notes=""}>
+            
+                
+<CFIF IsDefined("CustContact") AND CustContact.recordcount GT 0>
+            
+    <CFSET CustContactStruct = QueryToStruct(CustContact,0)[1]>
+            
+</CFIF>
+                
+<CFLOOP COLLECTION="#CustContactStruct#" ITEM="col">
+    <CFSET CustContactStruct[col] = Replace(CustContactStruct[col],'"',"&quot;")>
+</CFLOOP>
+    
+    
+<CFOUTPUT>
+        
+    <cfform name="custcontact_#CustContactStruct['custcontactid']#" onSubmit="return false;">   
+        
+    <div class="form_header">
+
+        <span class="title">
+        <CFIF CustContactStruct.custcontactid IS NOT "">Edit existing contact<CFELSE>Add new contact</CFIF>
+        </span>
+
+    </div>
+    <div class="form_body">
+
+        <table>
+            <tr>
+                <td>
+                    <input type="text" id="fname" value="#CustContactStruct.fname#" placeholder="First" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 226px;" maxlength="50" />
+                    <input type="text" id="lname" value="#CustContactStruct.lname#" placeholder="Last" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 226px;" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+                <td><input type="password" id="passwd" value="********" placeholder="Password" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 469px;" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" id="title" value="#CustContactStruct.title#" placeholder="Title" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 469px;" maxlength="50" /></td>
+            </tr>
+            <tr>
+                <td><input type="email" id="email" value="#CustContactStruct.email#" placeholder="Email" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 469px;" maxlength="100" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="tel" value="#CustContactStruct.tel#" placeholder="Phone" onKeyUp="ValidatePhone(this);" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 353px;" maxlength="16" />
+                    <input type="text" id="telext" value="#CustContactStruct.telext#" placeholder="Ext" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 99px;" maxlength="16" />
+                </td>
+            </tr>
+            <tr>
+                <td><input type="text" id="mobile" value="#CustContactStruct.mobile#" placeholder="Mobile" onKeyUp="ValidatePhone(this);" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 469px;" maxlength="16" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" id="fax" value="#CustContactStruct.fax#" placeholder="Fax" onKeyUp="ValidatePhone(this);" <CFIF CustContactStruct.custcontactid IS "">class="new"</CFIF> style="width: 469px;" maxlength="16" /></td>
+            </tr>
+            <tr>
+                <td><textarea id="contact_notes" placeholder="Notes" class="smalltext <CFIF CustContactStruct.custcontactid IS "">new</CFIF>" style="width: 469px;">#CustContactStruct.notes#</textarea></td>
+            </tr>
+        </table>
+        
+    </div>
+    <div class="form_header">
+    
+        <button class="actionbtn floatright" id="contact_submit" onClick="updateCustContact(#URL.customerid#,<CFIF CustContactStruct.custcontactid IS NOT "">#CustContactStruct.custcontactid#<CFELSE>null</CFIF>)">
+        <CFIF CustContactStruct.custcontactid IS NOT "">Update contact<CFELSE>Add contact</CFIF>
+        </button>
+        
+        <CFIF CustContactStruct.custcontactid IS NOT "">
+        <button class="actionbtn red floatleft" id="contact_delete" onClick="deleteCustContact(#URL.customerid#,#CustContactStruct.custcontactid#)">Delete contact</button>
+        </CFIF>     
+    
+    </div>      
+    
+    <input type="hidden" id="isprimary" value="#CustContactStruct.isprimary#" />
+    
+    </cfform>
+

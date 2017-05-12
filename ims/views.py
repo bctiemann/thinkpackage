@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
 
-from ims.models import Client, Shipment, Transaction, Product
+from ims.models import Client, Shipment, Transaction, Product, CustContact, Location
 from ims import utils
 
 import logging
@@ -77,15 +77,19 @@ def mgmt_profile(request, client_id=None):
 
 
 def mgmt_inventory(request, client_id=None, product_id=None):
+    client = get_object_or_404(Client, pk=client_id)
+
     context = {
-        'client_id': client_id,
+        'client': client,
     }
     return render(request, 'ims/mgmt_inventory.html', context)
 
 
 def mgmt_shipments(request, client_id=None, shipment_id=None):
+    client = get_object_or_404(Client, pk=client_id)
+
     context = {
-        'client_id': client_id,
+        'client': client,
         'shipment_id': shipment_id,
     }
     return render(request, 'ims/mgmt_shipments.html', context)
@@ -109,3 +113,49 @@ def mgmt_customers_list(request):
         'clients': utils.tree_to_list(clients, sort_by='company_name'),
     }
     return render(request, 'ims/mgmt_customers_list.html', context)
+
+
+def mgmt_contacts_list(request, client_id):
+    client = get_object_or_404(Client, pk=client_id)
+
+    context = {
+        'client': client,
+    }
+    return render(request, 'ims/mgmt_contacts_list.html', context)
+
+
+def mgmt_locations_list(request, client_id):
+    client = get_object_or_404(Client, pk=client_id)
+
+    context = {
+        'client': client,
+    }
+    return render(request, 'ims/mgmt_locations_list.html', context)
+
+
+def mgmt_contact_form(request):
+    client_id = request.GET.get('client_id', None)
+    custcontact_id = request.GET.get('custcontact_id', None)
+
+    client = get_object_or_404(Client, pk=client_id)
+    custcontact = get_object_or_404(CustContact, client=client, pk=custcontact_id)
+
+    context = {
+        'custcontact': custcontact,
+    }
+    return render(request, 'ims/mgmt_contact_form.html', context)
+
+
+def mgmt_location_form(request):
+    client_id = request.GET.get('client_id', None)
+    location_id = request.GET.get('location_id', None)
+
+    client = get_object_or_404(Client, pk=client_id)
+    location = get_object_or_404(Location, client=client, pk=location_id)
+
+    context = {
+        'location': location,
+    }
+    return render(request, 'ims/mgmt_location_form.html', context)
+
+

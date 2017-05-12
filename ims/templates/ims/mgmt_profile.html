@@ -26,12 +26,24 @@ Client
 <ul class="items_list" id="client_list">
 <a href="javascript:nop()"><li onClick="loadCustomer()">
     <div class="items-list-content">
-    <CFOUTPUT>#Customer.coname#</CFOUTPUT>
+    {{ client.company_name }}
     </div>              
 </li></a>               
 </ul>                   
 </div>                      
 </div>                      
+
+<div class="profile_list">
+<div class="list_header">
+<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustContact(null,#URL.customerid#)">add new</a></CFOUTPUT>
+Contacts
+</div>
+<div class="list_wrap" id="contacts_list_wrap">
+<ul class="items_list" id="contacts_list">
+<CFINCLUDE TEMPLATE="ajax_contacts_list.cfm">
+</ul>
+</div>
+</div>
 
 <div class="profile_list">
 <div class="list_header">
@@ -46,7 +58,7 @@ Locations
 </div>
             
 <div class="objectform" id="customerform">
-    <cfform name="customer_#URL.customerid#" onSubmit="return false;">
+    <cfform name="customer_{{ client.id }}" onSubmit="return false;">
                 
     <div class="form_body">
                 
@@ -65,9 +77,11 @@ Locations
                         WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
                         AND enabled=1
                         </CFQUERY>
+                        {% for contact in client.custcontact_set.all %}
                         <CFOUTPUT QUERY="CustContacts">
                        <option value="#CustContacts.custcontactid#" <CFIF CustContacts.isprimary IS 1>selected</CFIF>>#fname# #lname#<CFIF CustContacts.title IS NOT ""> [#CustContacts.title#]</CFIF></option>
                         </CFOUTPUT>
+                        {% endfor %}
                     </cfselect>
                 </td>
             </tr>
@@ -153,5 +167,10 @@ Are you sure you want to delete this customer contact?
 Are you sure you want to delete this location?
 <p><b>Note:</b> Any pending shipments to this location will need to be reconfigured.</p>
 </div>              
+
+<script type="text/javascript">
+loadContactsList({{ client.id }}, null);
+loadLocationsList({{ client.id }}, null);
+</script>
     
 {% endblock %}

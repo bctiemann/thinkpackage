@@ -1,0 +1,168 @@
+<CFOUTPUT>
+
+    <cfform name="location_#LocationStruct['locationid']#" onSubmit="return false;">
+
+    <div class="form_header">
+
+        <span class="title">
+        <CFIF LocationStruct.locationid IS NOT "">Edit existing location<CFELSE>Add new location</CFIF>
+        </span>
+
+    </div>
+    <div class="form_body">
+
+        <table>
+            <tr>
+                <td><input type="text" id="name" value="#LocationStruct.name#" placeholder="Location name" <CFIF LocationStruct.locationid IS "">class="new"</CFIF> style="width: 469px;" maxlength="45" /></td>
+            </tr>
+
+            <tr>
+                <td>
+                    <cfselect name="custcontactid">
+                        <CFQUERY NAME="CustContacts" DATASOURCE="#DSN#">
+                        SELECT * FROM CustContacts
+                        WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
+                        AND enabled=1
+                        </CFQUERY>
+                        <CFIF LocationStruct.custcontactid EQUALS 0>
+                        <option value="0">(Select contact)</option>>
+                        </CFIF>
+                        <CFLOOP QUERY="CustContacts">
+                        <option value="#CustContacts.custcontactid#" <CFIF (LocationStruct.locationid IS NOT "" AND CustContacts.custcontactid IS LocationStruct.custcontactid) OR (LocationStruct.locationid IS "" AND CustContacts.isprimary IS 1)>selected</CFIF>>#fname# #lname#<CFIF CustContacts.title IS NOT ""> [#CustContacts.title#]</CFIF></option>
+                        </CFLOOP>
+                    </cfselect>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div class="non-input" style="width: 469px;">
+                        <CFQUERY NAME="Contact" DATASOURCE="#DSN#">
+                        SELECT * FROM CustContacts
+                        WHERE custcontactid=<CFQUERYPARAM value="#LocationStruct.custcontactid#" CFSQLType="CF_SQL_VARCHAR">
+                        </CFQUERY>
+                        <CFLOOP QUERY="Contact">
+                        <span id="email_primary"><a href="mailto:#Contact.email#">#Contact.email#</a></span>
+                        <span id="tel_primary">#Contact.tel# #Contact.telext#</span>
+                        </CFLOOP>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="addr" value="#LocationStruct.addr#" placeholder="Delivery Address line 1" <CFIF LocationStruct.locationid IS "">class="new"</CFIF> style="width: 469px;" maxlength="45" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="addr2" value="#LocationStruct.addr2#" placeholder="Delivery Address line 2" <CFIF LocationStruct.locationid IS "">class="new"</CFIF> style="width: 469px;" maxlength="45" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="city" value="#LocationStruct.city#" placeholder="City" <CFIF LocationStruct.locationid IS "">class="new"</CFIF> style="width: 239px;" maxlength="24" />
+
+                    <cfselect name="state" style="width: 110px">
+                        <option value="">(Select state)
+                        <option value="AL" <CFIF LocationStruct.state IS "AL">selected</CFIF>>Alabama
+                        <option value="AK" <CFIF LocationStruct.state IS "AK">selected</CFIF>>Alaska
+                        <option value="AZ" <CFIF LocationStruct.state IS "AZ">selected</CFIF>>Arizona
+                        <option value="AR" <CFIF LocationStruct.state IS "AR">selected</CFIF>>Arkansas
+                        <option value="CA" <CFIF LocationStruct.state IS "CA">selected</CFIF>>California
+                        <option value="CO" <CFIF LocationStruct.state IS "CO">selected</CFIF>>Colorado
+                        <option value="CT" <CFIF LocationStruct.state IS "CT">selected</CFIF>>Connecticut
+                        <option value="DE" <CFIF LocationStruct.state IS "DE">selected</CFIF>>Delaware
+                        <option value="DC" <CFIF LocationStruct.state IS "DC">selected</CFIF>>District Of Columbia
+                        <option value="FL" <CFIF LocationStruct.state IS "FL">selected</CFIF>>Florida
+                        <option value="GA" <CFIF LocationStruct.state IS "GA">selected</CFIF>>Georgia
+                        <option value="HI" <CFIF LocationStruct.state IS "HI">selected</CFIF>>Hawaii
+                        <option value="ID" <CFIF LocationStruct.state IS "ID">selected</CFIF>>Idaho
+                        <option value="IL" <CFIF LocationStruct.state IS "IL">selected</CFIF>>Illinois
+                        <option value="IN" <CFIF LocationStruct.state IS "IN">selected</CFIF>>Indiana
+                        <option value="IA" <CFIF LocationStruct.state IS "IA">selected</CFIF>>Iowa
+                        <option value="KS" <CFIF LocationStruct.state IS "KS">selected</CFIF>>Kansas
+                        <option value="KY" <CFIF LocationStruct.state IS "KY">selected</CFIF>>Kentucky
+                        <option value="LA" <CFIF LocationStruct.state IS "LA">selected</CFIF>>Louisiana
+                        <option value="ME" <CFIF LocationStruct.state IS "ME">selected</CFIF>>Maine
+                        <option value="MD" <CFIF LocationStruct.state IS "MD">selected</CFIF>>Maryland
+                        <option value="MA" <CFIF LocationStruct.state IS "MA">selected</CFIF>>Massachusetts
+                        <option value="MI" <CFIF LocationStruct.state IS "MI">selected</CFIF>>Michigan
+                        <option value="MN" <CFIF LocationStruct.state IS "MN">selected</CFIF>>Minnesota
+                        <option value="MS" <CFIF LocationStruct.state IS "MS">selected</CFIF>>Mississippi
+                        <option value="MO" <CFIF LocationStruct.state IS "MO">selected</CFIF>>Missouri
+                        <option value="MT" <CFIF LocationStruct.state IS "MT">selected</CFIF>>Montana
+                        <option value="NE" <CFIF LocationStruct.state IS "NE">selected</CFIF>>Nebraska
+                        <option value="NV" <CFIF LocationStruct.state IS "NV">selected</CFIF>>Nevada
+                        <option value="NH" <CFIF LocationStruct.state IS "NH">selected</CFIF>>New Hampshire
+                        <option value="NJ" <CFIF LocationStruct.state IS "NJ">selected</CFIF>>New Jersey
+                        <option value="NM" <CFIF LocationStruct.state IS "NM">selected</CFIF>>New Mexico
+                        <option value="NY" <CFIF LocationStruct.state IS "NY">selected</CFIF>>New York
+                        <option value="NC" <CFIF LocationStruct.state IS "NC">selected</CFIF>>North Carolina
+                        <option value="ND" <CFIF LocationStruct.state IS "ND">selected</CFIF>>North Dakota
+                        <option value="OH" <CFIF LocationStruct.state IS "OH">selected</CFIF>>Ohio
+                        <option value="OK" <CFIF LocationStruct.state IS "OK">selected</CFIF>>Oklahoma
+                        <option value="OR" <CFIF LocationStruct.state IS "OR">selected</CFIF>>Oregon
+                        <option value="PA" <CFIF LocationStruct.state IS "PA">selected</CFIF>>Pennsylvania
+                        <option value="PR" <CFIF LocationStruct.state IS "PR">selected</CFIF>>Puerto Rico
+                        <option value="RI" <CFIF LocationStruct.state IS "RI">selected</CFIF>>Rhode Island
+                        <option value="SC" <CFIF LocationStruct.state IS "SC">selected</CFIF>>South Carolina
+                        <option value="SD" <CFIF LocationStruct.state IS "SD">selected</CFIF>>South Dakota
+                        <option value="TN" <CFIF LocationStruct.state IS "TN">selected</CFIF>>Tennessee
+                        <option value="TX" <CFIF LocationStruct.state IS "TX">selected</CFIF>>Texas
+                        <option value="UT" <CFIF LocationStruct.state IS "UT">selected</CFIF>>Utah
+                        <option value="VT" <CFIF LocationStruct.state IS "VT">selected</CFIF>>Vermont
+                        <option value="VI" <CFIF LocationStruct.state IS "VI">selected</CFIF>>Virgin Islands
+                        <option value="VA" <CFIF LocationStruct.state IS "VA">selected</CFIF>>Virginia
+                        <option value="WA" <CFIF LocationStruct.state IS "WA">selected</CFIF>>Washington
+                        <option value="WV" <CFIF LocationStruct.state IS "WV">selected</CFIF>>West Virginia
+                        <option value="WI" <CFIF LocationStruct.state IS "WI">selected</CFIF>>Wisconsin
+                        <option value="WY" <CFIF LocationStruct.state IS "WY">selected</CFIF>>Wyoming
+                        <option value="AA" <CFIF LocationStruct.state IS "AA">selected</CFIF>>Armed Forces Americas
+                        <option value="AE" <CFIF LocationStruct.state IS "AE">selected</CFIF>>Armed Forces Europe / Canada / Middle East / Africa
+                        <option value="AP" <CFIF LocationStruct.state IS "AP">selected</CFIF>>Armed Forces Pacific
+                        <option value="AB" <CFIF LocationStruct.state IS "AB">selected</CFIF>>Alberta
+                        <option value="BC" <CFIF LocationStruct.state IS "BC">selected</CFIF>>British Columbia
+                        <option value="MB" <CFIF LocationStruct.state IS "MB">selected</CFIF>>Manitoba
+                        <option value="NB" <CFIF LocationStruct.state IS "NB">selected</CFIF>>New Brunswick
+                        <option value="NL" <CFIF LocationStruct.state IS "NL">selected</CFIF>>Newfoundland
+                        <option value="NT" <CFIF LocationStruct.state IS "NT">selected</CFIF>>Northwest Territories
+                        <option value="NS" <CFIF LocationStruct.state IS "NS">selected</CFIF>>Nova Scotia
+                        <option value="NU" <CFIF LocationStruct.state IS "NU">selected</CFIF>>Nunavut
+                        <option value="ON" <CFIF LocationStruct.state IS "ON">selected</CFIF>>Ontario
+                        <option value="PE" <CFIF LocationStruct.state IS "PE">selected</CFIF>>Prince Edward Island
+                        <option value="QC" <CFIF LocationStruct.state IS "QC">selected</CFIF>>Quebec
+                        <option value="SK" <CFIF LocationStruct.state IS "SK">selected</CFIF>>Saskatchewan
+                        <option value="YT" <CFIF LocationStruct.state IS "YT">selected</CFIF>>Yukon
+                    </cfselect>
+
+                    <input type="text" id="zip" value="#LocationStruct.zip#" placeholder="ZIP/postal" <CFIF LocationStruct.locationid IS "">class="new"</CFIF> style="width: 97px;" maxlength="10" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="recvhours" value="#LocationStruct.recvhours#" placeholder="Receiving Hours" <CFIF LocationStruct.locationid IS "">class="new"</CFIF> style="width: 469px;" maxlength="100" />
+                </td>
+            </tr>
+            <tr>
+                <td><textarea id="location_notes" placeholder="Notes" class="smalltext <CFIF LocationStruct.locationid IS "">new</CFIF>" style="width: 469px;">#LocationStruct.notes#</textarea></td>
+            </tr>
+
+        </table>
+
+    </div>
+    <div class="form_header">
+
+        <button class="actionbtn floatright" id="location_submit" onClick="updateLocation(#URL.customerid#,<CFIF LocationStruct.locationid IS NOT "">#LocationStruct.locationid#<CFELSE>null</CFIF>)">
+        <CFIF LocationStruct.locationid IS NOT "">Update location<CFELSE>Add location</CFIF>
+        </button>
+
+        <CFIF LocationStruct.locationid IS NOT "">
+        <button class="actionbtn red floatleft" id="location_delete" onClick="deleteLocation(#URL.customerid#,#LocationStruct.locationid#)">Delete location</button>
+        </CFIF>
+
+    </div>
+
+    </cfform>
+
+</CFOUTPUT>
+

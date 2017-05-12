@@ -1,4 +1,120 @@
 {% extends "ims/base.html" %}
 {% load static %}
 
-inventory
+{% block content %}
+
+<div class="content">
+    
+<CFIF IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
+    <CFQUERY NAME="Customer" DATASOURCE="#DSN#">
+    SELECT * FROM Customers
+    WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
+    </CFQUERY>
+    <CFIF Customer.recordcount IS 0>
+        <div class="error">An invalid customer ID was specified.</div>
+        <CFABORT>
+    </CFIF>
+<CFELSE>
+    <div class="error">An invalid customer ID was specified.</div>
+    <CFABORT>
+</CFIF>
+
+<CFIF IsDefined("URL.history") AND IsNumeric(URL.history)>
+    <CFOUTPUT>
+    <script type="text/javascript">
+    globals['history'] = #URL.history#;
+    </script>
+    </CFOUTPUT>
+</CFIF>
+
+<CFIF IsDefined("URL.productid") AND IsNumeric(URL.productid)>
+    <CFOUTPUT>
+    <script type="text/javascript">
+    globals['productid'] = #URL.productid#;
+    </script>
+    </CFOUTPUT>
+</CFIF>
+
+
+<div class="customerheader"><CFOUTPUT>#Customer.coname#</CFOUTPUT></div>
+
+{% with page_selected="inventory" %}
+{% include "ims/inc_nav.html" %}
+{% endwith %}
+
+
+<div id="list_inventory"></div>
+
+<div class="product_detail" id="product_details"></div>
+
+<div class="product_detail" id="product_incoming"></div>
+
+<div class="product_detail" id="product_history"></div>
+
+
+<div class="dialog" id="product_delete_confirm" title="Delete product">
+Are you sure you want to delete this product?
+</div>
+
+<div class="dialog" id="product_permdelete_confirm" title="Delete product">
+Are you sure you want to permanently delete this product? This action cannot be undone.
+</div>
+
+<div class="dialog" id="product_undelete_confirm" title="Undelete product">
+Are you sure you want to restore this product?
+</div>
+
+<div class="dialog" id="incoming_cancel_confirm" title="Cancel incoming receivable">
+Are you sure you want to cancel this incoming receivable?
+</div>
+
+<div class="dialog" id="incoming_save_confirm" title="Save incoming receivable">
+You are overriding the warehouse scanning procedure. <b>Note:</b> client inventory will be updated.
+</div>
+
+<div class="dialog" id="dialog_addreceivable_result" title="Receivable Saved">
+The incoming receivable for the selected product has been saved. You can view its status by clicking <b>history</b>.
+</div>
+        
+<div class="dialog" id="dialog_confirmreceivable_result" title="Receivable Confirmed">
+The incoming receivable for the selected product has been confirmed. The inventory stock quantities have been updated accordingly.
+<p id="cases_mismatch_warning"><b>Note:</b> Fewer cases were received than were expected. A new incoming has been created for the remainder.</p>
+</div>
+    
+<div class="dialog" id="dialog_saveproduct_result" title="Product Details Saved">
+The product details have been updated.
+</div>
+
+<div class="dialog" id="dialog_transfer_selectcustomer" title="Transfer Product Inventory">
+<p>Select the client to transfer this product to.</p>
+
+<ul class="transfer_destination" id="transfer_customer"></ul>
+</div>
+
+<div class="dialog" id="dialog_transfer_selectproduct" title="Transfer Product Inventory">
+<p>Transfer: <input type="number" id="transfer_cases" /> of <span id="transfer_remain_selected"></span> cases</p>
+
+<p>Select the product in the client's inventory to transfer to.</p>
+
+<ul class="transfer_destination" id="transfer_product"></ul>
+</div>  
+
+<div class="dialog" id="dialog_documents" title="Documents">
+    <div style="margin: 20px;">
+        <input type="file" id="shipment_upfile">
+        <button id="upload_bol" onclick="execute_uploadShipmentDoc();">Upload</button>
+    </div>
+
+    <table id="documents_list" class="infotable alternating">
+    </table>
+</div>
+
+
+<CFOUTPUT>
+<input type="hidden" id="customerid" value="#URL.customerid#" />
+<input type="hidden" id="cases_new" value="0" />
+<input type="hidden" id="contqty_new" value="0" />
+</CFOUTPUT>
+
+
+{% endblock %}

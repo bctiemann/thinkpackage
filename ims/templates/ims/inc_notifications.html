@@ -104,7 +104,7 @@
 
     {% for product in low_stock %}
     <a href="{% url "mgmt-inventory" client_id=product.obj.client.id product_id=product.obj.id %}"><li>
-        <div class="dl">DL # {{ product.last_shipment.id }}</div>
+        <div class="dl">DL # {{ product.last_shipment.shipment.id }}</div>
         <div class="items-list-content">
             <div class="coname">
                 <p>{{ product.obj.client.company_name }}</p>

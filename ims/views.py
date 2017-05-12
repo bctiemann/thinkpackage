@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
 
 from ims.models import Client, Shipment, Transaction, Product
@@ -68,8 +68,10 @@ def mgmt_redirect(request, client_id=None):
 
 
 def mgmt_profile(request, client_id=None):
+    client = get_object_or_404(Client, pk=client_id)
+
     context = {
-        'client_id': client_id,
+        'client': client,
     }
     return render(request, 'ims/mgmt_profile.html', context)
 

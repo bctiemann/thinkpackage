@@ -1,4 +1,157 @@
 {% extends "ims/base.html" %}
 {% load static %}
 
-profile
+{% block content %}
+
+<div class="content">
+
+<div class="customerheader">{{ client.company_name }}{% if not client.is_active %}<span class="disabledlabel">[DISABLED]</span>{% endif %}</div>
+
+{% with page_selected="profile" %}
+{% include "ims/inc_nav.html" %}
+{% endwith %}
+
+                        
+<CFQUERY NAME="Locations" DATASOURCE="#DSN#">
+SELECT * FROM Locations
+WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
+</CFQUERY>
+            
+<div class="profile_list">
+<div class="list_header">
+<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustomer()">edit</a></CFOUTPUT>
+Client
+</div>              
+<div class="list_wrap" id="contacts_list_wrap">
+<ul class="items_list" id="client_list">
+<a href="javascript:nop()"><li onClick="loadCustomer()">
+    <div class="items-list-content">
+    <CFOUTPUT>#Customer.coname#</CFOUTPUT>
+    </div>              
+</li></a>               
+</ul>                   
+</div>                      
+</div>                      
+
+<div class="profile_list">
+<div class="list_header">
+<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadLocation(null,#URL.customerid#)">add new</a></CFOUTPUT>
+Locations
+</div>
+<div class="list_wrap" id="locations_list_wrap">
+<ul class="items_list" id="locations_list">
+<CFINCLUDE TEMPLATE="ajax_locations_list.cfm">
+</ul>
+</div>
+</div>
+            
+<div class="objectform" id="customerform">
+    <cfform name="customer_#URL.customerid#" onSubmit="return false;">
+                
+    <div class="form_body">
+                
+        <CFOUTPUT>
+        <button class="actionbtn floatright" id="coname_submit" onClick="updateCustomerName(#URL.customerid#)">Update</button>
+        <input type="text" id="coname" value="#Replace(Customer.coname,'"',"&quot;")#" placeholder="Customer name" style="width: 260px; margin: 7px;" maxlength="45" />
+        </CFOUTPUT>
+                    
+        <table>
+            <tr>
+                <td>    
+                    <cfselect name="custcontactid_primary">
+                        <option value="0">(Select primary contact)</option>
+                        <CFQUERY NAME="CustContacts" DATASOURCE="#DSN#">
+                        SELECT * FROM CustContacts
+                        WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
+                        AND enabled=1
+                        </CFQUERY>
+                        <CFOUTPUT QUERY="CustContacts">
+                       <option value="#CustContacts.custcontactid#" <CFIF CustContacts.isprimary IS 1>selected</CFIF>>#fname# #lname#<CFIF CustContacts.title IS NOT ""> [#CustContacts.title#]</CFIF></option>
+                        </CFOUTPUT>
+                    </cfselect>
+                </td>
+            </tr>
+            <tr>
+                <CFQUERY NAME="PrimaryContact" DATASOURCE="#DSN#">
+                SELECT * FROM CustContacts
+                WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
+                AND isprimary=1
+                </CFQUERY>
+                <CFOUTPUT QUERY="PrimaryContact">
+                <td><div class="non-input" style="width: 469px;">
+                    <span id="email_primary"><a href="mailto:#PrimaryContact.email#">#PrimaryContact.email#</a></span>
+                    <span id="tel_primary">#PrimaryContact.tel# #PrimaryContact.telext#</span>
+                </td>
+                </CFOUTPUT>
+            </tr>
+            <tr>
+                <td>
+                    <cfselect name="enabled">
+                        <option value="1" <CFIF Customer.enabled IS 1>selected</CFIF>>Enabled</option>
+                        <option value="0" <CFIF Customer.enabled IS 0>selected</CFIF>>Disabled</option>
+                    </cfselect>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <cfselect name="warehousing">
+                        <option value="1" <CFIF Customer.warehousing IS 1>selected</CFIF>>Warehousing required</option>
+                        <option value="0" <CFIF Customer.warehousing IS 0>selected</CFIF>>No warehousing required</option>
+                    </cfselect>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <CFQUERY NAME="Customers" DATASOURCE="#DSN#">
+                    SELECT * FROM Customers
+                    WHERE enabled=1
+                    ORDER BY coname
+                    </CFQUERY>
+
+                    <cfset sortedCustomers = treeToList(Customers, [URL.customerid])>
+
+                    <cfselect name="parent">
+                        <option value="0">Subsidiary of...</option>
+                        <option value="0">(None)</option>
+                        <cfloop array="#sortedCustomers#" index="CustomerOption">
+                            <cfset indent = "">
+                            <cfloop from="0" to="#CustomerOption.depth#" index="i">
+                                <cfset indent = indent & "&nbsp;&nbsp;&nbsp;&nbsp;">
+                            </cfloop>
+                            <cfoutput>
+                                <option value="#CustomerOption.customerid#" <CFIF Customer.parent IS CustomerOption.customerid>selected</CFIF>>#indent##CustomerOption.coname#</option>
+                            </cfoutput>
+                        </cfloop>
+                    </cfselect>
+                </td>
+            </tr>
+            <tr>
+                <td><textarea id="customer_notes" placeholder="Notes" class="smalltext" style="width: 469px;"><CFOUTPUT>#Customer.notes#</CFOUTPUT></textarea></td>
+            </tr>   
+
+        </table>
+                    
+    </div>              
+                    
+    </cfform>           
+</div>                  
+                        
+<div class="objectform" id="locationform">
+<CFINCLUDE TEMPLATE="ajax_location_form.cfm">
+</div>                          
+                            
+<div class="objectform" id="contactform">
+<CFINCLUDE TEMPLATE="ajax_contact_form.cfm">
+</div>                      
+                        
+<div class="dialog" id="custcontact_delete_confirm" title="Delete customer contact">
+Are you sure you want to delete this customer contact?
+<p><b>Note:</b> Be sure to select a new contact for any locations for which this person is the primary contact.</p>
+</div>      
+                
+<div class="dialog" id="location_delete_confirm" title="Delete location">
+Are you sure you want to delete this location?
+<p><b>Note:</b> Any pending shipments to this location will need to be reconfigured.</p>
+</div>              
+    
+{% endblock %}

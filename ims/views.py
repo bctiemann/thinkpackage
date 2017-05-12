@@ -67,11 +67,26 @@ def mgmt_redirect(request, client_id=None):
     return redirect('mgmt-inventory', client_id=client_id)
 
 
-def mgmt_inventory(request, client_id=None):
+def mgmt_profile(request, client_id=None):
+    context = {
+        'client_id': client_id,
+    }
+    return render(request, 'ims/mgmt_profile.html', context)
+
+
+def mgmt_inventory(request, client_id=None, product_id=None):
     context = {
         'client_id': client_id,
     }
     return render(request, 'ims/mgmt_inventory.html', context)
+
+
+def mgmt_shipments(request, client_id=None, shipment_id=None):
+    context = {
+        'client_id': client_id,
+        'shipment_id': shipment_id,
+    }
+    return render(request, 'ims/mgmt_shipments.html', context)
 
 
 def mgmt_customers_list(request):

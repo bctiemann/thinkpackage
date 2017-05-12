@@ -1,7 +1,7 @@
 <ul class="items_list" id="customers_list">
 
 {% for client in clients %}
-    <a href="profile.cfm?customerid={{ client.obj.id }}">
+    <a href="{% url "mgmt-profile" client_id=client.obj.id %}">
         <li
             class="{% if not client.obj.is_active %}disabled{% endif %} {% if client.obj.has_warehousing %}warehousing{% endif %}"
             id="customer_{{ client.obj.id }}">

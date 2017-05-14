@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.http import JsonResponse
 
 from ims.models import Client, Shipment, Transaction, Product, CustContact, Location
 from ims import utils
@@ -156,6 +159,7 @@ def mgmt_contact_form(request):
 def mgmt_location_form(request):
     client_id = request.GET.get('client_id', None)
     location_id = request.GET.get('location_id', None)
+    logger.warning(location_id)
 
     client = get_object_or_404(Client, pk=client_id)
     location = get_object_or_404(Location, client=client, pk=location_id)
@@ -166,3 +170,45 @@ def mgmt_location_form(request):
     return render(request, 'ims/mgmt_location_form.html', context)
 
 
+class AjaxableResponseMixin(object):
+    """
+    Mixin to add AJAX support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
+    """
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = {
+                'success': True,
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
+
+
+class LocationCreate(CreateView):
+    model = Location
+    template_name = 'ims/mgmt_location_form.html'
+    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+
+
+class LocationUpdate(AjaxableResponseMixin, UpdateView):
+    model = Location
+    template_name = 'ims/mgmt_location_form.html'
+    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+
+
+class LocationDelete(DeleteView):
+    model = Location
+#    success_url = reverse_lazy('mgmt-profile')

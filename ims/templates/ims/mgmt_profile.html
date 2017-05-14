@@ -30,7 +30,7 @@ Client
 
 <div class="profile_list">
 <div class="list_header">
-<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustContact(null,#URL.customerid#)">add new</a></CFOUTPUT>
+<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustContact(null, {{ client.id }})">add new</a></CFOUTPUT>
 Contacts
 </div>
 <div class="list_wrap" id="contacts_list_wrap">
@@ -42,7 +42,7 @@ Contacts
 
 <div class="profile_list">
 <div class="list_header">
-<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadLocation(null,#URL.customerid#)">add new</a></CFOUTPUT>
+<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadLocation(null, {{ client.id }})">add new</a></CFOUTPUT>
 Locations
 </div>
 <div class="list_wrap" id="locations_list_wrap">

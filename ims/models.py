@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
@@ -240,6 +241,9 @@ class Location(models.Model):
 
     def __unicode__(self):
         return (self.name)
+
+    def get_absolute_url(self):
+        return reverse('mgmt-profile', kwargs={'client_id': self.client_id, 'location_id': self.pk})
 
     class Meta:
         db_table = 'Locations'

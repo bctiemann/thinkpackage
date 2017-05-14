@@ -16,7 +16,7 @@
 
             <tr>
                 <td>
-                    <select name="custcontactid">
+                    <select id="customer_contact">
                         {% if not location.customer_contact %}
                         <option value="0">(Select contact)</option>>
                         {% endif %}
@@ -40,19 +40,19 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="addr" value="{{ location.address }}" placeholder="Delivery Address line 1" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" />
+                    <input type="text" id="address" value="{{ location.address }}" placeholder="Delivery Address line 1" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="addr2" value="{{ location.address_2 }}" placeholder="Delivery Address line 2" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" />
+                    <input type="text" id="address_2" value="{{ location.address_2 }}" placeholder="Delivery Address line 2" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" />
                 </td>
             </tr>
             <tr>
                 <td>
                     <input type="text" id="city" value="{{ location.city }}" placeholder="City" {% if not location %}class="new"{% endif %} style="width: 239px;" maxlength="24" />
 
-                    <select name="state" style="width: 110px">
+                    <select id="state" style="width: 110px">
                         <option value="">(Select state)
                         <option value="AL" {% if location.state == "AL" %}selected{% endif %}>Alabama
                         <option value="AK" {% if location.state == "AK" %}selected{% endif %}>Alaska
@@ -130,11 +130,11 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="recvhours" value="{{ location.receiving_hours }}" placeholder="Receiving Hours" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="100" />
+                    <input type="text" id="receiving_hours" value="{{ location.receiving_hours }}" placeholder="Receiving Hours" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="100" />
                 </td>
             </tr>
             <tr>
-                <td><textarea id="location_notes" placeholder="Notes" class="smalltext {% if not location %}new{% endif %}" style="width: 469px;">{{ location.notes }}</textarea></td>
+                <td><textarea id="notes" placeholder="Notes" class="smalltext {% if not location %}new{% endif %}" style="width: 469px;">{{ location.notes }}</textarea></td>
             </tr>
 
         </table>
@@ -142,12 +142,12 @@
     </div>
     <div class="form_header">
 
-        <button class="actionbtn floatright" id="location_submit" onClick="updateLocation({{ client.id }}, {% if location %}{{ location.id }}{% else %}null{% endif %})">
+        <button class="actionbtn floatright" id="location_submit" onClick="updateLocation({{ location.client.id }}, {% if location %}{{ location.id }}{% else %}null{% endif %})">
         {% if location %}Update location{% else %}Add location{% endif %}
         </button>
 
         {% if location %}
-        <button class="actionbtn red floatleft" id="location_delete" onClick="deleteLocation({{ client.id }}, {{ location.id }})">Delete location</button>
+        <button class="actionbtn red floatleft" id="location_delete" onClick="deleteLocation({{ location.client.id }}, {{ location.id }})">Delete location</button>
         {% endif %}
 
     </div>

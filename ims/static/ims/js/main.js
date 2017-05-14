@@ -11,6 +11,33 @@ $(document).ajaxError(function() {
   $( ".log" ).text( "Triggered ajaxError handler." );
 });
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
 var SchedElements = new Array();
 function updateCalendar(dir,ldate) {
   var querystr = '';
@@ -23,7 +50,7 @@ function updateCalendar(dir,ldate) {
   var url = "inc_calendar.cfm?"+querystr;
   $('#livecalendar').load(url);
 //  ajaxReplace(url,document.getElementById('livecalendar'));
-}   
+}
 function toggleSchedElement(element,dir,ldate) {
   if (SchedElements[element]) {
     delete SchedElements[element];
@@ -72,7 +99,7 @@ $.getJSON('cfc/2fac.cfc', {
 	adm: tmin },
 
 	function(adata) {
-	
+
 	if (adata.F == 1 && adata.TF == 2) {
 	objSend.style.visibility="visible";
         $('#send_btn').css('visibility','visible');
@@ -81,7 +108,7 @@ $.getJSON('cfc/2fac.cfc', {
 	objSend.style.visibility="hidden";
 	objAid.value = 0;
 	}
-		
+
 	});
 
 
@@ -122,7 +149,7 @@ $.getJSON('cfc/miles.cfc', {
 		objMilesinc.value = data.MILESINC;
 		objDepamount.value = data.DEPOSIT +".00";
 		objDamageout.value = data.DAMAGE;
-		
+
 		for (var i = 0; i < objwheelDF.length; i++) {
 			if (objwheelDF.options[i].value == data.WHEELDF) {
 				objwheelDF.options[i].selected=true
@@ -153,8 +180,8 @@ $.getJSON('cfc/miles.cfc', {
 				objrearbump.options[i].selected=true
 			}
 		}
-		
-		
+
+
 	});
 
 }
@@ -208,9 +235,19 @@ function loadLocation(locationid,customerid,refresh_list) {
     $('#locationform').show();
     $('#customerform').hide();
 //    var url = cgiroot+'ajax_location_form.cfm?customerid='+customerid+'&locationid='+locationid;
-    var url = cgiroot + 'location_form/?client_id=' + customerid + '&location_id=' + locationid;
+    var params = {
+        client_id: customerid,
+        location_id: locationid,
+    };
+//    var url = cgiroot + 'location_form/?client_id=' + customerid + '&location_id=' + locationid;
+    var url;
+    if (locationid) {
+        url = cgiroot + 'location/' + locationid;
+    } else {
+        url = cgiroot + 'location/add';
+    }
     $('.items_list li').removeClass('selected');
-    $('#locationform').load(url,function() {
+    $('#locationform').load(url, function() {
         $('li#location_'+locationid).addClass('selected');
         if (refresh_list) {
 //            loadLocationsList(customerid,locationid);
@@ -237,27 +274,24 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
 
 function updateLocation(customerid,locationid) {
     var location = {
-        fnc:           'update',
-        locationid:    locationid,
-        customerid:    customerid,
-        custcontactid: $('#custcontactid').val() ? $('#custcontactid').val() : 0,
-        name:          $('#name').val(),
-        addr:          $('#addr').val(),
-        addr2:         $('#addr2').val(),
-        city:          $('#city').val(),
-        state:         $('#state').val(),
-        zip:           $('#zip').val(),
-        recvhours:     $('#recvhours').val(),
-        notes:         $('#location_notes').val()
+        customer_contact: $('#customer_contact').val() || 0,
+        name:             $('#name').val(),
+        address:          $('#address').val(),
+        address_2:        $('#address_2').val(),
+        city:             $('#city').val(),
+        state:            $('#state').val(),
+        zip:              $('#zip').val(),
+        receiving_hours: $('#receiving_hours').val(),
+        notes:            $('#notes').val(),
     };
-console.log(location);
-    var url = cgiroot+'ajax_location_action.cfm';
+    var url = cgiroot + 'location/' + locationid + '/';
     $.post(url,location,function(data) {
-        if (data.STATUS == 'success') {
-            loadLocation(data.LOCATIONID,customerid,true);
+console.log(data);
+        if (data.success) {
+            loadLocation(data.pk, customerid, true);
             $('#locationform').hide();
         } else {
-            alert(data.MESSAGE);
+            alert(data.message);
         }
     },'json');
 }

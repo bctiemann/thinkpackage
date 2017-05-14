@@ -21,7 +21,7 @@
                         <option value="0">(Select contact)</option>>
                         {% endif %}
 
-                        {% for custcontact in location.client.custcontact_set.all %}
+                        {% for custcontact in client.custcontact_set.all %}
                         {% if custcontact.is_active %}
                         <option value="{{ custcontact.id }}" {% if location.customer_contact == custcontact or custcontact.is_primary %}selected{% endif %}>{{ custcontact.first_name }} {{ custcontact.last_name }}{% if custcontact.title %} [{{ custcontact.title }}]{% endif %}</option>
                         {% endif %}
@@ -142,7 +142,7 @@
     </div>
     <div class="form_header">
 
-        <button class="actionbtn floatright" id="location_submit" onClick="updateLocation({{ location.client.id }}, {% if location %}{{ location.id }}{% else %}null{% endif %})">
+        <button class="actionbtn floatright" id="location_submit" onClick="updateLocation({{ client.id }}, {% if location %}{{ location.id }}{% else %}null{% endif %})">
         {% if location %}Update location{% else %}Add location{% endif %}
         </button>
 

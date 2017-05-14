@@ -13,7 +13,7 @@ urlpatterns_mgmt = [
 
     url(r'^contact_form/$', ims_views.mgmt_contact_form, name='mgmt-contact-form'),
 #    url(r'^location_form/(?P<location_id>\d+)/$', ims_views.mgmt_location_form, name='mgmt-location-form'),
-    url(r'^location/add/$', ims_views.LocationCreate.as_view(), name='mgmt-location-add'),
+    url(r'^location/add/(?P<client_id>\d+)/$', ims_views.LocationCreate.as_view(), name='mgmt-location-add'),
     url(r'^location/(?P<pk>\d+)/$', ims_views.LocationUpdate.as_view(), name='mgmt-location-update'),
     url(r'^location/(?P<pk>\d+)/delete/$', ims_views.LocationDelete.as_view(), name='mgmt-location-delete'),
 

@@ -244,7 +244,7 @@ function loadLocation(locationid,customerid,refresh_list) {
     if (locationid) {
         url = cgiroot + 'location/' + locationid;
     } else {
-        url = cgiroot + 'location/add';
+        url = cgiroot + 'location/add/' + customerid;
     }
     $('.items_list li').removeClass('selected');
     $('#locationform').load(url, function() {
@@ -272,8 +272,9 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
     });
 }
 
-function updateLocation(customerid,locationid) {
+function updateLocation(customerid, locationid) {
     var location = {
+        client:           customerid,
         customer_contact: $('#customer_contact').val() || 0,
         name:             $('#name').val(),
         address:          $('#address').val(),
@@ -284,7 +285,13 @@ function updateLocation(customerid,locationid) {
         receiving_hours: $('#receiving_hours').val(),
         notes:            $('#notes').val(),
     };
-    var url = cgiroot + 'location/' + locationid + '/';
+console.log(location);
+    var url = cgiroot + 'location/';
+    if (locationid) {
+        url += locationid + '/';
+    } else {
+        url += 'add/' + customerid + '/';
+    }
     $.post(url,location,function(data) {
 console.log(data);
         if (data.success) {
@@ -341,7 +348,7 @@ function execute_deleteLocation() {
         locationid:    globals['locationid'],
         customerid:    globals['customerid']
     };
-    var url = cgiroot+'ajax_location_action.cfm';
+    var url = cgiroot + 'location/' + globals['locationid'] + '/delete/';
     $.post(url,location,function(data) {
         window.location = 'profile.cfm?customerid='+globals['customerid'];
     },'json');

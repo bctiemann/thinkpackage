@@ -176,6 +176,7 @@ class AjaxableResponseMixin(object):
     Must be used with an object-based FormView (e.g. CreateView)
     """
     def form_invalid(self, form):
+        logger.warning(form.errors)
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
             return JsonResponse(form.errors, status=400)
@@ -197,18 +198,26 @@ class AjaxableResponseMixin(object):
             return response
 
 
-class LocationCreate(CreateView):
+class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location
     template_name = 'ims/mgmt_location_form.html'
-    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+    fields = ['client', 'name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(LocationCreate, self).get_context_data(*args, **kwargs)
+        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+        return context
 
 class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
     template_name = 'ims/mgmt_location_form.html'
     fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(LocationUpdate, self).get_context_data(*args, **kwargs)
+        context['client'] = self.object.client
+        return context
 
 class LocationDelete(DeleteView):
     model = Location
-#    success_url = reverse_lazy('mgmt-profile')
+    success_url = reverse_lazy('mgmt-profile', kwargs={'client_id': 257})

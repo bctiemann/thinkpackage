@@ -238,6 +238,7 @@ class Location(models.Model):
     customer_contact = models.ForeignKey('CustContact', db_column='custcontactid')
     notes = models.TextField(blank=True)
     receiving_hours = models.CharField(max_length=100, blank=True, db_column='recvhours')
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return (self.name)

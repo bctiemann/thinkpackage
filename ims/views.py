@@ -218,6 +218,6 @@ class LocationUpdate(AjaxableResponseMixin, UpdateView):
         context['client'] = self.object.client
         return context
 
-class LocationDelete(DeleteView):
+class LocationDelete(AjaxableResponseMixin, UpdateView):
     model = Location
-    success_url = reverse_lazy('mgmt-profile', kwargs={'client_id': 257})
+    fields = ['is_active']

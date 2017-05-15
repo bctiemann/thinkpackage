@@ -344,13 +344,11 @@ function deleteLocation(customerid,locationid) {
 
 function execute_deleteLocation() {
     var location = {
-        fnc:           'delete',
-        locationid:    globals['locationid'],
-        customerid:    globals['customerid']
+        is_active: false,
     };
     var url = cgiroot + 'location/' + globals['locationid'] + '/delete/';
-    $.post(url,location,function(data) {
-        window.location = 'profile.cfm?customerid='+globals['customerid'];
+    $.post(url, location, function(data) {
+        window.location = cgiroot + '/' + globals['customerid'] + '/profile';
     },'json');
 }
 

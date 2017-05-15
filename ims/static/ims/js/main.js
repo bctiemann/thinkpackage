@@ -235,10 +235,6 @@ function loadLocation(locationid,customerid,refresh_list) {
     $('#locationform').show();
     $('#customerform').hide();
 //    var url = cgiroot+'ajax_location_form.cfm?customerid='+customerid+'&locationid='+locationid;
-    var params = {
-        client_id: customerid,
-        location_id: locationid,
-    };
 //    var url = cgiroot + 'location_form/?client_id=' + customerid + '&location_id=' + locationid;
     var url;
     if (locationid) {
@@ -261,7 +257,13 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
     $('#locationform').hide();
     $('#customerform').hide();
 //    var url = cgiroot+'ajax_contact_form.cfm?customerid='+customerid+'&custcontactid='+custcontactid;
-    var url = cgiroot + 'contact_form/?client_id=' + customerid + '&custcontact_id=' + custcontactid;
+//    var url = cgiroot + 'contact_form/?client_id=' + customerid + '&custcontact_id=' + custcontactid;
+    var url;
+    if (custcontactid) {
+        url = cgiroot + 'contact/' + custcontactid;
+    } else {
+        url = cgiroot + 'contact/add/' + customerid;
+    }
     $('.items_list li').removeClass('selected');
     $('#contactform').load(url,function() {
         $('li#custcontact_'+custcontactid).addClass('selected');
@@ -282,7 +284,7 @@ function updateLocation(customerid, locationid) {
         city:             $('#city').val(),
         state:            $('#state').val(),
         zip:              $('#zip').val(),
-        receiving_hours: $('#receiving_hours').val(),
+        receiving_hours:  $('#receiving_hours').val(),
         notes:            $('#notes').val(),
     };
 console.log(location);
@@ -305,25 +307,28 @@ console.log(data);
 
 function updateCustContact(customerid,custcontactid) {
     var custcontact = {
-        fnc:            'update',
-        custcontactid:  custcontactid,
-        customerid:     customerid,
-        fname:          $('#fname').val(),
-        lname:          $('#lname').val(),
-        title:          $('#title').val(),
-        email:          $('#email').val(),
-        passwd:         $('#passwd').val(),
-        tel:            $('#tel').val(),
-        telext:         $('#telext').val(),
-        mobile:         $('#mobile').val(),
-        fax:            $('#fax').val(),
-        notes:          $('#contact_notes').val()
+        client:  custcontactid,
+        first_name:       $('#fname').val(),
+        last_name:        $('#lname').val(),
+        title:            $('#title').val(),
+        email:            $('#email').val(),
+        password:         $('#passwd').val(),
+        phone_number:     $('#tel').val(),
+        phone_extension:  $('#telext').val(),
+        mobile_number:    $('#mobile').val(),
+        fax_number:       $('#fax').val(),
+        notes:            $('#contact_notes').val()
     };
-    var url = cgiroot+'ajax_contact_action.cfm';
 console.log(custcontact);
+    var url = cgiroot + 'contact/';
+    if (custcontactid) {
+        url += custcontactid + '/';
+    } else {
+        url += 'add/' + customerid + '/';
+    }
     $.post(url,custcontact,function(data) {
 console.log(data);
-        if (data.STATUS == 'success') {
+        if (data.success) {
             if ($('#isprimary').val() == 1) {
                 $('#email_primary').html(custcontact.email);
                 $('#tel_primary').html(custcontact.tel+' '+custcontact.telext);

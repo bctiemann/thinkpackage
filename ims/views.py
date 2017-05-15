@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 
 from ims.models import Client, Shipment, Transaction, Product, CustContact, Location
 from ims import utils
@@ -179,7 +179,8 @@ class AjaxableResponseMixin(object):
         logger.warning(form.errors)
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
+            return HttpResponse(form.errors.as_json())
+#            return HttpResponse(form.errors.as_json(), content_type='application/json')
         else:
             return response
 
@@ -208,6 +209,7 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
         context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
         return context
 
+
 class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
     template_name = 'ims/mgmt_location_form.html'
@@ -218,6 +220,36 @@ class LocationUpdate(AjaxableResponseMixin, UpdateView):
         context['client'] = self.object.client
         return context
 
+
 class LocationDelete(AjaxableResponseMixin, UpdateView):
     model = Location
     fields = ['is_active']
+
+
+class CustContactCreate(AjaxableResponseMixin, CreateView):
+    model = CustContact
+    template_name = 'ims/mgmt_contact_form.html'
+    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
+        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+        return context
+
+
+class CustContactUpdate(AjaxableResponseMixin, UpdateView):
+    model = CustContact
+    template_name = 'ims/mgmt_contact_form.html'
+    fields = ['first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+    def get_context_data(self, *args, **kwargs):
+        logger.warning(self.kwargs)
+        context = super(CustContactUpdate, self).get_context_data(*args, **kwargs)
+        context['client'] = self.object.client
+        return context
+
+
+class CustContactDelete(AjaxableResponseMixin, UpdateView):
+    model = CustContact
+    fields = ['is_active']
+

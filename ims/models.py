@@ -135,6 +135,7 @@ class ClientUser(models.Model):
 class CustContact(models.Model):
     id = models.AutoField(primary_key=True, db_column='custcontactid')
     client = models.ForeignKey('Client', db_column='customerid')
+    user = models.ForeignKey('User', null=True, blank=True)
     email = models.EmailField(max_length=192, blank=True)
     password = models.CharField(max_length=255, blank=True, db_column='pass')
     first_name = models.CharField(max_length=150, blank=True, db_column='fname')

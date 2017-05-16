@@ -6,6 +6,7 @@ from django.db.models import Func, F, Count
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth import hashers
 
 from ims.models import Client, Shipment, Transaction, Product, CustContact, Location
 from ims.forms import CustContactForm
@@ -244,16 +245,18 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
     template_name = 'ims/mgmt_contact_form.html'
 
     def form_valid(self, form):
-        logger.warning(form.initial)
+        logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
         response = super(CustContactUpdate, self).form_valid(form)
         if form.data['password'] == '********':
-            logger.warning('Password unchanged')
+            logger.info('Password unchanged')
             self.object.password = form.initial['password']
-            self.object.save()
+        else:
+            logger.info('Password changed')
+            self.object.password = hashers.make_password(form.data['password'])
+        self.object.save()
         return response
 
     def get_context_data(self, *args, **kwargs):
-        logger.warning(self.kwargs)
         context = super(CustContactUpdate, self).get_context_data(*args, **kwargs)
         context['client'] = self.object.client
         return context

@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 
 from ims.models import Client, Shipment, Transaction, Product, CustContact, Location
+from ims.forms import CustContactForm
 from ims import utils
 
 import logging
@@ -239,8 +240,17 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
 
 class CustContactUpdate(AjaxableResponseMixin, UpdateView):
     model = CustContact
+    form_class = CustContactForm
     template_name = 'ims/mgmt_contact_form.html'
-    fields = ['first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+    def form_valid(self, form):
+        logger.warning(form.initial)
+        response = super(CustContactUpdate, self).form_valid(form)
+        if form.data['password'] == '********':
+            logger.warning('Password unchanged')
+            self.object.password = form.initial['password']
+            self.object.save()
+        return response
 
     def get_context_data(self, *args, **kwargs):
         logger.warning(self.kwargs)

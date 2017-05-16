@@ -152,6 +152,9 @@ class CustContact(models.Model):
     def __unicode__(self):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
+    def get_absolute_url(self):
+        return reverse('mgmt-profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
+
     class Meta:
         db_table = 'CustContacts'
         ordering = ['-is_primary', 'last_name']

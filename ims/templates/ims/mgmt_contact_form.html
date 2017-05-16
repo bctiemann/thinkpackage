@@ -1,3 +1,4 @@
+{{ form.instance.password }}
     <form name="custcontact_{{ custcontact.id }}" onSubmit="return false;">   
         
     <div class="form_header">
@@ -17,13 +18,15 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="password" id="passwd" value="********" placeholder="Password" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="50" /></td>
+                <td>{{ form.password }}</td>
+{# <input type="password" id="passwd" value="********" placeholder="Password" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="50" /> #}
             </tr>
             <tr>
                 <td><input type="text" id="title" value="{{ custcontact.title }}" placeholder="Title" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="50" /></td>
             </tr>
             <tr>
-                <td><input type="email" id="email" value="{{ custcontact.email }}" placeholder="Email" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="100" /></td>
+                <td>{{ form.email }}</td>
+{# <input type="email" id="email" value="{{ custcontact.email }}" placeholder="Email" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="100" /> #}
             </tr>
             <tr>
                 <td>

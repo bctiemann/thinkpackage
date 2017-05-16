@@ -6,8 +6,6 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 
-from phonenumber_field.modelfields import PhoneNumberField
-
 import uuid
 
 
@@ -61,7 +59,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_accounting = models.BooleanField(default=False)
     is_warehouse = models.BooleanField(default=False)
-    phone_number = PhoneNumberField(blank=True)
+    phone_number = models.CharField(max_length=30, blank=True)
     notes = models.TextField(blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     date_deleted = models.DateTimeField(null=True, blank=True)
@@ -141,10 +139,10 @@ class CustContact(models.Model):
     first_name = models.CharField(max_length=150, blank=True, db_column='fname')
     last_name = models.CharField(max_length=150, blank=True, db_column='lname')
     title = models.CharField(max_length=100, blank=True)
-    phone_number = PhoneNumberField(max_length=30, blank=True, db_column='tel')
+    phone_number = models.CharField(max_length=30, blank=True, db_column='tel')
     phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
-    fax_number = PhoneNumberField(max_length=30, blank=True, db_column='fax')
-    mobile_number = PhoneNumberField(max_length=30, blank=True, db_column='mobile')
+    fax_number = models.CharField(max_length=30, blank=True, db_column='fax')
+    mobile_number = models.CharField(max_length=30, blank=True, db_column='mobile')
     is_primary = models.BooleanField(default=False, db_column='isprimary')
     is_active = models.BooleanField(default=True, db_column='enabled')
     last_login = models.DateTimeField(null=True, blank=True, db_column='lastlogin')
@@ -188,7 +186,7 @@ class AdminUser(models.Model):
     is_sleeping = models.BooleanField(default=False, db_column='sleeping')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
     pic_first_name = models.CharField(max_length=255, blank=True, db_column='picfname')
-    mobile_number = PhoneNumberField(max_length=30, blank=True, db_column='cell')
+    mobile_number = models.CharField(max_length=30, blank=True, db_column='cell')
     two_factor_type = models.IntegerField(choices=TWO_FACTOR_CHOICES, db_column='twofac')
     is_active = models.BooleanField(default=True, db_column='enable')
 
@@ -229,9 +227,9 @@ class Location(models.Model):
     id = models.AutoField(primary_key=True, db_column='locationid')
     client = models.ForeignKey('Client', db_column='customerid')
     name = models.CharField(max_length=255, blank=True)
-    phone_number = PhoneNumberField(max_length=30, blank=True, db_column='tel')
+    phone_number = models.CharField(max_length=30, blank=True, db_column='tel')
     phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
-    fax_number = PhoneNumberField(max_length=30, blank=True)
+    fax_number = models.CharField(max_length=30, blank=True)
     address = models.CharField(max_length=150, blank=True, db_column='addr')
     address_2 = models.CharField(max_length=150, blank=True, db_column='addr2')
     city = models.CharField(max_length=150, blank=True)
@@ -323,7 +321,7 @@ class Shipment(models.Model):
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
     third_party = models.CharField(max_length=50, blank=True, db_column='3rdparty')
     third_party_address = models.TextField(blank=True, db_column='3rdpartyaddress')
-    third_party_phone_number = PhoneNumberField(blank=True, db_column='3rdpartyphone')
+    third_party_phone_number = models.CharField(max_length=30, blank=True, db_column='3rdpartyphone')
     third_party_per = models.CharField(max_length=30, blank=True, db_column='3rdpartyper')
     third_party_received = models.CharField(max_length=16, blank=True, db_column='3rdpartyrecvd')
     third_party_charges_advanced = models.CharField(max_length=16, blank=True, db_column='3rdpartychgadvanced')

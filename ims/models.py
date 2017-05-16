@@ -116,6 +116,9 @@ class Client(models.Model):
     def __unicode__(self):
         return (self.company_name)
 
+    def get_absolute_url(self):
+        return reverse('mgmt-profile', kwargs={'pk': self.pk})
+
     class Meta:
         db_table = 'Customers'
 
@@ -154,7 +157,7 @@ class CustContact(models.Model):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
     def get_absolute_url(self):
-        return reverse('mgmt-profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
+        return reverse('mgmt-profile', kwargs={'pk': self.client_id, 'custcontact_id': self.pk})
 
     class Meta:
         db_table = 'CustContacts'
@@ -248,7 +251,7 @@ class Location(models.Model):
         return (self.name)
 
     def get_absolute_url(self):
-        return reverse('mgmt-profile', kwargs={'client_id': self.client_id, 'location_id': self.pk})
+        return reverse('mgmt-profile', kwargs={'pk': self.client_id, 'location_id': self.pk})
 
     class Meta:
         db_table = 'Locations'

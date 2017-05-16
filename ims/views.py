@@ -67,8 +67,8 @@ def mgmt(request):
     return render(request, 'ims/mgmt.html', context)
 
 
-def mgmt_redirect(request, client_id=None):
-    return redirect('mgmt-inventory', client_id=client_id)
+def mgmt_redirect(request, pk=None):
+    return redirect('mgmt-inventory', pk=pk)
 
 
 def mgmt_profile(request, client_id=None):
@@ -87,8 +87,8 @@ def mgmt_profile(request, client_id=None):
     return render(request, 'ims/mgmt_profile.html', context)
 
 
-def mgmt_inventory(request, client_id=None, product_id=None):
-    client = get_object_or_404(Client, pk=client_id)
+def mgmt_inventory(request, pk=None, product_id=None):
+    client = get_object_or_404(Client, pk=pk)
 
     context = {
         'client': client,
@@ -198,6 +198,12 @@ class AjaxableResponseMixin(object):
             return JsonResponse(data)
         else:
             return response
+
+
+class ClientUpdate(AjaxableResponseMixin, UpdateView):
+    model = Client
+    template_name = 'ims/mgmt_profile.html'
+    fields = ['company_name', 'is_active', 'has_warehousing', 'parent', 'notes']
 
 
 class LocationCreate(AjaxableResponseMixin, CreateView):

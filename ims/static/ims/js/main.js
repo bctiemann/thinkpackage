@@ -376,21 +376,22 @@ function execute_deleteCustContact() {
     },'json');
 }
 
-function updateCustomerName(customerid) {
+function updateClient(customerid) {
 console.log($('#coname').val());
     var customer = {
         fnc:               'update',
         customerid:        customerid,
-        coname:            $('#coname').val(),
+        company_name:      $('#coname').val(),
         primarycontact:    $('#custcontactid_primary').val(),
-        enabled:           $('#enabled').val(),
-        warehousing:       $('#warehousing').val(),
+        is_enabled:        $('#enabled').val(),
+        has_warehousing:   $('#warehousing').val(),
         parent:            $('#parent').val(),
         notes:             $('#customer_notes').val()
     }
-    var url = cgiroot+'ajax_coname_action.cfm';
+    var url = cgiroot + customerid + '/profile/';
     $.post(url,customer,function(data) {
-        window.location = 'profile.cfm?customerid='+customerid;
+console.log(data);
+//        window.location = 'profile.cfm?customerid='+customerid;
     },'json');
 }
 

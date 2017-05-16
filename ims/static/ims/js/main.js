@@ -390,8 +390,8 @@ console.log($('#coname').val());
     }
     var url = cgiroot + customerid + '/profile/';
     $.post(url,customer,function(data) {
-console.log(data);
 //        window.location = 'profile.cfm?customerid='+customerid;
+        window.location = url;
     },'json');
 }
 

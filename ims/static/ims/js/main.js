@@ -282,8 +282,8 @@ function updateLocation(customerid, locationid) {
         address:          $('#address').val(),
         address_2:        $('#address_2').val(),
         city:             $('#city').val(),
-        state:            $('#state').val(),
-        zip:              $('#zip').val(),
+        state:            $('#id_state').val(),
+        zip:              $('#id_zip').val(),
         receiving_hours:  $('#receiving_hours').val(),
         notes:            $('#notes').val(),
     };

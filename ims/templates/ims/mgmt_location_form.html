@@ -51,81 +51,8 @@
             <tr>
                 <td>
                     <input type="text" id="city" value="{{ location.city }}" placeholder="City" {% if not location %}class="new"{% endif %} style="width: 239px;" maxlength="24" />
-
-                    <select id="state" style="width: 110px">
-                        <option value="">(Select state)
-                        <option value="AL" {% if location.state == "AL" %}selected{% endif %}>Alabama
-                        <option value="AK" {% if location.state == "AK" %}selected{% endif %}>Alaska
-                        <option value="AZ" {% if location.state == "AZ" %}selected{% endif %}>Arizona
-                        <option value="AR" {% if location.state == "AR" %}selected{% endif %}>Arkansas
-                        <option value="CA" {% if location.state == "CA" %}selected{% endif %}>California
-                        <option value="CO" {% if location.state == "CO" %}selected{% endif %}>Colorado
-                        <option value="CT" {% if location.state == "CT" %}selected{% endif %}>Connecticut
-                        <option value="DE" {% if location.state == "DE" %}selected{% endif %}>Delaware
-                        <option value="DC" {% if location.state == "DC" %}selected{% endif %}>District Of Columbia
-                        <option value="FL" {% if location.state == "FL" %}selected{% endif %}>Florida
-                        <option value="GA" {% if location.state == "GA" %}selected{% endif %}>Georgia
-                        <option value="HI" {% if location.state == "HI" %}selected{% endif %}>Hawaii
-                        <option value="ID" {% if location.state == "ID" %}selected{% endif %}>Idaho
-                        <option value="IL" {% if location.state == "IL" %}selected{% endif %}>Illinois
-                        <option value="IN" {% if location.state == "IN" %}selected{% endif %}>Indiana
-                        <option value="IA" {% if location.state == "IA" %}selected{% endif %}>Iowa
-                        <option value="KS" {% if location.state == "KS" %}selected{% endif %}>Kansas
-                        <option value="KY" {% if location.state == "KY" %}selected{% endif %}>Kentucky
-                        <option value="LA" {% if location.state == "LA" %}selected{% endif %}>Louisiana
-                        <option value="ME" {% if location.state == "ME" %}selected{% endif %}>Maine
-                        <option value="MD" {% if location.state == "MD" %}selected{% endif %}>Maryland
-                        <option value="MA" {% if location.state == "MA" %}selected{% endif %}>Massachusetts
-                        <option value="MI" {% if location.state == "MI" %}selected{% endif %}>Michigan
-                        <option value="MN" {% if location.state == "MN" %}selected{% endif %}>Minnesota
-                        <option value="MS" {% if location.state == "MS" %}selected{% endif %}>Mississippi
-                        <option value="MO" {% if location.state == "MO" %}selected{% endif %}>Missouri
-                        <option value="MT" {% if location.state == "MT" %}selected{% endif %}>Montana
-                        <option value="NE" {% if location.state == "NE" %}selected{% endif %}>Nebraska
-                        <option value="NV" {% if location.state == "NV" %}selected{% endif %}>Nevada
-                        <option value="NH" {% if location.state == "NH" %}selected{% endif %}>New Hampshire
-                        <option value="NJ" {% if location.state == "NJ" %}selected{% endif %}>New Jersey
-                        <option value="NM" {% if location.state == "NM" %}selected{% endif %}>New Mexico
-                        <option value="NY" {% if location.state == "NY" %}selected{% endif %}>New York
-                        <option value="NC" {% if location.state == "NC" %}selected{% endif %}>North Carolina
-                        <option value="ND" {% if location.state == "ND" %}selected{% endif %}>North Dakota
-                        <option value="OH" {% if location.state == "OH" %}selected{% endif %}>Ohio
-                        <option value="OK" {% if location.state == "OK" %}selected{% endif %}>Oklahoma
-                        <option value="OR" {% if location.state == "OR" %}selected{% endif %}>Oregon
-                        <option value="PA" {% if location.state == "PA" %}selected{% endif %}>Pennsylvania
-                        <option value="PR" {% if location.state == "PR" %}selected{% endif %}>Puerto Rico
-                        <option value="RI" {% if location.state == "RI" %}selected{% endif %}>Rhode Island
-                        <option value="SC" {% if location.state == "SC" %}selected{% endif %}>South Carolina
-                        <option value="SD" {% if location.state == "SD" %}selected{% endif %}>South Dakota
-                        <option value="TN" {% if location.state == "TN" %}selected{% endif %}>Tennessee
-                        <option value="TX" {% if location.state == "TX" %}selected{% endif %}>Texas
-                        <option value="UT" {% if location.state == "UT" %}selected{% endif %}>Utah
-                        <option value="VT" {% if location.state == "VT" %}selected{% endif %}>Vermont
-                        <option value="VI" {% if location.state == "VI" %}selected{% endif %}>Virgin Islands
-                        <option value="VA" {% if location.state == "VA" %}selected{% endif %}>Virginia
-                        <option value="WA" {% if location.state == "WA" %}selected{% endif %}>Washington
-                        <option value="WV" {% if location.state == "WV" %}selected{% endif %}>West Virginia
-                        <option value="WI" {% if location.state == "WI" %}selected{% endif %}>Wisconsin
-                        <option value="WY" {% if location.state == "WY" %}selected{% endif %}>Wyoming
-                        <option value="AA" {% if location.state == "AA" %}selected{% endif %}>Armed Forces Americas
-                        <option value="AE" {% if location.state == "AE" %}selected{% endif %}>Armed Forces Europe / Canada / Middle East / Africa
-                        <option value="AP" {% if location.state == "AP" %}selected{% endif %}>Armed Forces Pacific
-                        <option value="AB" {% if location.state == "AB" %}selected{% endif %}>Alberta
-                        <option value="BC" {% if location.state == "BC" %}selected{% endif %}>British Columbia
-                        <option value="MB" {% if location.state == "MB" %}selected{% endif %}>Manitoba
-                        <option value="NB" {% if location.state == "NB" %}selected{% endif %}>New Brunswick
-                        <option value="NL" {% if location.state == "NL" %}selected{% endif %}>Newfoundland
-                        <option value="NT" {% if location.state == "NT" %}selected{% endif %}>Northwest Territories
-                        <option value="NS" {% if location.state == "NS" %}selected{% endif %}>Nova Scotia
-                        <option value="NU" {% if location.state == "NU" %}selected{% endif %}>Nunavut
-                        <option value="ON" {% if location.state == "ON" %}selected{% endif %}>Ontario
-                        <option value="PE" {% if location.state == "PE" %}selected{% endif %}>Prince Edward Island
-                        <option value="QC" {% if location.state == "QC" %}selected{% endif %}>Quebec
-                        <option value="SK" {% if location.state == "SK" %}selected{% endif %}>Saskatchewan
-                        <option value="YT" {% if location.state == "YT" %}selected{% endif %}>Yukon
-                    </select>
-
-                    <input type="text" id="zip" value="{{ location.zip }}" placeholder="ZIP/postal" {% if not location %}class="new"{% endif %} style="width: 97px;" maxlength="10" />
+                    {{ form.state }}
+                    {{ form.zip }}
                 </td>
             </tr>
             <tr>

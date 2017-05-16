@@ -6,6 +6,8 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 
+from localflavor.us.us_states import STATE_CHOICES
+
 import uuid
 
 
@@ -233,7 +235,7 @@ class Location(models.Model):
     address = models.CharField(max_length=150, blank=True, db_column='addr')
     address_2 = models.CharField(max_length=150, blank=True, db_column='addr2')
     city = models.CharField(max_length=150, blank=True)
-    state = models.CharField(max_length=2, blank=True)
+    state = models.CharField(choices=STATE_CHOICES, max_length=2, blank=True)
     zip = models.CharField(max_length=10, blank=True)
     country = models.CharField(max_length=2, blank=True)
     non_us_state = models.CharField(max_length=150, blank=True, db_column='ostate')

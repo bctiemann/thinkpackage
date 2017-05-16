@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location
-from ims.forms import CustContactForm
+from ims.forms import LocationForm, CustContactForm
 from ims import utils
 
 import logging
@@ -213,8 +213,9 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
 
 class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
+    form_class = LocationForm
     template_name = 'ims/mgmt_location_form.html'
-    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+#    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
     def get_context_data(self, *args, **kwargs):
         context = super(LocationUpdate, self).get_context_data(*args, **kwargs)

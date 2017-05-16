@@ -1,6 +1,9 @@
 from django import forms
 
-from ims.models import CustContact
+from localflavor.us.forms import USStateField, USZipCodeField
+from localflavor.us.us_states import STATE_CHOICES
+
+from ims.models import CustContact, Location
 
 import logging
 logger = logging.getLogger(__name__)
@@ -23,3 +26,14 @@ class CustContactForm(forms.ModelForm):
         model = CustContact
         fields = ['first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
+
+class LocationForm(forms.ModelForm):
+    STATE_CHOICES_BLANK = list(STATE_CHOICES)
+    STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
+
+    state = USStateField(widget=forms.Select(choices=STATE_CHOICES_BLANK, attrs={'style': 'width: 110px'}))
+    zip = USZipCodeField(label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP', 'style': 'width: 97px;'}))
+
+    class Meta:
+        model = Location
+        fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']

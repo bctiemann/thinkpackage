@@ -385,7 +385,7 @@ function updateClient(customerid) {
         primarycontact:    $('#custcontactid_primary').val(),
         is_enabled:        $('#enabled').val(),
         has_warehousing:   $('#warehousing').val(),
-        parent:            $('#parent').val(),
+        parent:            $('#id_parent').val(),
         notes:             $('#customer_notes').val()
     }
     var url = cgiroot + customerid + '/profile/';

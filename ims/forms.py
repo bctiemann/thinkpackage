@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class ClientForm(forms.ModelForm):
-    parent = forms.TypedChoiceField(empty_value=None)
+    parent = forms.TypedChoiceField(required=False, empty_value=None)
 
     def __init__(self, *args, **kwargs):
         super(ClientForm, self).__init__(*args, **kwargs)
@@ -26,9 +26,12 @@ class ClientForm(forms.ModelForm):
         logger.warning(all_clients)
         self.fields['parent'].choices = all_clients
 
-#    def clean_parent(self):
-#        data = self.cleaned_data.get('parent')
-#        logger.warning(data)
+    def clean_parent(self):
+        data = self.cleaned_data.get('parent')
+        logger.warning(data)
+        if data == None:
+            return None
+        return Client.objects.get(pk=data)
 
     class Meta:
         model = Client

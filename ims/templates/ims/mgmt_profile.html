@@ -99,16 +99,7 @@ Locations
             </tr>
             <tr>
                 <td>
-{{ form.parent }}
-                    <select id="parent">
-                        <option value="0">Subsidiary of...</option>
-                        <option value="0">(None)</option>
-                        {% for parent_client in all_clients %}
-                            <cfoutput>
-                                <option value="{{ parent_client.obj.id }}" {% if client.parent == parent_client.obj %}selected{% endif %}>{{ parent_client.indent|safe }}{{ parent_client.obj.company_name }}</option>
-                            </cfoutput>
-                        {% endfor %}
-                    </select>
+                    {{ form.parent }}
                 </td>
             </tr>
             <tr>

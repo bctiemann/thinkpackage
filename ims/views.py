@@ -67,8 +67,8 @@ def mgmt(request):
     return render(request, 'ims/mgmt.html', context)
 
 
-def mgmt_redirect(request, pk=None):
-    return redirect('mgmt-inventory', pk=pk)
+def mgmt_redirect(request, client_id=None):
+    return redirect('mgmt-inventory', client_id=client_id)
 
 
 def mgmt_profile(request, client_id=None):
@@ -87,8 +87,8 @@ def mgmt_profile(request, client_id=None):
     return render(request, 'ims/mgmt_profile.html', context)
 
 
-def mgmt_inventory(request, pk=None, product_id=None):
-    client = get_object_or_404(Client, pk=pk)
+def mgmt_inventory(request, client_id=None, product_id=None):
+    client = get_object_or_404(Client, pk=client_id)
 
     context = {
         'client': client,
@@ -205,6 +205,9 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
     template_name = 'ims/mgmt_profile.html'
     fields = ['company_name', 'is_active', 'has_warehousing', 'parent', 'notes']
 
+    def get_object(self):
+        return get_object_or_404(Client, pk=self.kwargs['client_id'])
+
 
 class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location
@@ -223,6 +226,9 @@ class LocationUpdate(AjaxableResponseMixin, UpdateView):
     template_name = 'ims/mgmt_location_form.html'
 #    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
+    def get_object(self):
+        return get_object_or_404(Location, pk=self.kwargs['location_id'])
+
     def get_context_data(self, *args, **kwargs):
         context = super(LocationUpdate, self).get_context_data(*args, **kwargs)
         context['client'] = self.object.client
@@ -232,6 +238,9 @@ class LocationUpdate(AjaxableResponseMixin, UpdateView):
 class LocationDelete(AjaxableResponseMixin, UpdateView):
     model = Location
     fields = ['is_active']
+
+    def get_object(self):
+        return get_object_or_404(Location, pk=self.kwargs['location_id'])
 
 
 class CustContactCreate(AjaxableResponseMixin, CreateView):
@@ -249,6 +258,9 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
     model = CustContact
     form_class = CustContactForm
     template_name = 'ims/mgmt_contact_form.html'
+
+    def get_object(self):
+        return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
 
     def form_valid(self, form):
         logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
@@ -284,4 +296,7 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
 class CustContactDelete(AjaxableResponseMixin, UpdateView):
     model = CustContact
     fields = ['is_active']
+
+    def get_object(self):
+        return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
 

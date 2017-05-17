@@ -1,12 +1,38 @@
 from django import forms
+from django.utils.safestring import mark_safe
 
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import CustContact, Location
+from ims.models import Client, CustContact, Location
+from ims import utils
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+class ClientForm(forms.ModelForm):
+    parent = forms.TypedChoiceField(empty_value=None)
+
+    def __init__(self, *args, **kwargs):
+        super(ClientForm, self).__init__(*args, **kwargs)
+        all_clients = [(None, 'Subsidiary of...'), (None, '(None)')]
+        for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
+            indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(parent_client['depth'])])
+            parent_client['indent'] = indent
+#            all_clients.append(parent_client)
+            choice_string = mark_safe('{0}{1}'.format(parent_client['indent'], parent_client['obj'].company_name))
+            all_clients.append((parent_client['obj'].id, choice_string))
+        logger.warning(all_clients)
+        self.fields['parent'].choices = all_clients
+
+#    def clean_parent(self):
+#        data = self.cleaned_data.get('parent')
+#        logger.warning(data)
+
+    class Meta:
+        model = Client
+        fields = ['company_name', 'is_active', 'has_warehousing', 'parent', 'notes']
 
 
 class CustContactForm(forms.ModelForm):

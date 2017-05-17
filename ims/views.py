@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location
-from ims.forms import LocationForm, CustContactForm
+from ims.forms import ClientForm, LocationForm, CustContactForm
 from ims import utils
 
 import logging
@@ -202,12 +202,22 @@ class AjaxableResponseMixin(object):
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
+    form_class = ClientForm
     template_name = 'ims/mgmt_profile.html'
-    fields = ['company_name', 'is_active', 'has_warehousing', 'parent', 'notes']
+#    fields = ['company_name', 'is_active', 'has_warehousing', 'parent', 'notes']
 
     def get_object(self):
         return get_object_or_404(Client, pk=self.kwargs['client_id'])
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ClientUpdate, self).get_context_data(*args, **kwargs)
+        all_clients = []
+        for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
+            indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(parent_client['depth'])])
+            parent_client['indent'] = indent
+            all_clients.append(parent_client)
+        context['all_clients'] = all_clients
+        return context
 
 class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location

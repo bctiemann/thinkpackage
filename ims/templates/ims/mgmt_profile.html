@@ -65,7 +65,7 @@ Locations
         <table>
             <tr>
                 <td>    
-                    <select name="custcontactid_primary">
+                    <select id="custcontactid_primary">
                         <option value="0">(Select primary contact)</option>
                         {% for contact in client.custcontact_set.all %}
                         <option value="{{ contact.id }}" {% if contact.is_primary %}selected{% endif %}>{{ contact.first_name }} {{ contact.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %}</option>
@@ -83,7 +83,7 @@ Locations
             {% endif %}
             <tr>
                 <td>
-                    <select name="enabled">
+                    <select id="enabled">
                         <option value="1" {% if client.is_active %}selected{% endif %}>Enabled</option>
                         <option value="0" {% if not client.is_active %}selected{% endif %}>Disabled</option>
                     </select>
@@ -91,7 +91,7 @@ Locations
             </tr>
             <tr>
                 <td>
-                    <select name="warehousing">
+                    <select id="warehousing">
                         <option value="1" {% if client.has_warehousing %}selected{% endif %}>Warehousing required</option>
                         <option value="0" {% if not client.has_warehousing %}selected{% endif %}>No warehousing required</option>
                     </select>
@@ -99,7 +99,7 @@ Locations
             </tr>
             <tr>
                 <td>
-                    <select name="parent">
+                    <select id="parent">
                         <option value="0">Subsidiary of...</option>
                         <option value="0">(None)</option>
                         {% for parent_client in all_clients %}

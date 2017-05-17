@@ -307,7 +307,8 @@ console.log(data);
 
 function updateCustContact(customerid,custcontactid) {
     var custcontact = {
-        client:  custcontactid,
+        client:           customerid,
+        custcontact:      custcontactid,
         first_name:       $('#fname').val(),
         last_name:        $('#lname').val(),
         title:            $('#title').val(),
@@ -333,7 +334,7 @@ console.log(data);
                 $('#email_primary').html(custcontact.email);
                 $('#tel_primary').html(custcontact.tel+' '+custcontact.telext);
             }
-            loadCustContact(data.CUSTCONTACTID,customerid,true);
+            loadCustContact(data.pk,customerid,true);
             $('#contactform').hide();
         } else {
             alert(data.MESSAGE);
@@ -377,7 +378,6 @@ function execute_deleteCustContact() {
 }
 
 function updateClient(customerid) {
-console.log($('#coname').val());
     var customer = {
         fnc:               'update',
         customerid:        customerid,

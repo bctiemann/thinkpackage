@@ -222,8 +222,8 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
 
 class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location
+    form_class = LocationForm
     template_name = 'ims/mgmt_location_form.html'
-    fields = ['client', 'name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
     def get_context_data(self, *args, **kwargs):
         context = super(LocationCreate, self).get_context_data(*args, **kwargs)
@@ -235,7 +235,6 @@ class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
     form_class = LocationForm
     template_name = 'ims/mgmt_location_form.html'
-#    fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
     def get_object(self):
         return get_object_or_404(Location, pk=self.kwargs['location_id'])

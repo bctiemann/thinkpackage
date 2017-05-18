@@ -97,9 +97,19 @@ class LocationForm(forms.ModelForm):
     STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
 
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'placeholder': 'Location name'}))
-    state = USStateField(widget=forms.Select(choices=STATE_CHOICES_BLANK))
-    zip = USZipCodeField(label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
+    state = USStateField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
+    zip = USZipCodeField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
+
+    def __init__(self, *args, **kwargs):
+        super(LocationForm, self).__init__(*args, **kwargs)
+        if self.instance.id == None:
+            for field in self.fields:
+                try:
+                    self.fields[field].widget.attrs['class'] += ' new'
+                except KeyError:
+                    self.fields[field].widget.attrs['class'] = 'new'
 
     class Meta:
         model = Location
         fields = ['client', 'name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+

@@ -278,7 +278,7 @@ function updateLocation(customerid, locationid) {
     var location = {
         client:           customerid,
         customer_contact: $('#customer_contact').val() || 0,
-        name:             $('#name').val(),
+        name:             $('#id_name').val(),
         address:          $('#address').val(),
         address_2:        $('#address_2').val(),
         city:             $('#city').val(),

@@ -309,16 +309,16 @@ function updateCustContact(customerid,custcontactid) {
     var custcontact = {
         client:           customerid,
         custcontact:      custcontactid,
-        first_name:       $('#fname').val(),
-        last_name:        $('#lname').val(),
-        title:            $('#title').val(),
+        first_name:       $('#id_first_name').val(),
+        last_name:        $('#id_last_name').val(),
+        title:            $('#id_title').val(),
         email:            $('#id_email').val(),
         password:         $('#id_password').val(),
-        phone_number:     $('#tel').val(),
-        phone_extension:  $('#telext').val(),
-        mobile_number:    $('#mobile').val(),
-        fax_number:       $('#fax').val(),
-        notes:            $('#contact_notes').val()
+        phone_number:     $('#id_phone_number').val(),
+        phone_extension:  $('#id_phone_extension').val(),
+        mobile_number:    $('#id_mobile_number').val(),
+        fax_number:       $('#id_fax_number').val(),
+        notes:            $('#id_contact_notes').val()
     };
 console.log(custcontact);
     var url = cgiroot + 'contact/';
@@ -384,7 +384,7 @@ function updateClient(customerid) {
         is_active:         $('#id_is_active').val(),
         has_warehousing:   $('#id_has_warehousing').val(),
         parent:            $('#id_parent').val(),
-        notes:             $('#id_notes').val()
+        notes:             $('#id_client_notes').val()
     }
 console.log(customer);
     var url = cgiroot + customerid + '/profile/';

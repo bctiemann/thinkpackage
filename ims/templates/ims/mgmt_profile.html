@@ -70,7 +70,7 @@ Locations
             </tr>
             {% if primary_contact %}
             <tr>
-                <td><div class="non-input" style="width: 469px;">
+                <td><div class="non-input">
                     <span id="email_primary"><a href="mailto:{{ primary_contact.email }}">{{ primary_contact.email }}</a></span>
                     <span id="tel_primary">{% if primary_contact.phone_number %}{{ primary_contact.phone_number }}{% endif %} {% if primary_contact.phone_extension %}{{ primary_contact.phone_extension }}{% endif %}</span>
                 </td>

@@ -12,35 +12,45 @@
         <table>
             <tr>
                 <td>
-                    <input type="text" id="fname" value="{{ custcontact.first_name }}" placeholder="First" {% if not custcontact %}class="new"{% endif %} style="width: 226px;" maxlength="50" />
-                    <input type="text" id="lname" value="{{ custcontact.last_name }}" placeholder="Last" {% if not custcontact %}class="new"{% endif %} style="width: 226px;" maxlength="50" />
+                    {{ form.first_name }}
+                    {{ form.last_name }}
                 </td>
-            </tr>
-            <tr>
-                <td>{{ form.password }}</td>
-{# <input type="password" id="passwd" value="********" placeholder="Password" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="50" /> #}
-            </tr>
-            <tr>
-                <td><input type="text" id="title" value="{{ custcontact.title }}" placeholder="Title" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="50" /></td>
-            </tr>
-            <tr>
-                <td>{{ form.email }}</td>
-{# <input type="email" id="email" value="{{ custcontact.email }}" placeholder="Email" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="100" /> #}
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="tel" value="{{ custcontact.phone_number }}" placeholder="Phone" onKeyUp="ValidatePhone(this);" {% if not custcontact %}class="new"{% endif %} style="width: 353px;" maxlength="16" />
-                    <input type="text" id="telext" value="{{ custcontact.phone_extension }}" placeholder="Ext" {% if not custcontact %}class="new"{% endif %} style="width: 99px;" maxlength="16" />
+                    {{ form.password }}
                 </td>
             </tr>
             <tr>
-                <td><input type="text" id="mobile" value="{{ custcontact.mobile_number }}" placeholder="Mobile" onKeyUp="ValidatePhone(this);" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="16" /></td>
+                <td>
+                    {{ form.title }}
+                </td>
             </tr>
             <tr>
-                <td><input type="text" id="fax" value="{{ custcontact.fax_number }}" placeholder="Fax" onKeyUp="ValidatePhone(this);" {% if not custcontact %}class="new"{% endif %} style="width: 469px;" maxlength="16" /></td>
+                <td>
+                    {{ form.email }}
+                </td>
             </tr>
             <tr>
-                <td><textarea id="contact_notes" placeholder="Notes" class="smalltext {% if not custcontact %}new{% endif %}" style="width: 469px;">{{ custcontact.notes }}</textarea></td>
+                <td>
+                    {{ form.phone_number }}
+                    {{ form.phone_extension }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.mobile_number }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.fax_number }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.notes }}
+                </td>
             </tr>
         </table>
         

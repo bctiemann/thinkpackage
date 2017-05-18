@@ -596,6 +596,34 @@ div.form_body textarea.smalltext {
 	line-height: 15px;
 }
 
+div.objectform input,
+div.objectform textarea,
+div.objectform div.non-input {
+	width: 469px;
+}
+#id_company_name {
+	width: 260px;
+	margin: 7px;
+}
+#id_state {
+	width: 110px;
+}
+#id_zip {
+	width: 97px;
+}
+#id_first_name {
+	width: 226px;
+}
+#id_last_name {
+	width: 226px;
+}
+#id_phone_number {
+	width: 353px;
+}
+#id_phone_extension {
+	width: 99px;
+}
+
 td.numeric input {
 	text-align: right;
 }

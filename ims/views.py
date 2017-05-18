@@ -256,12 +256,14 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
 
 class CustContactCreate(AjaxableResponseMixin, CreateView):
     model = CustContact
+    form_class = CustContactForm
     template_name = 'ims/mgmt_contact_form.html'
-    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+#    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
     def get_context_data(self, *args, **kwargs):
         context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
-        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+        if 'client_id' in self.kwargs:
+            context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
         return context
 
 

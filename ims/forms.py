@@ -23,12 +23,12 @@ WAREHOUSING_CHOICES = (
 
 
 class ClientForm(forms.ModelForm):
-    company_name = forms.CharField(label='Customer name', widget=forms.TextInput(attrs={'placeholder': 'Customer name', 'style': 'width: 260px; margin: 7px;'}))
+    company_name = forms.CharField(label='Customer name', widget=forms.TextInput(attrs={'placeholder': 'Customer name'}))
     primary_contact = forms.ModelChoiceField(required=False, queryset=None, empty_label='(Select primary contact)')
     parent = forms.TypedChoiceField(required=False, empty_value=None)
     is_active = forms.ChoiceField(choices=ENABLED_CHOICES)
     has_warehousing = forms.ChoiceField(choices=WAREHOUSING_CHOICES)
-    notes = forms.CharField(label='Notes', required=False, widget=forms.Textarea(attrs={'placeholder': 'Notes', 'class': 'smalltext', 'style': 'width: 469px;'}))
+    notes = forms.CharField(label='Notes', required=False, widget=forms.Textarea(attrs={'placeholder': 'Notes', 'class': 'smalltext', 'id': 'id_client_notes'}))
 
     def __init__(self, *args, **kwargs):
         super(ClientForm, self).__init__(*args, **kwargs)
@@ -58,8 +58,25 @@ class ClientForm(forms.ModelForm):
 
 
 class CustContactForm(forms.ModelForm):
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'value': '********', 'style': 'width: 469px;'}))
-    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'placeholder': 'Email', 'style': 'width: 469px;'}))
+    first_name = forms.CharField(label='First name', widget=forms.TextInput(attrs={'placeholder': 'First'}))
+    last_name = forms.CharField(label='Last name', widget=forms.TextInput(attrs={'placeholder': 'Last'}))
+    title = forms.CharField(label='Title', widget=forms.TextInput(attrs={'placeholder': 'Title'}))
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'value': '********'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    phone_number = forms.CharField(label='Phone number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Phone'}))
+    phone_extension = forms.CharField(label='Phone extension', required=False, max_length=5, widget=forms.TextInput(attrs={'placeholder': 'Ext'}))
+    mobile_number = forms.CharField(label='Mobile number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Mobile'}))
+    fax_number = forms.CharField(label='Fax number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Fax'}))
+    notes = forms.CharField(label='Notes', required=False, widget=forms.Textarea(attrs={'placeholder': 'Notes', 'class': 'smalltext', 'id': 'id_contact_notes'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CustContactForm, self).__init__(*args, **kwargs)
+        if self.instance.id == None:
+            for field in self.fields:
+                try:
+                    self.fields[field].widget.attrs['class'] += ' new'
+                except KeyError:
+                    self.fields[field].widget.attrs['class'] = 'new'
 
 #    def clean_password(self):
 #        logger.warning(self.initial)
@@ -79,8 +96,8 @@ class LocationForm(forms.ModelForm):
     STATE_CHOICES_BLANK = list(STATE_CHOICES)
     STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
 
-    state = USStateField(widget=forms.Select(choices=STATE_CHOICES_BLANK, attrs={'style': 'width: 110px'}))
-    zip = USZipCodeField(label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP', 'style': 'width: 97px;'}))
+    state = USStateField(widget=forms.Select(choices=STATE_CHOICES_BLANK))
+    zip = USZipCodeField(label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
 
     class Meta:
         model = Location

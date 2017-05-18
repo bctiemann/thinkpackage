@@ -11,8 +11,24 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+ENABLED_CHOICES = (
+    (True, 'Enabled'),
+    (False, 'Disabled'),
+)
+
+WAREHOUSING_CHOICES = (
+    (True, 'Warehousing required'),
+    (False, 'No warehousing required'),
+)
+
+
 class ClientForm(forms.ModelForm):
+    company_name = forms.CharField(label='Customer name', widget=forms.TextInput(attrs={'placeholder': 'Customer name', 'style': 'width: 260px; margin: 7px;'}))
+    primary_contact = forms.ModelChoiceField(required=False, queryset=None, empty_label='(Select primary contact)')
     parent = forms.TypedChoiceField(required=False, empty_value=None)
+    is_active = forms.ChoiceField(choices=ENABLED_CHOICES)
+    has_warehousing = forms.ChoiceField(choices=WAREHOUSING_CHOICES)
+    notes = forms.CharField(label='Notes', required=False, widget=forms.Textarea(attrs={'placeholder': 'Notes', 'class': 'smalltext', 'style': 'width: 469px;'}))
 
     def __init__(self, *args, **kwargs):
         super(ClientForm, self).__init__(*args, **kwargs)
@@ -25,6 +41,9 @@ class ClientForm(forms.ModelForm):
             all_clients.append((parent_client['obj'].id, choice_string))
         logger.warning(all_clients)
         self.fields['parent'].choices = all_clients
+        all_contacts = CustContact.objects.filter(client=self.instance)
+        self.fields['primary_contact'].queryset = all_contacts
+        self.fields['primary_contact'].initial = all_contacts.filter(is_primary=True).first()
 
     def clean_parent(self):
         data = self.cleaned_data.get('parent')

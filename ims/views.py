@@ -208,6 +208,17 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
     def get_object(self):
         return get_object_or_404(Client, pk=self.kwargs['client_id'])
 
+    def form_valid(self, form):
+        self.object.custcontact_set.update(is_primary=False)
+        if form.data['primary_contact']:
+            CustContact.objects.filter(pk=form.data['primary_contact']).update(is_primary=True)
+        return super(ClientUpdate, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ClientUpdate, self).get_context_data(*args, **kwargs)
+        context['primary_contact'] = self.object.custcontact_set.filter(is_primary=True).first()
+        return context
+
 
 class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location

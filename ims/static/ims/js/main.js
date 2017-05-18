@@ -379,17 +379,17 @@ function execute_deleteCustContact() {
 
 function updateClient(customerid) {
     var customer = {
-        fnc:               'update',
-        customerid:        customerid,
-        company_name:      $('#coname').val(),
-        primarycontact:    $('#custcontactid_primary').val(),
-        is_enabled:        $('#enabled').val(),
-        has_warehousing:   $('#warehousing').val(),
+        company_name:      $('#id_company_name').val(),
+        primary_contact:   $('#id_primary_contact').val(),
+        is_active:         $('#id_is_active').val(),
+        has_warehousing:   $('#id_has_warehousing').val(),
         parent:            $('#id_parent').val(),
-        notes:             $('#customer_notes').val()
+        notes:             $('#id_notes').val()
     }
+console.log(customer);
     var url = cgiroot + customerid + '/profile/';
     $.post(url,customer,function(data) {
+console.log(data);
 //        window.location = 'profile.cfm?customerid='+customerid;
         window.location = url;
     },'json');

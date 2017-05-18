@@ -59,18 +59,13 @@ Locations
                 
         <CFOUTPUT>
         <button class="actionbtn floatright" id="coname_submit" onClick="updateClient({{ client.id }})">Update</button>
-        <input type="text" id="coname" value="{{ client.company_name }}" placeholder="Customer name" style="width: 260px; margin: 7px;" maxlength="45" />
+        {{ form.company_name }}
         </CFOUTPUT>
 
         <table>
             <tr>
-                <td>    
-                    <select id="custcontactid_primary">
-                        <option value="0">(Select primary contact)</option>
-                        {% for contact in client.custcontact_set.all %}
-                        <option value="{{ contact.id }}" {% if contact.is_primary %}selected{% endif %}>{{ contact.first_name }} {{ contact.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %}</option>
-                        {% endfor %}
-                    </select>
+                <td>
+                    {{ form.primary_contact }}
                 </td>
             </tr>
             {% if primary_contact %}
@@ -83,18 +78,12 @@ Locations
             {% endif %}
             <tr>
                 <td>
-                    <select id="enabled">
-                        <option value="1" {% if client.is_active %}selected{% endif %}>Enabled</option>
-                        <option value="0" {% if not client.is_active %}selected{% endif %}>Disabled</option>
-                    </select>
+                    {{ form.is_active }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    <select id="warehousing">
-                        <option value="1" {% if client.has_warehousing %}selected{% endif %}>Warehousing required</option>
-                        <option value="0" {% if not client.has_warehousing %}selected{% endif %}>No warehousing required</option>
-                    </select>
+                    {{ form.has_warehousing }}
                 </td>
             </tr>
             <tr>
@@ -103,8 +92,10 @@ Locations
                 </td>
             </tr>
             <tr>
-                <td><textarea id="customer_notes" placeholder="Notes" class="smalltext" style="width: 469px;">{{ client.notes }}</textarea></td>
-            </tr>   
+                <td>
+                    {{ form.notes }}
+                </td>
+            </tr>
 
         </table>
 

@@ -376,14 +376,12 @@ function deleteCustContact(customerid,custcontactid) {
 
 function execute_deleteCustContact() {
     var custcontact = {
-        fnc:             'delete',
-        custcontactid:   globals['custcontactid'],
-        customerid:      globals['customerid']
+        is_active: false,
     };
-    var url = cgiroot+'ajax_contact_action.cfm';
+    var url = cgiroot + 'contact/' + globals['custcontactid'] + '/delete/';
     $.post(url,custcontact,function(data) {
-        loadCustContact(null,globals['customerid'],true);
-//        window.location = 'profile.cfm?customerid='+globals['customerid'];
+//        loadCustContact(null,globals['customerid'],true);
+        window.location = cgiroot + '/' + globals['customerid'] + '/profile';
     },'json');
 }
 

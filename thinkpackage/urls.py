@@ -16,11 +16,11 @@ urlpatterns_mgmt = [
 
 #    url(r'^client/(?P<client_id>\d+)/$', ims_views.ClientUpdate.as_view(), name='mgmt-client-update'),
 
-    url(r'^contact/add/(?P<custcontact_id>\d+)/$', ims_views.CustContactCreate.as_view(), name='mgmt-contact-add'),
+    url(r'^contact/add/(?P<client_id>\d+)/$', ims_views.CustContactCreate.as_view(), name='mgmt-contact-add'),
     url(r'^contact/(?P<custcontact_id>\d+)/$', ims_views.CustContactUpdate.as_view(), name='mgmt-contact-update'),
     url(r'^contact/(?P<custontact_id>\d+)/delete/$', ims_views.CustContactDelete.as_view(), name='mgmt-contact-delete'),
 
-    url(r'^location/add/(?P<location_id>\d+)/$', ims_views.LocationCreate.as_view(), name='mgmt-location-add'),
+    url(r'^location/add/(?P<client_id>\d+)/$', ims_views.LocationCreate.as_view(), name='mgmt-location-add'),
     url(r'^location/(?P<location_id>\d+)/$', ims_views.LocationUpdate.as_view(), name='mgmt-location-update'),
     url(r'^location/(?P<location_id>\d+)/delete/$', ims_views.LocationDelete.as_view(), name='mgmt-location-delete'),
 

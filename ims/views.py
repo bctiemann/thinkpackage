@@ -261,6 +261,7 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
     def get_context_data(self, *args, **kwargs):
+        logger.warning(self.kwargs)
         context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
         if 'client_id' in self.kwargs:
             context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])

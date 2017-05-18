@@ -60,7 +60,7 @@ class ClientForm(forms.ModelForm):
 class CustContactForm(forms.ModelForm):
     first_name = forms.CharField(label='First name', widget=forms.TextInput(attrs={'placeholder': 'First'}))
     last_name = forms.CharField(label='Last name', widget=forms.TextInput(attrs={'placeholder': 'Last'}))
-    title = forms.CharField(label='Title', widget=forms.TextInput(attrs={'placeholder': 'Title'}))
+    title = forms.CharField(label='Title', required=False, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'value': '********'}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
     phone_number = forms.CharField(label='Phone number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Phone'}))
@@ -89,16 +89,17 @@ class CustContactForm(forms.ModelForm):
 
     class Meta:
         model = CustContact
-        fields = ['first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+        fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
 
 class LocationForm(forms.ModelForm):
     STATE_CHOICES_BLANK = list(STATE_CHOICES)
     STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
 
+    name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'placeholder': 'Location name'}))
     state = USStateField(widget=forms.Select(choices=STATE_CHOICES_BLANK))
     zip = USZipCodeField(label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
 
     class Meta:
         model = Location
-        fields = ['name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+        fields = ['client', 'name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']

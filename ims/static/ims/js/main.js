@@ -296,11 +296,16 @@ console.log(location);
     }
     $.post(url,location,function(data) {
 console.log(data);
+        $('.error').removeClass('error');
         if (data.success) {
             loadLocation(data.pk, customerid, true);
             $('#locationform').hide();
         } else {
-            alert(data.message);
+            for (var field in data) {
+                var error = data[field][0];
+                $('#id_' + field).addClass('error').attr('error-text', error.message);
+                console.log(field);
+            }
         }
     },'json');
 }
@@ -329,6 +334,7 @@ console.log(custcontact);
     }
     $.post(url,custcontact,function(data) {
 console.log(data);
+        $('.error').removeClass('error');
         if (data.success) {
             if ($('#isprimary').val() == 1) {
                 $('#email_primary').html(custcontact.email);
@@ -337,7 +343,11 @@ console.log(data);
             loadCustContact(data.pk,customerid,true);
             $('#contactform').hide();
         } else {
-            alert(data.MESSAGE);
+            for (var field in data) {
+                var error = data[field][0];
+                $('#id_' + field).addClass('error').attr('error-text', error.message);
+                console.log(field);
+            }
         }
     },'json');
 }

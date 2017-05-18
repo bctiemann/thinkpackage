@@ -632,6 +632,10 @@ div.non-input span {
 	margin-right: 30px;
 }
 
+.error {
+	background-color: #fffec4;
+}
+
 .infotable input {
 	margin: 0px;
 	height: 29px;

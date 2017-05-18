@@ -11,7 +11,9 @@
 
         <table>
             <tr>
-                <td><input type="text" id="name" value="{{ location.name }}" placeholder="Location name" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" /></td>
+                <td>
+                    {{ form.name }}
+                </td>
             </tr>
 
             <tr>

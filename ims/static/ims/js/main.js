@@ -902,7 +902,9 @@ function refreshShipments(shipmentid) {
         class: 'loading',
     }));
 
-    var url = cgiroot+'ajax_shipments_list.cfm?customerid='+$('#customerid').val()+'&shipped_filter='+globals['shipped_filter'];
+//    var url = cgiroot+'ajax_shipments_list.cfm?customerid='+$('#customerid').val()+'&shipped_filter='+globals['shipped_filter'];
+    var url = cgiroot + $('#customerid').val() + '/shipments/list/?shipped_filter=' + globals['shipped_filter'];
+console.log(url);
     $('#list_shipments').load(url,function(data) {
         refreshUI();
         if (shipmentid) {
@@ -1107,6 +1109,8 @@ $(document).ready(function() {
     })
     setupAddCustomerButton();
     refreshCustomers();
+    refreshInventory();
+    refreshShipments();
 
     refreshUI();
 
@@ -1432,8 +1436,6 @@ $(document).ready(function() {
             $(this).removeClass('maximized').addClass('minimized');
         });
     });
-
-    refreshInventory();
 
     if (globals['shipmentid']) {
         selectShipment(globals['shipmentid']);

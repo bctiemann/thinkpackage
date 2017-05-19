@@ -27,7 +27,7 @@
 
     <CFOUTPUT>
     <script type="text/javascript">
-    globals['shipmentid'] = #Shipment.shipmentid#;
+//    globals['shipmentid'] = #Shipment.shipmentid#;
     </script>
     </CFOUTPUT>
 </CFIF>
@@ -61,7 +61,7 @@ Are you sure you want to cancel this shipment?
     
     
 <CFOUTPUT>
-<input type="hidden" id="customerid" value="#URL.customerid#" />
+<input type="hidden" id="customerid" value="{{ client.id }}" />
 </CFOUTPUT>
 
 {% endblock %}

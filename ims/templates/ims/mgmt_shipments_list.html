@@ -1,0 +1,84 @@
+<CFIF IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
+<CFELSE>
+    <div class="error">Invalid customer ID specified.</div>
+    <CFABORT>
+</CFIF>
+
+<CFSET shipped_filter = IsDefined("Shipment") AND Shipment.status IS 2 ? 0 : (IsDefined("URL.shipped_filter") AND IsNumeric(URL.shipped_filter) ? URL.shipped_filter : 1)>
+<cfoutput>
+<script type="text/javascript">
+globals['shipped_filter'] = #shipped_filter#;
+</script>
+</cfoutput>
+
+<ul class="mode_toggle">
+<a href="javascript:nop()" onClick="showShipped(false)"><li <CFIF shipped_filter IS 1>class="selected"</CFIF>>unshipped</li></a>
+<a href="javascript:nop()" onClick="showShipped(true)"><li <CFIF shipped_filter IS 0>class="selected"</CFIF>>shipped</li></a>
+</ul>
+
+<CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
+SELECT *,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
+LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
+LEFT JOIN Locations ON Shipments.locationid=Locations.locationid
+WHERE Shipments.customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
+<CFIF IsDefined("Shipment") AND Shipment.shipmentid GT 0>
+AND Shipments.shipmentid=<CFQUERYPARAM value="#Shipment.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+</CFIF>
+<CFIF shipped_filter IS 1>
+    AND status!=2
+<CFELSE>
+    AND status=2
+</CFIF>
+GROUP BY Shipments.shipmentid
+ORDER BY status,createdon DESC
+</CFQUERY>
+
+<table class="infotable alternating shipments editable scrollable">
+    <thead>
+        <tr>
+            <th style="width: 120px;" class="text">Requested Date</th>
+            <th style="width: 120px;" class="text">DL #</th>
+            <th style="width: 344px;" class="text">Location</th>
+            <th style="width: 120px;" class="spacer20"></th>
+            <th style="width: 120px;" class="text">Status</th>
+            <th style="width: 319px;" class="text">Pallets</th>
+            <th style="width: 65px;" class="text">Docs</th>
+            <th style="width: 110px;" class="action"></th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 400px">
+    <CFOUTPUT QUERY="Shipments">
+
+        <CFQUERY NAME="Pallets" DATASOURCE="#DSN#">
+        SELECT * FROM Pallets
+        WHERE shipmentid=#Shipments.shipmentid#
+        </CFQUERY>
+
+        <tr class="shipment" id="shipment_#shipmentid#">
+            <td style="width: 115px;" class="text clickable" shipmentid="#shipmentid#">#DateFormat(createdon,"MM/DD/YYYY")#</td>
+            <td style="width: 115px;" class="text clickable" shipmentid="#shipmentid#">#shipmentid#</td>
+            <td style="width: 339px;" class="text clickable" shipmentid="#shipmentid#">#name#</td>
+            <td style="width: 106px;" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
+            <td style="width: 115px;" class="text clickable" shipmentid="#shipmentid#">
+                <CFIF status IS 0>Pending
+                <CFELSEIF status IS 1>Ready to Ship
+                <CFELSEIF STATUS IS 2>Shipped
+                <CFELSEIF STATUS IS 9>Exception
+                </CFIF>
+            </td>
+            <td style="width: 314px;" class="text monospace clickable" shipmentid="#shipmentid#">
+            <CFLOOP QUERY="Pallets">
+                <p class="pallet"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#">#PID#</a> <span class="glyph"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#"><img src="images/barcode.gif" /></a></span></p>
+            </CFLOOP>
+            </td>
+            <td style="width: 60px;" class="text" shipmentid="#shipmentid#">
+                <cfif document_count GT 0>
+                <button class="show-shipment-docs" onClick="showShipmentDocs(#shipmentid#);">#document_count#</button>
+                </cfif>
+            </td>
+            <td style="width: 96px;" class="action"><CFIF status LT 2><a href="javascript:nop()" onClick="cancelShipment(#shipmentid#)">cancel</a></CFIF></td>
+        </tr>
+    </CFOUTPUT>
+    </tbody>
+</table>
+

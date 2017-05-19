@@ -115,6 +115,15 @@ def mgmt_shipments(request, client_id=None, shipment_id=None):
     return render(request, 'ims/mgmt_shipments.html', context)
 
 
+def mgmt_shipments_list(request, client_id=None):
+    client = get_object_or_404(Client, pk=client_id)
+
+    context = {
+        'client': client,
+    }
+    return render(request, 'ims/mgmt_shipments_list.html', context)
+
+
 def mgmt_customers_list(request):
     filter = request.GET.get('filter', None)
 

@@ -72,6 +72,7 @@ class CustContactForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CustContactForm, self).__init__(*args, **kwargs)
         if self.instance.id == None:
+            self.fields['password'].widget.attrs['value'] = ''
             for field in self.fields:
                 try:
                     self.fields[field].widget.attrs['class'] += ' new'

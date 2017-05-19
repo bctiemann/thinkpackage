@@ -22,7 +22,7 @@
 <CFIF IsDefined("URL.history") AND IsNumeric(URL.history)>
     <CFOUTPUT>
     <script type="text/javascript">
-    globals['history'] = #URL.history#;
+//    globals['history'] = #URL.history#;
     </script>
     </CFOUTPUT>
 </CFIF>
@@ -30,7 +30,7 @@
 <CFIF IsDefined("URL.productid") AND IsNumeric(URL.productid)>
     <CFOUTPUT>
     <script type="text/javascript">
-    globals['productid'] = #URL.productid#;
+//    globals['productid'] = #URL.productid#;
     </script>
     </CFOUTPUT>
 </CFIF>
@@ -111,7 +111,7 @@ The product details have been updated.
 
 
 <CFOUTPUT>
-<input type="hidden" id="customerid" value="#URL.customerid#" />
+<input type="hidden" id="customerid" value="{{ client.id }}" />
 <input type="hidden" id="cases_new" value="0" />
 <input type="hidden" id="contqty_new" value="0" />
 </CFOUTPUT>

@@ -632,7 +632,7 @@ div.non-input span {
 	margin-right: 30px;
 }
 
-.error {
+.objectform .error {
 	background-color: #fffec4;
 }
 

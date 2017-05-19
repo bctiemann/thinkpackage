@@ -31,6 +31,8 @@ urlpatterns_mgmt = [
     url(r'^(?P<client_id>\d+)/profile/contact=(?P<custcontact_id>\d+)/$', ims_views.mgmt_profile, name='mgmt-profile'),
     url(r'^(?P<client_id>\d+)/inventory/(?P<product_id>\d+)?/?$', ims_views.mgmt_inventory, name='mgmt-inventory'),
     url(r'^(?P<client_id>\d+)/shipments/(?P<shipment_id>\d+)?/?$', ims_views.mgmt_shipments, name='mgmt-shipments'),
+
+    url(r'^(?P<client_id>\d+)/inventory/list/$', ims_views.mgmt_inventory_list, name='mgmt-inventory-list'),
 ]
 
 urlpatterns = [

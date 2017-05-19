@@ -96,6 +96,15 @@ def mgmt_inventory(request, client_id=None, product_id=None):
     return render(request, 'ims/mgmt_inventory.html', context)
 
 
+def mgmt_inventory_list(request, client_id=None):
+    client = get_object_or_404(Client, pk=client_id)
+
+    context = {
+        'client': client,
+    }
+    return render(request, 'ims/mgmt_inventory_list.html', context)
+
+
 def mgmt_shipments(request, client_id=None, shipment_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
@@ -312,4 +321,5 @@ class CustContactDelete(AjaxableResponseMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
+
 

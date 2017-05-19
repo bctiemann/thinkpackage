@@ -816,6 +816,7 @@ function showShipped(show_shipped) {
 }
 
 function refreshInventory() {
+console.log('refreshInventory');
     if (!('active_filter' in globals)) {
         globals['active_filter'] = 1;
     }
@@ -825,7 +826,9 @@ function refreshInventory() {
         class: 'loading',
     }));
 
-    var url = cgiroot+'ajax_inventory_list.cfm?customerid='+$('#customerid').val()+'&active_filter='+globals['active_filter'];
+//    var url = cgiroot+'ajax_inventory_list.cfm?customerid='+$('#customerid').val()+'&active_filter='+globals['active_filter'];
+    var url = cgiroot + $('#customerid').val() + '/inventory/list/?active_filter=' + globals['active_filter'];
+console.log(url);
     $('#list_inventory').load(url,function(data) {
 
         var locations = [];

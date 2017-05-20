@@ -1,4 +1,4 @@
-{% extends "ims/base.html" %}
+{% extends "ims/mgmt/base.html" %}
 {% load static %}
 
 {% block content %}
@@ -39,7 +39,7 @@
 <div class="customerheader"><CFOUTPUT>#Customer.coname#</CFOUTPUT></div>
 
 {% with page_selected="inventory" %}
-{% include "ims/inc_nav.html" %}
+{% include "ims/mgmt/inc_nav.html" %}
 {% endwith %}
 
 

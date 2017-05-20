@@ -64,7 +64,7 @@ def mgmt(request):
         'invq': invq,
         'low_stock': low_stock,
     }
-    return render(request, 'ims/mgmt.html', context)
+    return render(request, 'ims/mgmt/home.html', context)
 
 
 def mgmt_redirect(request, client_id=None):
@@ -84,7 +84,7 @@ def mgmt_profile(request, client_id=None):
         'primary_contact': CustContact.objects.filter(client=client, is_primary=True).first(),
         'all_clients': all_clients,
     }
-    return render(request, 'ims/mgmt_profile.html', context)
+    return render(request, 'ims/mgmt/profile.html', context)
 
 
 def mgmt_inventory(request, client_id=None, product_id=None):
@@ -93,7 +93,7 @@ def mgmt_inventory(request, client_id=None, product_id=None):
     context = {
         'client': client,
     }
-    return render(request, 'ims/mgmt_inventory.html', context)
+    return render(request, 'ims/mgmt/inventory.html', context)
 
 
 def mgmt_inventory_list(request, client_id=None):
@@ -102,7 +102,7 @@ def mgmt_inventory_list(request, client_id=None):
     context = {
         'client': client,
     }
-    return render(request, 'ims/mgmt_inventory_list.html', context)
+    return render(request, 'ims/mgmt/inventory_list.html', context)
 
 
 def mgmt_shipments(request, client_id=None, shipment_id=None):
@@ -112,7 +112,7 @@ def mgmt_shipments(request, client_id=None, shipment_id=None):
         'client': client,
         'shipment_id': shipment_id,
     }
-    return render(request, 'ims/mgmt_shipments.html', context)
+    return render(request, 'ims/mgmt/shipments.html', context)
 
 
 def mgmt_shipments_list(request, client_id=None):
@@ -121,7 +121,7 @@ def mgmt_shipments_list(request, client_id=None):
     context = {
         'client': client,
     }
-    return render(request, 'ims/mgmt_shipments_list.html', context)
+    return render(request, 'ims/mgmt/shipments_list.html', context)
 
 
 def mgmt_customers_list(request):
@@ -141,7 +141,7 @@ def mgmt_customers_list(request):
     context = {
         'clients': utils.tree_to_list(clients, sort_by='company_name'),
     }
-    return render(request, 'ims/mgmt_customers_list.html', context)
+    return render(request, 'ims/mgmt/customers_list.html', context)
 
 
 def mgmt_contacts_list(request, client_id):
@@ -150,7 +150,7 @@ def mgmt_contacts_list(request, client_id):
     context = {
         'client': client,
     }
-    return render(request, 'ims/mgmt_contacts_list.html', context)
+    return render(request, 'ims/mgmt/contacts_list.html', context)
 
 
 def mgmt_locations_list(request, client_id):
@@ -159,7 +159,7 @@ def mgmt_locations_list(request, client_id):
     context = {
         'client': client,
     }
-    return render(request, 'ims/mgmt_locations_list.html', context)
+    return render(request, 'ims/mgmt/locations_list.html', context)
 
 
 def mgmt_contact_form(request):
@@ -172,7 +172,7 @@ def mgmt_contact_form(request):
     context = {
         'custcontact': custcontact,
     }
-    return render(request, 'ims/mgmt_contact_form.html', context)
+    return render(request, 'ims/mgmt/contact_form.html', context)
 
 
 def mgmt_location_form(request):
@@ -186,7 +186,7 @@ def mgmt_location_form(request):
     context = {
         'location': location,
     }
-    return render(request, 'ims/mgmt_location_form.html', context)
+    return render(request, 'ims/mgmt/location_form.html', context)
 
 
 class AjaxableResponseMixin(object):
@@ -221,7 +221,7 @@ class AjaxableResponseMixin(object):
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
     form_class = ClientForm
-    template_name = 'ims/mgmt_profile.html'
+    template_name = 'ims/mgmt/profile.html'
 
     def get_object(self):
         return get_object_or_404(Client, pk=self.kwargs['client_id'])
@@ -241,7 +241,7 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
 class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location
     form_class = LocationForm
-    template_name = 'ims/mgmt_location_form.html'
+    template_name = 'ims/mgmt/location_form.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(LocationCreate, self).get_context_data(*args, **kwargs)
@@ -252,7 +252,7 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
 class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
     form_class = LocationForm
-    template_name = 'ims/mgmt_location_form.html'
+    template_name = 'ims/mgmt/location_form.html'
 
     def get_object(self):
         return get_object_or_404(Location, pk=self.kwargs['location_id'])
@@ -274,7 +274,7 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
 class CustContactCreate(AjaxableResponseMixin, CreateView):
     model = CustContact
     form_class = CustContactForm
-    template_name = 'ims/mgmt_contact_form.html'
+    template_name = 'ims/mgmt/contact_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
     def get_context_data(self, *args, **kwargs):
@@ -288,7 +288,7 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
 class CustContactUpdate(AjaxableResponseMixin, UpdateView):
     model = CustContact
     form_class = CustContactForm
-    template_name = 'ims/mgmt_contact_form.html'
+    template_name = 'ims/mgmt/contact_form.html'
 
     def get_object(self):
         return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])

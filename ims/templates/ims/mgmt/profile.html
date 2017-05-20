@@ -1,4 +1,4 @@
-{% extends "ims/base.html" %}
+{% extends "ims/mgmt/base.html" %}
 {% load static %}
 
 {% block content %}
@@ -8,7 +8,7 @@
 <div class="customerheader">{{ client.company_name }}{% if not client.is_active %}<span class="disabledlabel">[DISABLED]</span>{% endif %}</div>
 
 {% with page_selected="profile" %}
-{% include "ims/inc_nav.html" %}
+{% include "ims/mgmt/inc_nav.html" %}
 {% endwith %}
 
                         

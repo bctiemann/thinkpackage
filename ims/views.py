@@ -103,8 +103,14 @@ def mgmt_inventory_list(request, client_id=None):
     except:
         active_filter = 0
 
+    if active_filter:
+        products = client.product_set.filter(is_active=True)
+    else:
+        products = client.product_set.filter(is_active=False)
+
     context = {
         'client': client,
+        'products': products,
         'active_filter': active_filter,
     }
     return render(request, 'ims/mgmt/inventory_list.html', context)

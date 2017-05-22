@@ -12,6 +12,15 @@ from localflavor.us.us_states import STATE_CHOICES
 import uuid
 
 
+class SoftDeleteManager(models.Manager):
+    def get_queryset(self):
+        return super(SoftDeleteManager, self).get_queryset().filter(is_active=True)
+    def all_with_deleted(self):
+        return super(SoftDeleteManager, self).get_queryset()
+    def deleted_set(self):
+        return super(SoftDeleteManager, self).get_queryset().filter(is_active=False)
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """

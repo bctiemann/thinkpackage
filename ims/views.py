@@ -7,8 +7,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location
-from ims.forms import ClientForm, LocationForm, CustContactForm
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable
+from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm
 from ims import utils
 
 import logging
@@ -343,3 +343,56 @@ class CustContactDelete(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
 
 
+class ProductCreate(AjaxableResponseMixin, CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'ims/mgmt/product_form.html'
+#    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+#    def get_context_data(self, *args, **kwargs):
+#        logger.warning(self.kwargs)
+#        context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
+#        if 'client_id' in self.kwargs:
+#            context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+#        return context
+
+
+class ProductUpdate(AjaxableResponseMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'ims/mgmt/product_details.html'
+
+    def get_object(self):
+        return get_object_or_404(Product, pk=self.kwargs['product_id'])
+
+    def form_valid(self, form):
+        logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
+        response = super(ProductUpdate, self).form_valid(form)
+        return response
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductUpdate, self).get_context_data(*args, **kwargs)
+        context['last_received'] = Receivable.objects.order_by('-date_created').first()
+        context['last_shipped'] = Shipment.objects.filter(transaction__product=self.object).order_by('-date_created').first()
+        return context
+
+#<CFQUERY NAME="LastShipped" DATASOURCE="#DSN#">
+#SELECT * FROM Shipments,Transactions
+#WHERE Transactions.productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
+#AND Transactions.shipmentid=Shipments.shipmentid
+#ORDER BY createdon DESC
+#LIMIT 1
+#</CFQUERY>
+
+#SELECT * FROM Receivables,Transactions
+#WHERE Receivables.productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
+#AND Transactions.receivableid=Receivables.receivableid
+#ORDER BY createdon DESC
+#LIMIT 1
+
+class ProductDelete(AjaxableResponseMixin, UpdateView):
+    model = Product
+    fields = ['is_active']
+
+    def get_object(self):
+        return get_object_or_404(Product, pk=self.kwargs['product_id'])

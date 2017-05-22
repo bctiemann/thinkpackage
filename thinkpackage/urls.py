@@ -24,6 +24,10 @@ urlpatterns_mgmt = [
     url(r'^location/(?P<location_id>\d+)/$', ims_views.LocationUpdate.as_view(), name='mgmt-location-update'),
     url(r'^location/(?P<location_id>\d+)/delete/$', ims_views.LocationDelete.as_view(), name='mgmt-location-delete'),
 
+    url(r'^product/add/(?P<client_id>\d+)/$', ims_views.ProductCreate.as_view(), name='mgmt-product-add'),
+    url(r'^product/(?P<product_id>\d+)/$', ims_views.ProductUpdate.as_view(), name='mgmt-product-update'),
+    url(r'^product/(?P<product_id>\d+)/delete/$', ims_views.ProductDelete.as_view(), name='mgmt-product-delete'),
+
     url(r'^(?P<client_id>\d+)/$', ims_views.mgmt_redirect, name='mgmt-redirect'),
 #    url(r'^(?P<client_id>\d+)/profile/$', ims_views.mgmt_profile, name='mgmt-profile'),
     url(r'^(?P<client_id>\d+)/profile/$', ims_views.ClientUpdate.as_view(), name='mgmt-profile'),

@@ -420,7 +420,7 @@ function selectProduct(productid,load_details,elem) {
         }
 
         if (load_details != false) {
-            var url = cgiroot+'ajax_product_details.cfm?productid='+productid;
+            var url = cgiroot + 'product/' + productid;
             $('.switch-units.weight').html(units == 'metric' ? 'kg' : 'lb');
             $('.switch-units.length').html(units == 'metric' ? 'cm' : 'in');
             $('#product_details').load(url,function() {

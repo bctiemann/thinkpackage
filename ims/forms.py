@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location
+from ims.models import Client, CustContact, Location, Product
 from ims import utils
 
 import logging
@@ -114,3 +114,12 @@ class LocationForm(forms.ModelForm):
         model = Location
         fields = ['client', 'name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
+
+class ProductForm(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = ['account_prepay_type']
+        widgets = {
+            'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
+        }

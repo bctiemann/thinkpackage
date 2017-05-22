@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.urls import reverse
 from django.db import models
+from django.db.models import F, FloatField, Sum
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 
@@ -285,11 +286,30 @@ class Product(models.Model):
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
     account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, db_column='account')
 
+    @property
+    def is_low(self):
+        if not self.contracted_quantity:
+            return False
+        return float(self.cases_inventory) / float(self.contracted_quantity) < 0.5
+
+    @property
+    def pending_receivables(self):
+        return Transaction.objects.filter(product=self, is_outbound=False, cases__isnull=True)
+
+    @property
+    def cases_unshipped(self):
+        return Shipment.objects.filter(transaction__product=self, date_shipped__isnull=True).aggregate(cases_unshipped=Sum('transaction__cases'))['cases_unshipped'] or 0
+
+    @property
+    def cases_available(self):
+        return self.cases_inventory - self.cases_unshipped
+
     def __unicode__(self):
         return (self.name)
 
     class Meta:
         db_table = 'Products'
+        ordering = ['item_number']
 
 
 class ShipperAddress(models.Model):

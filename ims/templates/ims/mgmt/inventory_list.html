@@ -1,30 +1,8 @@
-<CFIF IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
-<CFELSE>
-    <div class="error">Invalid customer ID specified.</div>
-    <CFABORT>
-</CFIF>
-
-<CFSET active_filter = (IsDefined("URL.active_filter") AND IsNumeric(URL.active_filter) ? URL.active_filter : 1)>
-
-<CFQUERY NAME="Products" DATASOURCE="#DSN#">
-SELECT Products.*,(remain * 2 < contqty) as low,Locations.name AS location_name,cases_unshipped FROM Products
-LEFT JOIN Locations ON Products.locationid=Locations.locationid
-LEFT JOIN (
-    SELECT Products.productid,sum(Transactions.cases) AS cases_unshipped FROM Products
-    INNER JOIN Transactions ON Transactions.productid=Products.productid
-    INNER JOIN Shipments ON Transactions.shipmentid=Shipments.shipmentid
-    WHERE shippedon IS NULL
-    AND Products.customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-    GROUP BY Products.productid
-) UnshippedProducts ON UnshippedProducts.productid=Products.productid
-WHERE Products.customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-AND active=#active_filter#
-ORDER BY itemnum
-</CFQUERY>
+{% load humanize %}
 
 <ul class="mode_toggle">
-<a href="javascript:nop()" onClick="showInactive(false)"><li <CFIF active_filter IS 1>class="selected"</CFIF>>active</li></a>
-<a href="javascript:nop()" onClick="showInactive(true)"><li <CFIF active_filter IS 0>class="selected"</CFIF>>inactive</li></a>
+<a href="javascript:nop()" onClick="showInactive(false)"><li {% if active_filter == 1 %}class="selected"{% endif %}>active</li></a>
+<a href="javascript:nop()" onClick="showInactive(true)"><li {% if active_filter == 0 %}class="selected"{% endif %}>inactive</li></a>
 </ul>
 
 <table class="infotable alternating inventory editable scrollable">
@@ -43,67 +21,54 @@ ORDER BY itemnum
         </tr>
     </thead>
     <tbody style="max-height: 400px;">
-    <CFOUTPUT QUERY="Products">
+    {% for product in client.product_set.all %}
+        {% if product.is_active or active_filter == 0 %}
 
-        <cfset cases_available = cases_unshipped GT 0 ? remain - cases_unshipped : remain>
-
-        <CFLOOP LIST="#columnList#" INDEX="col">
-            <CFSET Products[col][currentRow] = Replace(Products[col][currentRow],'"',"&quot;")>
-        </CFLOOP>
-
-        <CFQUERY NAME="PendingReceivables" DATASOURCE="#DSN#">
-        SELECT * FROM Transactions
-        WHERE productid=#productid#
-        AND direction=0
-        AND cases IS NULL
-        </CFQUERY>
-
-        <tr class="product <CFIF active IS 0>deleted</CFIF>" id="product_#productid#" location_id="<CFIF locationid IS "">0<CFELSE>#locationid#</CFIF>">
-            <td style="width: 100px;" class="text editable clickable" productid="#productid#"><input type="text" id="itemnum_#productid#" value="#itemnum#" productid="#productid#" style="width: 80px;" maxlength="12" /></td>
-            <td style="width: 110px;" class="text editable clickable" productid="#productid#"><input type="text" id="ctag_#productid#" value="#ctag#" productid="#productid#" style="width: 100px;" maxlength="16" /></td>
-            <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text clickable location" location_id="#locationid#" productid="#productid#">#location_name#</td>
-            <td style="width: 434px;" class="text editable clickable" productid="#productid#">
-                <input type="text" id="pname_#productid#" value="#pname#" productid="#productid#" style="width: 280px;" maxlength="500" />
+        <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
+            <td style="width: 100px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="itemnum_{{ product.id }}" value="{{ product.item_number }}"  productid="{{ product.id }}" style="width: 80px;" maxlength="12" /></td>
+            <td style="width: 110px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="ctag_{{ product.id }}" value="{{ product.client_product_id }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" /></td>
+            <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text clickable location" location_id="{{ product.location.id }}" productid="{{ product.id }}">{{ product.location.name }}</td>
+            <td style="width: 434px;" class="text editable clickable" productid="{{ product.id }}">
+                <input type="text" id="pname_{{ product.id }}" value="{{ product.name }}" productid="{{ product.id }}" style="width: 280px;" maxlength="500" />
                 <span class="account-label">
-                    <cfif account IS 1>
+                    {% if product.account_prepay_type == 1 %}
                         INVQ
-                    <cfelseif account IS 2>
+                    {% elif product.account_prepay_type == 2 %}
                         Prepaid
-                    </cfif>
+                    {% endif %}
                 </span>
             </td>
-            <td style="width: 120px;" class="numeric editable clickable" productid="#productid#"><input type="text" id="packing_#productid#" value="#NumberFormat(packing,",")#" productid="#productid#" style="width: 80px;" maxlength="8" /></td>
-            <td style="width: 140px;" class="numeric editable clickable" productid="#productid#">
-                <input type="text" id="remain_#productid#" value="#NumberFormat(cases_available,",")#" productid="#productid#" style="width: 80px;" maxlength="8" />
-                <cfif cases_available IS NOT remain>
-                    <span class="cases-available">#NumberFormat(remain,",")#</span>
-                </cfif>
+            <td style="width: 120px;" class="numeric editable clickable" productid="{{ product.id }}"><input type="text" id="packing_{{ product.id }}" value="{{ product.packing|intcomma }}" productid="{{ product.id }}" style="width: 80px;" maxlength="8" /></td>
+            <td style="width: 140px;" class="numeric editable clickable" productid="{{ product.id }}">
+                <input type="text" id="remain_{{ product.id }}" value="{{ product.cases_available|intcomma }}" productid="{{ product.id }}" style="width: 80px;" maxlength="8" />
+                {% if product.cases_available != product.cases_inventory %}
+                    <span class="cases-available">{{ product.cases_inventory|intcomma }}</span>
+                {% endif %}
             </td>
-            <td style="width: 124px;" class="numeric clickable" productid="#productid#"><span class="<CFIF low IS 1>low_qty</CFIF>">#NumberFormat(totalq,",")#</span></td>
-            <td style="width: 20px;" class="spacer20 clickable" productid="#productid#"></td>
-            <td style="width: 22px;" class="action" id="action_incoming_#productid#"><CFIF active IS 1><a href="javascript:nop()" onClick="setupProductTransfer(#productid#, null)" class="ui-icon ui-icon-transfer-e-w" title="Transfer"></a></CFIF></td>
-            <td style="width: 22px;" class="action" id="action_incoming_#productid#"><CFIF active IS 1><a href="javascript:nop()" onClick="incomingProduct(#productid#)" class="ui-icon ui-icon-clipboard" title="Incoming"></a><CFELSE><a href="javascript:nop()" onClick="deleteProduct(#productid#,true)" class="ui-icon ui-icon-trash" title="Clear Permanently"></a></CFIF></td>
-            <td style="width: 22px;" class="action" id="action_delete_#productid#"><CFIF active IS 1><a href="javascript:nop()" onClick="deleteProduct(#productid#,false)" class="ui-icon ui-icon-trash" title="Delete"></a><CFELSE><a href="javascript:nop()" onClick="undeleteProduct(#productid#)" class="ui-icon ui-icon-cancel" title="Restore"></a></CFIF></td>
-            <td style="width: 22px;" class="action" id="action_history_#productid#"><a href="javascript:nop()" onClick="showProductHistory(#productid#,null,null)" class="ui-icon ui-icon-clock" title="History"></a></td>
+            <td style="width: 124px;" class="numeric clickable" productid="{{ product.id }}"><span class="{% if product.is_low %}low_qty{% endif %}">{{ product.units_inventory|intcomma }}</span></td>
+            <td style="width: 20px;" class="spacer20 clickable" productid="{{ product.id }}"></td>
+            <td style="width: 22px;" class="action" id="action_incoming_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="setupProductTransfer({{ product.id }}, null)" class="ui-icon ui-icon-transfer-e-w" title="Transfer"></a>{% endif %}</td>
+            <td style="width: 22px;" class="action" id="action_incoming_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="incomingProduct({{ product.id }})" class="ui-icon ui-icon-clipboard" title="Incoming"></a>{% else %}<a href="javascript:nop()" onClick="deleteProduct({{ product.id }},true)" class="ui-icon ui-icon-trash" title="Clear Permanently"></a>{% endif %}</td>
+            <td style="width: 22px;" class="action" id="action_delete_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="deleteProduct({{ product.id }},false)" class="ui-icon ui-icon-trash" title="Delete"></a>{% else %}<a href="javascript:nop()" onClick="undeleteProduct({{ product.id }})" class="ui-icon ui-icon-cancel" title="Restore"></a>{% endif %}</td>
+            <td style="width: 22px;" class="action" id="action_history_{{ product.id }}"><a href="javascript:nop()" onClick="showProductHistory({{ product.id }},null,null)" class="ui-icon ui-icon-clock" title="History"></a></td>
 
-            <td style="width: 30px;" class="glyph flashing"><CFIF PendingReceivables.recordCount GT 0><a href="javascript:nop()" onClick="showProductHistory(#productid#,null,null)" title="Pending Incoming">&##10144;</a></CFIF></td>
+            <td style="width: 30px;" class="glyph flashing">{% if product.pending_receivables.count > 0 %}<a href="javascript:nop()" onClick="showProductHistory({{ product.id }},null,null)" title="Pending Incoming">&#10144;</a>{% endif %}</td>
         </tr>
-    </CFOUTPUT>
-    <CFQUERY NAME="Locations" DATASOURCE="#DSN#">
-    SELECT locationid,name FROM Locations
-    WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-    ORDER BY name
-    </CFQUERY>
-    <CFIF IsDefined("URL.active_filter") AND URL.active_filter IS 1>
+        {% endif %}
+    {% endfor %}
+
+    {% if active_filter %}
         <tr class="product" id="product_new" onClick="selectProduct('new')">
             <td style="width: 100px;" class="text editable" productid="new"><input type="text" id="itemnum_new" productid="new" style="width: 80px;" maxlength="12" /></td>
             <td style="width: 110px;" class="text editable" productid="new"><input type="text" id="ctag_new" productid="new" style="width: 100px;" maxlength="16" /></td>
             <td style="width: 94px;" class="text" productid="new">
                 <select id="location_new" style="width: 70px">
                     <option value="0">(None)</option>
-                <CFOUTPUT QUERY="Locations">
-                    <option value="#locationid#">#name#</option>
-                </CFOUTPUT>
+                    {% for location in client.location_set.all %}
+                       {% if location.is_active %}
+                        <option value="{{ location.id }}">{{ location.name }}</option>
+                        {% endif %}
+                    {% endfor %}
                 </select>
             </td>
             <td style="width: 230px;" class="text editable" productid="new"><input type="text" id="pname_new" productid="new" style="width: 190px;" maxlength="255" /></td>
@@ -117,7 +82,6 @@ ORDER BY itemnum
             <td style="width: 22px;" class="action"><a href="javascript:nop()" onClick="saveProduct('new')">add</a></td>
             <td style="width: 30px;" class="glyph"></td>
         </tr>
-    </CFIF>
+    {% endif %}
     </tbody>
 </table>
-

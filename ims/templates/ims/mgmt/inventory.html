@@ -5,20 +5,6 @@
 
 <div class="content">
     
-<CFIF IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
-    <CFQUERY NAME="Customer" DATASOURCE="#DSN#">
-    SELECT * FROM Customers
-    WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-    </CFQUERY>
-    <CFIF Customer.recordcount IS 0>
-        <div class="error">An invalid customer ID was specified.</div>
-        <CFABORT>
-    </CFIF>
-<CFELSE>
-    <div class="error">An invalid customer ID was specified.</div>
-    <CFABORT>
-</CFIF>
-
 <CFIF IsDefined("URL.history") AND IsNumeric(URL.history)>
     <CFOUTPUT>
     <script type="text/javascript">
@@ -36,7 +22,7 @@
 </CFIF>
 
 
-<div class="customerheader"><CFOUTPUT>#Customer.coname#</CFOUTPUT></div>
+<div class="customerheader">{{ client.company_name }}</div>
 
 {% with page_selected="inventory" %}
 {% include "ims/mgmt/inc_nav.html" %}
@@ -110,11 +96,9 @@ The product details have been updated.
 </div>
 
 
-<CFOUTPUT>
 <input type="hidden" id="customerid" value="{{ client.id }}" />
 <input type="hidden" id="cases_new" value="0" />
 <input type="hidden" id="contqty_new" value="0" />
-</CFOUTPUT>
 
 
 {% endblock %}

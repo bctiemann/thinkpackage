@@ -98,9 +98,14 @@ def mgmt_inventory(request, client_id=None, product_id=None):
 
 def mgmt_inventory_list(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
+    try:
+        active_filter = int(request.GET.get('active_filter', 0))
+    except:
+        active_filter = 0
 
     context = {
         'client': client,
+        'active_filter': active_filter,
     }
     return render(request, 'ims/mgmt/inventory_list.html', context)
 

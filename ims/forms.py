@@ -128,14 +128,7 @@ class ProductForm(forms.ModelForm):
         self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
     def clean_contracted_quantity(self):
-        logger.warning(self.cleaned_data)
-
         return self.cleaned_data.get('contracted_quantity') / self.cleaned_data.get('packing')
-        data = self.cleaned_data.get('parent')
-        logger.warning(data)
-        if data == None:
-            return None
-        return Client.objects.get(pk=data)
 
     class Meta:
         model = Product

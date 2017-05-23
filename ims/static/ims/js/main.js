@@ -440,42 +440,44 @@ function selectProduct(productid,load_details,elem) {
 
 function saveProduct(productid) {
     var product = {
-        fnc:           'update',
-        productid:     productid == 'new' ? null : productid,
-        customerid:    $('#customerid').val(),
-        itemnum:       $('#itemnum_'+productid).val(),
-        locationid:    $('#location_'+productid).val() ? $('#location_'+productid).val() : null,
-        ctag:          $('#ctag_'+productid).val(),
-        pname:         $('#pname_'+productid).val(),
-        packing:       Math.floor($('#packing_'+productid).val()),
-        remain:        Math.floor($('#remain_'+productid).val()),
-        PO:            $('#PO_'+productid).val() ? $('#PO_'+productid).val() : null,
-        contqty:       Math.floor($('#contqty_'+productid).val()),
-        unitprice:     $('#unitprice_'+productid).val() ? $('#unitprice_'+productid).val() : null,
-        GW:            isNaN(parseFloat($('#GW_'+productid).val())) ? 0 : parseFloat($('#GW_'+productid).val()),
-        length:        isNaN(parseFloat($('#length_'+productid).val())) ? 0 : parseFloat($('#length_'+productid).val()),
-        width:         isNaN(parseFloat($('#width_'+productid).val())) ? 0 : parseFloat($('#width_'+productid).val()),
-        height:        isNaN(parseFloat($('#height_'+productid).val())) ? 0 : parseFloat($('#height_'+productid).val()),
-        prodtype:      $('#prodtype_'+productid).val(),
-        account:       $('#account_'+productid).val(),
+        item_number:          $('#itemnum_'+productid).val(),
+        locationid:           $('#location_'+productid).val() ? $('#location_'+productid).val() : null,
+        client_product_id:    $('#ctag_'+productid).val(),
+        name:                 $('#pname_'+productid).val(),
+        packing:              Math.floor($('#packing_'+productid).val()),
+        cases_inventory:      Math.floor($('#remain_'+productid).val()),
+        PO:                   $('#PO_'+productid).val() ? $('#PO_'+productid).val() : null,
+        contracted_quantity:  Math.floor($('#id_contracted_quantity').val()),
+        unit_price:           $('#id_unit_price').val() ? $('#id_unit_price').val() : null,
+        gross_weight:         isNaN(parseFloat($('#id_gross_weight').val())) ? 0 : parseFloat($('#id_gross_weight').val()),
+        length:               isNaN(parseFloat($('#id_length').val())) ? 0 : parseFloat($('#id_length').val()),
+        width:                isNaN(parseFloat($('#id_width').val())) ? 0 : parseFloat($('#id_width').val()),
+        height:               isNaN(parseFloat($('#id_height').val())) ? 0 : parseFloat($('#id_height').val()),
+        is_domestic:          $('#id_is_domestic').val(),
+        account_prepay_type:  $('#id_account_prepay_type').val(),
     };
     if (units == 'imperial') {
-        product.GW *= 0.453592;
+        product.gross_weight *= 0.453592;
         product.length *= 2.54;
         product.height *= 2.54;
         product.width *= 2.54;
     }
 console.log(product);
-    var url = cgiroot+'ajax_product_action.cfm';
+    var url = cgiroot + 'product/';
+    if (productid) {
+        url += productid + '/';
+    } else {
+        url += 'add/' + $('#customerid').val() + '/';
+    }
     $.post(url,product,function(data) {
 console.log(data);
-        if (data.STATUS == 'success') {
+        if (data.success) {
             globals['productid'] = null;
             refreshInventory();
             selectProduct(null,false);
             $('#dialog_saveproduct_result').dialog("open");
         } else {
-            alert(data.MESSAGE);
+            alert(data.message);
         }
     },'json');
 }

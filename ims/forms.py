@@ -127,9 +127,33 @@ class ProductForm(forms.ModelForm):
         self.initial['unit_price'] = '{:0.4f}'.format(self.instance.unit_price)
         self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
+    def clean_contracted_quantity(self):
+        logger.warning(self.cleaned_data)
+
+        return self.cleaned_data.get('contracted_quantity') / self.cleaned_data.get('packing')
+        data = self.cleaned_data.get('parent')
+        logger.warning(data)
+        if data == None:
+            return None
+        return Client.objects.get(pk=data)
+
     class Meta:
         model = Product
-        fields = ['account_prepay_type', 'contracted_quantity', 'unit_price', 'gross_weight', 'length', 'width', 'height', 'is_domestic']
+        fields = [
+            'item_number',
+            'client_product_id',
+            'name',
+            'packing',
+            'cases_inventory',
+            'account_prepay_type',
+            'contracted_quantity',
+            'unit_price',
+            'gross_weight',
+            'length',
+            'width',
+            'height',
+            'is_domestic',
+        ]
         widgets = {
             'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
             'contracted_quantity': forms.NumberInput(attrs={'style': 'width: 100px;'}),

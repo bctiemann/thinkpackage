@@ -340,6 +340,9 @@ class Product(models.Model):
     def __unicode__(self):
         return (self.name)
 
+    def get_absolute_url(self):
+        return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
+
     class Meta:
         db_table = 'Products'
         ordering = ['item_number']

@@ -372,23 +372,10 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductUpdate, self).get_context_data(*args, **kwargs)
-        context['last_received'] = Receivable.objects.order_by('-date_created').first()
+        context['last_received'] = Receivable.objects.filter(transaction__product=self.object).order_by('-date_created').first()
         context['last_shipped'] = Shipment.objects.filter(transaction__product=self.object).order_by('-date_created').first()
         return context
 
-#<CFQUERY NAME="LastShipped" DATASOURCE="#DSN#">
-#SELECT * FROM Shipments,Transactions
-#WHERE Transactions.productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
-#AND Transactions.shipmentid=Shipments.shipmentid
-#ORDER BY createdon DESC
-#LIMIT 1
-#</CFQUERY>
-
-#SELECT * FROM Receivables,Transactions
-#WHERE Receivables.productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
-#AND Transactions.receivableid=Receivables.receivableid
-#ORDER BY createdon DESC
-#LIMIT 1
 
 class ProductDelete(AjaxableResponseMixin, UpdateView):
     model = Product

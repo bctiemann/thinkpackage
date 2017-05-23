@@ -288,9 +288,9 @@ class Product(models.Model):
     client_product_id = models.CharField(max_length=24, blank=True, db_column='ctag')
     contracted_quantity = models.BigIntegerField(null=True, blank=True, db_column='contqty')
     is_active = models.BooleanField(default=True, db_column='active')
-    length = models.CharField(max_length=10, blank=True)
-    width = models.CharField(max_length=10, blank=True)
-    height = models.CharField(max_length=10, blank=True)
+    length = models.FloatField(max_length=10, blank=True)
+    width = models.FloatField(max_length=10, blank=True)
+    height = models.FloatField(max_length=10, blank=True)
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
     account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, db_column='account')
@@ -308,6 +308,30 @@ class Product(models.Model):
     @property
     def cases_unshipped(self):
         return Shipment.objects.filter(transaction__product=self, date_shipped__isnull=True).aggregate(cases_unshipped=Sum('transaction__cases'))['cases_unshipped'] or 0
+
+    @property
+    def contracted_quantity_units(self):
+        return self.contracted_quantity * self.packing
+
+    @property
+    def total_price(self):
+        return self.unit_price * self.contracted_quantity * self.packing
+
+    @property
+    def gross_weight_imperial(self):
+        return self.gross_weight * 2.20462
+
+    @property
+    def length_imperial(self):
+        return float(self.length) * 0.393701
+
+    @property
+    def width_imperial(self):
+        return float(self.width) * 0.393701
+
+    @property
+    def height_imperial(self):
+        return float(self.height) * 0.393701
 
     @property
     def cases_available(self):

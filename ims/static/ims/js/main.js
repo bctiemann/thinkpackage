@@ -426,10 +426,10 @@ function selectProduct(productid,load_details,elem) {
             $('#product_details').load(url,function() {
                 $('.switch-units').click(function() {
                     units = units == 'metric' ? 'imperial' : 'metric';
-                    $('#length_'+productid).val($('#length_' + units + '_' + productid).val());
-                    $('#width_'+productid).val($('#width_' + units + '_' + productid).val());
-                    $('#height_'+productid).val($('#height_' + units + '_' + productid).val());
-                    $('#GW_'+productid).val($('#GW_' + units + '_' + productid).val());
+                    $('#id_length').val($('#length_' + units).val());
+                    $('#id_width').val($('#width_' + units).val());
+                    $('#id_height').val($('#height_' + units).val());
+                    $('#id_gross_weight').val($('#gross_weight_' + units).val());
                     $('.switch-units.weight').html(units == 'metric' ? 'kg' : 'lb');
                     $('.switch-units.length').html(units == 'metric' ? 'cm' : 'in');
                 });

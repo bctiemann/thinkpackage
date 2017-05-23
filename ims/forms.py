@@ -21,6 +21,11 @@ WAREHOUSING_CHOICES = (
     (False, 'No warehousing required'),
 )
 
+DOMESTIC_CHOICES = (
+    (False, 'Import (12-14 wks)'),
+    (True, 'Domestic (6-8 wks)'),
+)
+
 
 class ClientForm(forms.ModelForm):
     company_name = forms.CharField(label='Customer name', widget=forms.TextInput(attrs={'placeholder': 'Customer name'}))
@@ -116,10 +121,22 @@ class LocationForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.initial['contracted_quantity'] = self.instance.contracted_quantity_units
+        self.initial['unit_price'] = '{:0.4f}'.format(self.instance.unit_price)
+        self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
     class Meta:
         model = Product
-        fields = ['account_prepay_type']
+        fields = ['account_prepay_type', 'contracted_quantity', 'unit_price', 'gross_weight', 'length', 'width', 'height', 'is_domestic']
         widgets = {
             'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
+            'contracted_quantity': forms.NumberInput(attrs={'style': 'width: 100px;'}),
+            'unit_price': forms.NumberInput(attrs={'style': 'width: 65px;', 'min': 0, 'step': '0.0001', 'onchange': 'this.value = parseFloat(this.value).toFixed(4);'}),
+            'gross_weight': forms.NumberInput(attrs={'style': 'width: 50px;'}),
+            'length': forms.NumberInput(attrs={'style': 'width: 50px;'}),
+            'width': forms.NumberInput(attrs={'style': 'width: 50px;'}),
+            'height': forms.NumberInput(attrs={'style': 'width: 50px;'}),
+            'is_domestic': forms.Select(choices=DOMESTIC_CHOICES, attrs={'style': 'display: block;'}),
         }

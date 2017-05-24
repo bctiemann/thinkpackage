@@ -123,9 +123,12 @@ class LocationForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
-        self.initial['contracted_quantity'] = self.instance.contracted_quantity_units
-        self.initial['unit_price'] = '{:0.4f}'.format(self.instance.unit_price)
-        self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
+        if self.instance.contracted_quantity_units:
+            self.initial['contracted_quantity'] = self.instance.contracted_quantity_units
+        if self.instance.unit_price:
+            self.initial['unit_price'] = '{:0.4f}'.format(self.instance.unit_price)
+        if self.instance.gross_weight:
+            self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
     def clean_contracted_quantity(self):
         return self.cleaned_data.get('contracted_quantity') / self.cleaned_data.get('packing')

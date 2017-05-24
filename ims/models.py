@@ -11,6 +11,9 @@ from localflavor.us.us_states import STATE_CHOICES
 
 import uuid
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class SoftDeleteManager(models.Manager):
     def get_queryset(self):
@@ -319,18 +322,26 @@ class Product(models.Model):
 
     @property
     def gross_weight_imperial(self):
+        if not self.gross_weight:
+            return None
         return self.gross_weight * 2.20462
 
     @property
     def length_imperial(self):
+        if not self.length:
+            return None
         return float(self.length) * 0.393701
 
     @property
     def width_imperial(self):
+        if not self.width:
+            return None
         return float(self.width) * 0.393701
 
     @property
     def height_imperial(self):
+        if not self.height:
+            return None
         return float(self.height) * 0.393701
 
     @property

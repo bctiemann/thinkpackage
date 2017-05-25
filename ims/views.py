@@ -139,6 +139,15 @@ def mgmt_shipments_list(request, client_id=None):
     return render(request, 'ims/mgmt/shipments_list.html', context)
 
 
+def mgmt_product_history(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    context = {
+        'product': product,
+    }
+    return render(request, 'ims/mgmt/product_history.html', context)
+
+
 def mgmt_customers_list(request):
     filter = request.GET.get('filter', None)
 
@@ -426,6 +435,13 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         logger.warning(form.data)
         response = super(ReceivableCreate, self).form_valid(form)
+        Transaction.create({
+            'date_created': self.object.date_received,
+            'product': self.object.product,
+            'is_outbound': False,
+            'shipment_order': self.object.shipment_order,
+            'receivable': self.object,
+        })
         logger.info('Receivable {0} created.'.format(self.object))
         return response
 

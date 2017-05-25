@@ -27,6 +27,7 @@ urlpatterns_mgmt = [
     url(r'^product/add/(?P<client_id>\d+)/$', ims_views.ProductCreate.as_view(), name='mgmt-product-add'),
     url(r'^product/(?P<product_id>\d+)/$', ims_views.ProductUpdate.as_view(), name='mgmt-product-update'),
     url(r'^product/(?P<product_id>\d+)/delete/$', ims_views.ProductDelete.as_view(), name='mgmt-product-delete'),
+    url(r'^product/(?P<product_id>\d+)/history/$', ims_views.mgmt_product_history, name='mgmt-product-history'),
 
     url(r'^receivable/add/(?P<product_id>\d+)/$', ims_views.ReceivableCreate.as_view(), name='mgmt-receivable-create'),
 
@@ -40,6 +41,7 @@ urlpatterns_mgmt = [
 
     url(r'^(?P<client_id>\d+)/inventory/list/$', ims_views.mgmt_inventory_list, name='mgmt-inventory-list'),
     url(r'^(?P<client_id>\d+)/shipments/list/$', ims_views.mgmt_shipments_list, name='mgmt-shipments-list'),
+
 ]
 
 urlpatterns = [

@@ -359,6 +359,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
     def form_valid(self, form):
+        logger.warning(form.data)
         response = super(ProductCreate, self).form_valid(form)
         self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
         self.object.save()

@@ -443,7 +443,7 @@ function saveProduct(productid) {
     var product = {
         client:               $('#customerid').val(),
         item_number:          $('#itemnum_'+productid).val(),
-        locationid:           $('#location_'+productid).val() ? $('#location_'+productid).val() : null,
+        location:             $('#location_'+productid).val() || null,
         client_product_id:    $('#ctag_'+productid).val(),
         name:                 $('#pname_'+productid).val(),
         packing:              Math.floor($('#packing_'+productid).val()),

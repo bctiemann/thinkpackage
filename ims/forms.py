@@ -136,6 +136,9 @@ class ProductForm(forms.ModelForm):
             return 0
         return self.cleaned_data.get('contracted_quantity') / self.cleaned_data.get('packing')
 
+    def clean_location(self):
+        return self.instance.location
+
     class Meta:
         model = Product
         fields = [
@@ -154,6 +157,7 @@ class ProductForm(forms.ModelForm):
             'width',
             'height',
             'is_domestic',
+            'location',
         ]
         widgets = {
             'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),

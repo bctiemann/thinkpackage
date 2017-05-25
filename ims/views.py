@@ -435,13 +435,15 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         logger.warning(form.data)
         response = super(ReceivableCreate, self).form_valid(form)
-        Transaction.create({
-            'date_created': self.object.date_received,
-            'product': self.object.product,
-            'is_outbound': False,
-            'shipment_order': self.object.shipment_order,
-            'receivable': self.object,
-        })
+        transaction = Transaction(
+            date_created = self.object.date_received,
+            product = self.object.product,
+            client = self.object.client,
+            is_outbound = False,
+            shipment_order = self.object.shipment_order,
+            receivable = self.object,
+        )
+        transaction.save()
         logger.info('Receivable {0} created.'.format(self.object))
         return response
 

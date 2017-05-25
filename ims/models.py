@@ -291,9 +291,10 @@ class Product(models.Model):
     client_product_id = models.CharField(max_length=24, blank=True, db_column='ctag')
     contracted_quantity = models.BigIntegerField(null=True, blank=True, db_column='contqty')
     is_active = models.BooleanField(default=True, db_column='active')
-    length = models.FloatField(max_length=10, blank=True)
-    width = models.FloatField(max_length=10, blank=True)
-    height = models.FloatField(max_length=10, blank=True)
+    is_deleted = models.BooleanField(default=False)
+    length = models.FloatField(max_length=10, null=True, blank=True)
+    width = models.FloatField(max_length=10, null=True, blank=True)
+    height = models.FloatField(max_length=10, null=True, blank=True)
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
     account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, db_column='account')
@@ -314,10 +315,14 @@ class Product(models.Model):
 
     @property
     def contracted_quantity_units(self):
+        if not self.contracted_quantity or not self.packing:
+            return None
         return self.contracted_quantity * self.packing
 
     @property
     def total_price(self):
+        if not self.unit_price or not self.contracted_quantity or not self.packing:
+            return None
         return self.unit_price * self.contracted_quantity * self.packing
 
     @property

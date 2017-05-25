@@ -131,16 +131,20 @@ class ProductForm(forms.ModelForm):
             self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
     def clean_contracted_quantity(self):
+        if not self.cleaned_data.get('packing'):
+            return 0
         return self.cleaned_data.get('contracted_quantity') / self.cleaned_data.get('packing')
 
     class Meta:
         model = Product
         fields = [
+            'client',
             'item_number',
             'client_product_id',
             'name',
             'packing',
             'cases_inventory',
+            'units_inventory',
             'account_prepay_type',
             'contracted_quantity',
             'unit_price',

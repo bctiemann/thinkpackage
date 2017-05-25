@@ -103,10 +103,12 @@ def mgmt_inventory_list(request, client_id=None):
     except:
         active_filter = 0
 
+    products = client.product_set.filter(is_deleted=False)
+
     if active_filter:
-        products = client.product_set.filter(is_active=True)
+        products = products.filter(is_active=True)
     else:
-        products = client.product_set.filter(is_active=False)
+        products = products.filter(is_active=False)
 
     context = {
         'client': client,
@@ -181,6 +183,7 @@ def mgmt_contact_form(request):
     custcontact = get_object_or_404(CustContact, client=client, pk=custcontact_id)
 
     context = {
+        'client': client,
         'custcontact': custcontact,
     }
     return render(request, 'ims/mgmt/contact_form.html', context)
@@ -241,6 +244,7 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
         self.object.custcontact_set.update(is_primary=False)
         if form.data['primary_contact']:
             CustContact.objects.filter(pk=form.data['primary_contact']).update(is_primary=True)
+        
         return super(ClientUpdate, self).form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
@@ -254,10 +258,10 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
     form_class = LocationForm
     template_name = 'ims/mgmt/location_form.html'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(LocationCreate, self).get_context_data(*args, **kwargs)
-        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
-        return context
+#    def get_context_data(self, *args, **kwargs):
+#        context = super(LocationCreate, self).get_context_data(*args, **kwargs)
+#        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+#        return context
 
 
 class LocationUpdate(AjaxableResponseMixin, UpdateView):
@@ -287,6 +291,11 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
     form_class = CustContactForm
     template_name = 'ims/mgmt/contact_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+    def form_valid(self, form):
+        response = super(CustContactCreate, self).form_valid(form)
+        logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
+        return response
 
     def get_context_data(self, *args, **kwargs):
         logger.warning(self.kwargs)
@@ -349,6 +358,13 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
     template_name = 'ims/mgmt/product_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
+    def form_valid(self, form):
+        response = super(ProductCreate, self).form_valid(form)
+        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
+        self.object.save()
+        logger.info('Product {0} ({1}) created.'.format(self.object, self.object.id))
+        return response
+
 #    def get_context_data(self, *args, **kwargs):
 #        logger.warning(self.kwargs)
 #        context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
@@ -366,8 +382,10 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Product, pk=self.kwargs['product_id'])
 
     def form_valid(self, form):
-        logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
+        logger.warning(form.data)
+        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
         response = super(ProductUpdate, self).form_valid(form)
+        logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
         return response
 
     def get_context_data(self, *args, **kwargs):
@@ -379,7 +397,19 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
 
 class ProductDelete(AjaxableResponseMixin, UpdateView):
     model = Product
-    fields = ['is_active']
+    fields = ['is_active', 'is_deleted']
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+        response = super(ProductDelete, self).form_valid(form)
+        if self.object.is_active:
+            logger.info('Product {0} ({1}) undeleted.'.format(self.object, self.object.id))
+        else:
+            if self.object.is_deleted:
+                logger.info('Product {0} ({1}) deleted permanently.'.format(self.object, self.object.id))
+            else:
+                logger.info('Product {0} ({1}) deleted.'.format(self.object, self.object.id))
+        return response
 
     def get_object(self):
         return get_object_or_404(Product, pk=self.kwargs['product_id'])

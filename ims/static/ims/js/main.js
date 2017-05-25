@@ -310,7 +310,8 @@ console.log(data);
     },'json');
 }
 
-function updateCustContact(customerid,custcontactid) {
+function updateCustContact(custcontactid) {
+    var customerid = $('#id_client').val();
     var custcontact = {
         client:           customerid,
         custcontact:      custcontactid,
@@ -440,6 +441,7 @@ function selectProduct(productid,load_details,elem) {
 
 function saveProduct(productid) {
     var product = {
+        client:               $('#customerid').val(),
         item_number:          $('#itemnum_'+productid).val(),
         locationid:           $('#location_'+productid).val() ? $('#location_'+productid).val() : null,
         client_product_id:    $('#ctag_'+productid).val(),
@@ -464,11 +466,12 @@ function saveProduct(productid) {
     }
 console.log(product);
     var url = cgiroot + 'product/';
-    if (productid) {
-        url += productid + '/';
-    } else {
+    if (productid == 'new') {
         url += 'add/' + $('#customerid').val() + '/';
+    } else {
+        url += productid + '/';
     }
+console.log(url);
     $.post(url,product,function(data) {
 console.log(data);
         if (data.success) {
@@ -617,8 +620,17 @@ console.log(data);
 }
 
 function execute_deleteProduct(active, permanent) {
-    var product = {fnc: 'delete', productid: globals['productid'], active: active, permanent: permanent ? 1 : 0}
-    var url = cgiroot+'ajax_product_action.cfm';
+    var product = {
+        fnc: 'delete',
+        productid: globals['productid'],
+        active: active,
+        is_active: active > 0,
+        permanent: permanent,
+        is_deleted: permanent,
+    }
+console.log(product);
+//    var url = cgiroot+'ajax_product_action.cfm';
+    var url = cgiroot + 'product/' + globals['productid'] + '/delete/';
     $.post(url,product,function(data) {
         globals['productid'] = null;
         globals['history'] = null;

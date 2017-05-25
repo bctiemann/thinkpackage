@@ -870,6 +870,7 @@ span.low_qty {
 .account-label {
 	font-size: 10px;
 	margin-left: 10px;
+	display: inline-block;
 }
 
 .bol-icon {

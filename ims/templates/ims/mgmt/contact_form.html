@@ -57,7 +57,7 @@
     </div>
     <div class="form_header">
     
-        <button class="actionbtn floatright" id="contact_submit" onClick="updateCustContact({{ client.id }}, {% if custcontact %}{{ custcontact.id }}{% else %}null{% endif %})">
+        <button class="actionbtn floatright" id="contact_submit" onClick="updateCustContact({% if custcontact %}{{ custcontact.id }}{% else %}null{% endif %})">
         {% if custcontact %}Update contact{% else %}Add contact{% endif %}
         </button>
         
@@ -68,6 +68,7 @@
     </div>      
     
     <input type="hidden" id="isprimary" value="{{ custcontact.is_primary }}" />
+    <input type="hidden" id="id_client" value="{{ client.id }}" />
     
     </form>
 

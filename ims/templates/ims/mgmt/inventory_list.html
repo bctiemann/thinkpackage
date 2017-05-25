@@ -57,7 +57,7 @@
     {% endfor %}
 
     {% if active_filter %}
-        <tr class="product" id="product_new" onClick="selectProduct('new')">
+        <tr class="product" id="product_new" onClick="selectProduct('new', false)">
             <td style="width: 100px;" class="text editable" productid="new"><input type="text" id="itemnum_new" productid="new" style="width: 80px;" maxlength="12" /></td>
             <td style="width: 110px;" class="text editable" productid="new"><input type="text" id="ctag_new" productid="new" style="width: 100px;" maxlength="16" /></td>
             <td style="width: 94px;" class="text" productid="new">
@@ -70,7 +70,17 @@
                     {% endfor %}
                 </select>
             </td>
-            <td style="width: 230px;" class="text editable" productid="new"><input type="text" id="pname_new" productid="new" style="width: 190px;" maxlength="255" /></td>
+            <td style="width: 230px;" class="text editable" productid="new">
+                <input type="text" id="pname_new" productid="new" style="width: 280px;" maxlength="255" />
+                <span class="account-label">
+                <select id="account_prepay_type_new">
+                    <option value="0">INVQ</option>
+                    <option value="1">Prepaid</option>
+                </select>
+                </span>
+<input type="hidden" id="id_account_prepay_type" productid="new" value="1" />
+<input type="hidden" id="id_contracted_quantity" productid="new" value="0" />
+            </td>
             <td style="width: 120px;" class="numeric editable" productid="new"><input type="text" id="packing_new" productid="new" style="width: 80px;" maxlength="10" /></td>
             <td style="width: 140px;" class="numeric editable" productid="new"><input type="hidden" id="remain_new" productid="new" style="width: 80px;" maxlength="10" /></td>
             <td style="width: 124px;" class="numeric" productid="new"><input type="hidden" id="totalq_new" productid="new" style="width: 100px;" /></td>

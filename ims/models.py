@@ -427,6 +427,7 @@ class Receivable(models.Model):
     id = models.AutoField(primary_key=True, db_column='receivableid')
     client = models.ForeignKey('Client', db_column='customerid')
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+    date_received = models.DateTimeField(null=True, blank=True)
     purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
     product = models.ForeignKey('Product', db_column='productid')
@@ -434,6 +435,9 @@ class Receivable(models.Model):
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
+
+    def get_absolute_url(self):
+        return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
 
     class Meta:
         db_table = 'Receivables'

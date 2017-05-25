@@ -1,0 +1,52 @@
+<CFIF NOT IsDefined("libloaded")>
+        <CFINCLUDE TEMPLATE="inc_lib.cfm">
+</CFIF>
+
+<CFIF IsDefined("URL.productid") AND IsNumeric(URL.productid)>
+<CFELSEIF IsDefined("URL.productid")>
+    <CFABORT>
+<CFELSE>
+    <div class="error">Invalid product ID specified.</div>
+    <CFABORT>
+</CFIF>
+
+<CFQUERY NAME="Product" DATASOURCE="#DSN#">
+SELECT * FROM Products
+WHERE productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
+</CFQUERY>
+
+<CFQUERY NAME="LastRcvd" DATASOURCE="#DSN#">
+SELECT * FROM Receivables
+WHERE productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
+ORDER BY createdon DESC
+LIMIT 1
+</CFQUERY>
+
+<CFOUTPUT QUERY="Product">
+
+<div class="form_header dark">
+<button class="actionbtn floatright" id="product_submit" onClick="addReceivable({{ product.id }})">Save Receivable</button>
+<span class="title">Arriving Shipment for #itemnum#: #pname#</span>
+</div>
+<table class="infotable alternating editable">
+    <thead>
+    <tr>
+        <th class="text">PO #</th>
+        <th class="text">SO #</th>
+        <th class="numeric"># cases arriving</th>
+        <th class="spacer100"></th>
+        <th class="text">Arrival date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="detail" id="productdetail_#URL.productid#">
+        <td class="text editable">{{ form.purchase_order }}</td>
+        <td class="text editable">{{ form.shipment_order }}</td>
+        <td class="numeric editable">{{ form.cases }}</td>
+        <td class="spacer100"></td>
+        <td class="text editable">{{ form.date_received }}</td>
+    </tr>
+    </tbody>
+</table>
+
+</CFOUTPUT>

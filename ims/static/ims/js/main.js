@@ -655,7 +655,8 @@ console.log(data);
 
 function incomingProduct(productid) {
     $('.product_detail').html('');
-    var url = cgiroot+'ajax_product_incoming.cfm?productid='+productid;
+//    var url = cgiroot+'ajax_product_incoming.cfm?productid='+productid;
+    var url = cgiroot + 'receivable/add/' + productid;
     $('#product_incoming').load(url,function() {
         $('tr.product').removeClass('selected');
         $('tr.product').removeClass('selected_history');
@@ -663,23 +664,27 @@ function incomingProduct(productid) {
         $('.action').removeClass('selected');
         $('#action_incoming_'+productid).addClass('selected');
 //        $('#productdetail_'+productid+' input').prop('disabled',false);
-        $('#recvdate_'+productid).datepicker();
+        $('#id_date_received').datepicker();
     });
 }
 
 function addReceivable(productid) {
     var receivable = {
-        fnc:          'addincoming',
-        productid:    productid,
-        customerid:   $('#customerid').val(),
-        PO:           $('#PO_'+productid).val(),
-        SO:           $('#SO_'+productid).val(),
-        cases:        Math.floor($('#cases_'+productid).val()),
-        recvdate:     new Date($('#recvdate_'+productid).val())
+        fnc:            'addincoming',
+        product:        productid,
+        client:         $('#customerid').val(),
+        purchase_order: $('#id_purchase_order_incoming').val(),
+        shipment_order: $('#id_shipment_order_incoming').val(),
+        cases:        Math.floor($('#id_cases_incoming').val()),
+//        date_received:  new Date($('#id_date_received').val())
+        date_received:  $('#id_date_received').val(),
     }
-    if ($('#recvdate_'+productid).val()) {
-        var url = cgiroot+'ajax_product_action.cfm';
+console.log(receivable);
+    if ($('#id_date_received').val()) {
+//        var url = cgiroot+'ajax_product_action.cfm';
+        var url = cgiroot + 'receivable/add/' + productid + '/';
         $.post(url,receivable,function(data) {
+console.log(data);
             refreshInventory();
             showProductHistory(productid);
 //            $('#dialog_addreceivable_result').dialog("open");

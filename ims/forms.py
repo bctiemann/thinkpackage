@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product
+from ims.models import Client, CustContact, Location, Product, Receivable
 from ims import utils
 
 import logging
@@ -168,4 +168,29 @@ class ProductForm(forms.ModelForm):
             'width': forms.NumberInput(attrs={'style': 'width: 50px;'}),
             'height': forms.NumberInput(attrs={'style': 'width: 50px;'}),
             'is_domestic': forms.Select(choices=DOMESTIC_CHOICES, attrs={'style': 'display: block;'}),
+        }
+
+
+class ReceivableForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ReceivableForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Receivable
+        fields = [
+            'client',
+            'product',
+            'purchase_order',
+            'shipment_order',
+            'cases',
+            'date_received',
+        ]
+        widgets = {
+            'purchase_order': forms.TextInput(attrs={'id': 'id_purchase_order_incoming', 'style': 'width: 100px;'}),
+            'shipment_order': forms.TextInput(attrs={'id': 'id_shipment_order_incoming', 'style': 'width: 100px;'}),
+            'cases': forms.NumberInput(attrs={'id': 'id_cases_incoming', 'style': 'width: 100px;'}),
+            'date_received': forms.DateInput(attrs={'style': 'width: 100px;'}),
+        }
+        initial = {
+            'cases': 7,
         }

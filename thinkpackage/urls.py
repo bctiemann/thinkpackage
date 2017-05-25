@@ -28,6 +28,8 @@ urlpatterns_mgmt = [
     url(r'^product/(?P<product_id>\d+)/$', ims_views.ProductUpdate.as_view(), name='mgmt-product-update'),
     url(r'^product/(?P<product_id>\d+)/delete/$', ims_views.ProductDelete.as_view(), name='mgmt-product-delete'),
 
+    url(r'^receivable/add/(?P<product_id>\d+)/$', ims_views.ReceivableCreate.as_view(), name='mgmt-receivable-create'),
+
     url(r'^(?P<client_id>\d+)/$', ims_views.mgmt_redirect, name='mgmt-redirect'),
 #    url(r'^(?P<client_id>\d+)/profile/$', ims_views.mgmt_profile, name='mgmt-profile'),
     url(r'^(?P<client_id>\d+)/profile/$', ims_views.ClientUpdate.as_view(), name='mgmt-profile'),

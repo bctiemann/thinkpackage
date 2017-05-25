@@ -8,8 +8,10 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable
-from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm
+from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm
 from ims import utils
+
+import math
 
 import logging
 logger = logging.getLogger(__name__)
@@ -414,3 +416,32 @@ class ProductDelete(AjaxableResponseMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(Product, pk=self.kwargs['product_id'])
+
+
+class ReceivableCreate(AjaxableResponseMixin, CreateView):
+    model = Receivable
+    form_class = ReceivableForm
+    template_name = 'ims/mgmt/receivable.html'
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+        response = super(ReceivableCreate, self).form_valid(form)
+        logger.info('Receivable {0} created.'.format(self.object))
+        return response
+
+    def get_initial(self):
+        cases = None
+        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+        if product.contracted_quantity and product.packing:
+            cases = int(math.ceil(float(product.contracted_quantity) / float(product.packing)))
+        return {
+            'cases': cases,
+        }
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReceivableCreate, self).get_context_data(*args, **kwargs)
+        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+        context['product'] = product
+        return context
+
+

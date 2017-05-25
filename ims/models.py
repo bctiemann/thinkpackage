@@ -297,7 +297,7 @@ class Product(models.Model):
     height = models.FloatField(max_length=10, null=True, blank=True)
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
-    account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, db_column='account')
+    account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, null=True, blank=True, db_column='account')
 
     @property
     def is_low(self):

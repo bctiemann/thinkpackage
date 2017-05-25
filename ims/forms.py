@@ -123,6 +123,7 @@ class LocationForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields['contracted_quantity'].required = False
         if self.instance.contracted_quantity_units:
             self.initial['contracted_quantity'] = self.instance.contracted_quantity_units
         if self.instance.unit_price:

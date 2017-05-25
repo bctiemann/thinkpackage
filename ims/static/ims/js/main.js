@@ -449,7 +449,7 @@ function saveProduct(productid) {
         packing:              Math.floor($('#packing_'+productid).val()),
         cases_inventory:      Math.floor($('#remain_'+productid).val()),
         PO:                   $('#PO_'+productid).val() ? $('#PO_'+productid).val() : null,
-        contracted_quantity:  Math.floor($('#id_contracted_quantity').val()),
+        contracted_quantity:  $('#id_contracted_quantity').length ? Math.floor($('#id_contracted_quantity').val()) : null,
         unit_price:           $('#id_unit_price').val() ? $('#id_unit_price').val() : null,
         gross_weight:         isNaN(parseFloat($('#id_gross_weight').val())) ? 0 : parseFloat($('#id_gross_weight').val()),
         length:               isNaN(parseFloat($('#id_length').val())) ? 0 : parseFloat($('#id_length').val()),
@@ -458,6 +458,7 @@ function saveProduct(productid) {
         is_domestic:          $('#id_is_domestic').val(),
         account_prepay_type:  $('#id_account_prepay_type').val(),
     };
+console.log($('#id_contracted_quantity'));
     if (units == 'imperial') {
         product.gross_weight *= 0.453592;
         product.length *= 2.54;

@@ -458,6 +458,10 @@ class Transaction(models.Model):
     transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers')
     transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers')
 
+    @property
+    def cases_remaining(self):
+        return int(float(self.quantity_remaining) / float(self.product.packing))
+
     def __unicode__(self):
         return ('{0}'.format(self.id))
 

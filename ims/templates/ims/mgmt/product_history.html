@@ -1,20 +1,4 @@
-<CFIF NOT IsDefined("libloaded")>
-        <CFINCLUDE TEMPLATE="inc_lib.cfm">
-</CFIF>
-
-<CFIF IsDefined("URL.productid") AND IsNumeric(URL.productid)>
-<CFELSEIF IsDefined("URL.productid")>
-    <CFABORT>
-<CFELSE>
-    <div class="error">Invalid product ID specified.</div>
-    <CFABORT>
-</CFIF>
-
-<CFQUERY NAME="Product" DATASOURCE="#DSN#">
-SELECT * FROM Products
-WHERE productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
-</CFQUERY>
-
+{% load humanize %}
 <CFSET fromdate = DateFormat(DateAdd("m",-3,Now()),"mm/dd/yyyy")>
 <CFSET todate = DateFormat(Now(),"mm/dd/yyyy")>
 
@@ -91,46 +75,104 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
     AND Receivables.SO=<CFQUERYPARAM value="#SO#" CFSQLType="CF_SQL_VARCHAR">
     AND Transactions.cases IS NULL  
     </CFQUERY>
-{% endcomment %}
 
     <cfset transferlink = '<i><a href="inventory.cfm?customerid=' & transfercustomerid & '&productid=' & transferproductid & '">(Transfer #direction IS 1 ? "to" : "from"# #transfercustomer_name#)</a></i>'>
+{% endcomment %}
+
     <tr class="detail <cfif shipment_pending IS 1>shipment-pending</cfif>">
-        <td class="date"><cfif shipmentid IS "" AND receivableid IS "">#DateFormat(stamp,"MM/DD/YYY")#<cfelseif direction IS 0>#DateFormat(createdon,"MM/DD/YYY")#<CFELSE>#DateFormat(stamp,"MM/DD/YYY")#</CFIF></td>
-        <td class="date"><cfif shipmentid IS "" AND receivableid IS "">#DateFormat(stamp,"MM/DD/YYY")#<cfelseif direction IS 0>#DateFormat(stamp,"MM/DD/YYY")#<CFELSE>#DateFormat(shippedon,"MM/DD/YYY")#</CFIF></td>
-        <td class="text" style="max-width: 94px; overflow: hidden; text-overflow: ellipsis;">#shipmentid GT 0 OR receivableid GT 0 ? location_name : transferlink#</td>
-        <td class="text"><CFIF cases IS ""><input type="text" id="PO_#URL.productid#" value="#PO#" productid="#URL.productid#" style="width: 100px;" maxlength="16" /><CFELSE>#PO#</CFIF></td>
-        <td class="text"><CFIF cases IS ""><input type="text" id="SO_#URL.productid#" value="#SO#" productid="#URL.productid#" style="width: 100px;" maxlength="16" /><CFELSE>#SO#</CFIF></td>
-        <td class="numeric"><CFIF cases IS NOT "">#NumberFormat(qty,",")#</CFIF></td>
-        <td class="numeric"><CFIF cases IS NOT "">#NumberFormat(Product.packing,",")#</CFIF></td>
-        <td class="numeric"><CFIF direction IS 0><CFIF cases IS ""><input type="text" id="cases_#transactionid#" value="" transactionid="#transactionid#" placeholder="#cases_expected#" style="width: 60px;" maxlength="10" /><CFELSE>#cases#</CFIF></CFIF>
-            <CFIF cases IS NOT cases_expected AND IsNumeric(cases) AND IsNumeric(cases_expected)><span class="<CFIF SplitReceivables.recordCount GT 0>partial_receivable</CFIF>">(#cases_expected - cases#)</span></CFIF>
+        <td class="date">
+            {% if transaction.shipment == None and transaction.receivable == None %}
+                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
+            {% elif not transaction.is_outbound %}
+                {{ transaction.receivable.date_received|date:"SHORT_DATE_FORMAT" }}
+            {% else %}
+                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
+            {% endif %}
         </td>
-        <td class="numeric"><CFIF direction IS 1>#cases#</CFIF></td>
-        <td class="numeric">#qtyremain GT 0 AND Product.packing GT 0 ? NumberFormat(qtyremain/Product.packing,",") : 0#</td>
-        <td class="numeric"><a href="shipments.cfm?customerid=#customerid#&shipmentid=#shipmentid#">#shipmentid#</a></td>
-        <td class="action" style="width: 60px;">
-            <cfif document_count GT 0>
-            <button class="show-shipment-docs" onClick="showShipmentDocs(#shipmentid#);">#document_count#</button>
-            </cfif>
+        <td class="date">
+            {% if transaction.shipment == None and transaction.receivable == None %}
+                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
+            {% elif not transaction.is_outbound %}
+                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
+            {% else %}
+                {{ transaction.shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
+            {% endif %}
+        </td>
+        <td class="text" style="max-width: 94px; overflow: hidden; text-overflow: ellipsis;">
+            {% if transaction.shipment %}
+                {{ transaction.shipment.location.name }}
+            {% elif transaction.receivable %}
+                {{ transaction.receivable.location.name }}
+            {% else %}
+                <i><a href="{% url "mgmt-inventory" client_id=transaction.transfer_client.id product_id=transaction.transfer_product.id %}">
+                    (Transfer {% if transaction.is_outbound %}to{% else %}from{% endif %} {{ transaction.transfer_client.company_name }})
+                </a></i>
+            {% endif %}
         </td>
         <td class="text">
-            <cfif IsNumeric(shipment_status)>
-                <cfif shipment_status IS 0>
-                    Pending
-                <cfelseif shipment_status IS 1>
-                    Ready to Ship
-                <cfelseif shipment_status IS 2>
-                    Shipped
-                </cfif>
-            </cfif>
+            {% if transaction.cases == None %}
+                <input type="text" id="PO_{{ transaction.product.id }}" value="{{ transaction.receivable.purchase_order }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" />
+            {% else %}
+                {{ transaction.receivable.purchase_order }}
+            {% endif %}
+        </td>
+        <td class="text">
+            {% if transaction.cases == None %}
+                <input type="text" id="SO_{{ transaction.product_id }}" value="{{ transaction.shipment_order }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" />
+            {% else %}
+                {{ transaction.shipment_order }}
+            {% endif %}
+        </td>
+        <td class="numeric">
+            {% if transaction.cases %}
+                {{ transaction.quantity|intcomma }}
+            {% endif %}
+        </td>
+        <td class="numeric">
+            {% if transaction.cases %}
+                {{ transaction.product.packing|intcomma }}
+            {% endif %}
+        </td>
+        <td class="numeric">
+            {% if not transaction.is_outbound %}
+                {% if not transaction.cases %}
+                    <input type="text" id="cases_{{ transaction.id }}" value="" transactionid="{{ transaction.id }}" placeholder="{{ transaction.receivable.cases }}" style="width: 60px;" maxlength="10" />
+                {% else %}
+                    {{ transaction.cases }}
+                {% endif %}
+            {% endif %}
+            {% if transaction.cases != transaction.receivable.cases and transaction.cases and transaction.receivable.cases %}
+                <span class="<CFIF SplitReceivables.recordCount GT 0>partial_receivable</CFIF>">(#cases_expected - cases#)</span>
+            {% endif %}
+        </td>
+        <td class="numeric">
+            {% if transaction.is_outbound %}
+                {{ transaction.cases }}
+            {% endif %}
+        </td>
+        <td class="numeric">
+            {% if transaction.quantity_remaining and transaction.product.packing %}
+                {{ transaction.cases_remaining }}
+            {% else %}
+                0
+            {% endif %}
+        </td>
+        <td class="numeric"><a href="shipments.cfm?customerid=#customerid#&shipmentid=#shipmentid#">{{ transaction.shipment.id }}</a></td>
+        <td class="action" style="width: 60px;">
+            {% if transaction.shipment.shipmentdoc_set.count %}
+                <button class="show-shipment-docs" onClick="showShipmentDocs({{ transaction.shipment.id }});">{{ transaction.shipment.shipmentdoc_set.count }}</button>
+            {% endif %}
+        </td>
+        <td class="text">
+            {{ transaction.shipment.get_status_display }}
         </td>
         <td class="action" style="width: 330px;">
-        <CFIF direction IS 0 AND cases IS "">
-            <button class="actionbtn" onClick="saveTransaction(#transactionid#,#URL.productid#)">Confirm</button>
-            <button class="actionbtn" onClick="cancelIncoming(#transactionid#,#URL.productid#)">Cancel</button>
-        <CFELSEIF NOT IsDate(shippedon)>
+            {% if not transaction.is_outbound and not transaction.cases %}
+                <button class="actionbtn" onClick="saveTransaction(#transactionid#,#URL.productid#)">Confirm</button>
+                <button class="actionbtn" onClick="cancelIncoming(#transactionid#,#URL.productid#)">Cancel</button>
+            {% elif not transaction.shipment.date_shipped %}
 <!---            <button class="actionbtn" onClick="cancelTransaction(#transactionid#,#URL.productid#)">Cancel</button>--->
-        </CFIF>
+            {% endif %}
         </td>
     </tr>
 

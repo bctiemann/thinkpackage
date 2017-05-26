@@ -94,6 +94,8 @@ def mgmt_inventory(request, client_id=None, product_id=None):
 
     context = {
         'client': client,
+        'history': request.GET.get('history', 'null'),
+        'productid': request.GET.get('productid', 'null'),
     }
     return render(request, 'ims/mgmt/inventory.html', context)
 
@@ -142,8 +144,33 @@ def mgmt_shipments_list(request, client_id=None):
 def mgmt_product_history(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
+#<CFQUERY NAME="Transactions" DATASOURCE="#DSN#">
+#SELECT Transactions.*,Receivables.createdon,Receivables.PO,Receivables.cases as cases_expected,
+#    Shipments.shippedon,Shipments.status as shipment_status,(Shipments.status IN (0,1) AND Shipments.shipmentid IS NOT NULL) AS shipment_pending,
+#    Locations.name as location_name,Customers.coname as transfercustomer_name,count(ShipmentDocs.shipmentid) AS document_count FROM Transactions
+#LEFT JOIN Shipments ON Shipments.shipmentid=Transactions.shipmentid
+#LEFT JOIN Locations ON Shipments.locationid=Locations.locationid
+#LEFT JOIN Receivables ON Receivables.receivableid=Transactions.receivableid
+#LEFT JOIN Customers ON transfercustomerid=Customers.customerid
+#LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
+#WHERE Transactions.productid=<CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_NUMERIC">
+#<CFIF IsDefined("URL.fromdate") AND REFind("\d{2}/\d{2}/\d{4}",URL.fromdate) GT 0>
+#<CFSET fromdate = URL.fromdate>
+#AND stamp > STR_TO_DATE("#URL.fromdate#","%m/%d/%Y")
+#</CFIF>
+#<CFIF IsDefined("URL.todate") AND REFind("\d{2}/\d{2}/\d{4}",URL.todate) GT 0>
+#<CFSET todate = URL.todate>
+#AND stamp < DATE_ADD(STR_TO_DATE("#URL.todate#","%m/%d/%Y"),INTERVAL 1 DAY)
+#</CFIF>
+#GROUP BY Transactions.transactionid
+#ORDER BY shipment_pending DESC,stamp DESC
+#</CFQUERY>
+
+    history = Transaction.objects.filter(product=product).order_by('-date_created')
+
     context = {
         'product': product,
+        'history': history,
     }
     return render(request, 'ims/mgmt/product_history.html', context)
 

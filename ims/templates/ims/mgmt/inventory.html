@@ -5,21 +5,17 @@
 
 <div class="content">
     
-<CFIF IsDefined("URL.history") AND IsNumeric(URL.history)>
-    <CFOUTPUT>
-    <script type="text/javascript">
-//    globals['history'] = #URL.history#;
-    </script>
-    </CFOUTPUT>
-</CFIF>
+{% if history %}
+<script type="text/javascript">
+globals['history'] = {{ history }};
+</script>
+{% endif %}
 
-<CFIF IsDefined("URL.productid") AND IsNumeric(URL.productid)>
-    <CFOUTPUT>
-    <script type="text/javascript">
-//    globals['productid'] = #URL.productid#;
-    </script>
-    </CFOUTPUT>
-</CFIF>
+{% if productid %}
+<script type="text/javascript">
+globals['productid'] = {{ productid }};
+</script>
+{% endif %}
 
 
 <div class="customerheader">{{ client.company_name }}</div>

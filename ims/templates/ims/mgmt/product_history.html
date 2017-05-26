@@ -52,7 +52,7 @@ to
 
 <span class="title">
 <a target="_blank" href="gen_barcode_prod.cfm?productid=#productid#"><img src="images/barcode.gif" /></a>
-History for Item #Product.itemnum#: #Product.pname#</span>
+History for Item {{ product.item_number }}: {{ product.name }}</span>
 
 </div>
 </CFOUTPUT>
@@ -80,7 +80,9 @@ History for Item #Product.itemnum#: #Product.pname#</span>
     <cfset qtyBalance = Product.remain>
 
     <CFOUTPUT QUERY="Transactions">
+    {% for transaction in history %}
 
+{% comment %}
     <CFQUERY NAME="SplitReceivables" DATASOURCE="#DSN#">
     SELECT * FROM Transactions,Receivables
     WHERE Receivables.productid=#URL.productid#
@@ -89,6 +91,7 @@ History for Item #Product.itemnum#: #Product.pname#</span>
     AND Receivables.SO=<CFQUERYPARAM value="#SO#" CFSQLType="CF_SQL_VARCHAR">
     AND Transactions.cases IS NULL  
     </CFQUERY>
+{% endcomment %}
 
     <cfset transferlink = '<i><a href="inventory.cfm?customerid=' & transfercustomerid & '&productid=' & transferproductid & '">(Transfer #direction IS 1 ? "to" : "from"# #transfercustomer_name#)</a></i>'>
     <tr class="detail <cfif shipment_pending IS 1>shipment-pending</cfif>">
@@ -140,6 +143,7 @@ History for Item #Product.itemnum#: #Product.pname#</span>
     </cfif>
 
     </CFOUTPUT>
+    {% endfor %}
     </tbody>
 </table>
 

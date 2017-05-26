@@ -826,6 +826,7 @@ function refreshUI() {
 
 function showInactive(show_inactive) {
     globals['active_filter'] = show_inactive ? 0 : 1;
+    globals['productid'] = null;
     $('.product_detail').html('');
     refreshInventory();
 }

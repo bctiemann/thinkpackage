@@ -757,8 +757,8 @@ console.log(data);
     },'json');
 }
 
-function cancelIncoming(transactionid,productid) {
-    globals['transactionid'] = transactionid;
+function cancelIncoming(receivableid,productid) {
+    globals['receivableid'] = receivableid;
     globals['productid'] = productid;
     $('#incoming_cancel_confirm').dialog('open');
 }
@@ -768,11 +768,14 @@ function execute_cancelIncoming() {
         fnc:              'delete',
         transactionid:    globals['transactionid']
     }
-    var url = cgiroot+'ajax_transaction_action.cfm';
+//    var url = cgiroot+'ajax_transaction_action.cfm';
+    var url = cgiroot + 'receivable/' + globals['receivableid'] + '/delete/';
     $.post(url,transaction,function(data) {
+console.log(data);
         refreshInventory();
         showProductHistory(globals['productid']);
-    },'json');
+        globals['productid'] = null;
+    });
 }
 
 function refreshUI() {

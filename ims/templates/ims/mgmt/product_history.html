@@ -141,8 +141,8 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
         </td>
         <td class="action" style="width: 330px;">
             {% if not transaction.is_outbound and not transaction.cases %}
-                <button class="actionbtn" onClick="saveTransaction(#transactionid#,#URL.productid#)">Confirm</button>
-                <button class="actionbtn" onClick="cancelIncoming(#transactionid#,#URL.productid#)">Cancel</button>
+                <button class="actionbtn" onClick="saveTransaction({{ transaction.id }}, {{ transaction.product.id }})">Confirm</button>
+                <button class="actionbtn" onClick="cancelIncoming({{ transaction.receivable.id }}, {{ transaction.product.id }})">Cancel</button>
             {% elif not transaction.shipment.date_shipped %}
 <!---            <button class="actionbtn" onClick="cancelTransaction(#transactionid#,#URL.productid#)">Cancel</button>--->
             {% endif %}

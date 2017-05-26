@@ -502,3 +502,11 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
         return context
 
 
+class ReceivableDelete(AjaxableResponseMixin, DeleteView):
+    model = Receivable
+
+    def get_object(self):
+        return get_object_or_404(Receivable, pk=self.kwargs['receivable_id'])
+
+    def get_success_url(self):
+        return reverse_lazy('mgmt-product-history', kwargs={'product_id': self.object.product.id})

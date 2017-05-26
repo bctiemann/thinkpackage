@@ -6,12 +6,14 @@ from django.db.models import Func, F, Count
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable
 from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm
 from ims import utils
 
 import math
+from datetime import datetime, timedelta
 
 import logging
 logger = logging.getLogger(__name__)
@@ -144,6 +146,14 @@ def mgmt_shipments_list(request, client_id=None):
 def mgmt_product_history(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
+    date_to = timezone.now()
+    date_from = date_to - timedelta(days=90)
+    try:
+        date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y')
+        date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y')
+    except:
+        pass
+
 #<CFQUERY NAME="Transactions" DATASOURCE="#DSN#">
 #SELECT Transactions.*,Receivables.createdon,Receivables.PO,Receivables.cases as cases_expected,
 #    Shipments.shippedon,Shipments.status as shipment_status,(Shipments.status IN (0,1) AND Shipments.shipmentid IS NOT NULL) AS shipment_pending,
@@ -166,11 +176,13 @@ def mgmt_product_history(request, product_id):
 #ORDER BY shipment_pending DESC,stamp DESC
 #</CFQUERY>
 
-    history = Transaction.objects.filter(product=product).order_by('-date_created')
+    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('shipment__status', '-date_created')
 
     context = {
         'product': product,
         'history': history,
+        'date_from': date_from,
+        'date_to': date_to,
     }
     return render(request, 'ims/mgmt/product_history.html', context)
 

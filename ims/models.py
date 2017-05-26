@@ -416,6 +416,10 @@ class Shipment(models.Model):
     accounting_status = models.IntegerField(choices=ACCOUNTING_STATUS_CHOICES, db_column='acctstatus')
     invoice_number = models.IntegerField(null=True, blank=True, db_column='invoice')
 
+    @property
+    def is_pending(self):
+        return self.status in [0,1] and self.id != None
+
     def __unicode__(self):
         return ('{0}'.format(self.id))
 

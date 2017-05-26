@@ -725,8 +725,8 @@ console.log(todate);
     });
 }
 
-function saveTransaction(transactionid,productid) {
-    globals['transactionid'] = transactionid;
+function saveTransaction(receivableid,productid) {
+    globals['receivableid'] = receivableid;
     globals['productid'] = productid;
     $('#incoming_save_confirm').dialog('open');
 }
@@ -734,16 +734,18 @@ function saveTransaction(transactionid,productid) {
 function execute_saveTransaction() {
     var transaction = {
         fnc:              'update',
-        transactionid:    globals['transactionid'],
+        receivableid:     globals['receivableid'],
         productid:        globals['productid'],
-        cases:            Math.floor($('#cases_'+globals['transactionid']).val()),
+        cases:            Math.floor($('#cases_'+globals['receivableid']).val()),
         SO:               $('#SO_'+globals['productid']).val()
     }
+
 console.log(transaction);
-    var url = cgiroot+'ajax_transaction_action.cfm';
+//    var url = cgiroot+'ajax_transaction_action.cfm';
+    var url = cgiroot + 'receivable/' + globals['receivableid'] + '/confirm/';
     $.post(url,transaction,function(data) {
 console.log(data);
-        if (data.STATUS == 'success') {
+        if (data.success) {
             if (data.WARNING) {
                 $('#cases_mismatch_warning').show();
             } else {
@@ -752,7 +754,7 @@ console.log(data);
             $('#dialog_confirmreceivable_result').dialog("open");
 //            showProductHistory(globals['productid']);
         } else {
-            alert(data.MESSAGE);
+            alert(data.message);
         }
     },'json');
 }

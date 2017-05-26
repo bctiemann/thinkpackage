@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import F, FloatField, Sum
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from localflavor.us.us_states import STATE_CHOICES
 
@@ -435,7 +436,7 @@ class Receivable(models.Model):
     purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
     product = models.ForeignKey('Product', db_column='productid')
-    cases = models.IntegerField(null=True, blank=True)
+    cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
@@ -450,6 +451,7 @@ class Receivable(models.Model):
 class Transaction(models.Model):
     id = models.AutoField(primary_key=True, db_column='transactionid')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
+    date_completed = models.DateTimeField(null=True, blank=True)
     product = models.ForeignKey('Product', db_column='productid')
     quantity = models.IntegerField(null=True, blank=True, db_column='qty')
     quantity_remaining = models.BigIntegerField(null=True, blank=True, db_column='qtyremain')
@@ -465,6 +467,9 @@ class Transaction(models.Model):
     @property
     def cases_remaining(self):
         return int(float(self.quantity_remaining) / float(self.product.packing))
+
+    def get_absolute_url(self):
+        return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
 
     def __unicode__(self):
         return ('{0}'.format(self.id))

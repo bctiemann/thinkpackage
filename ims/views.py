@@ -9,7 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable
-from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm
+from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm
 from ims import utils
 
 import math
@@ -500,6 +500,38 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
         product = get_object_or_404(Product, pk=self.kwargs['product_id'])
         context['product'] = product
         return context
+
+
+class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
+    model = Receivable
+    form_class = ReceivableConfirmForm
+    template_name = 'ims/mgmt/receivable.html'
+
+    def get_object(self):
+        return get_object_or_404(Receivable, pk=self.kwargs['receivable_id'])
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+#        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
+        self.object.cases = form.initial['cases']
+
+        transaction = self.object.transaction_set.first()
+        transaction.cases = form.data['cases']
+        logger.warning(transaction.product.packing)
+        transaction.quantity = int(transaction.cases) * transaction.product.packing
+        transaction.quantity_remaining = (transaction.product.cases_inventory + int(transaction.cases)) * transaction.product.packing
+        transaction.date_completed = timezone.now()
+        transaction.save()
+
+        response = super(ReceivableConfirm, self).form_valid(form)
+        logger.info('Receivable {0} confirmed.'.format(self.object.id))
+        return response
+
+#    def get_context_data(self, *args, **kwargs):
+#        context = super(ReceivableCreate, self).get_context_data(*args, **kwargs)
+#        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+#        context['product'] = product
+#        return context
 
 
 class ReceivableDelete(AjaxableResponseMixin, DeleteView):

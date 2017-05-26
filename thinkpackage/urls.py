@@ -30,6 +30,7 @@ urlpatterns_mgmt = [
     url(r'^product/(?P<product_id>\d+)/history/$', ims_views.mgmt_product_history, name='mgmt-product-history'),
 
     url(r'^receivable/add/(?P<product_id>\d+)/$', ims_views.ReceivableCreate.as_view(), name='mgmt-receivable-create'),
+    url(r'^receivable/(?P<receivable_id>\d+)/confirm/$', ims_views.ReceivableConfirm.as_view(), name='mgmt-receivable-confirm'),
     url(r'^receivable/(?P<receivable_id>\d+)/delete/$', ims_views.ReceivableDelete.as_view(), name='mgmt-receivable-delete'),
 
     url(r'^(?P<client_id>\d+)/$', ims_views.mgmt_redirect, name='mgmt-redirect'),

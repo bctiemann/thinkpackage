@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable
+from ims.models import Client, CustContact, Location, Product, Receivable, Transaction
 from ims import utils
 
 import logging
@@ -194,3 +194,9 @@ class ReceivableForm(forms.ModelForm):
         initial = {
             'cases': 7,
         }
+
+
+class ReceivableConfirmForm(forms.ModelForm):
+    class Meta:
+        model = Receivable
+        fields = ['cases']

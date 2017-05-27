@@ -294,7 +294,6 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
         self.object.custcontact_set.update(is_primary=False)
         if form.data['primary_contact']:
             CustContact.objects.filter(pk=form.data['primary_contact']).update(is_primary=True)
-        
         return super(ClientUpdate, self).form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
@@ -511,10 +510,49 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Receivable, pk=self.kwargs['receivable_id'])
 
     def form_valid(self, form):
+        data = {
+            'success': True,
+        }
         logger.warning(form.data)
 #        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
         self.object.cases = form.initial['cases']
 
+        # If we received more cases than expected, return an error
+        if int(form.data['cases']) > self.object.cases:
+            data = {
+                'success': False,
+                'message': 'More cases entered than expected.',
+            }
+            return JsonResponse(data)
+
+        # If we received fewer cases than expected, create a new receivable with the remainder
+        if int(form.data['cases']) < self.object.cases:
+            split_receivable = Receivable(
+                client = self.object.client,
+                date_created = timezone.now(),
+                purchase_order = self.object.purchase_order,
+                shipment_order = self.object.shipment_order,
+                product = self.object.product,
+                cases = self.object.cases - int(form.data['cases'])
+            )
+            split_receivable.save()
+
+            transaction = Transaction(
+                date_created = timezone.now(),
+                product = self.object.product,
+                client = self.object.client,
+                is_outbound = False,
+                shipment_order = self.object.shipment_order,
+                receivable = split_receivable,
+            )
+            transaction.save()
+
+            logger.info('Receivable {0} created, split from {1}.'.format(split_receivable, self.object))
+
+            data['warning'] = 'Fewer cases entered than expected.'
+
+
+        # Update transaction with number of cases received
         transaction = self.object.transaction_set.first()
         transaction.cases = form.data['cases']
         logger.warning(transaction.product.packing)
@@ -523,9 +561,15 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         transaction.date_completed = timezone.now()
         transaction.save()
 
-        response = super(ReceivableConfirm, self).form_valid(form)
+        # Update product quantity
+        self.object.product.cases_inventory += int(form.data['cases'])
+        self.object.product.units_inventory = self.object.product.cases_inventory * self.object.product.packing
+        self.object.product.save()
+
+#        response = super(ReceivableConfirm, self).form_valid(form)
         logger.info('Receivable {0} confirmed.'.format(self.object.id))
-        return response
+#        return response
+        return JsonResponse(data)
 
 #    def get_context_data(self, *args, **kwargs):
 #        context = super(ReceivableCreate, self).get_context_data(*args, **kwargs)
@@ -542,3 +586,4 @@ class ReceivableDelete(AjaxableResponseMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('mgmt-product-history', kwargs={'product_id': self.object.product.id})
+

@@ -292,8 +292,8 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         self.object.custcontact_set.update(is_primary=False)
-        if form.data['primary_contact']:
-            CustContact.objects.filter(pk=form.data['primary_contact']).update(is_primary=True)
+        if form.cleaned_data['primary_contact']:
+            CustContact.objects.filter(pk=form.cleaned_data['primary_contact']).update(is_primary=True)
         return super(ClientUpdate, self).form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
@@ -410,7 +410,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         logger.warning(form.data)
         response = super(ProductCreate, self).form_valid(form)
-        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
+        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
         self.object.save()
         logger.info('Product {0} ({1}) created.'.format(self.object, self.object.id))
         return response
@@ -433,7 +433,7 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         logger.warning(form.data)
-        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
+        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
         response = super(ProductUpdate, self).form_valid(form)
         logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
         return response
@@ -514,11 +514,14 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             'success': True,
         }
         logger.warning(form.data)
+        logger.warning(form.cleaned_data)
 #        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
+#        self.object.purchase_order = form.cleaned_data['purchase_order']
+#        self.object.shipment_order = form.cleaned_data['shipment_order']
         self.object.cases = form.initial['cases']
 
         # If we received more cases than expected, return an error
-        if int(form.data['cases']) > self.object.cases:
+        if form.cleaned_data['cases'] > self.object.cases:
             data = {
                 'success': False,
                 'message': 'More cases entered than expected.',
@@ -526,14 +529,15 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             return JsonResponse(data)
 
         # If we received fewer cases than expected, create a new receivable with the remainder
-        if int(form.data['cases']) < self.object.cases:
+        if form.cleaned_data['cases'] < self.object.cases:
             split_receivable = Receivable(
                 client = self.object.client,
                 date_created = timezone.now(),
-                purchase_order = self.object.purchase_order,
-                shipment_order = self.object.shipment_order,
+                date_received = self.object.date_received,
+                purchase_order = form.cleaned_data['purchase_order'],
+                shipment_order = form.cleaned_data['shipment_order'],
                 product = self.object.product,
-                cases = self.object.cases - int(form.data['cases'])
+                cases = self.object.cases - form.cleaned_data['cases'],
             )
             split_receivable.save()
 
@@ -554,7 +558,9 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
 
         # Update transaction with number of cases received
         transaction = self.object.transaction_set.first()
-        transaction.cases = form.data['cases']
+        transaction.cases = form.cleaned_data['cases']
+        transaction.purchase_order = form.cleaned_data['purchase_order']
+        transaction.shipment_order = form.cleaned_data['shipment_order']
         logger.warning(transaction.product.packing)
         transaction.quantity = int(transaction.cases) * transaction.product.packing
         transaction.quantity_remaining = (transaction.product.cases_inventory + int(transaction.cases)) * transaction.product.packing
@@ -562,9 +568,13 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         transaction.save()
 
         # Update product quantity
-        self.object.product.cases_inventory += int(form.data['cases'])
+        self.object.product.cases_inventory += form.cleaned_data['cases']
         self.object.product.units_inventory = self.object.product.cases_inventory * self.object.product.packing
         self.object.product.save()
+
+        logger.warning(self.object.purchase_order)
+        logger.warning(self.object.shipment_order)
+        self.object.save()
 
 #        response = super(ReceivableConfirm, self).form_valid(form)
         logger.info('Receivable {0} confirmed.'.format(self.object.id))

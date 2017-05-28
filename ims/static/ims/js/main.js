@@ -737,7 +737,8 @@ function execute_saveTransaction() {
         receivableid:     globals['receivableid'],
         productid:        globals['productid'],
         cases:            Math.floor($('#cases_'+globals['receivableid']).val()),
-        SO:               $('#SO_'+globals['productid']).val()
+        shipment_order:   $('#SO_'+globals['productid']).val(),
+        purchase_order:   $('#PO_'+globals['productid']).val(),
     }
 
 console.log(transaction);
@@ -746,7 +747,7 @@ console.log(transaction);
     $.post(url,transaction,function(data) {
 console.log(data);
         if (data.success) {
-            if (data.WARNING) {
+            if (data.warning) {
                 $('#cases_mismatch_warning').show();
             } else {
                 $('#cases_mismatch_warning').hide();

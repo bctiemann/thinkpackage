@@ -56,7 +56,7 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% if transaction.shipment == None and transaction.receivable == None %}
                 {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
             {% elif not transaction.is_outbound %}
-                {{ transaction.receivable.date_received|date:"SHORT_DATE_FORMAT" }}
+                {{ transaction.receivable.date_created|date:"SHORT_DATE_FORMAT" }}
             {% else %}
                 {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
             {% endif %}
@@ -65,7 +65,7 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% if transaction.shipment == None and transaction.receivable == None %}
                 {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
             {% elif not transaction.is_outbound %}
-                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
+                {{ transaction.receivable.date_received|date:"SHORT_DATE_FORMAT" }}
             {% else %}
                 {{ transaction.shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
             {% endif %}

@@ -192,11 +192,10 @@ class ReceivableForm(forms.ModelForm):
             'date_received': forms.DateInput(attrs={'style': 'width: 100px;'}),
         }
         initial = {
-            'cases': 7,
         }
 
 
 class ReceivableConfirmForm(forms.ModelForm):
     class Meta:
         model = Receivable
-        fields = ['cases']
+        fields = ['cases', 'purchase_order', 'shipment_order']

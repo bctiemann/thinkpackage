@@ -24,7 +24,6 @@ class GetClients(APIView):
 
         clients_sorted = []
         for client in utils.tree_to_list(clients, sort_by='company_name'):
-            logger.warning(client)
             clients_sorted.append({
                 'id': client['obj'].id,
                 'company_name': client['obj'].company_name,

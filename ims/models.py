@@ -315,6 +315,10 @@ class Product(models.Model):
         return Shipment.objects.filter(transaction__product=self, date_shipped__isnull=True).aggregate(cases_unshipped=Sum('transaction__cases'))['cases_unshipped'] or 0
 
     @property
+    def cases_available(self):
+        return self.cases_inventory - self.cases_unshipped
+
+    @property
     def contracted_quantity_units(self):
         if not self.contracted_quantity or not self.packing:
             return None
@@ -359,6 +363,11 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
+
+    def save(self, *args, **kwargs):
+        if not self.product_id:
+            self.product_id = ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
+        super(Product, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'Products'

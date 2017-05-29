@@ -474,7 +474,55 @@ class ProductTransfer(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, product_id):
-        response = {}
+        logger.warning(request.data)
+        response = {'success': True}
+        from_product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+
+        cases = int(request.data.get('cases', 0))
+
+        to_product_id = request.data.get('to_productid', None)
+        # If no destination product is supplied, create a new one
+        if not to_product_id:
+            logger.warning('Creating new product')
+
+        to_product = get_object_or_404(Product, pk=to_product_id)
+
+        # Move inventory count from one product to the other
+        from_product.cases_inventory -= cases
+        from_product.units_inventory = from_product.cases_inventory * from_product.packing
+        to_product.cases_inventory += cases
+        to_product.units_inventory = to_product.cases_inventory * to_product.packing
+        from_product.save()
+        to_product.save()
+
+        # Create outgoing transaction
+        outgoing_transaction = Transaction(
+            product = from_product,
+            quantity = cases * from_product.packing,
+            quantity_remaining = (from_product.cases_available - cases) * from_product.packing,
+            is_outbound = True,
+            client = from_product.client,
+            cases = cases,
+            transfer_client = to_product.client,
+            transfer_product = to_product,
+        )
+        outgoing_transaction.save()
+
+        # Create incoming transaction
+        incoming_transaction = Transaction(
+            product = to_product,
+            quantity = cases * to_product.packing,
+            quantity_remaining = (to_product.cases_available + cases) * to_product.packing,
+            is_outbound = False,
+            client = to_product.client,
+            cases = cases,
+            transfer_client = from_product.client,
+            transfer_product = from_product,
+        )
+        incoming_transaction.save()
+
+        logger.info('Product {0} ({1}) transferred from {2} ({3}) to {4} ({5})'.format(from_product, from_product.id, from_product.client, from_product.client.id, to_product.client, to_product.client.id))
+
         return Response(response)
 
 

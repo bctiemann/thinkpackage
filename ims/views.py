@@ -505,6 +505,7 @@ class ProductTransfer(APIView):
             cases = cases,
             transfer_client = to_product.client,
             transfer_product = to_product,
+            date_completed = timezone.now(),
         )
         outgoing_transaction.save()
 
@@ -518,6 +519,7 @@ class ProductTransfer(APIView):
             cases = cases,
             transfer_client = from_product.client,
             transfer_product = from_product,
+            date_completed = timezone.now(),
         )
         incoming_transaction.save()
 

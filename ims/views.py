@@ -8,6 +8,11 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
+from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable
 from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm
 from ims import utils
@@ -465,6 +470,14 @@ class ProductDelete(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Product, pk=self.kwargs['product_id'])
 
 
+class ProductTransfer(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, product_id):
+        response = {}
+        return Response(response)
+
+
 class ReceivableCreate(AjaxableResponseMixin, CreateView):
     model = Receivable
     form_class = ReceivableForm
@@ -596,4 +609,6 @@ class ReceivableDelete(AjaxableResponseMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('mgmt-product-history', kwargs={'product_id': self.object.product.id})
+
+
 

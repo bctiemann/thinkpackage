@@ -483,7 +483,28 @@ class ProductTransfer(APIView):
         to_product_id = request.data.get('to_productid', None)
         # If no destination product is supplied, create a new one
         if not to_product_id:
-            logger.warning('Creating new product')
+            to_client = get_object_or_404(Client, pk=request.data.get('to_customerid', None))
+            new_product = Product(
+                client = to_client,
+                item_number = from_product.item_number,
+                client_product_id = from_product.client_product_id,
+                name = from_product.name,
+                packing = from_product.packing,
+                cases_inventory = 0,
+                units_inventory = 0,
+                is_active = True,
+                account_prepay_type = from_product.account_prepay_type,
+                contracted_quantity = from_product.contracted_quantity,
+                unit_price = from_product.unit_price,
+                gross_weight = from_product.gross_weight,
+                length = from_product.length,
+                width = from_product.width,
+                height = from_product.height,
+                is_domestic = from_product.is_domestic,
+            )
+            new_product.save()
+            to_product_id = new_product.id
+            logger.info('Creating new product: {0}'.format(to_product_id))
 
         to_product = get_object_or_404(Product, pk=to_product_id)
 

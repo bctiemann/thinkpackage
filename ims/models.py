@@ -11,6 +11,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from localflavor.us.us_states import STATE_CHOICES
 
 import uuid
+import random
 
 import logging
 logger = logging.getLogger(__name__)

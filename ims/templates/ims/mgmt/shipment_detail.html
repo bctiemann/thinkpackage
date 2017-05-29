@@ -1,15 +1,3 @@
-<CFIF NOT IsDefined("libloaded")>
-        <CFINCLUDE TEMPLATE="inc_lib.cfm">
-</CFIF>
-
-<CFIF IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
-<CFELSEIF IsDefined("URL.shipmentid")>
-    <CFABORT>
-<CFELSE>
-    <div class="error">Invalid shipment ID specified.</div>
-    <CFABORT>
-</CFIF>
-
 <CFQUERY NAME="ShipCustomer" DATASOURCE="#DSN#">
 SELECT *,Locations.name as location_name,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
 INNER JOIN Customers ON Shipments.customerid=Customers.customerid
@@ -27,17 +15,15 @@ AND Transactions.productid=Products.productid
 GROUP BY Transactions.productid
 </CFQUERY>
 
-<CFOUTPUT QUERY="ShipCustomer">
 <div class="form_header dark">
 
 <div class="bol-icon">
-    <button class="show-shipment-docs" onClick="showShipmentDocs(#URL.shipmentid#);">#document_count#</button>
+    <button class="show-shipment-docs" onClick="showShipmentDocs({{ .shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>
 </div>
 
-<span class="shipmentid">#shipmentid#</span>
-<span class="title">Shipment details for #coname# (#location_name#)</span>
+<span class="shipmentid">{{ shipment.id }}</span>
+<span class="title">Shipment details for {{ shipment.client.company_name }} ({{ shipment.location.name }})</span>
 </div>
-</CFOUTPUT>
 
 <table class="infotable alternating editable">
     <thead>
@@ -56,6 +42,7 @@ GROUP BY Transactions.productid
     </tr>
     </thead>
     <tbody>
+    {% for transaction in shipment.transaction_set.all %}
     <CFOUTPUT QUERY="ShipProducts">
 
     <CFSET palletsCount = 0>
@@ -84,10 +71,10 @@ GROUP BY Transactions.productid
 
     </CFLOOP>
 
-    <tr class="shipment detail" id="productdetail_#productid#">
-        <td class="text">#itemnum#</td>
-        <td class="text" style="width: 300px;">#pname#</td>
-        <td class="text"><CFIF account IS 1>INVQ<CFELSEIF account IS 2>Prepaid</CFIF></td>
+    <tr class="shipment detail" id="productdetail_{{ transaction.product.id }}">
+        <td class="text">{{ transaction.product.item_number }}</td>
+        <td class="text" style="width: 300px;">{{ transaction.product.name }}</td>
+        <td class="text">{{ transaction.product.get_account_prepay_type_display }}</td>
         <td class="text">#carrier#<CFIF tracking IS NOT ""><br />#tracking#</CFIF></td>
         <td class="text">#ShipProducts.3rdparty#</td>
         <td class="date">#DateFormat(shippedon,"MM/DD/YYYY")#</td>
@@ -103,6 +90,7 @@ GROUP BY Transactions.productid
     </tr>   
         
     </CFOUTPUT>
+    {% endfor %}
     </tbody>
 </table>
     

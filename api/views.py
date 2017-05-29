@@ -40,4 +40,9 @@ class GetClientProducts(ListAPIView):
 
     def get_queryset(self):
         client = get_object_or_404(Client, pk=self.kwargs['client_id'])
-        return Product.objects.filter(client=client, is_active=True)
+        queryset = Product.objects.filter(client=client, is_active=True)
+        source_product_id = self.request.query_params.get('source_productid', None)
+        if source_product_id:
+            source_product = get_object_or_404(Product, pk=source_product_id)
+            queryset = queryset.filter(item_number=source_product.item_number, packing=source_product.packing)
+        return queryset

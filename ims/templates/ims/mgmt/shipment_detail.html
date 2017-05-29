@@ -1,0 +1,109 @@
+<CFIF NOT IsDefined("libloaded")>
+        <CFINCLUDE TEMPLATE="inc_lib.cfm">
+</CFIF>
+
+<CFIF IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
+<CFELSEIF IsDefined("URL.shipmentid")>
+    <CFABORT>
+<CFELSE>
+    <div class="error">Invalid shipment ID specified.</div>
+    <CFABORT>
+</CFIF>
+
+<CFQUERY NAME="ShipCustomer" DATASOURCE="#DSN#">
+SELECT *,Locations.name as location_name,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
+INNER JOIN Customers ON Shipments.customerid=Customers.customerid
+LEFT JOIN Locations ON Shipments.locationid=Locations.locationid
+LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
+WHERE Shipments.shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+GROUP BY Shipments.shipmentid
+</CFQUERY>
+
+<CFQUERY NAME="ShipProducts" DATASOURCE="#DSN#">
+SELECT * FROM Shipments,Transactions,Products
+WHERE Shipments.shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+AND Transactions.shipmentid=Shipments.shipmentid
+AND Transactions.productid=Products.productid
+GROUP BY Transactions.productid
+</CFQUERY>
+
+<CFOUTPUT QUERY="ShipCustomer">
+<div class="form_header dark">
+
+<div class="bol-icon">
+    <button class="show-shipment-docs" onClick="showShipmentDocs(#URL.shipmentid#);">#document_count#</button>
+</div>
+
+<span class="shipmentid">#shipmentid#</span>
+<span class="title">Shipment details for #coname# (#location_name#)</span>
+</div>
+</CFOUTPUT>
+
+<table class="infotable alternating editable">
+    <thead>
+    <tr>
+        <th class="itemnum">Item #</th>
+        <th class="text">Description</th>
+        <th class="text">Invoice</th>
+        <th class="text">Carrier</th>
+        <th class="text">3rd party carrier</th>
+        <th class="date">Shipping date</th>
+        <th class="numeric">Packing pcs/cs</th>
+        <th class="numeric">Cases</th>
+        <th class="numeric">Pallets</th>
+        <th class="numeric">Gross weight (kg)</th>
+        <th class="text">Ctn dimensions (cm, l &times; w &times; h)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <CFOUTPUT QUERY="ShipProducts">
+
+    <CFSET palletsCount = 0>
+    <CFSET palletsPartialCount = 1>
+
+    <CFQUERY NAME="PalletCheck" DATASOURCE="#DSN#">
+    SELECT DISTINCT(OnPallet.palletid) FROM OnPallet,Pallets
+    WHERE productid=#productid#
+    AND OnPallet.palletid=Pallets.palletid
+    AND shipmentid=#shipmentid#
+    </CFQUERY>
+
+    <CFLOOP QUERY="PalletCheck">
+        <CFQUERY NAME="PalletPartialCheck" DATASOURCE="#DSN#">
+        SELECT * FROM OnPallet
+        WHERE palletid=#palletid#
+        AND productid!=#ShipProducts.productid#
+        </CFQUERY>
+
+        <CFIF PalletPartialCheck.recordCount GT 0>
+<!---            <CFSET palletsCount = palletsCount + 1/(PalletPartialCheck.recordCount + 1)>--->
+            <CFSET palletsPartialCount = palletsPartialCount + PalletPartialCheck.recordCount>
+        <CFELSE>
+            <CFSET palletsCount = palletsCount + 1>
+        </CFIF>
+
+    </CFLOOP>
+
+    <tr class="shipment detail" id="productdetail_#productid#">
+        <td class="text">#itemnum#</td>
+        <td class="text" style="width: 300px;">#pname#</td>
+        <td class="text"><CFIF account IS 1>INVQ<CFELSEIF account IS 2>Prepaid</CFIF></td>
+        <td class="text">#carrier#<CFIF tracking IS NOT ""><br />#tracking#</CFIF></td>
+        <td class="text">#ShipProducts.3rdparty#</td>
+        <td class="date">#DateFormat(shippedon,"MM/DD/YYYY")#</td>
+        <td class="numeric">#packing#</td>
+        <td class="numeric">#cases#</td> 
+        <td class="numeric"><CFIF palletsCount GT 0>#palletsCount#</CFIF>
+            <CFIF palletsPartialCount GT 1>
+                1/#palletsPartialCount#
+            </CFIF>
+        </td>
+        <td class="numeric"><CFIF IsNumeric(GW) AND IsNumeric(cases)>#NumberFormat(GW * cases,"._")#</CFIF></td>
+        <td class="text">#length# &times; #width# &times; #height#</td>
+    </tr>   
+        
+    </CFOUTPUT>
+    </tbody>
+</table>
+    
+

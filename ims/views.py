@@ -162,6 +162,15 @@ def mgmt_shipments_list(request, client_id=None):
     return render(request, 'ims/mgmt/shipments_list.html', context)
 
 
+def mgmt_shipment_detail(request, shipment_id=None):
+    shipment = get_object_or_404(Shipment, pk=shipment_id)
+
+    context = {
+        'shipment': shipment,
+    }
+    return render(request, 'ims/mgmt/shipment_detail.html', context)
+
+
 def mgmt_product_history(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
@@ -694,6 +703,5 @@ class ReceivableDelete(AjaxableResponseMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('mgmt-product-history', kwargs={'product_id': self.object.product.id})
-
 
 

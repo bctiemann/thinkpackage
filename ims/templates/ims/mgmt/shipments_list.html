@@ -21,7 +21,7 @@
     <tbody style="max-height: 400px">
     {% for shipment in shipments %}
 
-        <tr class="shipment" id="shipment_#shipmentid#">
+        <tr class="shipment" id="shipment_{{ shipment.id }}">
             <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
             <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.id }}</td>
             <td style="width: 339px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>

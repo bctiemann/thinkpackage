@@ -431,6 +431,10 @@ class Shipment(models.Model):
     def is_pending(self):
         return self.status in [0,1] and self.id != None
 
+    @property
+    def total_pallets(self):
+        return Pallet.objects.filter(shipment=self).distinct().count()
+
     def __unicode__(self):
         return ('{0}'.format(self.id))
 
@@ -482,6 +486,34 @@ class Transaction(models.Model):
     def cases_received_split(self):
         return self.receivable.cases - self.cases
 
+    @property
+    def total_weight(self):
+        return self.product.gross_weight * self.cases
+
+    # Number of pallets dedicated to this product
+    @property
+    def total_pallets_for_product(self):
+        dedicated_pallets = 0
+        for pallet_share in PalletContents.objects.filter(pallet__shipment=self.shipment, product=self.product):
+            if PalletContents.objects.filter(pallet=pallet_share.pallet).exclude(product=self.product).count() == 0:
+                dedicated_pallets += 1
+        return dedicated_pallets
+
+    # Number of products sharing the pallet this product is on
+    @property
+    def total_pallet_shares(self):
+        product_shares = 0
+        for pallet_share in PalletContents.objects.filter(pallet__shipment=self.shipment, product=self.product):
+            product_shares += PalletContents.objects.filter(pallet=pallet_share.pallet).count()
+        return product_shares
+
+    # Number of pallets, or Fraction of the current pallet, this product takes up
+    @property
+    def pallet_share(self):
+        if self.total_pallet_shares == 1:
+            return self.total_pallets_for_product
+        return '1/{0}'.format(self.total_pallet_shares)
+
     def get_absolute_url(self):
         return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
 
@@ -498,6 +530,10 @@ class Pallet(models.Model):
     shipment = models.ForeignKey('Shipment', db_column='shipmentid')
     client = models.ForeignKey('Client', db_column='customerid')
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+
+#    @property
+#    def shares(self):
+#        return self.palletcontents_set.count()
 
     def __unicode__(self):
         return ('{0}'.format(self.id))

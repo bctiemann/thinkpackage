@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
+from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
@@ -160,15 +161,6 @@ def mgmt_shipments_list(request, client_id=None):
         'shipped_filter': shipped_filter,
     }
     return render(request, 'ims/mgmt/shipments_list.html', context)
-
-
-def mgmt_shipment_detail(request, shipment_id=None):
-    shipment = get_object_or_404(Shipment, pk=shipment_id)
-
-    context = {
-        'shipment': shipment,
-    }
-    return render(request, 'ims/mgmt/shipment_detail.html', context)
 
 
 def mgmt_product_history(request, product_id):
@@ -705,3 +697,7 @@ class ReceivableDelete(AjaxableResponseMixin, DeleteView):
         return reverse_lazy('mgmt-product-history', kwargs={'product_id': self.object.product.id})
 
 
+class ShipmentDetail(DetailView):
+    model = Shipment
+    pk_url_kwarg = 'shipment_id'
+    template_name = 'ims/mgmt/shipment_detail.html'

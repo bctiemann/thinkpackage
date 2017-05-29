@@ -1,20 +1,3 @@
-<CFQUERY NAME="ShipCustomer" DATASOURCE="#DSN#">
-SELECT *,Locations.name as location_name,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
-INNER JOIN Customers ON Shipments.customerid=Customers.customerid
-LEFT JOIN Locations ON Shipments.locationid=Locations.locationid
-LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
-WHERE Shipments.shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-GROUP BY Shipments.shipmentid
-</CFQUERY>
-
-<CFQUERY NAME="ShipProducts" DATASOURCE="#DSN#">
-SELECT * FROM Shipments,Transactions,Products
-WHERE Shipments.shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-AND Transactions.shipmentid=Shipments.shipmentid
-AND Transactions.productid=Products.productid
-GROUP BY Transactions.productid
-</CFQUERY>
-
 <div class="form_header dark">
 
 <div class="bol-icon">
@@ -43,53 +26,21 @@ GROUP BY Transactions.productid
     </thead>
     <tbody>
     {% for transaction in shipment.transaction_set.all %}
-    <CFOUTPUT QUERY="ShipProducts">
-
-    <CFSET palletsCount = 0>
-    <CFSET palletsPartialCount = 1>
-
-    <CFQUERY NAME="PalletCheck" DATASOURCE="#DSN#">
-    SELECT DISTINCT(OnPallet.palletid) FROM OnPallet,Pallets
-    WHERE productid=#productid#
-    AND OnPallet.palletid=Pallets.palletid
-    AND shipmentid=#shipmentid#
-    </CFQUERY>
-
-    <CFLOOP QUERY="PalletCheck">
-        <CFQUERY NAME="PalletPartialCheck" DATASOURCE="#DSN#">
-        SELECT * FROM OnPallet
-        WHERE palletid=#palletid#
-        AND productid!=#ShipProducts.productid#
-        </CFQUERY>
-
-        <CFIF PalletPartialCheck.recordCount GT 0>
-<!---            <CFSET palletsCount = palletsCount + 1/(PalletPartialCheck.recordCount + 1)>--->
-            <CFSET palletsPartialCount = palletsPartialCount + PalletPartialCheck.recordCount>
-        <CFELSE>
-            <CFSET palletsCount = palletsCount + 1>
-        </CFIF>
-
-    </CFLOOP>
 
     <tr class="shipment detail" id="productdetail_{{ transaction.product.id }}">
         <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text" style="width: 300px;">{{ transaction.product.name }}</td>
         <td class="text">{{ transaction.product.get_account_prepay_type_display }}</td>
-        <td class="text">#carrier#<CFIF tracking IS NOT ""><br />#tracking#</CFIF></td>
-        <td class="text">#ShipProducts.3rdparty#</td>
-        <td class="date">#DateFormat(shippedon,"MM/DD/YYYY")#</td>
-        <td class="numeric">#packing#</td>
-        <td class="numeric">#cases#</td> 
-        <td class="numeric"><CFIF palletsCount GT 0>#palletsCount#</CFIF>
-            <CFIF palletsPartialCount GT 1>
-                1/#palletsPartialCount#
-            </CFIF>
-        </td>
-        <td class="numeric"><CFIF IsNumeric(GW) AND IsNumeric(cases)>#NumberFormat(GW * cases,"._")#</CFIF></td>
-        <td class="text">#length# &times; #width# &times; #height#</td>
+        <td class="text">{{ transaction.shipment.carrier }}{% if transaction.shipment.tracking %}<br />{{ transaction.shipment.tracking }}{% endif %}</td>
+        <td class="text">{{ transaction.shipment.third_party }}</td>
+        <td class="date">{{ transaction.shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}</td>
+        <td class="numeric">{{ transaction.product.packing }}</td>
+        <td class="numeric">{{ transaction.cases }}</td> 
+        <td class="numeric">{{ transaction.pallet_share }}</td>
+        <td class="numeric">{{ transaction.total_weight|floatformat:1 }}</td>
+        <td class="text">{{ transaction.product.length|floatformat:1 }} &times; {{ transaction.product.width|floatformat:1 }} &times; {{ transaction.product.height|floatformat:1 }}</td>
     </tr>   
         
-    </CFOUTPUT>
     {% endfor %}
     </tbody>
 </table>

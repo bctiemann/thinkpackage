@@ -1,4 +1,5 @@
 var cgiroot = '/mgmt/';
+var apiroot = '/api/';
 var globals = {};
 var keyinput = '';
 var keyinput_timeout = null;
@@ -1019,25 +1020,27 @@ function setupProductTransfer(productid, customerid) {
     $('#transfer_remain_selected').html($('#remain_'+productid).val());
     $('#transfer_cases').val('');
     $('.transfer_destination').empty();
-    var url = cgiroot+'ajax_product_action.cfm';
+//    var url = cgiroot+'ajax_product_action.cfm';
     if (customerid) {
-        $.post(url, {
+        var url = apiroot + customerid + '/products/';
+        $.get(url, {
             method: 'getCustomerProducts', 
             customerid: customerid,
             source_productid: productid,
         }, function(data) {
+console.log(data);
             for (p in data) {
                 var li = $('<li>', {
-                    productid: data[p].productid,
+                    productid: data[p].id,
                     customerid: customerid,
                 });
                 li.append($('<span>', {
-                    html: data[p].remain,
+                    html: data[p].cases_inventory,
                     class: 'remain',
                 }));
-                var productStr = data[p].pname;
-                if (data[p].itemnum)
-                    productStr = data[p].itemnum + ' ' + productStr;
+                var productStr = data[p].name;
+                if (data[p].item_number)
+                    productStr = data[p].item_number + ' ' + productStr;
                 if (data[p].packing)
                     productStr = productStr + ' [' + data[p].packing + ']';
                 li.append($('<span>', {
@@ -1045,20 +1048,35 @@ function setupProductTransfer(productid, customerid) {
                 }));
                 $('#transfer_product').append(li);
             }
+            var li = $('<li>', {
+                productid: null,
+                customerid: customerid,
+            });
+            li.append($('<span>', {
+                html: 0,
+                class: 'remain',
+            }));
+            var productStr = '(Create new product)';
+            li.append($('<span>', {
+                html: productStr,
+            }));
+            $('#transfer_product').append(li);
+
             $('#transfer_product li').click(function() {
                 execute_transferProduct(productid, $(this).attr('productid'), $(this).attr('customerid'));
             });
         }, 'json');
         $('#dialog_transfer_selectproduct').dialog('open');
     } else {
-        $.post(url, {'method': 'getCustomers'}, function(data) {
+        var url = apiroot + '/clients/';
+        $.get(url, {'method': 'getCustomers'}, function(data) {
             for (c in data) {
                 var li = $('<li>', {
-                    customerid: data[c].customerid,
-                    class: data[c].customerid == globals['customerid_current'] ? 'invalid-target' : 'valid-target',
+                    customerid: data[c].id,
+                    class: data[c].id == globals['customerid_current'] ? 'invalid-target' : 'valid-target',
                 });
                 li.append($('<span>', {
-                    html: data[c].coname,
+                    html: data[c].company_name,
                     css: {'paddingLeft': data[c].depth * 20},
                 }));
                 $('#transfer_customer').append(li);
@@ -1073,7 +1091,8 @@ function setupProductTransfer(productid, customerid) {
 }
 
 function execute_transferProduct(from_productid, to_productid, to_customerid) {
-    var url = cgiroot+'ajax_product_action.cfm';
+//    var url = cgiroot+'ajax_product_action.cfm';
+    var url = cgiroot + 'product/' + from_productid + '/transfer/';
     var cases = parseInt($('#transfer_cases').val());
     if (!cases) {
         alert('Please enter the number of cases to transfer.');

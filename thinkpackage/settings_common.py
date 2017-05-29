@@ -45,9 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
+    'rest_framework',
     'phonenumber_field',
 
     'ims',
+    'api',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -196,3 +198,10 @@ LOGGING = {
 }
 
 #PHONENUMBER_DB_FORMAT = 'NATIONAL'
+
+#REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': (
+#        'rest_framework.authentication.BasicAuthentication',
+#        'rest_framework.authentication.SessionAuthentication',
+#    )
+#}

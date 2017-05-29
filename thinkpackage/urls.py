@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from ims import views as ims_views
+from api import views as api_views
 
 urlpatterns_mgmt = [
     url(r'^$', ims_views.mgmt, name='mgmt-home'),
@@ -46,10 +47,16 @@ urlpatterns_mgmt = [
 
 ]
 
+urlpatterns_api = [
+    url(r'^clients/$', api_views.GetClients.as_view(), name='api-clients'),
+    url(r'^(?P<client_id>\d+)/products/$', api_views.GetClientProducts.as_view(), name='api-client-products'),
+]
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^$', ims_views.home, name='home'),
 
     url(r'^mgmt/', include(urlpatterns_mgmt)),
+    url(r'^api/', include(urlpatterns_api)),
 ]

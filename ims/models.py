@@ -468,6 +468,10 @@ class Transaction(models.Model):
     def cases_remaining(self):
         return int(float(self.quantity_remaining) / float(self.product.packing))
 
+    @property
+    def cases_received_split(self):
+        return self.receivable.cases - self.cases
+
     def get_absolute_url(self):
         return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
 

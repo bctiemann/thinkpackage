@@ -134,7 +134,7 @@ def mgmt_shipments(request, client_id=None, shipment_id=None):
 
     context = {
         'client': client,
-        'shipment_id': shipment_id,
+        'shipmentid': request.GET.get('shipmentid', 'null'),
     }
     return render(request, 'ims/mgmt/shipments.html', context)
 
@@ -142,8 +142,22 @@ def mgmt_shipments(request, client_id=None, shipment_id=None):
 def mgmt_shipments_list(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
+    try:
+        shipped_filter = int(request.GET.get('shipped_filter', 0))
+    except:
+        shipped_filter = 0
+
+    shipments = client.shipment_set.all().order_by('status', '-date_created')
+
+    if shipped_filter:
+        shipments = shipments.exclude(status=2)
+    else:
+        shipments = shipments.filter(status=2)
+
     context = {
         'client': client,
+        'shipments': shipments,
+        'shipped_filter': shipped_filter,
     }
     return render(request, 'ims/mgmt/shipments_list.html', context)
 

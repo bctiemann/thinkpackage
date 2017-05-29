@@ -5,41 +5,19 @@
 
 <div class="content">
 
-<CFIF IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
-    <CFQUERY NAME="Customer" DATASOURCE="#DSN#">
-    SELECT * FROM Customers
-    WHERE customerid=<CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_NUMERIC">
-    </CFQUERY>
-    <CFIF Customer.recordcount IS 0>
-        <div class="error">An invalid customer ID was specified.</div>
-        <CFABORT>
-    </CFIF>
-<CFELSE>
-    <div class="error">An invalid customer ID was specified.</div>
-    <CFABORT>
-</CFIF>
+{% if shipmentid %}
+<script type="text/javascript">
+globals['shipmentid'] = {{ shipmentid }};
+</script>
+{% endif %}
 
-<CFIF IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
-    <CFQUERY NAME="Shipment" DATASOURCE="#DSN#">
-    SELECT * FROM Shipments
-    WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-    </CFQUERY>
-
-    <CFOUTPUT>
-    <script type="text/javascript">
-//    globals['shipmentid'] = #Shipment.shipmentid#;
-    </script>
-    </CFOUTPUT>
-</CFIF>
-
-<div class="customerheader"><CFOUTPUT>#Customer.coname#</CFOUTPUT></div>
+<div class="customerheader">{{ client.company_name }}</div>
 
 {% with page_selected="shipments" %}
 {% include "ims/mgmt/inc_nav.html" %}
 {% endwith %}
 
 <div id="list_shipments">
-<CFINCLUDE TEMPLATE="ajax_shipments_list.cfm">
 </div>
 
 <div class="shipment_detail" id="shipment_details"></div>
@@ -60,8 +38,6 @@ Are you sure you want to cancel this shipment?
 </div>
     
     
-<CFOUTPUT>
 <input type="hidden" id="customerid" value="{{ client.id }}" />
-</CFOUTPUT>
 
 {% endblock %}

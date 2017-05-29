@@ -494,7 +494,7 @@ class Transaction(models.Model):
 
 class Pallet(models.Model):
     id = models.AutoField(primary_key=True, db_column='palletid')
-    product_id = models.CharField(max_length=10, db_column='PID')
+    pallet_id = models.CharField(max_length=10, db_column='PID')
     shipment = models.ForeignKey('Shipment', db_column='shipmentid')
     client = models.ForeignKey('Client', db_column='customerid')
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')

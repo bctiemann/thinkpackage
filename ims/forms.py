@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.safestring import mark_safe
+from django.contrib.auth.forms import AuthenticationForm
 
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
@@ -25,6 +26,17 @@ DOMESTIC_CHOICES = (
     (False, 'Import (12-14 wks)'),
     (True, 'Domestic (6-8 wks)'),
 )
+
+
+class UserLoginForm(AuthenticationForm):
+    username = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Login'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+
+    class Meta:
+        widgets = {
+            'username': forms.EmailInput(attrs={'placeholder': 'Login'}),
+            'password': forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        }
 
 
 class ClientForm(forms.ModelForm):

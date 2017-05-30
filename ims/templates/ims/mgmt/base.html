@@ -21,14 +21,19 @@ globals['customerid_current'] = {{ client_id }};
     </script>
 </head>
 
+{% if user.is_authenticated %}
+
 <body>
 
-{% if user.is_authenticated or True %}
     <div id="header">
-    <div class="logoutlink"><a href="?exit">Log out [{{ user }}]</a></div>
+    <div class="logoutlink"><a href="{% url "sign-out" %}">Log out [{{ user }}]</a></div>
     <div class="logoutlink">{% now "D F j, g:i A" %}</div>
     <a href="customers.cfm"><div class="homelink"></div></a>
     </div>
+{% else %}
+
+<body class="login">
+
 {% endif %}
 
 {% block content %}{% endblock %}

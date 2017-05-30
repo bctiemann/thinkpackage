@@ -1,11 +1,29 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from django.contrib.auth import views as auth_views
 from ims import views as ims_views
 from api import views as api_views
 
+from ims.forms import UserLoginForm
+
 urlpatterns_mgmt = [
     url(r'^$', ims_views.mgmt, name='mgmt-home'),
+
+    url(
+        r'^sign_in/',
+        auth_views.login,
+        {
+            'template_name': 'ims/mgmt/sign_in.html',
+            'authentication_form': UserLoginForm,
+        },
+        name='sign-in'
+    ),
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'sign-in'}, name='sign-out'),
+    url(r'^password_reset/$', auth_views.password_reset, {'template_name': 'accounts/password_reset_form.html',}, name='password-reset'),
+    url(r'^password_reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html',},name='password-reset-done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.password_reset_confirm, {'template_name': 'accounts/password_reset_confirm.html',}, name='password-reset-confirm'),
+    url(r'^reset/done/$', auth_views.password_reset_complete, {'template_name': 'accounts/password_reset_complete.html',}, name='password-reset-complete'),
 
     url(r'^customers_list/$', ims_views.mgmt_customers_list, name='mgmt-customers-list'),
     url(r'^contacts_list/(?P<client_id>\d+)/$', ims_views.mgmt_contacts_list, name='mgmt-contacts-list'),

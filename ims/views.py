@@ -8,6 +8,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -31,6 +32,8 @@ def home(request):
     return render(request, 'ims/home.html', context)
 
 
+@login_required(login_url='/mgmt/sign_in/')
+#@login_required
 def mgmt(request):
 
     delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')

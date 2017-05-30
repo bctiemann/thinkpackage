@@ -115,6 +115,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'ims.User'
 
+
+#LOGIN_URL = '/sign_in/'
+#LOGIN_REDIRECT_URL = '/account/profile/'
+#LOGOUT_REDIRECT_URL = '/'
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 

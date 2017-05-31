@@ -10,13 +10,16 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+from two_factor.views import LoginView
+from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable
-from ims.forms import ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm
+from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm
 from ims import utils
 
 import math
@@ -26,14 +29,27 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class CustomLoginView(LoginView):
+    form_list = (
+        ('auth', UserLoginForm),
+        ('token', AuthenticationTokenForm),
+        ('backup', BackupTokenForm),
+    )
+
+#    def __init__(self, **kwargs):
+#        super(CustomLoginView, self).__init__(**kwargs)
+#        if self.request.user.is_admin:
+#            self.redirect_field_name = 
+
+
 def home(request):
     context = {
     }
     return render(request, 'ims/home.html', context)
 
 
-@login_required(login_url='/mgmt/sign_in/')
-#@login_required
+#@login_required(login_url='/mgmt/sign_in/')
+@login_required
 def mgmt(request):
 
     delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')

@@ -8,17 +8,24 @@ from api import views as api_views
 from ims.forms import UserLoginForm
 
 urlpatterns_mgmt = [
+    url(
+        r'^account/login/$',
+        ims_views.CustomLoginView.as_view(),
+        name='sign-in',
+    ),
+    url(r'', include('two_factor.urls', 'two_factor')),
+
     url(r'^$', ims_views.mgmt, name='mgmt-home'),
 
-    url(
-        r'^sign_in/',
-        auth_views.login,
-        {
-            'template_name': 'ims/mgmt/sign_in.html',
-            'authentication_form': UserLoginForm,
-        },
-        name='sign-in'
-    ),
+#    url(
+#        r'^sign_in/',
+#        auth_views.login,
+#        {
+#            'template_name': 'ims/mgmt/sign_in.html',
+#            'authentication_form': UserLoginForm,
+#        },
+#        name='sign-in'
+#    ),
     url(r'^sign_out/', auth_views.logout, {'next_page': 'sign-in'}, name='sign-out'),
     url(r'^password_reset/$', auth_views.password_reset, {'template_name': 'accounts/password_reset_form.html',}, name='password-reset'),
     url(r'^password_reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html',},name='password-reset-done'),

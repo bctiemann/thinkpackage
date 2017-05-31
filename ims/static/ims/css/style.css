@@ -145,28 +145,31 @@ div#login_status h3 {
 	color: #fff;
 }
 
-table.loginform {
+.loginform table {
         width: 400px;
         margin: 200px auto 0px auto;
         font-size: 24px;
 }
-table.loginform td {
+.loginform th {
+	display: none;
+}
+.loginform td {
         padding: 3px;
 }
-table.loginform td.label {
+.loginform td.label {
         padding-right: 20px;
 }
-table.loginform td.data {
+.loginform td.data {
 	padding-left: 40px;
 }
-table.loginform input {
+.loginform input {
 	font-size: 18px;
 	padding: 4px;
 }
-table.loginform td.tool {
+.loginform td.tool {
 	font-size: 11px;
 }
-table.loginform a {
+.loginform a {
         color: #fff;
         text-decoration: none;
 }

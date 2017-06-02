@@ -61,8 +61,6 @@ def home(request):
     return render(request, 'ims/home.html', context)
 
 
-#@login_required(login_url='/mgmt/sign_in/')
-@login_required
 def mgmt(request):
 
     delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')

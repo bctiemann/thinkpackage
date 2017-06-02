@@ -65,6 +65,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'ims.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -123,6 +124,13 @@ AUTH_USER_MODEL = 'ims.User'
 
 
 LOGIN_URL = 'two_factor:login'
+
+LOGIN_EXEMPT_URLS = (
+    r'mgmt/account/login/',
+    r'client/sign_in/',
+    r'warehouse/sign_in/',
+    r'accounting/sign_in/',
+)
 
 #LOGIN_URL = '/sign_in/'
 #LOGIN_REDIRECT_URL = '/account/profile/'

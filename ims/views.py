@@ -210,7 +210,11 @@ def mgmt_shipment_doc(request, doc_id=None):
     if not shipment_doc.file:
         raise Http404
 
-    with open(os.path.join(settings.MEDIA_ROOT, shipment_doc.file.name), 'r') as file:
+    filename = os.path.join(settings.MEDIA_ROOT, shipment_doc.file.name)
+    if not os.path.isfile(filename):
+        raise Http404
+
+    with open(filename, 'r') as file:
         response = HttpResponse(file.read(), content_type=shipment_doc.content_type)
         response['Content-Disposition'] = 'inline;filename=\'{0}.{1}\''.format(shipment_doc.basename, shipment_doc.ext)
     return response

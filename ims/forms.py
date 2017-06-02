@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction
+from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc
 from ims import utils
 
 import logging
@@ -210,3 +210,9 @@ class ReceivableConfirmForm(forms.ModelForm):
     class Meta:
         model = Receivable
         fields = ['cases', 'purchase_order', 'shipment_order']
+
+
+class ShipmentDocForm(forms.ModelForm):
+    class Meta:
+        model = ShipmentDoc
+        fields = ['shipment', 'file']

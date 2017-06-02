@@ -540,18 +540,20 @@ function uploadShipmentDoc(shipmentid) {
     $('#shipment_upload_form').dialog("open");
 }
 
-var execute_uploadShipmentDoc = function(shipmentid) { 
+var execute_uploadShipmentDoc = function(shipmentid) {
     var data = new FormData();
     $.each($('#shipment_upfile')[0].files, function(i, file) {
-        data.append('shipment_upfile', file);
+        data.append('file', file);
     });
     data.append('fnc', 'upload_doc');
-    data.append('shipmentid', globals['shipmentid']);
+    data.append('shipment', globals['shipmentid']);
 
     $('.spinner-upload').show();
 
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/docs/';
     $.ajax({
-        url: 'ajax_shipment_action.cfm',
+//        url: 'ajax_shipment_action.cfm',
+        url: url,
         data: data,
         cache: false,
         contentType: false,
@@ -563,12 +565,12 @@ console.log(data);
             $('.spinner-upload').hide();
             $('#shipment_upload_form').dialog('close');
             if (data.success) {
-                var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+globals['shipmentid'];
+                var successUrl = url;
                 $('#shipment_details').load(successUrl,function() {
                     refreshUI();
                 });
                 refreshShipments(globals['shipmentid']);
-                showShipmentDocs(data.shipmentid);
+                showShipmentDocs(globals['shipmentid']);
                 $('#shipment_upfile').val('');
             } else {
                 alert(data.error);

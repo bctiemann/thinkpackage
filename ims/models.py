@@ -565,13 +565,22 @@ def get_image_path(instance, filename):
 class ShipmentDoc(models.Model):
     id = models.AutoField(primary_key=True, db_column='docid')
     shipment = models.ForeignKey('Shipment', db_column='shipmentid')
-    uuid = models.CharField(max_length=35, blank=True)
+    uuid = models.CharField(max_length=36, blank=True)
     file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)
     ext = models.CharField(max_length=10, blank=True)
     size = models.IntegerField(null=True, blank=True)
     content_type = models.CharField(max_length=32, blank=True, db_column='mimetype')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
+
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            self.uuid = str(uuid.uuid4()).upper()
+            logger.warning(self.uuid)
+        super(ShipmentDoc, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('mgmt-shipment-docs', kwargs={'shipment_id': self.shipment_id})
 
     def __unicode__(self):
         return ('{0}.{1}'.format(self.basename, self.ext))

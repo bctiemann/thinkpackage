@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc
-from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm
+from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
 from ims import utils
 
 import math
@@ -758,3 +758,31 @@ class ShipmentDetail(DetailView):
     model = Shipment
     pk_url_kwarg = 'shipment_id'
     template_name = 'ims/mgmt/shipment_detail.html'
+
+
+class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
+    model = ShipmentDoc
+    form_class = ShipmentDocForm
+    template_name = 'ims/mgmt/shipment_docs.html'
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+        logger.warning(self.request.FILES)
+        response = super(ShipmentDocCreate, self).form_valid(form)
+        uploaded_file = self.request.FILES['file']
+        self.object.content_type = uploaded_file.content_type
+        self.object.size = uploaded_file.size
+        filename_parts = uploaded_file.name.split('.')
+        self.object.basename = '.'.join(filename_parts[0:-1])
+        self.object.ext = filename_parts[-1]
+        self.object.save()
+        logger.info('ShipmentDoc {0} created.'.format(self.object))
+        return response
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShipmentDocCreate, self).get_context_data(*args, **kwargs)
+        shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+        context['shipment'] = shipment
+        return context
+
+

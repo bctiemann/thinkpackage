@@ -786,3 +786,11 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
         return context
 
 
+class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
+    model = ShipmentDoc
+
+    def get_object(self):
+        return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
+
+    def get_success_url(self):
+        return reverse_lazy('mgmt-shipment-docs', kwargs={'shipment_id': self.object.shipment.id})

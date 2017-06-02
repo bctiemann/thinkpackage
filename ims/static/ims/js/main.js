@@ -581,25 +581,21 @@ console.log(data);
 
 var deleteShipmentDoc = function(docid) {
     if (confirm('Are you sure you want to delete this document?')) {
-        var url = 'ajax_shipment_action.cfm';
+//        var url = 'ajax_shipment_action.cfm';
+        var url = cgiroot + 'shipment/doc/' + docid + '/delete/';
         var params = {
-            docid: docid,
+            doc_id: docid,
             fnc: 'delete_doc',
         };
         $.post(url, params, function(data) {
-console.log(data);
-            if (data.success) {
-                var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
-                $('#shipment_details').load(successUrl,function() {
-                    refreshUI();
-                });
-                refreshShipments(globals['shipmentid']);
-                showShipmentDocs(data.shipmentid);
-                $('#shipment_upfile').val('');
-            } else {
-                alert(data.error);
-            }
-        }, 'json');
+            var successUrl = cgiroot + 'shipment/' + globals['shipmentid'] + '/docs/';
+            $('#shipment_details').load(successUrl,function() {
+                refreshUI();
+            });
+            refreshShipments(globals['shipmentid']);
+            showShipmentDocs(globals['shipmentid']);
+            $('#shipment_upfile').val('');
+        });
     }
 };
 

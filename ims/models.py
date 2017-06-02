@@ -560,13 +560,13 @@ class PalletContents(models.Model):
 
 
 def get_image_path(instance, filename):
-    return 'docs/{0}/{1}'.format(instance.uuid, filename)
+    return 'shipment_docs/{0}/{1}'.format(instance.uuid, filename)
 
 class ShipmentDoc(models.Model):
     id = models.AutoField(primary_key=True, db_column='docid')
     shipment = models.ForeignKey('Shipment', db_column='shipmentid')
     uuid = models.CharField(max_length=35, blank=True)
-#    file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
+    file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)
     ext = models.CharField(max_length=10, blank=True)
     size = models.IntegerField(null=True, blank=True)

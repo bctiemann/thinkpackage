@@ -80,6 +80,9 @@ class User(AbstractBaseUser):
     notes = models.TextField(blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     date_deleted = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey('User', null=True, blank=True)
+    last_login = models.DateTimeField(null=True, blank=True)
+    login_count = models.IntegerField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
 

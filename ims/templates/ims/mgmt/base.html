@@ -28,7 +28,7 @@ globals['customerid_current'] = {{ client_id }};
     <div id="header">
     <div class="logoutlink"><a href="{% url "sign-out" %}">Log out [{{ user }}]</a></div>
     <div class="logoutlink">{% now "D F j, g:i A" %}</div>
-    <a href="customers.cfm"><div class="homelink"></div></a>
+    <a href="{% url "mgmt-home" %}"><div class="homelink"></div></a>
     </div>
 {% else %}
 

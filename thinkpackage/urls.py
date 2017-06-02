@@ -76,6 +76,7 @@ urlpatterns_mgmt = [
     url(r'^receivable/(?P<receivable_id>\d+)/delete/$', ims_views.ReceivableDelete.as_view(), name='mgmt-receivable-delete'),
 
     url(r'^shipment/(?P<shipment_id>\d+)/$', ims_views.ShipmentDetail.as_view(), name='mgmt-shipment-detail'),
+    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', ims_views.mgmt_shipment_docs, name='mgmt-shipment-docs'),
 
     url(r'^(?P<client_id>\d+)/$', ims_views.mgmt_redirect, name='mgmt-redirect'),
 #    url(r'^(?P<client_id>\d+)/profile/$', ims_views.mgmt_profile, name='mgmt-profile'),

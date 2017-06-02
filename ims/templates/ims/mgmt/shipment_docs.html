@@ -1,0 +1,11 @@
+<tbody>
+{% for doc in shipment.shipmentdoc_set.all %}
+<cfoutput query="ShipmentDocs">
+    <tr>
+        <td><a href="viewdoc.cfm?docid={{ doc.id }}" target="_blank">{{ doc.basename }}.{{ doc.ext }}</a></td>
+        <td style="width: 100px;">{{ doc.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+        <td class="action"><button onClick="deleteShipmentDoc({{ doc.id }});">Delete</button></td>
+    </tr>
+</cfoutput>
+{% endfor %}
+</tbody>

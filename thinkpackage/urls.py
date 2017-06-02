@@ -10,8 +10,23 @@ from ims.forms import UserLoginForm
 urlpatterns_mgmt = [
     url(
         r'^account/login/$',
-        ims_views.CustomLoginView.as_view(),
-        name='sign-in',
+        ims_views.LoginView.as_view(),
+        name='login',
+    ),
+     url(
+        r'^account/two_factor/backup/phone/register/$',
+        ims_views.PhoneSetupView.as_view(),
+        name='phone_create',
+    ),
+    url(
+        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+        ims_views.PhoneDeleteView.as_view(),
+        name='phone_delete',
+    ),
+    url(
+        r'^account/two_factor/disable/$',
+        ims_views.DisableView.as_view(),
+        name='disable',
     ),
     url(r'', include('two_factor.urls', 'two_factor')),
 
@@ -26,7 +41,7 @@ urlpatterns_mgmt = [
 #        },
 #        name='sign-in'
 #    ),
-    url(r'^sign_out/', auth_views.logout, {'next_page': 'sign-in'}, name='sign-out'),
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'login'}, name='sign-out'),
     url(r'^password_reset/$', auth_views.password_reset, {'template_name': 'accounts/password_reset_form.html',}, name='password-reset'),
     url(r'^password_reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html',},name='password-reset-done'),
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.password_reset_confirm, {'template_name': 'accounts/password_reset_confirm.html',}, name='password-reset-confirm'),

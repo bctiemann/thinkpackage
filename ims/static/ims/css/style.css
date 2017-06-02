@@ -145,9 +145,27 @@ div#login_status h3 {
 	color: #fff;
 }
 
+.login-form-container {
+	width: 400px;
+        margin: 120px auto 0px auto;
+	padding-top: 80px;
+	position: relative;
+}
+.login-form-container ul {
+	padding: 0px;
+}
+.login-form-container li {
+	list-style-type: none;
+}
+.login-form-container label {
+	display: none;
+}
+.login-form-container .errorlist {
+	position: absolute;
+	top: 0px;
+}
+
 .loginform table {
-        width: 400px;
-        margin: 200px auto 0px auto;
         font-size: 24px;
 }
 .loginform th {

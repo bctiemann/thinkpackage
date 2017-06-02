@@ -10,7 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from two_factor.views import LoginView
+from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from rest_framework.views import APIView
@@ -29,18 +29,31 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CustomLoginView(LoginView):
+########################################################################
+# Custom two-factor account setup views
+
+class LoginView(LoginView):
     form_list = (
         ('auth', UserLoginForm),
         ('token', AuthenticationTokenForm),
         ('backup', BackupTokenForm),
     )
 
-#    def __init__(self, **kwargs):
-#        super(CustomLoginView, self).__init__(**kwargs)
-#        if self.request.user.is_admin:
-#            self.redirect_field_name = 
 
+class PhoneSetupView(PhoneSetupView):
+    success_url = reverse_lazy('two_factor:profile')
+
+
+class PhoneDeleteView(PhoneDeleteView):
+    success_url = reverse_lazy('two_factor:profile')
+
+
+class DisableView(DisableView):
+    success_url = reverse_lazy('two_factor:profile')
+
+
+########################################################################
+# IMS account management views
 
 def home(request):
     context = {

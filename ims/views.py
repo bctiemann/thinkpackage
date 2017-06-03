@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 # Custom two-factor account setup views
 
 class LoginView(LoginView):
+    template_name = 'mgmt/login.html'
     form_list = (
         ('auth', UserLoginForm),
         ('token', AuthenticationTokenForm),

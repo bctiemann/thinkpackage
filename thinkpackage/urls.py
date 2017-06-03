@@ -29,7 +29,7 @@ urlpatterns_mgmt = [
         ims_views.DisableView.as_view(),
         name='disable',
     ),
-    url(r'', include('two_factor.urls', 'two_factor')),
+    url(r'', include('two_factor.urls', 'mgmt-two_factor')),
 
     url(r'^$', ims_views.mgmt, name='mgmt-home'),
 
@@ -95,14 +95,35 @@ urlpatterns_mgmt = [
 
 urlpatterns_client = [
     url(
-        r'^sign_in/',
-        auth_views.login,
-        {
-            'template_name': 'client/sign_in.html',
-            'authentication_form': UserLoginForm,
-        },
-        name='sign-in'
+        r'^account/login/$',
+        client_views.LoginView.as_view(),
+        name='login',
     ),
+     url(
+        r'^account/two_factor/backup/phone/register/$',
+        client_views.PhoneSetupView.as_view(),
+        name='phone_create',
+    ),
+    url(
+        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+        client_views.PhoneDeleteView.as_view(),
+        name='phone_delete',
+    ),
+    url(
+        r'^account/two_factor/disable/$',
+        client_views.DisableView.as_view(),
+        name='disable',
+    ),
+    url(r'', include('two_factor.urls', 'client-two_factor')),
+#    url(
+#        r'^sign_in/',
+#        auth_views.login,
+#        {
+#            'template_name': 'client/sign_in.html',
+#            'authentication_form': UserLoginForm,
+#        },
+#        name='sign-in'
+#    ),
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
 ]
 

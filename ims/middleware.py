@@ -34,7 +34,7 @@ class LoginRequiredMiddleware:
             path = request.path_info.lstrip('/')
             if not any(m.match(path) for m in EXEMPT_URLS):
                 if path.startswith('mgmt/'):
-                    return HttpResponseRedirect(reverse_lazy('two_factor:login'))
+                    return HttpResponseRedirect(reverse_lazy('mgmt-two_factor:login'))
                 if path.startswith('client/'):
-                    return HttpResponseRedirect(reverse_lazy('client:sign-in'))
+                    return HttpResponseRedirect(reverse_lazy('client-two_factor:login'))
 #                return HttpResponseRedirect(settings.LOGIN_URL)

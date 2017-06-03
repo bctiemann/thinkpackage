@@ -128,7 +128,7 @@ LOGIN_URL = 'two_factor:login'
 
 LOGIN_EXEMPT_URLS = (
     r'mgmt/account/login/',
-    r'client/sign_in/',
+    r'client/account/login/',
     r'warehouse/sign_in/',
     r'accounting/sign_in/',
 )

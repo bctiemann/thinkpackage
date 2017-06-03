@@ -40,7 +40,7 @@
 
 <CFOUTPUT>
     <div id="header">
-    <div class="logoutlink"><a href="?exit">Log out</a></div>
+    <div class="logoutlink"><a href="{% url "sign-out" %}">Log out</a></div>
     <div class="logoutlink"><a href="javascript:nop()" onClick="showSupport();">Support</a>
         <ul class="dropdown-menu">
             <li class="header"></li>
@@ -48,7 +48,7 @@
             <a href="javascript:nop()" onClick="showChangePassword();"><li>Change Password</li></a>
         </ul>
     </div>
-    <div class="logoutlink">#DateFormat(Now(),"ddd mmm dd")#, #TimeFormat(Now(),"h:mm tt")#</div>
+    <div class="logoutlink">{% now "D F j, g:i A" %}</div>
     <div class="pagetitle">#YourCo.coname#</div>
         
     <cfif ArrayLen(childCustomers) GT 1>

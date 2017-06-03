@@ -109,6 +109,17 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+    def get_selected_client(self, request):
+        try:
+            if 'selected_client' in request.session:
+                client = Client.objects.get(pk=request.session['selected_client'])
+            else:
+                client = ClientUser.objects.filter(user=self).first().client
+                request.session['selected_client'] = client.id
+            return client
+        except:
+            return None
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"

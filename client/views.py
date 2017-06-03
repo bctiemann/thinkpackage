@@ -45,6 +45,7 @@ def client_profile(request):
 def client_inventory(request):
 
     context = {
+        'selected_client': request.user.get_selected_client(request),
     }
     return render(request, 'client/inventory.html', context)
 

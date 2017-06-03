@@ -52,7 +52,11 @@ def client_inventory(request):
 
 def client_history(request):
 
+    selected_client = request.user.get_selected_client(request)
+
     context = {
+        'selected_client': selected_client,
+        'products': selected_client.product_set.filter(is_deleted=False, is_active=True),
     }
     return render(request, 'client/history.html', context)
 

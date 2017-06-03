@@ -1,4 +1,5 @@
 {% extends "client/base.html" %}
+{% load humanize %}
 <CFINCLUDE TEMPLATE="inc_header.cfm">
 
 <!--- All Transactions table input queries must be wrapped in a CFTRANSACTION with rollback handling --->
@@ -37,14 +38,16 @@
         </CFQUERY>
 
         <CFOUTPUT QUERY="inventory">
-        <tr class="product <CFIF active IS 0>deleted</CFIF>" id="product_#productid#" onClick="selectProduct(#productid#)">
-            <td class="text">#itemnum#</td>
-            <td class="text">#ctag#</td>
-            <td class="text pname">#pname#</td>
+        {% for product in products %}
+        <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" onClick="selectProduct({{ product.id }})">
+            <td class="text">{{ product.item_number }}</td>
+            <td class="text">{{ product.client_product_id }}</td>
+            <td class="text pname">{{ product.name }}</td>
             <td class="hoverinfo"><span>Click for details</span></td>
-            <td class="numeric">#remain#</td>
-            <td class="numeric">#NumberFormat(packing * remain,",")#</td>
+            <td class="numeric">{{ product.cases_inventory|intcomma }}</td>
+            <td class="numeric">{{ product.units_inventory|intcomma }}</td>
         </tr>
+        {% endfor %}
         </CFOUTPUT>
     </tbody>
 </table>

@@ -150,7 +150,7 @@ class ClientUser(models.Model):
     is_primary = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return ('{0} {1}'.format(self.first_name, self.last_name))
+        return ('{0} {1}'.format(self.user.first_name, self.user.last_name))
 
 
 class CustContact(models.Model):

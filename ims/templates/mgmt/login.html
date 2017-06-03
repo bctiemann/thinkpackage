@@ -1,3 +1,5 @@
 {% extends "login.html" %}
 
 {% block login_page_title %}Account Management{% endblock %}
+
+{% block next %}<input type="hidden" name="next" value="{% url "mgmt-home" %}" />{% endblock %}

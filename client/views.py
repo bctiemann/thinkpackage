@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
@@ -30,6 +30,9 @@ class PhoneDeleteView(PhoneDeleteView):
 class DisableView(DisableView):
     success_url = reverse_lazy('two_factor:profile')
 
+
+def client(request):
+    return redirect('client-inventory')
 
 
 def client_inventory(request):

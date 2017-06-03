@@ -71,7 +71,7 @@
   <form action="" method="post">{% csrf_token %}
     <div class="loginform">
     {% include "two_factor/_wizard_forms.html" %}
-    <input type="hidden" name="next" value="{% url "mgmt-home" %}" />
+    {% block next %}{% endblock %}
     </div>
 
     {# hidden submit button to enable [enter] key #}

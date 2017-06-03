@@ -124,6 +124,9 @@ urlpatterns_client = [
 #        },
 #        name='sign-in'
 #    ),
+
+    url(r'^$', client_views.client, name='client-home'),
+
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
 ]
 

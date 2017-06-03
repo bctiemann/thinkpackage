@@ -3,6 +3,7 @@ from django.contrib import admin
 
 from django.contrib.auth import views as auth_views
 from ims import views as ims_views
+from client import views as client_views
 from api import views as api_views
 
 from ims.forms import UserLoginForm
@@ -92,6 +93,19 @@ urlpatterns_mgmt = [
     url(r'^(?P<client_id>\d+)/shipments/list/$', ims_views.mgmt_shipments_list, name='mgmt-shipments-list'),
 ]
 
+urlpatterns_client = [
+    url(
+        r'^sign_in/',
+        auth_views.login,
+        {
+            'template_name': 'client/sign_in.html',
+            'authentication_form': UserLoginForm,
+        },
+        name='sign-in'
+    ),
+    url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
+]
+
 urlpatterns_api = [
     url(r'^clients/$', api_views.GetClients.as_view(), name='api-clients'),
     url(r'^(?P<client_id>\d+)/products/$', api_views.GetClientProducts.as_view(), name='api-client-products'),
@@ -103,5 +117,6 @@ urlpatterns = [
     url(r'^$', ims_views.home, name='home'),
 
     url(r'^mgmt/', include(urlpatterns_mgmt)),
+    url(r'^client/', include(urlpatterns_client)),
     url(r'^api/', include(urlpatterns_api)),
 ]

@@ -1,11 +1,11 @@
-{% extends "mgmt/base.html" %}
+{% extends "client/base.html" %}
 {% load static %}
 
 {% block content %}
 
 <div id="content" class="login">
 
-<img src="{% static "mgmt/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
+<img src="{% static "client/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
 <p>Account Management</p>
 
 {% comment %}
@@ -39,6 +39,8 @@
 </CFIF>
 {% endcomment %}
 
+<div class="login-container">
+
 <form method="post" action="{% url "sign-in" %}">
 {% csrf_token %}
 <table class="loginform">
@@ -69,5 +71,6 @@
 
 </div>
 
-{% endblock %}
+</div>
 
+{% endblock %}

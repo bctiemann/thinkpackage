@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <title>Think Package Administration</title>
+    <link rel=stylesheet href="{% static "client/css/style_gen.css" %}" TYPE="text/css">
+    <link rel=stylesheet href="{% static "client/css/style.css" %}" TYPE="text/css">
+    <link rel=stylesheet href="{% static "client/css/jquery-ui.css" %}" TYPE="text/css">
+    <script type="text/javascript" src="{% static "client/js/jquery-1.11.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "client/js/jquery-ui.js" %}"></script>
+    <script type="text/javascript" src="{% static "client/js/main.js" %}"></script>
+<!--    <script type="text/javascript" src="{% static "client/js/formparse.js" %}"></script>-->
+<!--    <script type="text/javascript" src="{% static "client/js/phone.js" %}"></script>-->
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+
+    <script type="text/javascript">
+{% if client_id %}
+globals['customerid_current'] = {{ client_id }};
+{% endif %}
+    </script>
+</head>
+
+{% if user.is_authenticated %}
+
+<body>
+
+    <div id="header">
+    <div class="logoutlink"><a href="{% url "sign-out" %}">Log out [{{ user }}]</a></div>
+    <div class="logoutlink">{% now "D F j, g:i A" %}</div>
+    <a href="{% url "mgmt-home" %}"><div class="homelink"></div></a>
+    </div>
+{% else %}
+
+<body class="login">
+
+{% endif %}
+
+{% block content %}{% endblock %}
+
+</body>
+</html>

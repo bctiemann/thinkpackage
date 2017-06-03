@@ -1,19 +1,19 @@
-{% extends "ims/mgmt/base.html" %}
+{% extends "mgmt/base.html" %}
 {% load static %}
 
 {% block content %}
 <div id="notifications">
-<div class="list_title" style="background-image: url('{% static "ims/images/icon_notifications.png" %}');">
+<div class="list_title" style="background-image: url('{% static "mgmt/images/icon_notifications.png" %}');">
 Notifications
 </div>
 
-{% include "ims/mgmt/inc_notifications.html" %}
+{% include "mgmt/inc_notifications.html" %}
 </div>
 
 <div class="content">
 
 <div class="customers_list">
-<div class="list_title" style="background-image: url('{% static "ims/images/icon_customers.png" %}');">
+<div class="list_title" style="background-image: url('{% static "images/icon_customers.png" %}');">
 <!---<button class="floatright" id="toggle_inactive">Toggle inactive customers</button>--->
 
 <ul class="buttonset customers_filter floatright">

@@ -1,4 +1,4 @@
-{% extends "ims/mgmt/base.html" %}
+{% extends "mgmt/base.html" %}
 {% load static %}
 
 {% block content %}
@@ -21,7 +21,7 @@ globals['productid'] = {{ productid }};
 <div class="customerheader">{{ client.company_name }}</div>
 
 {% with page_selected="inventory" %}
-{% include "ims/mgmt/inc_nav.html" %}
+{% include "mgmt/inc_nav.html" %}
 {% endwith %}
 
 

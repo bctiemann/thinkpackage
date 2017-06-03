@@ -1,1 +1,73 @@
-inventory
+{% extends "client/base.html" %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+<CFQUERY NAME="Locations" DATASOURCE="#DSN#">
+SELECT * FROM Locations
+WHERE customerid IN (#childCustomerIDs#)
+ORDER BY name
+</CFQUERY>
+
+{% block content %}
+
+<div class="dialog" id="dialog_locations" title="Delivery Locations">
+Please select the location for delivery.
+<CFOUTPUT QUERY="Locations">
+    <button class="actionbtn minibtn" onClick="requestDelivery(#locationid#)" id="location_#locationid#">#name#</button>
+</CFOUTPUT>
+</div>
+
+<div class="dialog" id="dialog_request_confirm" title="Delivery Requested Confirmation">
+Your delivery request will be submitted as follows:
+<table id="request_details">
+    <thead>
+    <tr>
+        <th>Item #</th>
+        <th>Description</th>
+        <th class="numeric">Packing</th>
+        <th class="numeric">Cases</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</div>
+
+<div class="dialog" id="dialog_request_result" title="Delivery Requested Successfully">
+Your delivery request has been placed. Thank you!
+</div>
+
+
+<div class="content">
+
+<CFIF IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
+    <CFQUERY NAME="Shipment" DATASOURCE="#DSN#">
+    SELECT * FROM Shipments
+    WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+    AND customerid IN (#childCustomerIDs#)
+    </CFQUERY>
+
+    <CFOUTPUT>
+    <script type="text/javascript">
+    globals['shipmentid'] = #Shipment.shipmentid#;
+    </script>
+    </CFOUTPUT>
+</CFIF>
+
+<div class="greeting">Hello <cfoutput>#YourID.fname# #YourID.lname#</cfoutput>!</div>
+
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+
+<div id="list_inventory"></div>
+
+<div id="status"></div>
+
+
+<CFOUTPUT>
+<input type="hidden" id="customerid" value="#selectedCustomer#" />
+</CFOUTPUT>
+
+</div>
+
+<CFINCLUDE TEMPLATE="inc_footer.cfm">
+
+{% endblock %}

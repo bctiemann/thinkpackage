@@ -1,40 +1,81 @@
 {% load static %}
 <!DOCTYPE HTML>
 <html>
-    <head>
-    <title>Think Package Administration</title>
+<head>
+    <title>Think Package Customer Access</title>
     <link rel=stylesheet href="{% static "client/css/style_gen.css" %}" TYPE="text/css">
     <link rel=stylesheet href="{% static "client/css/style.css" %}" TYPE="text/css">
     <link rel=stylesheet href="{% static "client/css/jquery-ui.css" %}" TYPE="text/css">
     <script type="text/javascript" src="{% static "client/js/jquery-1.11.1.min.js" %}"></script>
     <script type="text/javascript" src="{% static "client/js/jquery-ui.js" %}"></script>
     <script type="text/javascript" src="{% static "client/js/main.js" %}"></script>
-<!--    <script type="text/javascript" src="{% static "client/js/formparse.js" %}"></script>-->
-<!--    <script type="text/javascript" src="{% static "client/js/phone.js" %}"></script>-->
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-
-    <script type="text/javascript">
-{% if client_id %}
-globals['customerid_current'] = {{ client_id }};
-{% endif %}
-    </script>
 </head>
 
 {% if user.is_authenticated %}
 
 <body>
 
+<div class="dialog" id="dialog_support" title="Support">
+<CFOUTPUT>Please contact THINK[PACKAGE] Support at #t800num# or email <a href="mailto:#siteemail#">#siteemail#</a> for assistance.</CFOUTPUT>
+</div>
+
+<div class="dialog" id="dialog_change_password" title="Change Password">
+<table>
+    <tr>
+        <td class="label">Current password:</td>
+        <td><input type="password" id="current_password"></td>
+    </tr>
+    <tr>
+        <td class="label">New password:</td>
+        <td><input type="password" id="new_password_1"></td>
+    </tr>
+    <tr>
+        <td class="label">Repeat password:</td>
+        <td><input type="password" id="new_password_2"></td>
+    </tr>
+</table>
+</div>
+
+<CFOUTPUT>
     <div id="header">
-    <div class="logoutlink"><a href="{% url "sign-out" %}">Log out [{{ user }}]</a></div>
-    <div class="logoutlink">{% now "D F j, g:i A" %}</div>
-    <a href="{% url "mgmt-home" %}"><div class="homelink"></div></a>
+    <div class="logoutlink"><a href="?exit">Log out</a></div>
+    <div class="logoutlink"><a href="javascript:nop()" onClick="showSupport();">Support</a>
+        <ul class="dropdown-menu">
+            <li class="header"></li>
+            <a href="javascript:nop()" onClick="showSupport();"><li>Contact</li></a>
+            <a href="javascript:nop()" onClick="showChangePassword();"><li>Change Password</li></a>
+        </ul>
     </div>
+    <div class="logoutlink">#DateFormat(Now(),"ddd mmm dd")#, #TimeFormat(Now(),"h:mm tt")#</div>
+    <div class="pagetitle">#YourCo.coname#</div>
+        
+    <cfif ArrayLen(childCustomers) GT 1>
+    <select class="client-picker">
+        <cfloop array="#childCustomers#" index="CustomerOption">
+            <cfset indent = "">
+            <cfloop from="0" to="#CustomerOption.depth#" index="i">
+                <cfset indent = indent & "&nbsp;&nbsp;&nbsp;&nbsp;">
+            </cfloop>
+            <cfoutput>
+                <option value="#CustomerOption.customerid#" <CFIF selectedCustomer IS CustomerOption.customerid>selected</CFIF>>#indent##CustomerOption.coname#</option>
+            </cfoutput>
+        </cfloop>
+    </select>
+    </cfif>
+
+    <a href="index.cfm"><div class="homelink"></div></a>
+    </div>
+</CFOUTPUT>
+
+<CFELSE>
 {% else %}
 
 <body class="login">
-
+        
 {% endif %}
+</CFIF>
 
 {% block content %}{% endblock %}
 

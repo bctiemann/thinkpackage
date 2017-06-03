@@ -53,7 +53,7 @@ Your delivery request has been placed. Thank you!
     </CFOUTPUT>
 </CFIF>
 
-<div class="greeting">Hello <cfoutput>#YourID.fname# #YourID.lname#</cfoutput>!</div>
+<div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
 <CFINCLUDE TEMPLATE="inc_nav.cfm">
 {% with page_selected="inventory" %}

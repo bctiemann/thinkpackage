@@ -1,0 +1,109 @@
+{% extends "client/base.html" %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+{% block content %}
+
+<div class="dialog" id="dialog_reorder" title="Reorder Products">
+<table class="infotable alternating small" id="reorder_list">
+    <thead>
+    <tr>
+            <th class="text">Description</th>
+            <th class="numeric">Cont. qty (pcs)</th>
+            <th class="numeric">Packing</th>
+            <th class="numeric">cases</th>
+            <th class="numeric">Unit price</th>
+            <th class="numeric">Total price</th>
+            <th class="text">Est. delivery</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<p>
+Your reorder will be placed according to your client agreement. Proceed?
+</p>
+
+<p class="floatright"><input id="signature" size="16" /></p>
+<p>Enter your name in the following box to signify your confirmation of this order.</p>
+</div>
+
+<div class="dialog" id="dialog_reorder_result" title="Reorder Placed Successfully">
+Your reorder has been placed. Thank you!
+<button class="actionbtn minibtn" onClick="openSalesOrder()">Save Sales Order</button>
+</div>
+
+
+<div class="content">
+
+<div class="greeting">Hello <cfoutput>#YourID.fname# #YourID.lname#</cfoutput>!</div>
+
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+{% with page_selected="reorder" %}
+{% include "client/inc_nav.html" %}
+{% endwith %}
+
+<cfif True>
+
+    <div class="under-construction">
+    Temporarily Under Construction
+    </div>
+
+<cfelse>
+
+<table class="infotable alternating">
+    <thead>
+        <tr>
+            <th class="text">Item #</th>
+            <th class="text">Client tag</th>
+            <th class="text">Description</th>
+            <th class="numeric">Remaining (cs)</th>
+            <th class="numeric">Packing (pcs/cs)</th>
+            <th class="numeric">Cont. qty (pcs)</th>
+            <th class="numeric">Unit price</th>
+            <th class="numeric">Total price</th>
+            <th class="text">Est. delivery</th>
+            <th class="text">Reorder</th>
+        </tr>
+    </thead>
+    <tbody>
+        <CFQUERY NAME="products" DATASOURCE="#DSN#">
+        SELECT * FROM Products
+        WHERE customerid=#selectedCustomer#
+        AND active=1
+        ORDER BY itemnum
+        </CFQUERY>
+
+        <CFOUTPUT QUERY="products">
+        <tr>
+            <td class="text">#itemnum#</td>
+            <td class="text">#ctag#</td>
+            <td class="text pname" style="width: 200px;" id="pname_#productid#">#pname#</td>
+            <td class="numeric"><span <CFIF remain * 2 LT contqty>class="low_qty"</CFIF>>#NumberFormat(remain,",")#</span></td>
+            <td class="numeric" id="packing_#productid#">#NumberFormat(packing,",")#</td>
+            <td class="numeric" id="contqty_#productid#"><CFIF IsNumeric(packing) AND IsNumeric(contqty)>#NumberFormat(packing * contqty,",")#</CFIF></td>
+<!---            <td class="numeric" id="cases_#productid#"><CFIF packing IS NOT 0>#NumberFormat(ceiling(contqty/packing),",")#<CFELSE>0</CFIF></td>--->
+            <td class="numeric" id="unitprice_#productid#">#NumberFormat(unitprice,"_$,.__")#</td>
+            <td class="numeric" id="totalprice_#productid#"><CFIF IsNumeric(unitprice) AND IsNumeric(contqty)>#NumberFormat(unitprice * contqty,"_$,.__")#</CFIF></td>
+            <td class="text" id="delivery_#productid#"><CFIF prodtype IS 1>6-8 wks<CFELSEIF prodtype IS 0>12-14 wks</CFIF></td>
+            <td class="text"><input type="checkbox" class="reorder_product" id="reorder_#PRID#" productid="#productid#" <CFIF NOT IsNumeric(unitprice) OR NOT IsNumeric(contqty)>disabled</CFIF> /></td>
+        </tr>
+        </CFOUTPUT>
+
+    </tbody>
+</table>
+
+<button class="actionbtn floatright" id="btn_reorder" disabled onClick="confirmReorder()">Reorder</button>
+<br clear="right" />
+
+<CFOUTPUT>
+<input type="hidden" id="customerid" value="#selectedCustomer#" />
+</CFOUTPUT>
+
+</cfif>
+
+</div>
+
+<CFINCLUDE TEMPLATE="inc_footer.cfm">
+
+{% endblock %}

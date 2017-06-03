@@ -1,0 +1,64 @@
+{% extends "client/base.html" %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+<!--- All Transactions table input queries must be wrapped in a CFTRANSACTION with rollback handling --->
+<!--- direction is a tinyint, 0 - inbound, 1 - outbound --->
+<!--- Cache queries of history table. Also disable this with devswitch = 1 --->
+
+{% block content %}
+
+<div class="content">
+
+<div class="greeting">Hello <cfoutput>#YourID.fname# #YourID.lname#</cfoutput>!</div>
+
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+{% with page_selected="history" %}
+{% include "client/inc_nav.html" %}
+{% endwith %}
+
+<div class="table_wrap">
+<table class="infotable alternating" id="history">
+    <thead>
+        <tr>
+            <th class="text">Item #</th>
+            <th class="text">Client tag</th>
+            <th class="text">Description</th>
+            <th class="hoverinfo"></th>
+            <th class="numeric">Cases remaining</th>
+            <th class="numeric">Total qty</th>
+        </tr>
+    </thead>
+    <tbody>
+        <CFQUERY NAME="inventory" DATASOURCE="#DSN#">
+        SELECT * FROM Products
+        WHERE customerid IN (#childCustomerIDs#)
+        AND active=1
+        ORDER BY itemnum
+        </CFQUERY>
+
+        <CFOUTPUT QUERY="inventory">
+        <tr class="product <CFIF active IS 0>deleted</CFIF>" id="product_#productid#" onClick="selectProduct(#productid#)">
+            <td class="text">#itemnum#</td>
+            <td class="text">#ctag#</td>
+            <td class="text pname">#pname#</td>
+            <td class="hoverinfo"><span>Click for details</span></td>
+            <td class="numeric">#remain#</td>
+            <td class="numeric">#NumberFormat(packing * remain,",")#</td>
+        </tr>
+        </CFOUTPUT>
+    </tbody>
+</table>
+</div>
+
+<div id="shipments_list"></div>
+
+<div class="dialog" id="dialog_documents" title="Documents">
+    <table id="documents_list" class="infotable alternating">
+    </table>
+</div>
+
+</div>
+
+<CFINCLUDE TEMPLATE="inc_footer.cfm">
+
+{% endblock %}

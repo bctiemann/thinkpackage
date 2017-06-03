@@ -56,6 +56,9 @@ Your delivery request has been placed. Thank you!
 <div class="greeting">Hello <cfoutput>#YourID.fname# #YourID.lname#</cfoutput>!</div>
 
 <CFINCLUDE TEMPLATE="inc_nav.cfm">
+{% with page_selected="inventory" %}
+{% include "client/inc_nav.html" %}
+{% endwith %}
 
 <div id="list_inventory"></div>
 

@@ -35,9 +35,30 @@ def client(request):
     return redirect('client-inventory')
 
 
+def client_profile(request):
+
+    context = {
+    }
+    return render(request, 'client/profile.html', context)
+
+
 def client_inventory(request):
 
     context = {
     }
     return render(request, 'client/inventory.html', context)
+
+
+def client_history(request):
+
+    context = {
+    }
+    return render(request, 'client/history.html', context)
+
+
+def client_reorder(request):
+
+    context = {
+    }
+    return render(request, 'client/reorder.html', context)
 

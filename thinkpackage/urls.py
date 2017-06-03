@@ -127,7 +127,10 @@ urlpatterns_client = [
 
     url(r'^$', client_views.client, name='client-home'),
 
+    url(r'^profile/$', client_views.client_profile, name='client-profile'),
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
+    url(r'^history/$', client_views.client_history, name='client-history'),
+    url(r'^reorder/$', client_views.client_reorder, name='client-reorder'),
 ]
 
 urlpatterns_api = [

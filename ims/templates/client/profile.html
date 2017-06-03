@@ -1,0 +1,44 @@
+{% extends "client/base.html" %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+{% block content %}
+
+<div class="content">
+
+<div class="greeting">Hello <cfoutput>#YourID.fname# #YourID.lname#</cfoutput>!</div>
+
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+{% with page_selected="profile" %}
+{% include "client/inc_nav.html" %}
+{% endwith %}
+
+<CFQUERY NAME="Locations" DATASOURCE="#DSN#">
+SELECT * FROM Locations
+WHERE customerid = #selectedCustomer#
+</CFQUERY>
+
+<CFQUERY NAME="CustContact" DATASOURCE="#DSN#">
+SELECT * FROM CustContacts
+WHERE customerid = #selectedCustomer#
+AND isprimary=1
+</CFQUERY>
+
+<div class="list_header">
+<CFOUTPUT>
+<p>#YourCo.coname#</p>
+<p>#CustContact.fname# #CustContact.lname# [#CustContact.email#]</p>
+<p>#CustContact.tel#</p>
+</CFOUTPUT>
+</div>
+<div class="list_wrap" id="locations_list_wrap">
+<ul class="items_list" id="locations_list">
+<CFINCLUDE TEMPLATE="ajax_locations_list.cfm">
+</ul>
+</div>
+
+<div class="objectform" id="locationform">
+</div>
+
+</div>
+
+{% endblock %}

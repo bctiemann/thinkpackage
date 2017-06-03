@@ -49,7 +49,7 @@
         </ul>
     </div>
     <div class="logoutlink">{% now "D F j, g:i A" %}</div>
-    <div class="pagetitle">#YourCo.coname#</div>
+    <div class="pagetitle">{{ selected_client.company_name }}</div>
         
     <cfif ArrayLen(childCustomers) GT 1>
     <select class="client-picker">

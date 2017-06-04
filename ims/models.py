@@ -112,6 +112,7 @@ class User(AbstractBaseUser):
         return True
 
     def get_selected_client(self, request):
+        "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
         try:
             if 'selected_client_id' in request.session:
                 try:
@@ -129,10 +130,12 @@ class User(AbstractBaseUser):
             return None
 
     def get_children_of_selected(self, request):
+        "Get list of clients at or below the selected client in the hierarchy"
         return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self.get_selected_client(request))
 
     @property
     def child_clients(self):
+        "List of clients this user is associated with, along with depth for rendering with indents in a select menu"
         child_clients = []
         client_users = ClientUser.objects.filter(user=self, client__is_active=True)
         for cu in client_users:

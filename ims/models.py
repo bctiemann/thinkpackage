@@ -10,6 +10,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from localflavor.us.us_states import STATE_CHOICES
 
+from ims import utils
+
 import uuid
 import random
 
@@ -125,6 +127,21 @@ class User(AbstractBaseUser):
             return client
         except:
             return None
+
+    def get_children_of_selected(self, request):
+        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self.get_selected_client(request))
+
+    @property
+    def child_clients(self):
+        child_clients = []
+        client_users = ClientUser.objects.filter(user=self, client__is_active=True)
+        for cu in client_users:
+            children_of_other = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), cu.client)
+            for child in children_of_other:
+                if not child in child_clients:
+                    child['indent_rendered'] = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(child['depth'] + 1)])
+                    child_clients.append(child)
+        return child_clients
 
     @property
     def is_staff(self):

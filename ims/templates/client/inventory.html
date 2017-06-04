@@ -8,6 +8,8 @@ ORDER BY name
 </CFQUERY>
 
 {% block content %}
+<p>{{ children_of_selected }}</p>
+<p>{{ selected_client }}</p>
 
 <div class="dialog" id="dialog_locations" title="Delivery Locations">
 Please select the location for delivery.

@@ -52,29 +52,9 @@ def client_profile(request):
 
 def client_inventory(request):
 
-    child_clients = []
-    client_users = ClientUser.objects.filter(user=request.user, client__is_active=True)
-    for cu in client_users:
-        children_of_other = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), cu.client)
-        for child in children_of_other:
-            if not child in child_clients:
-                child['indent_rendered'] = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(child['depth'] + 1)])
-                child_clients.append(child)
-
-    if 'selected_client_id' in request.session:
-        try:
-            selected_client = ClientUser.objects.get(user=request.user, client__id=request.session['selected_client_id']).client
-        except:
-            selected_client = ClientUser.objects.filter(user=request.user, client__is_active=True).first()
-    else:
-        selected_client = ClientUser.objects.filter(user=request.user, client__is_active=True).first()
-
-    children_of_selected = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), selected_client)
-
     context = {
-#        'selected_client': request.user.get_selected_client(request),
-        'child_clients': child_clients,
-        'selected_client': selected_client,
+        'selected_client': request.user.get_selected_client(request),
+        'children_of_selected': request.user.get_children_of_selected(request),
     }
     return render(request, 'client/inventory.html', context)
 

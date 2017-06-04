@@ -38,11 +38,11 @@ Your reorder has been placed. Thank you!
 
 <div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
-<CFINCLUDE TEMPLATE="inc_nav.cfm">
 {% with page_selected="reorder" %}
 {% include "client/inc_nav.html" %}
 {% endwith %}
 
+{% if True %}
 <cfif True>
 
     <div class="under-construction">
@@ -50,6 +50,7 @@ Your reorder has been placed. Thank you!
     </div>
 
 <cfelse>
+{% else %}
 
 <table class="infotable alternating">
     <thead>
@@ -96,14 +97,11 @@ Your reorder has been placed. Thank you!
 <button class="actionbtn floatright" id="btn_reorder" disabled onClick="confirmReorder()">Reorder</button>
 <br clear="right" />
 
-<CFOUTPUT>
-<input type="hidden" id="customerid" value="#selectedCustomer#" />
-</CFOUTPUT>
+<input type="hidden" id="customerid" value="{{ selected_client }}" />
 
 </cfif>
+{% endif %}
 
 </div>
-
-<CFINCLUDE TEMPLATE="inc_footer.cfm">
 
 {% endblock %}

@@ -111,11 +111,17 @@ class User(AbstractBaseUser):
 
     def get_selected_client(self, request):
         try:
-            if 'selected_client' in request.session:
-                client = Client.objects.get(pk=request.session['selected_client'])
+            if 'selected_client_id' in request.session:
+                try:
+                    client = ClientUser.objects.get(user=self, client__id=request.session['selected_client_id']).client
+                except ClientUser.DoesNotExist:
+                    client = ClientUser.objects.filter(user=self).first().client
+                    if client:
+                        request.session['selected_client_id'] = client.id
             else:
                 client = ClientUser.objects.filter(user=self).first().client
-                request.session['selected_client'] = client.id
+                if client:
+                    request.session['selected_client_id'] = client.id
             return client
         except:
             return None

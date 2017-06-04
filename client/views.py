@@ -57,10 +57,13 @@ def client_inventory(request):
 def client_history(request):
 
     selected_client = request.user.get_selected_client(request)
+    products = None
+    if selected_client:
+        products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
         'selected_client': selected_client,
-        'products': selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number'),
+        'products': products,
     }
     return render(request, 'client/history.html', context)
 
@@ -85,7 +88,7 @@ def client_product_history(request, product_id):
 
     history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('-date_created')
 
-#    request.session['selected_client'] = 241
+#    request.session['selected_client_id'] = 241
 
     context = {
         'product': product,

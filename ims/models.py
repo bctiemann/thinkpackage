@@ -113,13 +113,13 @@ class User(AbstractBaseUser):
         try:
             if 'selected_client_id' in request.session:
                 try:
-                    client = ClientUser.objects.get(user=self, client__id=request.session['selected_client_id']).client
+                    client = ClientUser.objects.get(user=self, client__id=request.session['selected_client_id'], client__is_active=True).client
                 except ClientUser.DoesNotExist:
-                    client = ClientUser.objects.filter(user=self).first().client
+                    client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
                     if client:
                         request.session['selected_client_id'] = client.id
             else:
-                client = ClientUser.objects.filter(user=self).first().client
+                client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
                 if client:
                     request.session['selected_client_id'] = client.id
             return client

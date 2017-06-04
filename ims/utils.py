@@ -37,3 +37,18 @@ def tree_to_list(items, sort_by=None, omit=[], reverse=False):
                 roots.insert(0, child)
 
     return items_sorted
+
+
+def list_at_node(items, root):
+    new_list = []
+    found_root = False
+    for node in items:
+        if node['obj'] == root:
+            found_root = True
+            root_depth = node['depth']
+        if found_root:
+            if node['depth'] <= root_depth and node['obj'] != root:
+                found_root = False
+            else:
+                new_list.append(node)
+    return new_list

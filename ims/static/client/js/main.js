@@ -1,4 +1,5 @@
-var cgiroot = '';
+var cgiroot = '/client/';
+var apiroot = '/api/';
 var globals = {};
 var filter_popup_timeout = 2000;
 
@@ -139,7 +140,9 @@ function selectProduct(productid,fromdate,todate) {
     todate = todate ? todate : '';
     $('tr.product').removeClass('selected');
     $('#product_'+productid).addClass('selected');
-    var url = cgiroot+'ajax_product_history.cfm?productid='+productid+'&fromdate='+fromdate+'&todate='+todate;
+//    var url = cgiroot+'ajax_product_history.cfm?productid='+productid+'&fromdate='+fromdate+'&todate='+todate;
+    var url = cgiroot + 'product/' + productid + '/history/?fromdate=' + fromdate + '&todate=' + todate;
+console.log(url);
     $('#shipments_list').load(url,function() {
         $('#fromdate').datepicker({
             onSelect: function() {

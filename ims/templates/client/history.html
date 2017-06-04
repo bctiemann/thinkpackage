@@ -1,10 +1,5 @@
 {% extends "client/base.html" %}
 {% load humanize %}
-<CFINCLUDE TEMPLATE="inc_header.cfm">
-
-<!--- All Transactions table input queries must be wrapped in a CFTRANSACTION with rollback handling --->
-<!--- direction is a tinyint, 0 - inbound, 1 - outbound --->
-<!--- Cache queries of history table. Also disable this with devswitch = 1 --->
 
 {% block content %}
 
@@ -12,7 +7,6 @@
 
 <div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
-<CFINCLUDE TEMPLATE="inc_nav.cfm">
 {% with page_selected="history" %}
 {% include "client/inc_nav.html" %}
 {% endwith %}
@@ -30,14 +24,6 @@
         </tr>
     </thead>
     <tbody>
-        <CFQUERY NAME="inventory" DATASOURCE="#DSN#">
-        SELECT * FROM Products
-        WHERE customerid IN (#childCustomerIDs#)
-        AND active=1
-        ORDER BY itemnum
-        </CFQUERY>
-
-        <CFOUTPUT QUERY="inventory">
         {% for product in products %}
         <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" onClick="selectProduct({{ product.id }})">
             <td class="text">{{ product.item_number }}</td>
@@ -48,7 +34,6 @@
             <td class="numeric">{{ product.units_inventory|intcomma }}</td>
         </tr>
         {% endfor %}
-        </CFOUTPUT>
     </tbody>
 </table>
 </div>
@@ -61,7 +46,5 @@
 </div>
 
 </div>
-
-<CFINCLUDE TEMPLATE="inc_footer.cfm">
 
 {% endblock %}

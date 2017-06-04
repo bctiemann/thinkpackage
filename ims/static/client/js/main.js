@@ -348,7 +348,8 @@ function execute_changePassword() {
 
 function showShipmentDocs(shipmentid) {
     globals['shipmentid'] = shipmentid;
-    var url = 'ajax_shipment_docs.cfm?shipmentid=' + shipmentid;
+//    var url = 'ajax_shipment_docs.cfm?shipmentid=' + shipmentid;
+    var url = cgiroot + 'shipment/' + shipmentid + '/docs/';
     $('#documents_list').load(url, function() {
         $('#documents_list button').button({
             icons: {

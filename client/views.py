@@ -8,7 +8,7 @@ from django.utils import timezone
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction
+from ims.models import Product, Transaction, Shipment
 from ims.forms import UserLoginForm
 
 from datetime import datetime, timedelta
@@ -94,3 +94,12 @@ def client_product_history(request, product_id):
         'date_to': date_to,
     }
     return render(request, 'client/product_history.html', context)
+
+
+def client_shipment_docs(request, shipment_id):
+    shipment = get_object_or_404(Shipment, pk=shipment_id)
+
+    context = {
+        'shipment': shipment,
+    }
+    return render(request, 'client/shipment_docs.html', context)

@@ -5,12 +5,25 @@ var filter_popup_timeout = 2000;
 
 function nop() {}
 
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
 function selectCustomer() {
     var params = {
         customerid: $('.client-picker').val(),
         fnc: 'selectCustomer',
     };
-    var url = cgiroot+'ajax_post.cfm';
+//    var url = cgiroot+'ajax_post.cfm';
+    var url = cgiroot + 'select/' + $('.client-picker').val() + '/';
     $.post(url,params,function(data) {
 console.log(data);
         if (data.ERROR) {

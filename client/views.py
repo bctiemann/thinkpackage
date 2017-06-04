@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
@@ -41,6 +43,15 @@ class DisableView(DisableView):
 
 def client(request):
     return redirect('client-inventory')
+
+
+@require_POST
+def select_client(request, client_id):
+#    client_user = get_object_or_404(ClientUser, user=request.user, client=client_id, client__is_active=True)
+#    client = client_user.client
+    client = get_object_or_404(Client, pk=client_id, is_active=True)
+    request.session['selected_client_id'] = client.id
+    return JsonResponse({'success': True})
 
 
 def client_profile(request):

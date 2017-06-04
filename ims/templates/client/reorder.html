@@ -1,5 +1,5 @@
 {% extends "client/base.html" %}
-<CFINCLUDE TEMPLATE="inc_header.cfm">
+{% load humanize %}
 
 {% block content %}
 
@@ -43,13 +43,11 @@ Your reorder has been placed. Thank you!
 {% endwith %}
 
 {% if True %}
-<cfif True>
 
     <div class="under-construction">
     Temporarily Under Construction
     </div>
 
-<cfelse>
 {% else %}
 
 <table class="infotable alternating">
@@ -68,28 +66,20 @@ Your reorder has been placed. Thank you!
         </tr>
     </thead>
     <tbody>
-        <CFQUERY NAME="products" DATASOURCE="#DSN#">
-        SELECT * FROM Products
-        WHERE customerid=#selectedCustomer#
-        AND active=1
-        ORDER BY itemnum
-        </CFQUERY>
-
-        <CFOUTPUT QUERY="products">
+        {% for product in products %}
         <tr>
-            <td class="text">#itemnum#</td>
-            <td class="text">#ctag#</td>
-            <td class="text pname" style="width: 200px;" id="pname_#productid#">#pname#</td>
-            <td class="numeric"><span <CFIF remain * 2 LT contqty>class="low_qty"</CFIF>>#NumberFormat(remain,",")#</span></td>
-            <td class="numeric" id="packing_#productid#">#NumberFormat(packing,",")#</td>
-            <td class="numeric" id="contqty_#productid#"><CFIF IsNumeric(packing) AND IsNumeric(contqty)>#NumberFormat(packing * contqty,",")#</CFIF></td>
-<!---            <td class="numeric" id="cases_#productid#"><CFIF packing IS NOT 0>#NumberFormat(ceiling(contqty/packing),",")#<CFELSE>0</CFIF></td>--->
-            <td class="numeric" id="unitprice_#productid#">#NumberFormat(unitprice,"_$,.__")#</td>
-            <td class="numeric" id="totalprice_#productid#"><CFIF IsNumeric(unitprice) AND IsNumeric(contqty)>#NumberFormat(unitprice * contqty,"_$,.__")#</CFIF></td>
-            <td class="text" id="delivery_#productid#"><CFIF prodtype IS 1>6-8 wks<CFELSEIF prodtype IS 0>12-14 wks</CFIF></td>
-            <td class="text"><input type="checkbox" class="reorder_product" id="reorder_#PRID#" productid="#productid#" <CFIF NOT IsNumeric(unitprice) OR NOT IsNumeric(contqty)>disabled</CFIF> /></td>
+            <td class="text">{{ product.item_number }}</td>
+            <td class="text">{{ product.client_product_id }}</td>
+            <td class="text pname" style="width: 200px;" id="pname_{{ product.id }}">{{ product.name }}</td>
+            <td class="numeric"><span {% if product.is_low %}class="low_qty"{% endif %}>{{ product.cases_inventory|intcomma }}</span></td>
+            <td class="numeric" id="packing_{{ product.id }}">{{ product.packing|intcomma }}</td>
+            <td class="numeric" id="contqty_{{ product.id }}">{% if product.contracted_quantity_units %}{{ product.contracted_quantity_units|intcomma }}{% endif %}</td>
+            <td class="numeric" id="unitprice_{{ product.id }}">${{ product.unit_price|floatformat:3 }}</td>
+            <td class="numeric" id="totalprice_{{ product.id }}">${{ product.total_price|floatformat:2|intcomma }}</td>
+            <td class="text" id="delivery_{{ product.id }}">{% if product.is_domestic %}6-8 wks{% else %}12-14 wks{% endif %}</td>
+            <td class="text"><input type="checkbox" class="reorder_product" id="reorder_{{ product.product_id }}" productid="{{ product.id }}" {% if not product.unit_price or not product.contracted_quantity %}disabled{% endif %} /></td>
         </tr>
-        </CFOUTPUT>
+        {% endfor %}
 
     </tbody>
 </table>
@@ -99,7 +89,6 @@ Your reorder has been placed. Thank you!
 
 <input type="hidden" id="customerid" value="{{ selected_client }}" />
 
-</cfif>
 {% endif %}
 
 </div>

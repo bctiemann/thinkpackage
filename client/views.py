@@ -70,7 +70,14 @@ def client_history(request):
 
 def client_reorder(request):
 
+    selected_client = request.user.get_selected_client(request)
+    products = None
+    if selected_client:
+        products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
+
     context = {
+        'selected_client': selected_client,
+        'products': products,
     }
     return render(request, 'client/reorder.html', context)
 

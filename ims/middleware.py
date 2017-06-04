@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
 from re import compile
 
 from thinkpackage.urls import urlpatterns_mgmt, urlpatterns_api
@@ -23,7 +24,6 @@ class LoginRequiredMiddleware:
     loaded. You'll get an error if they aren't.
     """
     def process_request(self, request):
-        logger.warning(request.path_info)
         assert hasattr(request, 'user'), "The Login Required middleware\
  requires authentication middleware to be installed. Edit your\
  MIDDLEWARE_CLASSES setting to insert\
@@ -38,3 +38,11 @@ class LoginRequiredMiddleware:
                 if path.startswith('client/'):
                     return HttpResponseRedirect(reverse_lazy('client-two_factor:login'))
 #                return HttpResponseRedirect(settings.LOGIN_URL)
+
+
+class AdminRequiredMiddleware:
+
+    def process_request(self, request):
+        path = request.path_info.lstrip('/')
+        if request.user.is_authenticated() and path.startswith('mgmt/') and not request.user.is_admin:
+            raise PermissionDenied

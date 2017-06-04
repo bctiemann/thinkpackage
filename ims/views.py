@@ -7,9 +7,10 @@ from django.db.models import Func, F, Count
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
@@ -19,7 +20,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser
 from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
 from ims import utils
 
@@ -207,6 +208,9 @@ def mgmt_shipment_docs(request, shipment_id=None):
 
 def mgmt_shipment_doc(request, doc_id=None):
     shipment_doc = get_object_or_404(ShipmentDoc, pk=doc_id)
+
+    if not (request.user.is_admin or request.user in [cu.user for cu in ClientUser.objects.filter(client=shipment_doc.shipment.client)]):
+        raise PermissionDenied
 
     if not shipment_doc.file:
         raise Http404

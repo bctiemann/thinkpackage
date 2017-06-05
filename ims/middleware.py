@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import logout
 from re import compile
 
 from thinkpackage.urls import urlpatterns_mgmt, urlpatterns_api
@@ -40,9 +41,13 @@ class LoginRequiredMiddleware:
 #                return HttpResponseRedirect(settings.LOGIN_URL)
 
 
-class AdminRequiredMiddleware:
+class PermissionsMiddleware:
 
     def process_request(self, request):
         path = request.path_info.lstrip('/')
-        if request.user.is_authenticated() and path.startswith('mgmt/') and not request.user.is_admin:
-            raise PermissionDenied
+        if not any(m.match(path) for m in EXEMPT_URLS):
+            if request.user.is_authenticated() and path.startswith('mgmt/') and not request.user.is_admin:
+                raise PermissionDenied
+            if request.user.is_authenticated() and path.startswith('client/') and not request.user.is_authorized_for_client(request):
+                logout(request)
+                return HttpResponseRedirect(reverse_lazy('client-two_factor:login'))

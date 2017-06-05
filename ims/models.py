@@ -132,7 +132,6 @@ class User(AbstractBaseUser):
                     request.session['selected_client_id'] = client.id
             return client
         except Exception, e:
-            logger.warning('Failed to select client {0}: {1}'.format(client, e))
             return None
 
     def get_children_of_selected(self, request):
@@ -151,6 +150,12 @@ class User(AbstractBaseUser):
                     child['indent_rendered'] = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(child['depth'] + 1)])
                     child_clients.append(child)
         return child_clients
+
+    def is_authorized_for_client(self, request):
+        client = self.get_selected_client(request)
+        if not client:
+            return False
+        return ClientUser.objects.filter(user=self, client__id__in=client.ancestors).count() > 0
 
     @property
     def is_staff(self):

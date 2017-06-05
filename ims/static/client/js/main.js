@@ -66,7 +66,8 @@ function refreshInventory() {
     if (!('tab' in globals)) { 
         globals['tab'] = 'request';
     }
-    var url = cgiroot+'ajax_inventory_list.cfm?&tab='+globals['tab'];
+//    var url = cgiroot+'ajax_inventory_list.cfm?&tab='+globals['tab'];
+    var url = cgiroot + 'inventory/list/?tab=' + globals['tab'];
     if ('shipmentid' in globals) {
         url += '&shipmentid='+globals['shipmentid'];
     }

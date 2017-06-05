@@ -1,0 +1,200 @@
+{% load humanize %}
+<CFSET tab = (IsDefined("URL.tab") ? URL.tab : "request")>
+
+<ul class="mode_toggle">
+<a href="javascript:nop()" onClick="showTab('request')"><li {% if tab == "request" %}class="selected"{% endif %}>request delivery</li></a>
+<a href="javascript:nop()" onClick="showTab('pending')"><li {% if tab == "pending" %}class="selected"{% endif %}>pending deliveries</li></a>
+<a href="javascript:nop()" onClick="showTab('shipped')"><li {% if tab == "shipped" %}class="selected"{% endif %}>shipped</li></a>
+</ul>
+
+{% if tab == "request" %}
+<CFIF tab IS "request">
+
+<cfset productQty = {}>
+<cfif IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
+    <cfquery NAME="Delivery" DATASOURCE="#DSN#">
+    SELECT * FROM Shipments
+    WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+    AND status=0
+    AND customerid IN (#childCustomerIDs#)
+    </cfquery>
+
+    <cfif Delivery.recordCount GT 0>
+        <CFQUERY NAME="Products" DATASOURCE="#DSN#">
+        SELECT * FROM Transactions,Products
+        WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+        AND Transactions.productid=Products.productid
+        AND Transactions.customerid IN (#childCustomerIDs#)
+        </CFQUERY>
+
+        <cfloop query="Products">
+            <cfset productQty[#productid#] = #cases#>
+        </cfloop>
+    </cfif>
+
+    Editing pending delivery order #<cfoutput>#URL.shipmentid#</cfoutput>. <a href="inventory.cfm">Cancel</a>
+</cfif>
+
+<cfform onSubmit="addProduct(); return false;">
+<table class="infotable alternating inventory">
+    <thead>
+        <tr>
+            <th class="text">Item #</th>
+            <th class="numeric">Request delivery (cs)</th>
+            <th class="text">Client tag</th>
+            <th class="text" id="location_header">Location<div id="location_filter"></div></th>
+            <th class="text">Description</th>
+            <th class="numeric">Packing (pcs/cs)</th>
+            <th class="numeric">Curr. Inventory (cs)</th>
+            <th class="numeric">Total qty</th>
+        </tr>
+    </thead>
+    <tbody>
+        <CFQUERY NAME="inventory" DATASOURCE="#DSN#">
+        SELECT Products.*,Locations.name AS location_name,cases_unshipped FROM Products
+        LEFT JOIN Locations ON Products.locationid=Locations.locationid
+        LEFT JOIN (
+            SELECT Products.productid,sum(Transactions.cases) AS cases_unshipped FROM Products
+            INNER JOIN Transactions ON Transactions.productid=Products.productid
+            INNER JOIN Shipments ON Transactions.shipmentid=Shipments.shipmentid
+            WHERE shippedon IS NULL
+            AND Products.customerid IN (#childCustomerIDs#)
+            GROUP BY Products.productid
+        ) UnshippedProducts ON UnshippedProducts.productid=Products.productid
+        WHERE Products.customerid IN (#childCustomerIDs#)
+        AND active=1
+        ORDER BY ctag,itemnum
+        </CFQUERY>
+
+        <CFOUTPUT QUERY="inventory">
+        {% for product in products %}
+
+        <cfset cases_available = cases_unshipped GT 0 ? remain - cases_unshipped : remain>
+
+        <tr class="product" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
+            <td class="text" id="itemnum_{{ product.id }}">{{ product.item_number }}</td>
+            <cfset qty = StructKeyExists(productQty,#productid#) ? productQty[#productid#] : "">
+            <td class="numeric editable" id="request_{{ product.id }}"><input type="number" class="delivery_request" id="cases_{{ product.id }}" remain="{{ product.cases_available }}" value="{{ product.cases_available|intcomma }}" productid="{{ product.id }}" style="width: 100px;" /></td>
+            <td class="text">{{ product.client_product_id }}</td>
+            <td class="text location" location_id="{{ product.location.id }}">{{ product.location.name }}</td>
+            <td class="text pname" id="pname_{{ product.id }}">{{ product.name }}</td>
+            <td class="numeric italic" id="packing_{{ product.id }}">{{ product.packing|intcomma }}</td>
+            <td class="numeric"><span class="{% if product.is_low %}low_qty{% endif %}">{{ product.cases_available|intcomma }}</span></td>
+            <td class="numeric">{{ product.units_available|intcomma }}</td>
+        </tr>
+        </CFOUTPUT>
+        {% endfor %}
+    </tbody>
+</table>
+</cfform>
+
+<div class="floatright request_delivery">
+    <div class="label">Total cases</div>
+    <div id="total_cases"></div>
+    <button class="actionbtn" onClick="showLocations()">
+        <cfif IsDefined("Products")>
+            Save Changes
+        <cfelse>
+            Request Delivery
+        </cfif>
+    </button>
+</div>
+
+{% elif tab == "pending" %}
+<CFELSEIF tab IS "pending">
+
+<CFQUERY NAME="PendingDeliveries" DATASOURCE="#DSN#">
+SELECT *,SUM(cases) as total_cases FROM Shipments,Locations,Transactions,Products
+WHERE Shipments.customerid IN (#childCustomerIDs#)
+AND Shipments.locationid=Locations.locationid
+AND Transactions.shipmentid=Shipments.shipmentid
+AND Products.productid=Transactions.productid
+AND shippedon IS NULL
+GROUP BY Shipments.shipmentid
+ORDER BY Shipments.createdon DESC
+</CFQUERY>
+
+<table class="infotable alternating deliveries">
+    <thead>
+        <tr>
+            <th class="date">Order date</th>
+            <th class="text">Order #</th>
+            <th class="numeric">Total cases</th>
+            <th class="spacer20"></th>
+            <th class="text">Location</th>
+            <th class="text">Status</th>
+            <th class="text"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <CFOUTPUT QUERY="PendingDeliveries">
+        <tr class="delivery" id="delivery_#shipmentid#">
+            <td class="date clickable" shipmentid="#shipmentid#">#DateFormat(createdon,"MM/DD/YYYY")#</td>
+            <td class="text clickable" shipmentid="#shipmentid#">#shipmentid#</td>
+            <td class="numeric clickable" shipmentid="#shipmentid#">#total_cases#</td>
+            <td class="spacer20"></td>
+            <td class="text clickable" shipmentid="#shipmentid#">#name#</td>
+            <td class="text clickable" shipmentid="#shipmentid#">
+            <CFIF status IS 0>Pending
+            <CFELSEIF status IS 1>Processing
+            <CFELSEIF status IS 2>Shipped
+            <CFELSEIF status IS 9>Exception
+            </CFIF>
+            </td>
+            <td class="text"><cfif status IS 0><a href="javascript:nop()"; onCLick="loadDelivery(#shipmentid#);">Edit</a></cfif></td>
+        </tr>
+        </CFOUTPUT>
+    </tbody>
+</table>
+
+<div id="delivery_list"></div>
+
+{% elif tab == "shipped" %}
+<CFELSEIF tab IS "shipped">
+
+<CFQUERY NAME="ShippedDeliveries" DATASOURCE="#DSN#">
+SELECT *,SUM(cases) as total_cases FROM Shipments,Locations,Transactions,Products
+WHERE Shipments.customerid IN (#childCustomerIDs#)
+AND Shipments.locationid=Locations.locationid
+AND Transactions.shipmentid=Shipments.shipmentid
+AND Products.productid=Transactions.productid
+AND shippedon IS NOT NULL
+GROUP BY Shipments.shipmentid
+ORDER BY Shipments.createdon DESC
+</CFQUERY>
+
+<table class="infotable alternating deliveries">
+    <thead>
+        <tr>
+            <th class="date">Requested date</th>
+            <th class="text">Delivery #</th>
+            <th class="numeric">Total cases</th>
+            <th class="spacer20"></th>
+            <th class="text">Location</th>
+            <th class="text">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <CFOUTPUT QUERY="ShippedDeliveries">
+        <tr class="delivery" id="delivery_#shipmentid#">
+            <td class="date clickable" shipmentid="#shipmentid#">#DateFormat(createdon,"MM/DD/YYYY")#</td>
+            <td class="text clickable" shipmentid="#shipmentid#">#shipmentid#</td>
+            <td class="numeric clickable" shipmentid="#shipmentid#">#total_cases#</td>
+            <td class="spacer20"></td>
+            <td class="text clickable" shipmentid="#shipmentid#">#name#</td>
+            <td class="text clickable" shipmentid="#shipmentid#">
+            <CFIF status IS 0>Pending
+            <CFELSEIF status IS 1>Processing
+            <CFELSEIF status IS 2>Shipped
+            <CFELSEIF status IS 9>Exception
+            </CFIF>
+            </td>
+        </tr>
+        </CFOUTPUT>
+    </tbody>
+</table>
+
+<div id="delivery_list"></div>
+
+</CFIF>
+{% endif %}

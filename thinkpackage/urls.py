@@ -130,6 +130,7 @@ urlpatterns_client = [
 
     url(r'^profile/$', client_views.client_profile, name='client-profile'),
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
+    url(r'^inventory/list/$', client_views.client_inventory_list, name='client-inventory-list'),
     url(r'^history/$', client_views.client_history, name='client-history'),
     url(r'^reorder/$', client_views.client_reorder, name='client-reorder'),
 

@@ -72,8 +72,24 @@ def client_inventory(request):
     context = {
         'selected_client': request.user.get_selected_client(request),
         'children_of_selected': request.user.get_children_of_selected(request),
+        'shipmentid': request.GET.get('shipmentid', 'null'),
     }
     return render(request, 'client/inventory.html', context)
+
+
+def client_inventory_list(request):
+
+    selected_client = request.user.get_selected_client(request)
+    products = None
+    if selected_client:
+        products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
+
+    context = {
+        'selected_client': selected_client,
+        'products': products,
+        'tab': request.GET.get('tab', 'request'),
+    }
+    return render(request, 'client/inventory_list.html', context)
 
 
 def client_history(request):

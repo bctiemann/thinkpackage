@@ -42,19 +42,11 @@ Your delivery request has been placed. Thank you!
 
 <div class="content">
 
-<CFIF IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
-    <CFQUERY NAME="Shipment" DATASOURCE="#DSN#">
-    SELECT * FROM Shipments
-    WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-    AND customerid IN (#childCustomerIDs#)
-    </CFQUERY>
-
-    <CFOUTPUT>
-    <script type="text/javascript">
-    globals['shipmentid'] = #Shipment.shipmentid#;
-    </script>
-    </CFOUTPUT>
-</CFIF>
+{% if shipmentid %}
+<script type="text/javascript">
+globals['shipmentid'] = {{ shipmentid }};
+</script>
+{% endif %}
 
 <div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
@@ -68,12 +60,8 @@ Your delivery request has been placed. Thank you!
 <div id="status"></div>
 
 
-<CFOUTPUT>
-<input type="hidden" id="customerid" value="#selectedCustomer#" />
-</CFOUTPUT>
+<input type="hidden" id="customerid" value="{{ selected_client.id }}" />
 
 </div>
-
-<CFINCLUDE TEMPLATE="inc_footer.cfm">
 
 {% endblock %}

@@ -30,8 +30,8 @@
             <td class="text">{{ product.client_product_id }}</td>
             <td class="text pname">{{ product.name }}</td>
             <td class="hoverinfo"><span>Click for details</span></td>
-            <td class="numeric">{{ product.cases_inventory|intcomma }}</td>
-            <td class="numeric">{{ product.units_inventory|intcomma }}</td>
+            <td class="numeric">{{ product.cases_available|intcomma }}</td>
+            <td class="numeric">{{ product.units_available|intcomma }}</td>
         </tr>
         {% endfor %}
     </tbody>

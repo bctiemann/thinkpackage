@@ -41,7 +41,7 @@ def home(request):
 def shipment_doc(request, doc_id=None):
     shipment_doc = get_object_or_404(ShipmentDoc, pk=doc_id)
 
-    if not (request.user.is_admin or request.user in [cu.user for cu in ClientUser.objects.filter(client=shipment_doc.shipment.client)]):
+    if not (request.user.is_admin or request.user.is_authorized_for_client(request)):
         raise PermissionDenied
 
     if not shipment_doc.file:

@@ -26,10 +26,10 @@ function selectCustomer() {
     var url = cgiroot + 'select/' + $('.client-picker').val() + '/';
     $.post(url,params,function(data) {
 console.log(data);
-        if (data.ERROR) {
-            alert(data.ERROR);
-        } else {
+        if (data.success) {
             location.reload();
+        } else {
+            alert(data.message);
         }
     },'json');
 }

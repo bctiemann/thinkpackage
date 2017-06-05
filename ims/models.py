@@ -179,16 +179,16 @@ class Client(models.Model):
         return reverse('mgmt-profile', kwargs={'client_id': self.id})
 
     def get_ancestors(self, ancestors=None):
-        ancestors = []
+        new_ancestors = []
         if self.parent:
-            ancestors.append(self.parent)
-            ancestors += self.parent.get_ancestors(ancestors)
-        return ancestors
+            new_ancestors.append(self.parent)
+            new_ancestors += self.parent.get_ancestors(new_ancestors)
+        return new_ancestors
 
     def save(self, *args, **kwargs):
         if not self.created_on:
             self.created_on = timezone.now()
-        self.ancestors = [a.id for a in self.get_ancestors()]
+        self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
         super(Client, self).save(*args, **kwargs)
 
     class Meta:

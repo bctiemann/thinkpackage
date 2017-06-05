@@ -151,7 +151,8 @@ class User(AbstractBaseUser):
                     child_clients.append(child)
         return child_clients
 
-    def is_authorized_for_client(self, request):
+    def is_authorized_for_selected_client(self, request):
+        "Takes the current request and returns whether the user is authorized to access the selected client defined in the session"
         client = self.get_selected_client(request)
         if not client:
             return False

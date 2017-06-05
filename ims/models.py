@@ -118,18 +118,21 @@ class User(AbstractBaseUser):
         try:
             if 'selected_client_id' in request.session:
                 try:
-#                    client = ClientUser.objects.get(user=self, client__id=request.session['selected_client_id'], client__is_active=True).client
                     client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
+                    if ClientUser.objects.filter(user=self, client__id__in=client.ancestors).count() == 0:
+                        client = None
                 except ClientUser.DoesNotExist:
                     client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
                     if client:
                         request.session['selected_client_id'] = client.id
+                return client
             else:
                 client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
                 if client:
                     request.session['selected_client_id'] = client.id
             return client
-        except:
+        except Exception, e:
+            logger.warning('Failed to select client {0}: {1}'.format(client, e))
             return None
 
     def get_children_of_selected(self, request):

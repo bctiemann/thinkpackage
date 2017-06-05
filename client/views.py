@@ -50,6 +50,12 @@ def select_client(request, client_id):
 #    client_user = get_object_or_404(ClientUser, user=request.user, client=client_id, client__is_active=True)
 #    client = client_user.client
     client = get_object_or_404(Client, pk=client_id, is_active=True)
+    try:
+        if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
+            return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
+    except Exception, e:
+        logger.warning('Failed to select client {0}: {1}'.format(client, e))
+        return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
     request.session['selected_client_id'] = client.id
     return JsonResponse({'success': True})
 

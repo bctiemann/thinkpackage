@@ -8,6 +8,7 @@ ORDER BY name
 </CFQUERY>
 
 {% block content %}
+<p>{{ request.session.selected_client_id }}</p>
 <p>{{ children_of_selected }}</p>
 <p>{{ selected_client }}</p>
 

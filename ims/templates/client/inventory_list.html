@@ -67,14 +67,14 @@
         </CFQUERY>
 
         <CFOUTPUT QUERY="inventory">
-        {% for product in products %}
+        {% for product, shipment_cases in products %}
 
         <cfset cases_available = cases_unshipped GT 0 ? remain - cases_unshipped : remain>
 
         <tr class="product" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
             <td class="text" id="itemnum_{{ product.id }}">{{ product.item_number }}</td>
             <cfset qty = StructKeyExists(productQty,#productid#) ? productQty[#productid#] : "">
-            <td class="numeric editable" id="request_{{ product.id }}"><input type="number" class="delivery_request" id="cases_{{ product.id }}" remain="{{ product.cases_available }}" value="{{ product.cases_available|intcomma }}" productid="{{ product.id }}" style="width: 100px;" /></td>
+            <td class="numeric editable" id="request_{{ product.id }}"><input type="number" class="delivery_request" id="cases_{{ product.id }}" remain="{{ product.cases_available }}" value="{{ shipment_cases }}" productid="{{ product.id }}" style="width: 100px;" /></td>
             <td class="text">{{ product.client_product_id }}</td>
             <td class="text location" location_id="{{ product.location.id }}">{{ product.location.name }}</td>
             <td class="text pname" id="pname_{{ product.id }}">{{ product.name }}</td>

@@ -143,7 +143,7 @@ class User(AbstractBaseUser):
     def child_clients(self):
         "List of clients this user is associated with, along with depth for rendering with indents in a select menu"
         child_clients = []
-        client_users = ClientUser.objects.filter(user=self, client__is_active=True)
+        client_users = ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')
         for cu in client_users:
             children_of_other = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), cu.client)
             for child in children_of_other:

@@ -5,9 +5,11 @@ from django.urls import reverse
 from django.db import models
 from django.db.models import F, FloatField, Sum
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from jsonfield import JSONField
 from localflavor.us.us_states import STATE_CHOICES
 
 from ims import utils
@@ -168,12 +170,26 @@ class Client(models.Model):
     company_name = models.CharField(max_length=150, blank=True, db_column='coname')
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
     parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent')
+    ancestors = JSONField(null=True, blank=True)
 
     def __unicode__(self):
         return (self.company_name)
 
     def get_absolute_url(self):
         return reverse('mgmt-profile', kwargs={'client_id': self.id})
+
+    def get_ancestors(self, ancestors=None):
+        ancestors = []
+        if self.parent:
+            ancestors.append(self.parent)
+            ancestors += self.parent.get_ancestors(ancestors)
+        return ancestors
+
+    def save(self, *args, **kwargs):
+        if not self.created_on:
+            self.created_on = timezone.now()
+        self.ancestors = [a.id for a in self.get_ancestors()]
+        super(Client, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'Customers'

@@ -87,9 +87,10 @@ def client_inventory_list(request):
             shipment_product_cases[transaction.product.id] = transaction.cases
 
     selected_client = request.user.get_selected_client(request)
+    children_of_selected = request.user.get_children_of_selected(request)
     products = []
     if selected_client:
-        for product in selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
+        for product in Product.objects.filter(client__in=[c['obj'] for c in children_of_selected], is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
             shipment_cases = None
             if shipment and product.id in shipment_product_cases:
                 shipment_cases = shipment_product_cases[product.id]

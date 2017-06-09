@@ -92,11 +92,11 @@
     <div class="label">Total cases</div>
     <div id="total_cases"></div>
     <button class="actionbtn" onClick="showLocations()">
-        <cfif IsDefined("Products")>
+        {% if shipment %}
             Save Changes
-        <cfelse>
+        {% else %}
             Request Delivery
-        </cfif>
+        {% endif %}
     </button>
 </div>
 

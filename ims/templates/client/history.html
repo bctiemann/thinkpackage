@@ -27,7 +27,7 @@
         {% for product in products %}
         <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" onClick="selectProduct({{ product.id }})">
             <td class="text">{{ product.item_number }}</td>
-            <td class="text">{{ product.client_product_id }}</td>
+            <td class="text">{{ product.client_tag }}</td>
             <td class="text pname">{{ product.name }}</td>
             <td class="hoverinfo"><span>Click for details</span></td>
             <td class="numeric">{{ product.cases_available|intcomma }}</td>

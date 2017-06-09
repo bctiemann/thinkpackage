@@ -517,7 +517,7 @@ class ProductTransfer(APIView):
             new_product = Product(
                 client = to_client,
                 item_number = from_product.item_number,
-                client_product_id = from_product.client_product_id,
+                client_tag = from_product.client_tag,
                 name = from_product.name,
                 packing = from_product.packing,
                 cases_inventory = 0,

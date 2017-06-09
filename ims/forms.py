@@ -155,7 +155,7 @@ class ProductForm(forms.ModelForm):
         fields = [
             'client',
             'item_number',
-            'client_product_id',
+            'client_tag',
             'name',
             'packing',
             'cases_inventory',

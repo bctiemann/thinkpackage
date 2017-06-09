@@ -356,7 +356,7 @@ class Product(models.Model):
     gross_weight = models.FloatField(null=True, blank=True, db_column='GW')
     is_domestic = models.BooleanField(default=False, db_column='prodtype')
     name = models.CharField(max_length=255, blank=True, db_column='pname')
-    client_product_id = models.CharField(max_length=24, blank=True, db_column='ctag')
+    client_tag = models.CharField(max_length=24, blank=True, db_column='ctag')
     contracted_quantity = models.BigIntegerField(null=True, blank=True, db_column='contqty')
     is_active = models.BooleanField(default=True, db_column='active')
     is_deleted = models.BooleanField(default=False)

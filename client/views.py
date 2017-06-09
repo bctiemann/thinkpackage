@@ -89,7 +89,7 @@ def client_inventory_list(request):
     selected_client = request.user.get_selected_client(request)
     products = []
     if selected_client:
-        for product in selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('client_product_id', 'item_number'):
+        for product in selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
             shipment_cases = None
             if shipment and product.id in shipment_product_cases:
                 shipment_cases = shipment_product_cases[product.id]

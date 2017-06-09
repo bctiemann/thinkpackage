@@ -25,7 +25,7 @@
 
         <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
             <td style="width: 100px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="itemnum_{{ product.id }}" value="{{ product.item_number }}"  productid="{{ product.id }}" style="width: 80px;" maxlength="12" /></td>
-            <td style="width: 110px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="ctag_{{ product.id }}" value="{{ product.client_product_id }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" /></td>
+            <td style="width: 110px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="ctag_{{ product.id }}" value="{{ product.client_tag }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" /></td>
             <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text clickable location" location_id="{{ product.location.id }}" productid="{{ product.id }}">{{ product.location.name }}</td>
             <td style="width: 434px;" class="text editable clickable" productid="{{ product.id }}">
                 <input type="text" id="pname_{{ product.id }}" value="{{ product.name }}" productid="{{ product.id }}" style="width: 280px;" maxlength="500" />

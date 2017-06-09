@@ -69,7 +69,7 @@ Your reorder has been placed. Thank you!
         {% for product in products %}
         <tr>
             <td class="text">{{ product.item_number }}</td>
-            <td class="text">{{ product.client_product_id }}</td>
+            <td class="text">{{ product.client_tag }}</td>
             <td class="text pname" style="width: 200px;" id="pname_{{ product.id }}">{{ product.name }}</td>
             <td class="numeric"><span {% if product.is_low %}class="low_qty"{% endif %}>{{ product.cases_inventory|intcomma }}</span></td>
             <td class="numeric" id="packing_{{ product.id }}">{{ product.packing|intcomma }}</td>

@@ -10,32 +10,11 @@
 {% if tab == "request" %}
 <CFIF tab IS "request">
 
-<cfset productQty = {}>
-<cfif IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
-    <cfquery NAME="Delivery" DATASOURCE="#DSN#">
-    SELECT * FROM Shipments
-    WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-    AND status=0
-    AND customerid IN (#childCustomerIDs#)
-    </cfquery>
+{% if shipment %}
+    Editing pending delivery order #{{ shipment.id }}. <a href="{% url "client-inventory" %}">Cancel</a>
+{% endif %}
 
-    <cfif Delivery.recordCount GT 0>
-        <CFQUERY NAME="Products" DATASOURCE="#DSN#">
-        SELECT * FROM Transactions,Products
-        WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-        AND Transactions.productid=Products.productid
-        AND Transactions.customerid IN (#childCustomerIDs#)
-        </CFQUERY>
-
-        <cfloop query="Products">
-            <cfset productQty[#productid#] = #cases#>
-        </cfloop>
-    </cfif>
-
-    Editing pending delivery order #<cfoutput>#URL.shipmentid#</cfoutput>. <a href="inventory.cfm">Cancel</a>
-</cfif>
-
-<cfform onSubmit="addProduct(); return false;">
+<form onSubmit="addProduct(); return false;">
 <table class="infotable alternating inventory">
     <thead>
         <tr>
@@ -50,6 +29,8 @@
         </tr>
     </thead>
     <tbody>
+
+{% comment %}
         <CFQUERY NAME="inventory" DATASOURCE="#DSN#">
         SELECT Products.*,Locations.name AS location_name,cases_unshipped FROM Products
         LEFT JOIN Locations ON Products.locationid=Locations.locationid
@@ -65,11 +46,9 @@
         AND active=1
         ORDER BY ctag,itemnum
         </CFQUERY>
+{% endcomment %}
 
-        <CFOUTPUT QUERY="inventory">
         {% for product, shipment_cases in products %}
-
-        <cfset cases_available = cases_unshipped GT 0 ? remain - cases_unshipped : remain>
 
         <tr class="product" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
             <td class="text" id="itemnum_{{ product.id }}">{{ product.item_number }}</td>
@@ -82,11 +61,10 @@
             <td class="numeric"><span class="{% if product.is_low %}low_qty{% endif %}">{{ product.cases_available|intcomma }}</span></td>
             <td class="numeric">{{ product.units_available|intcomma }}</td>
         </tr>
-        </CFOUTPUT>
         {% endfor %}
     </tbody>
 </table>
-</cfform>
+</form>
 
 <div class="floatright request_delivery">
     <div class="label">Total cases</div>

@@ -1,19 +1,12 @@
 {% extends "client/base.html" %}
-<CFINCLUDE TEMPLATE="inc_header.cfm">
-
-<CFQUERY NAME="Locations" DATASOURCE="#DSN#">
-SELECT * FROM Locations
-WHERE customerid IN (#childCustomerIDs#)
-ORDER BY name
-</CFQUERY>
 
 {% block content %}
 
 <div class="dialog" id="dialog_locations" title="Delivery Locations">
 Please select the location for delivery.
-<CFOUTPUT QUERY="Locations">
-    <button class="actionbtn minibtn" onClick="requestDelivery(#locationid#)" id="location_#locationid#">#name#</button>
-</CFOUTPUT>
+{% for location in locations %}
+    <button class="actionbtn minibtn" onClick="requestDelivery({{ location.id }})" id="location_{{ location.id }}">{{ location.name }}</button>
+{% endfor %}
 </div>
 
 <div class="dialog" id="dialog_request_confirm" title="Delivery Requested Confirmation">
@@ -47,7 +40,6 @@ globals['shipmentid'] = {{ shipmentid }};
 
 <div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
-<CFINCLUDE TEMPLATE="inc_nav.cfm">
 {% with page_selected="inventory" %}
 {% include "client/inc_nav.html" %}
 {% endwith %}

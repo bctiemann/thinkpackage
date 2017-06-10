@@ -10,7 +10,7 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser
+from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
 from ims.forms import UserLoginForm
 from ims import utils
 
@@ -68,10 +68,14 @@ def client_profile(request):
 
 
 def client_inventory(request):
+    selected_client = request.user.get_selected_client(request)
+    children_of_selected = request.user.get_children_of_selected(request)
+    locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected]).order_by('name')
 
     context = {
-        'selected_client': request.user.get_selected_client(request),
-        'children_of_selected': request.user.get_children_of_selected(request),
+        'selected_client': selected_client,
+        'children_of_selected': children_of_selected,
+        'locations': locations,
         'shipmentid': request.GET.get('shipmentid', None),
     }
     return render(request, 'client/inventory.html', context)

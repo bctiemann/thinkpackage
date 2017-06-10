@@ -1,5 +1,7 @@
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.generic.base import RedirectView
 
 from django.contrib.auth import views as auth_views
 from ims import views as ims_views
@@ -150,6 +152,14 @@ urlpatterns = [
 
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),
+
+    url(
+        r'^favicon.ico$',
+        RedirectView.as_view(
+            url=staticfiles_storage.url('favicon.ico'),
+            permanent=False),
+        name="favicon"
+    ),
 
     url(r'^mgmt/', include(urlpatterns_mgmt)),
     url(r'^client/', include(urlpatterns_client)),

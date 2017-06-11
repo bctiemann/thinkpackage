@@ -354,13 +354,17 @@ function execute_changePassword() {
         new_password_1: $('#new_password_1').val(),
         new_password_2: $('#new_password_2').val(),
     }
-    var url = cgiroot+'ajax_post.cfm';
+//    var url = cgiroot+'ajax_post.cfm';
+    var url = cgiroot + 'change_password/';
     $.post(url,passwd,function(data) {
-        if (data['STATUS'] == 'error') {
-            alert(data['MESSAGE']);
-        } else {
+        if (data.success) {
             alert('Password changed successfully.');
+        } else {
+            alert(data.message);
         }
+        $('#current_password').val('');
+        $('#new_password_1').val('');
+        $('#new_password_2').val('');
     },'json');
 }
 

@@ -130,6 +130,8 @@ urlpatterns_client = [
 
     url(r'^$', client_views.client, name='client-home'),
 
+    url(r'^change_password/$', client_views.change_password, name='client-change-password'),
+
     url(r'^profile/$', client_views.client_profile, name='client-profile'),
     url(r'^profile/locations/$', client_views.client_profile_locations, name='client-profile-locations'),
     url(r'^profile/location/(?P<location_id>\d+)/$', client_views.client_profile_location_detail, name='client-profile-location-detail'),

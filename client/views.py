@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Sum
+from django.contrib.auth import authenticate, login
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
@@ -18,6 +19,7 @@ from ims import utils
 
 from datetime import datetime, timedelta
 import json
+import re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -56,9 +58,31 @@ def client(request):
 
 
 @require_POST
+def change_password(request):
+    passwd_regex = '(?=^.{6,255}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*'
+
+    current_password = request.POST.get('current_password')
+    new_password_1 = request.POST.get('new_password_1')
+    new_password_2 = request.POST.get('new_password_2')
+
+    if not authenticate(username=request.user.email, password=current_password):
+        return JsonResponse({'success': False, 'message': 'Current password was not correct.'})
+
+    if new_password_1 != new_password_2:
+        return JsonResponse({'success': False, 'message': 'Passwords did not match.'})
+
+    if not re.match(passwd_regex, new_password_1):
+        return JsonResponse({'success': False, 'message': 'Password does not meet the complexity requirements.'})
+
+    request.user.set_password(new_password_1)
+    request.user.save()
+    login(request, request.user)
+
+    return JsonResponse({'success': True})
+
+
+@require_POST
 def select_client(request, client_id):
-#    client_user = get_object_or_404(ClientUser, user=request.user, client=client_id, client__is_active=True)
-#    client = client_user.client
     client = get_object_or_404(Client, pk=client_id, is_active=True)
     try:
         if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:

@@ -23,6 +23,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+company_info = {
+    'name': settings.COMPANY_NAME,
+    'site_email': settings.SITE_EMAIL,
+    'phone_number': settings.COMPANY_PHONE_NUMBER,
+}
+
+
 class LoginView(LoginView):
     template_name = 'client/login.html'
     form_list = (
@@ -68,6 +75,7 @@ def client_profile(request):
     primary_contact = selected_client.clientuser_set.filter(is_primary=True).first()
 
     context = {
+        'company_info': company_info,
         'selected_client': selected_client,
         'primary_contact': primary_contact,
     }
@@ -98,6 +106,7 @@ def client_inventory(request):
     locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected], is_active=True).order_by('name')
 
     context = {
+        'company_info': company_info,
         'selected_client': selected_client,
         'children_of_selected': children_of_selected,
         'locations': locations,
@@ -268,6 +277,7 @@ def client_history(request):
         products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
+        'company_info': company_info,
         'selected_client': selected_client,
         'products': products,
     }
@@ -282,6 +292,7 @@ def client_reorder(request):
         products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
+        'company_info': company_info,
         'selected_client': selected_client,
         'products': products,
     }

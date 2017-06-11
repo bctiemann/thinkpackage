@@ -22,7 +22,7 @@ var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 <body>
 
 <div class="dialog" id="dialog_support" title="Support">
-<CFOUTPUT>Please contact THINK[PACKAGE] Support at #t800num# or email <a href="mailto:#siteemail#">#siteemail#</a> for assistance.</CFOUTPUT>
+Please contact {{ company_info.name }} Support at {{ company_info.phone_number }} or email <a href="mailto:{{ company_info.site_email }}">{{ company_info.site_email }}</a> for assistance.
 </div>
 
 <div class="dialog" id="dialog_change_password" title="Change Password">
@@ -42,8 +42,7 @@ var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 </table>
 </div>
 
-<CFOUTPUT>
-    <div id="header">
+<div id="header">
     <div class="logoutlink"><a href="{% url "sign-out" %}">Log out</a></div>
     <div class="logoutlink"><a href="javascript:nop()" onClick="showSupport();">Support</a>
         <ul class="dropdown-menu">
@@ -66,16 +65,13 @@ var csrftoken = $("[name=csrfmiddlewaretoken]").val();
     {% endif %}
 
     <a href="index.cfm"><div class="homelink"></div></a>
-    </div>
-</CFOUTPUT>
+</div>
 
-<CFELSE>
 {% else %}
 
 <body class="login">
         
 {% endif %}
-</CFIF>
 
 {% block content %}{% endblock %}
 

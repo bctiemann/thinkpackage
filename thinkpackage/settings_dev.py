@@ -34,4 +34,5 @@ EMAIL_PORT = 25
 SUPPORT_EMAIL = 'btman@mac.com'
 SITE_EMAIL = 'btman@mac.com'
 DELIVERY_EMAIL = 'btman@mac.com'
+COMPANY_PHONE_NUMBER = '(866) 111-2222'
 

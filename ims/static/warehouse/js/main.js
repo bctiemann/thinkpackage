@@ -300,7 +300,6 @@ function refreshUI() {
     });
 
     $('table.shipments tr.shipment td.clickable').click(function() {
-console.log($(this).attr('shipmentid'));
         selectShipment($(this).attr('shipmentid'));
     });
 

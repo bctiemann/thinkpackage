@@ -506,6 +506,13 @@ class Shipment(models.Model):
     def total_pallets(self):
         return Pallet.objects.filter(shipment=self).distinct().count()
 
+    @property
+    def total_cases(self):
+        total_cases = 0
+        for transaction in self.transaction_set.all():
+            total_cases += transaction.cases
+        return total_cases
+
     def __unicode__(self):
         return ('{0}'.format(self.id))
 

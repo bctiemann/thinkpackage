@@ -64,6 +64,29 @@ def warehouse_shipments(request):
     return render(request, 'warehouse/shipments.html', context)
 
 
+def warehouse_shipments_list(request):
+
+    try:
+        shipped_filter = int(request.GET.get('shipped_filter', 1))
+    except:
+        shipped_filter = 1
+
+    shipments = Shipment.objects.all().order_by('status', '-date_created')
+
+    three_weeks_ago = timezone.now() - timedelta(days=21)
+
+    if shipped_filter:
+        shipments = shipments.exclude(status=2)
+    else:
+        shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
+
+    context = {
+        'shipments': shipments,
+        'shipped_filter': shipped_filter,
+    }
+    return render(request, 'warehouse/shipments_list.html', context)
+
+
 def warehouse_receivables(request):
 
     context = {

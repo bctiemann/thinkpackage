@@ -1,4 +1,4 @@
-var cgiroot = '';
+var cgiroot = '/warehouse/';
 var globals = {};
 
 function nop() {}
@@ -18,7 +18,8 @@ function refreshShipments(shipmentid) {
     if (!('shipped_filter' in globals)) {
         globals['shipped_filter'] = 1;
     }
-    var url = cgiroot+'ajax_shipments_list.cfm?shipped_filter='+globals['shipped_filter'];
+//    var url = cgiroot+'ajax_shipments_list.cfm?shipped_filter='+globals['shipped_filter'];
+    var url = cgiroot + 'shipments/list/';
     $('#list_shipments').load(url,function(data) {
         refreshUI();
         if (shipmentid) {
@@ -348,7 +349,9 @@ $(document).ready(function() {
         modal: true,
         width: 600,
         position: { my: "top", at: "top+200", of: window },
-    });  
+    });
+
+    refreshShipments();
 
 });
 

@@ -1,0 +1,70 @@
+{% load static %}
+<CFSET shipped_filter = (IsDefined("URL.shipped_filter") AND IsNumeric(URL.shipped_filter) ? URL.shipped_filter : 1)>
+
+<ul class="mode_toggle">
+<a href="javascript:nop()" onClick="showShipped(false)"><li {% if shipped_filter == 1 %}class="selected"{% endif %}>unshipped</li></a>
+<a href="javascript:nop()" onClick="showShipped(true)"><li {% if shipped_filter == 0 %}class="selected"{% endif %}>shipped</li></a>
+</ul>
+
+<CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
+SELECT *,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
+INNER JOIN Customers ON Customers.customerid=Shipments.customerid
+LEFT JOIN Locations ON Shipments.locationid=Locations.locationid
+LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
+WHERE 1
+<CFIF shipped_filter IS 1>
+    AND status!=2
+<CFELSE>
+    AND status=2 AND DATEDIFF(NOW(),shippedon) < 21
+</CFIF>
+GROUP BY Shipments.shipmentid
+ORDER BY Shipments.createdon DESC
+</CFQUERY>
+
+<table class="infotable alternating shipments editable scrollable">
+    <thead>
+        <tr>
+            <th style="width: 125px" class="text">Requested Date</th>
+            <th style="width: 45px" class="numeric">DL #</th>
+            <th style="width: 134px" class="spacer20"></th>
+            <th style="width: 125px" class="text">Client Name</th>
+            <th style="width: 199px" class="text">Location</th>
+            <th style="width: 100px" class="numeric">Total Cases</th>
+            <th style="width: 134px" class="spacer20"></th>
+            <th style="width: 125px" class="text">Status</th>
+            <th style="width: 125px" class="text">Pallets</th>
+            <th style="width: 65px" class="text">BOL</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 400px">
+    {% for shipment in shipments %}
+    <CFOUTPUT QUERY="Shipments">
+        <tr class="shipment" id="shipment_#shipmentid#">
+            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+            <td style="width: 40px" class="numeric clickable" shipmentid="#shipmentid#"><span class="shipment_id {% if not shipment.carrier %}incomplete_shipment{% endif %}">{{ shipment.id }}</span></td>
+            <td style="width: 120px" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
+            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.client.company_name }}</td>
+            <td style="width: 194px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.location.name }}</td>
+            <td style="width: 90px" class="numeric clickable" shipmentid="#shipmentid#">{{ shipment.total_cases }}</td>
+            <td style="width: 120px" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
+            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.get_status_display }}</td>
+            <td style="width: 120px" class="text monospace clickable" shipmentid="#shipmentid#">
+            {% for pallet in shipment.pallet_set.all %}
+            <CFLOOP QUERY="Pallets">
+                <p class="pallet"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#">{{ pallet.pallet_id }}</a> <span class="glyph"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#"><img src="{% static "warehouse/images/barcode.gif" %}" /></a></span></p>
+            </CFLOOP>
+            {% endfor %}
+            </td>
+            <td style="width: 60px" class="text clickable" shipmentid="#shipmentid#">
+                {% if shipment.shipmentdoc_set.count %}
+                <cfif document_count GT 0>
+                <button class="show-shipment-docs" onClick="showShipmentDocs(#shipmentid#);">{{ shipment.shipmentdoc_set.count }}</button>
+                </cfif>
+                {% endif %}
+            </td>
+        </tr>
+    </CFOUTPUT>
+    {% endfor %}
+    </tbody>
+</table>
+

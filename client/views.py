@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
+from django.db.models import Sum
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
@@ -94,20 +95,58 @@ def client_inventory_list(request):
 
     selected_client = request.user.get_selected_client(request)
     children_of_selected = request.user.get_children_of_selected(request)
-    products = []
-    if selected_client:
-        for product in Product.objects.filter(client__in=[c['obj'] for c in children_of_selected], is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
-            shipment_cases = None
-            if shipment and product.id in shipment_product_cases:
-                shipment_cases = shipment_product_cases[product.id]
-            products.append((product, shipment_cases))
+    filter_clients = [c['obj'] for c in children_of_selected]
 
+    tab = request.GET.get('tab', 'request')
     context = {
         'selected_client': selected_client,
-        'products': products,
         'shipment': shipment,
-        'tab': request.GET.get('tab', 'request'),
+        'tab': tab,
     }
+
+    if tab == 'request':
+
+        products = []
+        if selected_client:
+            for product in Product.objects.filter(client__in=filter_clients, is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
+                shipment_cases = None
+                if shipment and product.id in shipment_product_cases:
+                    shipment_cases = shipment_product_cases[product.id]
+                products.append((product, shipment_cases))
+
+        context['products'] = products
+
+    elif tab == 'pending':
+
+        shipment_cases = {}
+        for shipment in Transaction.objects.filter(client__in=filter_clients, shipment__isnull=False, shipment__date_shipped__isnull=True).values('shipment').annotate(total_cases=Sum('cases')):
+            shipment_cases[shipment['shipment']] = shipment['total_cases']
+        logger.warning(shipment_cases)
+        shipments = []
+        for shipment in Shipment.objects.filter(client__in=filter_clients, date_shipped__isnull=True):
+            if shipment.transaction_set.count():
+                shipments.append({
+                    'obj': shipment,
+                    'total_cases': shipment_cases[shipment.id],
+                })
+        context['shipments'] = shipments
+
+    elif tab == 'shipped':
+
+        shipment_cases = {}
+        for shipment in Transaction.objects.filter(client__in=filter_clients, shipment__isnull=False, shipment__date_shipped__isnull=False).values('shipment').annotate(total_cases=Sum('cases')):
+            shipment_cases[shipment['shipment']] = shipment['total_cases']
+        logger.warning(shipment_cases)
+        shipments = []
+        for shipment in Shipment.objects.filter(client__in=filter_clients, date_shipped__isnull=False):
+            if shipment.transaction_set.count():
+                shipments.append({
+                    'obj': shipment,
+                    'total_cases': shipment_cases[shipment.id],
+                })
+        context['shipments'] = shipments
+
+
     return render(request, 'client/inventory_list.html', context)
 
 

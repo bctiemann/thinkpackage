@@ -173,33 +173,11 @@ def client_inventory_list(request):
 
     elif tab == 'pending':
 
-        shipment_cases = {}
-        for shipment in Transaction.objects.filter(client__in=filter_clients, shipment__isnull=False, shipment__date_shipped__isnull=True).values('shipment').annotate(total_cases=Sum('cases')):
-            shipment_cases[shipment['shipment']] = shipment['total_cases']
-        logger.warning(shipment_cases)
-        shipments = []
-        for shipment in Shipment.objects.filter(client__in=filter_clients, date_shipped__isnull=True):
-            if shipment.transaction_set.count():
-                shipments.append({
-                    'obj': shipment,
-                    'total_cases': shipment_cases[shipment.id],
-                })
-        context['shipments'] = shipments
+        context['shipments'] = Shipment.objects.filter(client__in=filter_clients, date_shipped__isnull=True)
 
     elif tab == 'shipped':
 
-        shipment_cases = {}
-        for shipment in Transaction.objects.filter(client__in=filter_clients, shipment__isnull=False, shipment__date_shipped__isnull=False).values('shipment').annotate(total_cases=Sum('cases')):
-            shipment_cases[shipment['shipment']] = shipment['total_cases']
-        logger.warning(shipment_cases)
-        shipments = []
-        for shipment in Shipment.objects.filter(client__in=filter_clients, date_shipped__isnull=False):
-            if shipment.transaction_set.count():
-                shipments.append({
-                    'obj': shipment,
-                    'total_cases': shipment_cases[shipment.id],
-                })
-        context['shipments'] = shipments
+        context['shipments'] = Shipment.objects.filter(client__in=filter_clients, date_shipped__isnull=False)
 
 
     return render(request, 'client/inventory_list.html', context)

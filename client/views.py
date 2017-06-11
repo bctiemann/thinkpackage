@@ -273,7 +273,6 @@ def client_inventory_request_delivery(request):
     for product in requested_products:
         transaction = Transaction(
             product = product['obj'],
-            quantity = product['cases'] * product['obj'].packing,
             is_outbound = True,
             shipment = shipment,
             client = selected_client,

@@ -211,7 +211,7 @@ def client_delivery_products(request, shipment_id):
 
     context = {
         'shipment': shipment,
-        'transactions': Transaction.objects.filter(shipment=shipment, client__in=[c['obj'] for c in children_of_selected]),
+        'transactions': Transaction.objects.filter(shipment=shipment, client__in=[c['obj'] for c in children_of_selected]).order_by('product__item_number'),
     }
     return render(request, 'client/delivery_products.html', context)
 

@@ -1,0 +1,29 @@
+{% load humanize %}
+
+<div class="form_header dark">
+<span class="title">Products in Delivery Order {{ shipment.id }}</span>
+</div>
+<table class="infotable alternating">
+    <thead>
+    <tr>
+        <th class="text">Item #</th>
+        <th class="text">Product</th>
+        <th class="numeric">Packing</th>
+        <th class="numeric">Cases</th>
+        <th class="numeric">Total qty</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for transaction in transactions %}
+    <tr>
+        <td class="text">{{ transaction.product.item_number }}</td>
+        <td class="text">{{ transaction.product.name }}</td>
+        <td class="numeric">{{ transaction.product.packing|intcomma }}</td>
+        <td class="numeric">{{ transaction.cases|intcomma }}</td>
+        <td class="numeric">{{ transaction.total_quantity|intcomma }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+

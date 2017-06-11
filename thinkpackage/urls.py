@@ -138,6 +138,7 @@ urlpatterns_client = [
 
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
     url(r'^inventory/list/$', client_views.client_inventory_list, name='client-inventory-list'),
+    url(r'^inventory/delivery/(?P<shipment_id>\d+)/products/$', client_views.client_delivery_products, name='client-delivery-products'),
     url(r'^inventory/request_delivery/$', client_views.client_inventory_request_delivery, name='client-inventory-request_delivery'),
 
     url(r'^history/$', client_views.client_history, name='client-history'),

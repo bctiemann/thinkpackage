@@ -178,7 +178,8 @@ function selectDelivery(shipmentid) {
     $('tr.delivery').removeClass('selected');
 console.log(shipmentid);
     $('#delivery_'+shipmentid).addClass('selected');
-    var url = cgiroot+'ajax_delivery_products.cfm?shipmentid='+shipmentid;
+//    var url = cgiroot+'ajax_delivery_products.cfm?shipmentid='+shipmentid;
+    var url = cgiroot + 'inventory/delivery/' + shipmentid + '/products/';
 console.log(url);
     $('#delivery_list').load(url,function() {
         $('html, body').animate({ scrollTop: $(document).height() });

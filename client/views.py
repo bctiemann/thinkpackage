@@ -205,6 +205,17 @@ def client_inventory_list(request):
     return render(request, 'client/inventory_list.html', context)
 
 
+def client_delivery_products(request, shipment_id):
+    shipment = get_object_or_404(Shipment, pk=shipment_id)
+    children_of_selected = request.user.get_children_of_selected(request)
+
+    context = {
+        'shipment': shipment,
+        'transactions': Transaction.objects.filter(shipment=shipment, client__in=[c['obj'] for c in children_of_selected]),
+    }
+    return render(request, 'client/delivery_products.html', context)
+
+
 @require_POST
 def client_inventory_request_delivery(request):
 

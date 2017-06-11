@@ -561,6 +561,14 @@ class Transaction(models.Model):
     def total_weight(self):
         return self.product.gross_weight * self.cases
 
+    @property
+    def total_quantity(self):
+        if not self.cases:
+            return None
+        if not self.product.packing:
+            return None
+        return self.cases * self.product.packing
+
     # Number of pallets dedicated to this product
     @property
     def total_pallets_for_product(self):

@@ -38,7 +38,8 @@ console.log(data);
 function loadLocation(locationid) {
 //    $('#contactform').hide();
     $('#locationform').show();
-    var url = cgiroot+'ajax_location_details.cfm?locationid='+locationid;
+//    var url = cgiroot+'ajax_location_details.cfm?locationid='+locationid;
+    var url = cgiroot + 'profile/location/' + locationid + '/';
     $('.items_list li').removeClass('selected');
     $('#locationform').load(url,function() {
         $('li#location_'+locationid).addClass('selected');
@@ -46,7 +47,8 @@ function loadLocation(locationid) {
 }
 
 function loadLocationsList(locationid) {
-    var url = cgiroot+'ajax_locations_list.cfm';
+//    var url = cgiroot+'ajax_locations_list.cfm';
+    var url = cgiroot + 'profile/locations/';
     $('#locations_list').load(url,function() {
         if (locationid) {
             loadLocation(locationid);
@@ -522,5 +524,6 @@ $(document).ready(function() {
     });
 
     refreshInventory();
+    loadLocationsList();
 
 });

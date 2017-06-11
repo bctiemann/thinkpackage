@@ -54,7 +54,7 @@ urlpatterns_mgmt = [
     url(r'^customers_list/$', mgmt_views.mgmt_customers_list, name='mgmt-customers-list'),
     url(r'^contacts_list/(?P<client_id>\d+)/$', mgmt_views.mgmt_contacts_list, name='mgmt-contacts-list'),
     url(r'^locations_list/(?P<client_id>\d+)/$', mgmt_views.mgmt_locations_list, name='mgmt-locations-list'),
-    url(r'^location_detail/(?P<location_id>\d+)/$', mgmt_views.mgmt_locations_list, name='mgmt-locations-list'),
+#    url(r'^location_detail/(?P<location_id>\d+)/$', mgmt_views.mgmt_locations_list, name='mgmt-locations-list'),
 
 #    url(r'^contact_form/$', ims_views.mgmt_contact_form, name='mgmt-contact-form'),
 #    url(r'^location_form/(?P<location_id>\d+)/$', ims_views.mgmt_location_form, name='mgmt-location-form'),
@@ -131,6 +131,8 @@ urlpatterns_client = [
     url(r'^$', client_views.client, name='client-home'),
 
     url(r'^profile/$', client_views.client_profile, name='client-profile'),
+    url(r'^profile/locations/$', client_views.client_profile_locations, name='client-profile-locations'),
+    url(r'^profile/location/(?P<location_id>\d+)/$', client_views.client_profile_location_detail, name='client-profile-location-detail'),
 
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
     url(r'^inventory/list/$', client_views.client_inventory_list, name='client-inventory-list'),

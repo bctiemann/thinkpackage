@@ -1,5 +1,4 @@
 {% extends "client/base.html" %}
-<CFINCLUDE TEMPLATE="inc_header.cfm">
 
 {% block content %}
 
@@ -7,32 +6,19 @@
 
 <div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
-<CFINCLUDE TEMPLATE="inc_nav.cfm">
 {% with page_selected="profile" %}
 {% include "client/inc_nav.html" %}
 {% endwith %}
 
-<CFQUERY NAME="Locations" DATASOURCE="#DSN#">
-SELECT * FROM Locations
-WHERE customerid = #selectedCustomer#
-</CFQUERY>
-
-<CFQUERY NAME="CustContact" DATASOURCE="#DSN#">
-SELECT * FROM CustContacts
-WHERE customerid = #selectedCustomer#
-AND isprimary=1
-</CFQUERY>
-
 <div class="list_header">
-<CFOUTPUT>
-<p>#YourCo.coname#</p>
-<p>#CustContact.fname# #CustContact.lname# [#CustContact.email#]</p>
-<p>#CustContact.tel#</p>
-</CFOUTPUT>
+<p>{{ selected_client.company_name }}</p>
+{% if primary_contact %}
+<p>{{ primary_contact.user.first_name }} {{ primary_contact.user.last_name }} [{{ primary_contact.user.email }}]</p>
+<p>{{ primary_contact.user.phone_number }}</p>
+{% endif %}
 </div>
 <div class="list_wrap" id="locations_list_wrap">
 <ul class="items_list" id="locations_list">
-<CFINCLUDE TEMPLATE="ajax_locations_list.cfm">
 </ul>
 </div>
 

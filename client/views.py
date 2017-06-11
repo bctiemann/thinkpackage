@@ -64,10 +64,32 @@ def select_client(request, client_id):
 
 
 def client_profile(request):
+    selected_client = request.user.get_selected_client(request)
+    primary_contact = selected_client.clientuser_set.filter(is_primary=True).first()
 
     context = {
+        'selected_client': selected_client,
+        'primary_contact': primary_contact,
     }
     return render(request, 'client/profile.html', context)
+
+
+def client_profile_locations(request):
+    selected_client = request.user.get_selected_client(request)
+    locations = Location.objects.filter(client=selected_client, is_active=True).order_by('name')
+    context = {
+        'locations': locations,
+    }
+    return render(request, 'client/locations_list.html', context)
+
+
+def client_profile_location_detail(request, location_id):
+    selected_client = request.user.get_selected_client(request)
+    location = get_object_or_404(Location, pk=location_id, is_active=True, client=selected_client)
+    context = {
+        'location': location,
+    }
+    return render(request, 'client/location_detail.html', context)
 
 
 def client_inventory(request):

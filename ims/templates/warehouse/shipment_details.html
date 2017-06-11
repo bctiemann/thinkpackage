@@ -1,40 +1,6 @@
 {% load static %}
 {% load humanize %}
-<CFIF NOT IsDefined("libloaded")>
-        <CFINCLUDE TEMPLATE="inc_lib.cfm">
-</CFIF>
 
-<CFIF IsDefined("URL.shipmentid") AND IsNumeric(URL.shipmentid)>
-<CFELSEIF IsDefined("URL.shipmentid")>
-    <CFABORT>
-<CFELSE>
-    <div class="error">Invalid shipment ID specified.</div>
-    <CFABORT>
-</CFIF>
-
-<CFQUERY NAME="ShipCustomer" DATASOURCE="#DSN#">
-SELECT *,Locations.name as location_name,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
-INNER JOIN Customers ON Shipments.customerid=Customers.customerid
-LEFT JOIN Locations ON Shipments.locationid=Locations.locationid
-LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
-WHERE Shipments.shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-GROUP BY Shipments.shipmentid
-</CFQUERY>
-
-<CFQUERY NAME="ShipProducts" DATASOURCE="#DSN#">
-SELECT * FROM Shipments,Transactions,Products
-WHERE Shipments.shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-AND Transactions.shipmentid=Shipments.shipmentid
-AND Transactions.productid=Products.productid
-GROUP BY Transactions.productid
-</CFQUERY>
-
-<CFQUERY NAME="ShipPallets" DATASOURCE="#DSN#">
-SELECT * FROM Pallets
-WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-</CFQUERY>
-
-<CFOUTPUT QUERY="ShipCustomer">
 <div class="form_header dark">
 {% if shipment.status != 2 %}<button class="actionbtn floatright" id="generate_bol" onClick="window.open('gen_bol.cfm?shipmentid=#URL.shipmentid#')">BOL</button>{% endif %}
 {% if shipment.status == 1 or shipment.pallet_set.count > 0 %}
@@ -53,7 +19,7 @@ WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERI
 </div>
 </div>
 
-<CFIF status LT 2><button class="actionbtn floatright" id="edit_shipment" onClick="showShippingInfo({{ shipment.id }})">Edit</button></CFIF>
+{% if status < 2 %}<button class="actionbtn floatright" id="edit_shipment" onClick="showShippingInfo({{ shipment.id }})">Edit</button>{% endif %}
 
 <div class="bol-icon">
     <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>
@@ -73,7 +39,6 @@ WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERI
 {% endif %}
 
 </div>
-</CFOUTPUT>
 
 <table class="infotable alternating editable">
     <thead>
@@ -106,15 +71,15 @@ WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERI
 
 <CFOUTPUT QUERY="ShipCustomer">
 <div class="dialog" id="dialog_shipping_info" title="Shipment details">
-<cfform>
+<form>
 <table class="infotable">
     <tr>
         <td class="label">Shipper Address</td>
         <td>
             <select id="shipperaddress" style="margin: 10px 0px;">
-            <cfloop array="#ShipperAddresses#" index="ShipAddr">
-                <option value="#ShipAddr.id#" <cfif shipperaddress IS ShipAddr.id>selected</cfif>>#ShipAddr.name#</option>
-            </cfloop>
+            {% for address in shipper_addresses %}
+                <option value="{{ address.id }}" {% if shipment.shipper_address == address %}selected{% endif %}>{{ address.name }}</option>
+            {% endfor %}
             </select>
         </td>
     </tr>
@@ -177,7 +142,7 @@ WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERI
 <input type="text" id="3rdpartyrecvd" maxlength="16" placeholder="3rd party received" value="#Replace(ShipCustomer.3rdpartyrecvd,'"',"&quot;")#" />
 <input type="text" id="3rdpartychgadvanced" maxlength="16" placeholder="3rd party charges advanced" value="#Replace(ShipCustomer.3rdpartychgadvanced,'"',"&quot;")#" />
 --->
-</cfform>
+</form>
 </div>
 </CFOUTPUT>
 

@@ -13,7 +13,7 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
+from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress
 from ims.forms import UserLoginForm
 from ims import utils
 
@@ -92,6 +92,7 @@ def warehouse_shipment_details(request, shipment_id):
 
     context = {
         'shipment': shipment,
+        'shipper_addresses': ShipperAddress.objects.all(),
     }
     return render(request, 'warehouse/shipment_details.html', context)
 

@@ -240,3 +240,4 @@ COMPANY_PHONE_NUMBER = '(212) 229-0700'
 SUPPORT_EMAIL = 'info@thinkpackage.com'
 SITE_EMAIL = 'info@thinkpackage.com'
 DELIVERY_EMAIL = 'delivery@thinkpackage.com'
+

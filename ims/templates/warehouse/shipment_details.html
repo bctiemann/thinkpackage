@@ -14,7 +14,7 @@
 <p>{{ shipment.tracking }}</p>
 </div>
 <div style="margin-left: 30px; display: inline-block;">
-<p>{% if shipment.third_party %}Load ##: #ShipCustomer.loadnum#{% endif %}</p>
+<p>{% if shipment.third_party %}Load #: {{ shipment.purchase_order_number }}{% endif %}</p>
 <p>{% if shipment.date_shipped %}{% if shipment.status == 2 %}Shipped{% else %}Ship on{% endif %}: {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}{% endif %}</p>
 </div>
 </div>
@@ -55,7 +55,7 @@
     </thead>
     <tbody>
     {% for transaction in shipment.transaction_set.all %}
-    <tr class="detail" id="productdetail_#productid#">
+    <tr class="detail" id="productdetail_{{ transaction.product.id }}">
         <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text">{{ shipment.client.company_name }}</td>
         <td class="text" style="width: 400px;">{{ transaction.product.name }}</td>
@@ -69,80 +69,58 @@
     </tbody>
 </table>
 
-<CFOUTPUT QUERY="ShipCustomer">
 <div class="dialog" id="dialog_shipping_info" title="Shipment details">
 <form>
 <table class="infotable">
     <tr>
         <td class="label">Shipper Address</td>
-        <td>
-            <select id="shipperaddress" style="margin: 10px 0px;">
-            {% for address in shipper_addresses %}
-                <option value="{{ address.id }}" {% if shipment.shipper_address == address %}selected{% endif %}>{{ address.name }}</option>
-            {% endfor %}
-            </select>
-        </td>
+        <td>{{ form.shipper_address }}</td>
     </tr>
     <tr>
         <td class="label">Carrier</td>
-        <td><cfinput type="text" name="carrier" maxlength="50" placeholder="" value="#carrier#" /></td>
+        <td>{{ form.carrier }}</td>
     </tr>
     <tr>
-        <td class="label">Pro ##</td>
-        <td><cfinput type="text" name="pro" maxlength="50" placeholder="" value="#pro#" /></td>
+        <td class="label">Pro #</td>
+        <td>{{ form.pro_number }}</td>
     </tr>
     <tr>
-        <td class="label">PO ##</td>
-        <td><cfinput type="text" name="loadnum" maxlength="50" placeholder="" value="#loadnum#" /></td>
+        <td class="label">PO #</td>
+        <td>{{ form.purchase_order_number }}</td>
     </tr>
-<!---
-    <tr>
-        <td class="label">Ship ID ##</td>
-        <td><cfinput type="text" name="tracking" maxlength="50" placeholder="" value="#tracking#" /></td>
-    </tr>
---->
     <tr>
         <td class="label">3rd Party</td>
-        <td><cfinput type="text" name="3rdparty" maxlength="50" placeholder="" value="#ShipCustomer.3rdparty#" /></td>
+        <td>{{ form.third_party }}</td>
     </tr>
     <tr>
         <td class="label">Class</td>
-        <td><cfinput type="text" name="class" maxlength="50" placeholder="" value="#ShipCustomer.class#" /></td>
+        <td>{{ form.shipment_class }}</td>
     </tr>
     <tr>
         <td class="label">Pallets</td>
-        <td><cfinput type="number" name="numpallets" placeholder="" value="#ShipCustomer.numpallets#" min="1" /></td>
+        <td>{{ form.pallet_count }}</td>
     </tr>
     <tr>
         <td class="label">Ship date</td>
-        <td><cfinput type="text" name="shipdate" maxlength="50" placeholder="" value="#DateFormat(shippedon,"MM/DD/YYYY")#" /></td>
+        <td>{{ form.date_shipped }}</td>
     </tr>
     <tr>
         <td class="label">Shipper special instructions</td>
-        <td><textarea id="shipperinstructions" placeholder="">#Replace(ShipCustomer.shipperinstructions,'"',"&quot;")#</textarea></td>
+        <td>{{ form.shipper_instructions }}</td>
     </tr>
     <tr>
         <td class="label">Consignee special instructions</td>
-        <td><textarea id="consigneeinstructions" placeholder="">#Replace(ShipCustomer.consigneeinstructions,'"',"&quot;")#</textarea></td>
+        <td>{{ form.consignee_instructions }}</td>
     </tr>
     <tr>
         <td class="label">Requirements</td>
         <td>
-            <cfinput type="checkbox" name="insidedelivery" value="1" checked="#YesNoFormat(insidedelivery IS 1)#" /> <label for="insidedelivery">Inside Delivery</label><br/>
-            <cfinput type="checkbox" name="liftgate" value="1" checked="#YesNoFormat(liftgate IS 1)#" /> <label for="liftgate">Liftgate</label><br />
-            <cfinput type="checkbox" name="appointment" value="1" checked="#YesNoFormat(appointment IS 1)#" /> <label for="appointment">Appointment</label><br />
-            <cfinput type="checkbox" name="sortseg" value="1" checked="#YesNoFormat(sortseg IS 1)#" /> <label for="sortseg">Sort & Segregation</label><br />
+            {{ form.inside_delivery }} <label for="id_inside_delivery">Inside Delivery</label><br />
+            {{ form.liftgate_required }} <label for="id_liftgate_required">Liftgate</label><br />
+            {{ form.appointment_required }} <label for="id_appointment_required">Appointment</label><br />
+            {{ form.sort_segregation }} <label for="id_sort_segregation">Sort & Segregation</label><br />
         </td>
     </tr>
 </table>
-<!---
-<textarea id="3rdpartyaddress" placeholder="3rd party address">#Replace(ShipCustomer.3rdpartyaddress,'"',"&quot;")#</textarea>
-<input type="text" id="3rdpartyphone" maxlength="20" placeholder="3rd party phone" value="#Replace(ShipCustomer.3rdpartyphone,'"',"&quot;")#" />
-<input type="text" id="3rdpartyper" maxlength="30" placeholder="3rd party PER" value="#Replace(ShipCustomer.3rdpartyper,'"',"&quot;")#" />
-<input type="text" id="3rdpartyrecvd" maxlength="16" placeholder="3rd party received" value="#Replace(ShipCustomer.3rdpartyrecvd,'"',"&quot;")#" />
-<input type="text" id="3rdpartychgadvanced" maxlength="16" placeholder="3rd party charges advanced" value="#Replace(ShipCustomer.3rdpartychgadvanced,'"',"&quot;")#" />
---->
 </form>
 </div>
-</CFOUTPUT>
-

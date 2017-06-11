@@ -3,6 +3,34 @@ var globals = {};
 
 function nop() {}
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
 function showShipped(show_shipped) {
     globals['shipped_filter'] = show_shipped ? 0 : 1;
     $('#shipment_details').html('');
@@ -58,7 +86,7 @@ function selectShipment(shipmentid) {
 //            $('#productdetail_'+productid+' input').prop('disabled',false);
 //            $('#shipdate_'+shipmentid).datepicker();
 
-            $('#shipdate').datepicker();
+            $('#id_date_shipped').datepicker();
 
             $('#dialog_shipping_info').dialog({
                 autoOpen: false,
@@ -198,29 +226,24 @@ function execute_saveShipment() {
     var shipment = {
         fnc: 'updateshipment',
         shipmentid: globals['shipmentid'],
-        carrier: $('#carrier').val(),
-        shipperaddress: $('#shipperaddress').val(),
-        pro: $('#pro').val(),
-        loadnum: $('#loadnum').val(),
-//        tracking: $('#tracking').val(),
-        thirdparty: $('#3rdparty').val(),
-//        thirdpartyaddress: $('#3rdpartyaddress').val(),
-//        thirdpartyphone: $('#3rdpartyphone').val(),
-//        thirdpartyper: $('#3rdpartyper').val(),
-//        thirdpartyrecvd: $('#3rdpartyrecvd').val(),
-//        thirdpartychgadvanced: $('#3rdpartychgadvanced').val(),
-        class: $('#class').val(),
-        numpallets: $('#numpallets').val(),
-        shipdate: $('#shipdate').val() ? new Date($('#shipdate').val()) : null,
-        shipperinstructions: $('#shipperinstructions').val(),
-        consigneeinstructions: $('#consigneeinstructions').val(),
-        insidedelivery: $('#insidedelivery').prop('checked') || 0,
-        liftgate: $('#liftgate').prop('checked') || 0,
-        appointment: $('#appointment').prop('checked') || 0,
-        sortseg: $('#sortseg').prop('checked') || 0,
+        carrier: $('#id_carrier').val(),
+        shipper_address: $('#id_shipper_address').val(),
+        pro_number: $('#id_pro_number').val(),
+        purchase_order_number: $('#id_purchase_order_number').val(),
+        third_party: $('#id_third_party').val(),
+        shipment_class: $('#id_shipment_class').val(),
+        pallet_count: $('#id_pallet_count').val(),
+        date_shipped: $('#id_date_shipped').val(),
+        shipper_instructions: $('#id_shipper_instructions').val(),
+        consignee_instructions: $('#id_consignee_instructions').val(),
+        inside_delivery: $('#id_inside_delivery').prop('checked'),
+        liftgate_required: $('#id_liftgate_required').prop('checked'),
+        appointment_required: $('#id_appointment_required').prop('checked'),
+        sort_segregation: $('#id_sort_segregation_required').prop('checked'),
     }
 console.log(shipment);
-    var url = cgiroot+'ajax_shipments_action.cfm';
+//    var url = cgiroot+'ajax_shipments_action.cfm';
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/';
     $.post(url,shipment,function(data) {
         $('#shipment_'+globals['shipmentid']).removeClass('selected');
         selectShipment(globals['shipmentid']);

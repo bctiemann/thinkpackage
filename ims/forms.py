@@ -1,11 +1,12 @@
 from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc
+from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment
 from ims import utils
 
 import logging
@@ -26,6 +27,35 @@ DOMESTIC_CHOICES = (
     (False, 'Import (12-14 wks)'),
     (True, 'Domestic (6-8 wks)'),
 )
+
+
+class AjaxableResponseMixin(object):
+    """
+    Mixin to add AJAX support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
+    """
+    def form_invalid(self, form):
+        logger.warning(form.errors)
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return HttpResponse(form.errors.as_json())
+#            return HttpResponse(form.errors.as_json(), content_type='application/json')
+        else:
+            return response
+
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = {
+                'success': True,
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
 
 
 class UserLoginForm(AuthenticationForm):
@@ -216,3 +246,28 @@ class ShipmentDocForm(forms.ModelForm):
     class Meta:
         model = ShipmentDoc
         fields = ['shipment', 'file']
+
+
+class ShipmentForm(forms.ModelForm):
+    class Meta:
+        model = Shipment
+        fields = [
+            'shipper_address',
+            'carrier',
+            'pro_number',
+            'purchase_order_number',
+            'third_party',
+            'shipment_class',
+            'pallet_count',
+            'date_shipped',
+            'shipper_instructions',
+            'consignee_instructions',
+            'inside_delivery',
+            'liftgate_required',
+            'appointment_required',
+            'sort_segregation',
+        ]
+        widgets = {
+            'shipper_address': forms.Select(attrs={'style': 'margin: 10px 0px;'}),
+            'date_shipped': forms.DateInput(format='%m/%d/%Y'),
+        }

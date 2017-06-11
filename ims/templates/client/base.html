@@ -11,10 +11,6 @@
     <script type="text/javascript" src="{% static "client/js/main.js" %}"></script>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-{% csrf_token %}
-<script type="text/javascript">
-var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-</script>
 </head>
 
 {% if user.is_authenticated %}

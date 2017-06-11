@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser
-from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
+from ims.forms import AjaxableResponseMixin, UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
 from ims import utils
 
 import math
@@ -286,35 +286,6 @@ def mgmt_location_form(request):
         'location': location,
     }
     return render(request, 'mgmt/location_form.html', context)
-
-
-class AjaxableResponseMixin(object):
-    """
-    Mixin to add AJAX support to a form.
-    Must be used with an object-based FormView (e.g. CreateView)
-    """
-    def form_invalid(self, form):
-        logger.warning(form.errors)
-        response = super(AjaxableResponseMixin, self).form_invalid(form)
-        if self.request.is_ajax():
-            return HttpResponse(form.errors.as_json())
-#            return HttpResponse(form.errors.as_json(), content_type='application/json')
-        else:
-            return response
-
-    def form_valid(self, form):
-        # We make sure to call the parent's form_valid() method because
-        # it might do some processing (in the case of CreateView, it will
-        # call form.save() for example).
-        response = super(AjaxableResponseMixin, self).form_valid(form)
-        if self.request.is_ajax():
-            data = {
-                'success': True,
-                'pk': self.object.pk,
-            }
-            return JsonResponse(data)
-        else:
-            return response
 
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -14,7 +15,7 @@ from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, Disable
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress
-from ims.forms import UserLoginForm
+from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm
 from ims import utils
 
 from datetime import datetime, timedelta
@@ -109,4 +110,24 @@ def warehouse_pallets(request):
     context = {
     }
     return render(request, 'warehouse/pallets.html', context)
+
+
+class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
+    model = Shipment
+    form_class = ShipmentForm
+    template_name = 'warehouse/shipment_details.html'
+
+    def get_object(self):
+        return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+
+    def form_valid(self, form):
+#        self.object.custcontact_set.update(is_primary=False)
+#        if form.cleaned_data['primary_contact']:
+#            CustContact.objects.filter(pk=form.cleaned_data['primary_contact']).update(is_primary=True)
+        return super(ShipmentUpdate, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShipmentUpdate, self).get_context_data(*args, **kwargs)
+#        context['primary_contact'] = self.object.custcontact_set.filter(is_primary=True).first()
+        return context
 

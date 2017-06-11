@@ -492,7 +492,7 @@ class Shipment(models.Model):
     inside_delivery = models.BooleanField(default=False, db_column='insidedelivery')
     liftgate_required = models.BooleanField(default=False, db_column='liftgate')
     appointment_required = models.BooleanField(default=False, db_column='appointment')
-    sort_segregation =models.BooleanField(default=False, db_column='sortseg')
+    sort_segregation = models.BooleanField(default=False, db_column='sortseg')
     shipment_class = models.CharField(max_length=50, blank=True, db_column='class')
     pallet_count = models.IntegerField(null=True, blank=True, db_column='numpallets')
     accounting_status = models.IntegerField(choices=ACCOUNTING_STATUS_CHOICES, default=0, db_column='acctstatus')
@@ -515,6 +515,9 @@ class Shipment(models.Model):
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
+
+    def get_absolute_url(self):
+        return reverse('warehouse-shipment-details', kwargs={'shipment_id': self.id})
 
     class Meta:
         db_table = 'Shipments'

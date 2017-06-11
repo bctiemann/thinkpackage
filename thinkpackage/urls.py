@@ -151,20 +151,20 @@ urlpatterns_warehouse = [
     ),
      url(
         r'^account/two_factor/backup/phone/register/$',
-        client_views.PhoneSetupView.as_view(),
+        warehouse_views.PhoneSetupView.as_view(),
         name='phone_create',
     ),
     url(
         r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
-        client_views.PhoneDeleteView.as_view(),
+        warehouse_views.PhoneDeleteView.as_view(),
         name='phone_delete',
     ),
     url(
         r'^account/two_factor/disable/$',
-        client_views.DisableView.as_view(),
+        warehouse_views.DisableView.as_view(),
         name='disable',
     ),
-    url(r'', include('two_factor.urls', 'client-two_factor')),
+    url(r'', include('two_factor.urls', 'warehouse-two_factor')),
 
     url(r'^$', warehouse_views.home, name='warehouse-home'),
 

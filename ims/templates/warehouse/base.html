@@ -18,8 +18,8 @@
 <body>
 
     <div id="header">
-    <div class="logoutlink"><a href="?exit=1">Log out [<CFOUTPUT>#YourID.user#</CFOUTPUT>]</a></div>
-    <div class="logoutlink"><CFOUTPUT>#DateFormat(Now(),"ddd mmm dd")#, #TimeFormat(Now(),"h:mm tt")#</CFOUTPUT></div>
+    <div class="logoutlink"><a href="{% url "sign-out" %}">Log out [{{ user.email }}]</a></div>
+    <div class="logoutlink">{% now "D F j, g:i A" %}</div>
     <div class="pagetitle">WAREHOUSE</div>
     </div>
 

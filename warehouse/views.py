@@ -34,7 +34,7 @@ company_info = {
 
 
 class LoginView(LoginView):
-    template_name = 'client/login.html'
+    template_name = 'warehouse/login.html'
     form_list = (
         ('auth', UserLoginForm),
         ('token', AuthenticationTokenForm),

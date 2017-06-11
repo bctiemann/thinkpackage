@@ -19,7 +19,7 @@ function refreshShipments(shipmentid) {
         globals['shipped_filter'] = 1;
     }
 //    var url = cgiroot+'ajax_shipments_list.cfm?shipped_filter='+globals['shipped_filter'];
-    var url = cgiroot + 'shipments/list/';
+    var url = cgiroot + 'shipments/list/?shipped_filter=' + globals['shipped_filter'];
     $('#list_shipments').load(url,function(data) {
         refreshUI();
         if (shipmentid) {
@@ -350,8 +350,6 @@ $(document).ready(function() {
         width: 600,
         position: { my: "top", at: "top+200", of: window },
     });
-
-    refreshShipments();
 
 });
 

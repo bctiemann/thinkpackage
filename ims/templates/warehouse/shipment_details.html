@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <CFIF NOT IsDefined("libloaded")>
         <CFINCLUDE TEMPLATE="inc_lib.cfm">
 </CFIF>
@@ -89,54 +90,16 @@ WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERI
     </thead>
     <tbody>
     {% for transaction in shipment.transaction_set.all %}
-    <CFOUTPUT QUERY="ShipProducts">
-
-    <CFLOOP LIST="#columnList#" INDEX="col">
-        <CFSET ShipProducts[col][currentRow] = Replace(ShipProducts[col][currentRow],'"',"&quot;")>
-    </CFLOOP>
-
-    <CFSET palletsCount = 0>
-    <CFSET palletsPartialCount = 1>
-
-    <CFQUERY NAME="PalletCheck" DATASOURCE="#DSN#">
-    SELECT DISTINCT(OnPallet.palletid) FROM OnPallet,Pallets
-    WHERE productid=#productid#
-    AND OnPallet.palletid=Pallets.palletid
-    AND shipmentid=#shipmentid#
-    </CFQUERY>
-
-    <CFLOOP QUERY="PalletCheck">
-        <CFQUERY NAME="PalletPartialCheck" DATASOURCE="#DSN#">
-        SELECT * FROM OnPallet
-        WHERE palletid=#palletid#
-        AND productid!=#ShipProducts.productid#
-        </CFQUERY>
-
-        <CFIF PalletPartialCheck.recordCount GT 0>
-<!---            <CFSET palletsCount = palletsCount + 1/(PalletPartialCheck.recordCount + 1)>--->
-            <CFSET palletsPartialCount = palletsPartialCount + PalletPartialCheck.recordCount>
-        <CFELSE>
-            <CFSET palletsCount = palletsCount + 1>
-        </CFIF>
-
-    </CFLOOP>
-
     <tr class="detail" id="productdetail_#productid#">
         <td class="text">{{ transaction.product.item_number }}</td>
-        <td class="text">#ShipCustomer.coname#</td>
-        <td class="text" style="width: 400px;">#pname#</td>
-        <td class="numeric">#packing#</td>
-        <td class="numeric">#cases#</td>
-        <td class="numeric"><CFIF palletsCount GT 0>#palletsCount#</CFIF>
-            <CFIF palletsPartialCount GT 1>
-                1/#palletsPartialCount#
-            </CFIF>
-        </td>
-        <td class="numeric"><CFIF IsNumeric(GW) AND IsNumeric(cases)>#NumberFormat(GW * cases,"._")#</CFIF></td>
-        <td class="text">#length# &times; #width# &times; #height#</td>
+        <td class="text">{{ shipment.client.company_name }}</td>
+        <td class="text" style="width: 400px;">{{ transaction.product.name }}</td>
+        <td class="numeric">{{ transaction.product.packing|intcomma }}</td>
+        <td class="numeric">{{ transaction.cases|intcomma }}</td>
+        <td class="numeric">{{ transaction.pallet_share }}</td>
+        <td class="numeric">{{ transaction.total_weight|floatformat:1 }}</td>
+        <td class="text">{{ transaction.product.length|floatformat:1 }} &times; {{ transaction.product.width|floatformat:1 }} &times; {{ transaction.product.height|floatformat:1 }}</td>
     </tr>
-
-    </CFOUTPUT>
     {% endfor %}
     </tbody>
 </table>

@@ -158,9 +158,10 @@ def client_inventory_request_delivery(request):
             client = selected_client,
             user = request.user,
             status = 0,
-            location = location,
         )
-        shipment.save()
+
+    shipment.location = location
+    shipment.save()
 
     # Create new transactions for each requested product
     total_cases = 0
@@ -184,6 +185,7 @@ def client_inventory_request_delivery(request):
         'location': location,
         'total_cases': total_cases,
         'requested_products': requested_products,
+        'shipment_updated': shipment_updated,
     }
 
     utils.send_templated_email(

@@ -132,8 +132,10 @@ LOGIN_EXEMPT_URLS = (
     r'^mgmt/account/login/$',
     r'^client/$',
     r'^client/account/login/$',
-    r'^warehouse/sign_in/$',
-    r'^accounting/sign_in/$',
+    r'^warehouse/$',
+    r'^warehouse/account/login/$',
+    r'^accounting/$',
+    r'^accounting/account/login/$',
 )
 
 #LOGIN_URL = '/sign_in/'

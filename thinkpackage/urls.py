@@ -7,6 +7,7 @@ from django.contrib.auth import views as auth_views
 from ims import views as ims_views
 from mgmt import views as mgmt_views
 from client import views as client_views
+from warehouse import views as warehouse_views
 from api import views as api_views
 
 from ims.forms import UserLoginForm
@@ -34,7 +35,7 @@ urlpatterns_mgmt = [
     ),
     url(r'', include('two_factor.urls', 'mgmt-two_factor')),
 
-    url(r'^$', mgmt_views.mgmt, name='mgmt-home'),
+    url(r'^$', mgmt_views.home, name='mgmt-home'),
 
 #    url(
 #        r'^sign_in/',
@@ -118,17 +119,8 @@ urlpatterns_client = [
         name='disable',
     ),
     url(r'', include('two_factor.urls', 'client-two_factor')),
-#    url(
-#        r'^sign_in/',
-#        auth_views.login,
-#        {
-#            'template_name': 'client/sign_in.html',
-#            'authentication_form': UserLoginForm,
-#        },
-#        name='sign-in'
-#    ),
 
-    url(r'^$', client_views.client, name='client-home'),
+    url(r'^$', client_views.home, name='client-home'),
 
     url(r'^change_password/$', client_views.change_password, name='client-change-password'),
 
@@ -149,6 +141,36 @@ urlpatterns_client = [
 
     url(r'^product/(?P<product_id>\d+)/history/$', client_views.client_product_history, name='client-product-history'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', client_views.client_shipment_docs, name='client-shipment-docs'),
+]
+
+urlpatterns_warehouse = [
+    url(
+        r'^account/login/$',
+        warehouse_views.LoginView.as_view(),
+        name='login',
+    ),
+     url(
+        r'^account/two_factor/backup/phone/register/$',
+        client_views.PhoneSetupView.as_view(),
+        name='phone_create',
+    ),
+    url(
+        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+        client_views.PhoneDeleteView.as_view(),
+        name='phone_delete',
+    ),
+    url(
+        r'^account/two_factor/disable/$',
+        client_views.DisableView.as_view(),
+        name='disable',
+    ),
+    url(r'', include('two_factor.urls', 'client-two_factor')),
+
+    url(r'^$', warehouse_views.home, name='warehouse-home'),
+
+    url(r'^shipments/$', warehouse_views.warehouse_shipments, name='warehouse-shipments'),
+    url(r'^receivables/$', warehouse_views.warehouse_receivables, name='warehouse-receivables'),
+    url(r'^pallets/$', warehouse_views.warehouse_pallets, name='warehouse-pallets'),
 ]
 
 urlpatterns_api = [
@@ -172,5 +194,6 @@ urlpatterns = [
 
     url(r'^mgmt/', include(urlpatterns_mgmt)),
     url(r'^client/', include(urlpatterns_client)),
+    url(r'^warehouse/', include(urlpatterns_warehouse)),
     url(r'^api/', include(urlpatterns_api)),
 ]

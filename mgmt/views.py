@@ -59,7 +59,7 @@ class DisableView(DisableView):
 ########################################################################
 # IMS account management views
 
-def mgmt(request):
+def home(request):
 
     delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')
 

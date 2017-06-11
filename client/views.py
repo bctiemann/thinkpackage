@@ -53,7 +53,7 @@ class DisableView(DisableView):
     success_url = reverse_lazy('two_factor:profile')
 
 
-def client(request):
+def home(request):
     return redirect('client-inventory')
 
 

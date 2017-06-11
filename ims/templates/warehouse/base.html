@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+        <head>
+        <title>Think Package Warehouse Access</title>
+        <link rel=stylesheet href="{% static "warehouse/css/style_gen.css" %}" TYPE="text/css">
+        <link rel=stylesheet href="{% static "warehouse/css/style.css" %}" TYPE="text/css">
+        <link rel=stylesheet href="{% static "warehouse/css/jquery-ui.css" %}" TYPE="text/css">
+        <script type="text/javascript" src="{% static "warehouse/js/jquery-1.11.1.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "warehouse/js/jquery-ui.js" %}"></script>
+        <script type="text/javascript" src="{% static "warehouse/js/main.js" %}"></script>
+        <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+        <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+</head>
+
+<CFINCLUDE TEMPLATE="inc_lib.cfm">
+
+<CFIF IsDefined("Login") AND Login IS false>
+{% if user.is_authenticated %}
+
+<body>
+
+    <div id="header">
+    <div class="logoutlink"><a href="?exit=1">Log out [<CFOUTPUT>#YourID.user#</CFOUTPUT>]</a></div>
+    <div class="logoutlink"><CFOUTPUT>#DateFormat(Now(),"ddd mmm dd")#, #TimeFormat(Now(),"h:mm tt")#</CFOUTPUT></div>
+    <div class="pagetitle">WAREHOUSE</div>
+    </div>
+
+<CFELSE>
+{% else %}
+
+<body class="login">
+
+</CFIF>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+</body>
+</html>

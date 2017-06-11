@@ -1,0 +1,35 @@
+{% extends "warehouse/base.html" %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+{% block content %}
+
+<div class="content">
+
+<!---
+<CFIF IsDefined("URL.receivableid") AND IsNumeric(URL.receivableid)>
+    <CFQUERY NAME="Receivable" DATASOURCE="#DSN#">
+    SELECT * FROM Receivables
+    WHERE receivableid=<CFQUERYPARAM value="#URL.receivableid#" CFSQLType="CF_SQL_NUMERIC">
+    </CFQUERY>
+    <CFIF Receivable.recordcount IS 0>
+        <div class="error">An invalid receivable ID was specified.</div>
+        <CFABORT>
+    </CFIF>
+<CFELSE>
+    <div class="error">An invalid receivable ID was specified.</div>
+    <CFABORT>
+</CFIF>
+--->
+
+{% with page_selected="receivables" %}
+{% include "warehouse/inc_nav.html" %}
+{% endwith %}
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+
+<div class="" id="list_receivables">
+<CFINCLUDE TEMPLATE="ajax_receivables_list.cfm">
+</div>
+
+<div id="receivable_details"></div>
+
+{% endblock %}

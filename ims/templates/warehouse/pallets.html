@@ -1,0 +1,23 @@
+{% extends "warehouse/base.html" %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+{% block content %}
+
+<div class="content">
+
+{% with page_selected="pallets" %}
+{% include "warehouse/inc_nav.html" %}
+{% endwith %}
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+
+<div class="" id="list_shipments">
+<CFINCLUDE TEMPLATE="ajax_pallets_list.cfm">
+</div>
+
+<div id="pallet_details"></div>
+
+<div class="dialog" id="dialog_delete_pallet" title="Delete pallet">
+This pallet will be deleted from the system. You can create a new storage pallet using the handheld app. Continue?
+</div>
+
+{% endblock %}

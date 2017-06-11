@@ -122,7 +122,7 @@ WHERE shipmentid=<CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERI
     </CFLOOP>
 
     <tr class="detail" id="productdetail_#productid#">
-        <td class="text">#itemnum#</td>
+        <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text">#ShipCustomer.coname#</td>
         <td class="text" style="width: 400px;">#pname#</td>
         <td class="numeric">#packing#</td>

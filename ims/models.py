@@ -608,6 +608,7 @@ class Transaction(models.Model):
 
     class Meta:
         db_table = 'Transactions'
+        ordering = ['product__item_number']
 
 
 class Pallet(models.Model):

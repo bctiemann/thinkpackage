@@ -14,7 +14,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for transaction in transactions %}
+    {% for transaction in shipment.transaction_set.all %}
     <tr>
         <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text">{{ transaction.product.name }}</td>
@@ -24,6 +24,5 @@
     </tr>
     {% endfor %}
     </tbody>
-
 </table>
 

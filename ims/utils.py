@@ -1,3 +1,9 @@
+from django.conf import settings
+from django.core import mail
+from django.template import Context
+from django.template.loader import get_template
+
+
 def tree_to_list(items, sort_by=None, omit=[], reverse=False):
 
     items_flat = []
@@ -52,3 +58,30 @@ def list_at_node(items, root):
             else:
                 new_list.append(node)
     return new_list
+
+
+def send_templated_email(recipients,
+                         context,
+                         subject=None,
+                         text_template=None,
+                         html_template=None,
+                         attachments=None,
+                        ):
+
+    plaintext_template = get_template(text_template)
+    html_template = get_template(html_template)
+    connection = mail.get_connection()
+    connection.open()
+    for recipient in recipients:
+        text_content = plaintext_template.render(context)
+        html_content = html_template.render(context)
+        msg = mail.EmailMultiAlternatives(subject, text_content, settings.SITE_EMAIL, [recipient])
+        msg.attach_alternative(html_content, "text/html")
+        if attachments:
+            for attachment in attachments:
+                msg.attach(**attachment)
+
+        msg.send()
+
+    connection.close()
+

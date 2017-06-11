@@ -131,9 +131,13 @@ urlpatterns_client = [
     url(r'^$', client_views.client, name='client-home'),
 
     url(r'^profile/$', client_views.client_profile, name='client-profile'),
+
     url(r'^inventory/$', client_views.client_inventory, name='client-inventory'),
     url(r'^inventory/list/$', client_views.client_inventory_list, name='client-inventory-list'),
+    url(r'^inventory/request_delivery/$', client_views.client_inventory_request_delivery, name='client-inventory-request_delivery'),
+
     url(r'^history/$', client_views.client_history, name='client-history'),
+
     url(r'^reorder/$', client_views.client_reorder, name='client-reorder'),
 
     url(r'^select/(?P<client_id>\d+)/$', client_views.select_client, name='client-select'),

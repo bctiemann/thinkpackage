@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -15,6 +16,7 @@ from ims.forms import UserLoginForm
 from ims import utils
 
 from datetime import datetime, timedelta
+import json
 
 import logging
 logger = logging.getLogger(__name__)
@@ -70,7 +72,7 @@ def client_profile(request):
 def client_inventory(request):
     selected_client = request.user.get_selected_client(request)
     children_of_selected = request.user.get_children_of_selected(request)
-    locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected]).order_by('name')
+    locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected], is_active=True).order_by('name')
 
     context = {
         'selected_client': selected_client,
@@ -107,6 +109,92 @@ def client_inventory_list(request):
         'tab': request.GET.get('tab', 'request'),
     }
     return render(request, 'client/inventory_list.html', context)
+
+
+@require_POST
+def client_inventory_request_delivery(request):
+
+    # First validate the JSON data in the request
+    selected_client = request.user.get_selected_client(request)
+    if not 'json' in request.POST:
+        return JsonResponse({'success': False, 'message': 'Malformed request.'})
+    try:
+        delivery_data = json.loads(request.POST['json'])
+    except Exception, e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+    # Check all requested products for validity and availability
+    requested_products = []
+    for requested_product in delivery_data['products']:
+        try:
+            product = Product.objects.get(pk=requested_product['productid'], client=selected_client)
+        except Product.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
+        if requested_product['cases'] > product.cases_available:
+            return JsonResponse({'success': False, 'message': 'Invalid number of cases requested for product {0}.'.format(product.item_number)})
+        requested_products.append({
+            'obj': product,
+            'cases': requested_product['cases'],
+        })
+
+    # Validate location of delivery
+    try:
+        location = Location.objects.get(pk=delivery_data['locationid'])
+    except Location.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invalid location.'})
+
+    # If we're editing a previous shipment request, pull that shipment and clear
+    # out all transactions. Otherwise, create a new shipment
+    shipment_updated = False
+    if delivery_data['shipmentid']:
+        try:
+            shipment = Shipment.objects.get(pk=delivery_data['shipmentid'])
+        except Shipment.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Invalid shipment ID.'})
+        Transaction.objects.filter(shipment=shipment).delete()
+        shipment_updated = True
+    else:
+        shipment = Shipment(
+            client = selected_client,
+            user = request.user,
+            status = 0,
+            location = location,
+        )
+        shipment.save()
+
+    # Create new transactions for each requested product
+    total_cases = 0
+    for product in requested_products:
+        transaction = Transaction(
+            product = product['obj'],
+            quantity = product['cases'] * product['obj'].packing,
+            is_outbound = True,
+            shipment = shipment,
+            client = selected_client,
+            cases = product['cases'],
+        )
+        transaction.save()
+        total_cases += requested_product['cases']
+
+    # Send a notification email to the configured delivery admin
+    context = {
+        'user': request.user,
+        'shipment': shipment,
+        'client': selected_client,
+        'location': location,
+        'total_cases': total_cases,
+        'requested_products': requested_products,
+    }
+
+    utils.send_templated_email(
+        [settings.DELIVERY_EMAIL],
+        context,
+        'Delivery Order #{0} - {1}'.format(shipment.id, selected_client.company_name),
+        'email/delivery_request.txt',
+        'email/delivery_request.html',
+    )
+
+    return JsonResponse({'success': True})
 
 
 def client_history(request):

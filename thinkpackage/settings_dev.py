@@ -32,4 +32,6 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 
 SUPPORT_EMAIL = 'btman@mac.com'
+SITE_EMAIL = 'btman@mac.com'
+DELIVERY_EMAIL = 'btman@mac.com'
 

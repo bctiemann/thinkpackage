@@ -1,0 +1,41 @@
+{% load humanize %}
+
+<p>The following delivery request from {{ client.company_name }} ({{ user.first_name }} {{ user.last_name }}) was 
+{% if shipment_updated %}updated{% else %}submitted{% endif %}.</p>
+            
+    <table style="background-color: ##eee; border-bottom: 5px solid ##aaa; border-top: 1px solid ##aaa;">
+        <tr>
+            <th>Order #</th>
+            <th>Client Name</th>
+            <th>Location</th>
+            <th>Total Cases</th>
+        </tr>
+        <tr>
+            <td>{{ shipment.id }}</td>   
+            <td>{{ client.company_name }}</td>
+            <td>{{ location.name }}</td>   
+            <td>{{ total_cases }}</td>
+        </tr>
+    </table>
+    
+    <div style="margin-left: 20px;">
+    <table>
+        <tr> 
+            <th>Item #</th>
+            <th>Description</th>  
+            <th>Packing</th>
+            <th>Cases</th>
+        </tr>
+        {% for product in requested_products %}
+        <tr>
+            <td>{{ product.obj.item_number }}</td>
+            <td>{{ product.obj.name }}</td>
+            <td>{{ product.obj.packing|intcomma }}</td>
+            <td>{{ product.cases }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+            
+<p>This email was automatically sent.</p>
+

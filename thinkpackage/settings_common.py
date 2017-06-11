@@ -231,3 +231,8 @@ LOGGING = {
 #        'rest_framework.authentication.SessionAuthentication',
 #    )
 #}
+
+
+SUPPORT_EMAIL = 'info@thinkpackage.com'
+SITE_EMAIL = 'info@thinkpackage.com'
+DELIVERY_EMAIL = 'delivery@thinkpackage.com'

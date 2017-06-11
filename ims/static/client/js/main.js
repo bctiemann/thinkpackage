@@ -244,12 +244,14 @@ function execute_requestDelivery() {
         customerid: $('#customerid').val(),
         shipmentid: 'shipmentid' in globals ? globals['shipmentid'] : 0,
     };
-    var url = cgiroot+'ajax_request_delivery.cfm';
+console.log(requestdelivery);
+//    var url = cgiroot+'ajax_request_delivery.cfm';
+    var url = cgiroot + 'inventory/request_delivery/';
     $('input.delivery_request').each(function() {
         if ($(this).val()) {
             requestdelivery['products'].push({
                 productid: $(this).attr('productid'),
-                cases: $(this).val()
+                cases: parseInt($(this).val()),
             });
         }
     });
@@ -258,10 +260,10 @@ console.log(requestdelivery);
     $.post(url,encoded,function(data) {
 console.log(data);
         $('#dialog_locations').dialog("close");
-        if (data.ERROR) {
-            alert(data.ERROR);
-        } else {
+        if (data.success) {
             $('#dialog_request_result').dialog("open");
+        } else {
+            alert(data.message);
         }
 //        location.reload();
     },'json');

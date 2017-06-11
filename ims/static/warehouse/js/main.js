@@ -50,7 +50,8 @@ function selectShipment(shipmentid) {
         $('.shipment_detail').html('');
         $('tr.shipment').removeClass('selected');
         $('#shipment_'+shipmentid).addClass('selected');
-        var url = cgiroot+'ajax_shipment_details.cfm?shipmentid='+shipmentid;
+//        var url = cgiroot+'ajax_shipment_details.cfm?shipmentid='+shipmentid;
+        var url = cgiroot + 'shipment/' + shipmentid + '/';
         $('#shipment_details').load(url,function() {
 //            $('tr.product input').prop('disabled',true);
 //            $('#product_'+productid+' input').prop('disabled',false);
@@ -137,7 +138,8 @@ console.log(data);
             $('#shipment_upload_form').dialog('close');
             if (data.success) {
                 $('#shipment_'+globals['shipmentid']).removeClass('selected');
-                var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
+//                var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
+                var successUrl = cgiroot + 'shipment/' + data.shipmentid + '/';
                 $('#shipment_details').load(successUrl,function() {
                     refreshUI();
                 });
@@ -162,7 +164,8 @@ var deleteShipmentDoc = function(docid) {
 console.log(data);
             if (data.success) {
                 $('#shipment_'+globals['shipmentid']).removeClass('selected');
-                var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
+//                var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
+                var successUrl = cgiroot + 'shipment/' + data.shipmentid + '/';
                 $('#shipment_details').load(successUrl,function() {
                     refreshUI();
                 });

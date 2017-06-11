@@ -87,6 +87,15 @@ def warehouse_shipments_list(request):
     return render(request, 'warehouse/shipments_list.html', context)
 
 
+def warehouse_shipment_details(request, shipment_id):
+    shipment = get_object_or_404(Shipment, pk=shipment_id)
+
+    context = {
+        'shipment': shipment,
+    }
+    return render(request, 'warehouse/shipment_details.html', context)
+
+
 def warehouse_receivables(request):
 
     context = {

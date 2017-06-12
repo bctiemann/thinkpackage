@@ -565,6 +565,10 @@ class Transaction(models.Model):
 
     @property
     def cases_received_split(self):
+        if not self.receivable:
+            return None
+        if not self.receivable.cases or not self.cases:
+            return None
         return self.receivable.cases - self.cases
 
     @property

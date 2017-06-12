@@ -62,7 +62,8 @@ function refreshReceivables() {
     if (!('received_filter' in globals)) {
         globals['received_filter'] = 1;
     }
-    var url = cgiroot+'ajax_receivables_list.cfm?received_filter='+globals['received_filter'];
+//    var url = cgiroot+'ajax_receivables_list.cfm?received_filter='+globals['received_filter'];
+    var url = cgiroot + 'receivables/list/?received_filter=' + globals['received_filter'];
     $('#list_receivables').load(url,function(data) {
         refreshUI();
     });

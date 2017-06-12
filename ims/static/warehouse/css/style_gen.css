@@ -957,7 +957,7 @@ p.copyright {
 }
 
 ul {
- list-style: disc url('../images/button.gif') inside;
+/* list-style: disc url('../images/button.gif') inside;*/
 }
 
 sup {

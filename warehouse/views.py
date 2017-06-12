@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.contrib.auth import authenticate, login
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
@@ -105,6 +105,29 @@ def warehouse_receivables(request):
     return render(request, 'warehouse/receivables.html', context)
 
 
+def warehouse_receivables_list(request):
+
+    try:
+        received_filter = int(request.GET.get('received_filter', 1))
+    except:
+        received_filter = 1
+
+    transactions = Transaction.objects.filter(receivable__isnull=False).annotate(null_count=Count('cases')).order_by('-null_count', '-receivable__date_created')
+
+    three_weeks_ago = timezone.now() - timedelta(days=21)
+
+    if received_filter:
+        transactions = transactions.filter(cases__isnull=True)
+    else:
+        transactions = transactions.filter(cases__isnull=False, receivable__date_created__gt=three_weeks_ago)
+
+    context = {
+        'transactions': transactions,
+        'received_filter': received_filter,
+    }
+    return render(request, 'warehouse/receivables_list.html', context)
+
+
 def warehouse_pallets(request):
 
     context = {
@@ -119,15 +142,4 @@ class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
-
-    def form_valid(self, form):
-#        self.object.custcontact_set.update(is_primary=False)
-#        if form.cleaned_data['primary_contact']:
-#            CustContact.objects.filter(pk=form.cleaned_data['primary_contact']).update(is_primary=True)
-        return super(ShipmentUpdate, self).form_valid(form)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ShipmentUpdate, self).get_context_data(*args, **kwargs)
-#        context['primary_contact'] = self.object.custcontact_set.filter(is_primary=True).first()
-        return context
 

@@ -1,0 +1,48 @@
+{% load humanize %}
+
+<ul class="mode_toggle">
+<a href="javascript:nop()" onClick="showReceived(false)"><li {% if received_filter == 1 %}class="selected"{% endif %}>incomplete</li></a>
+<a href="javascript:nop()" onClick="showReceived(true)"><li {% if received_filter == 0 %}class="selected"{% endif %}>complete</li></a>
+</ul>
+
+<table class="infotable alternating receivables editable">
+    <thead>
+        <tr>
+            <th class="text">Arrival Date</th>
+            <th class="text">BRF #</th>
+            <th class="text">Container #</th>
+            <th class="text">Item #</th>
+            <th class="text">Client Name</th>
+            <th class="text">Description</th>
+            <th class="numeric">Packing (pcs/cs)</th>
+            <th class="numeric">Cases Expected</th>
+            <th class="numeric">Received</th>
+            <th class="numeric">Dimensions (in)</th>
+            <th class="numeric">Weight (lbs)</th>
+            <th class="numeric">Pallets</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for transaction in transactions %}
+        <tr class="shipment" id="receivable_#receivableid#">
+            <td class="text clickable" receivableid="#receivableid#">{{ transaction.receivable.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+            <td class="text clickable" receivableid="#receivableid#">{{ transaction.receivable.purchase_order }}</td>
+            <td class="text clickable" receivableid="#receivableid#">{{ transaction.null_count }}</td>
+            <td class="text clickable" receivableid="#receivableid#">{{ transaction.product.item_number }}</td>
+            <td class="text clickable" receivableid="#receivableid#">{{ transaction.client.company_name }}</td>
+            <td class="text clickable" receivableid="#receivableid#">{{ transaction.product.name }}</td>
+            <td class="numeric clickable" receivableid="#receivableid#">{{ transaction.product.packing|intcomma }}</td>
+            <td class="numeric clickable" receivableid="#receivableid#">{{ transaction.receivable.cases|intcomma }}</td>
+            <td class="numeric clickable" receivableid="#receivableid#">{% if transaction.cases %}{{ transaction.cases|intcomma }}{% endif %}
+            {% if transaction.cases and transaction.cases != transaction.receivable.cases %}
+                <span class="{% if transaction.cases_received_split > 0 %}partial_receivable{% endif %}">({{ transaction.cases_received_split|intcomma }})</span>
+            {% endif %}
+            </td>
+            <td class="numeric clickable" receivableid="#receivableid#"></td>
+            <td class="numeric clickable" receivableid="#receivableid#"></td>
+            <td class="numeric clickable" receivableid="#receivableid#"></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

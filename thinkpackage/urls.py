@@ -173,6 +173,8 @@ urlpatterns_warehouse = [
     url(r'^shipment/(?P<shipment_id>\d+)/$', warehouse_views.ShipmentUpdate.as_view(), name='warehouse-shipment-details'),
 
     url(r'^receivables/$', warehouse_views.warehouse_receivables, name='warehouse-receivables'),
+    url(r'^receivables/list/$', warehouse_views.warehouse_receivables_list, name='warehouse-receivables-list'),
+
     url(r'^pallets/$', warehouse_views.warehouse_pallets, name='warehouse-pallets'),
 ]
 

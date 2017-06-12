@@ -176,6 +176,7 @@ urlpatterns_warehouse = [
     url(r'^receivables/list/$', warehouse_views.warehouse_receivables_list, name='warehouse-receivables-list'),
 
     url(r'^pallets/$', warehouse_views.warehouse_pallets, name='warehouse-pallets'),
+    url(r'^pallet/(?P<pallet_id>\d+)/$', warehouse_views.PalletUpdate.as_view(), name='warehouse-pallet-details'),
 ]
 
 urlpatterns_api = [

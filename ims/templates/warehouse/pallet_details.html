@@ -1,0 +1,35 @@
+{% load humanize %}
+
+<div class="form_header dark">
+<button class="actionbtn floatright" id="print_pallet" onClick="window.open('gen_barcode_pal.cfm?palletid=#URL.palletid#');">Print</button>
+<button class="actionbtn red floatright" id="delete_pallet" onClick="deletePallet({{ pallet.id }})">Delete</button>
+<span class="title">Contents of pallet {{ pallet.pallet_id }}</span>
+</div>
+
+<table class="infotable alternating editable">
+    <thead>
+    <tr>
+        <th class="text">Item #</th>
+        <th class="text">Customer</th>
+        <th class="text">Description</th>
+        <th class="numeric">pcs/cs</th>
+        <th class="numeric">Cases</th>
+        <th class="numeric">Gross weight (kg)</th>
+        <th class="text">Ctn dimensions (cm, l &times; w &times; h)</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for pallet_contents in pallet.palletcontents_set.all %}
+    <tr class="detail" id="productdetail_#productid#">
+        <td class="text">{{ pallet_contents.product.item_number }}</td>
+        <td class="text">{{ pallet_contents.product.client.company_name }}</td>
+        <td class="text" style="width: 400px;">{{ pallet_contents.product.name }}</td>
+        <td class="numeric">{{ pallet_contents.product.packing|intcomma }}</td>
+        <td class="numeric">{{ pallet_contents.cases }}</td>
+        <td class="numeric">{{ pallet_contents.gross_weight }}</td>
+        <td class="text">{{ pallet_contents.product.length|floatformat:1 }} &times; {{ pallet_contents.product.width|floatformat:1 }} &times; {{ pallet_contents.product.height|floatformat:1 }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

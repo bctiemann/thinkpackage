@@ -621,13 +621,9 @@ class Transaction(models.Model):
 class Pallet(models.Model):
     id = models.AutoField(primary_key=True, db_column='palletid')
     pallet_id = models.CharField(max_length=10, db_column='PID')
-    shipment = models.ForeignKey('Shipment', db_column='shipmentid')
-    client = models.ForeignKey('Client', db_column='customerid')
+    shipment = models.ForeignKey('Shipment', db_column='shipmentid', null=True, blank=True)
+    client = models.ForeignKey('Client', db_column='customerid', null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
-
-#    @property
-#    def shares(self):
-#        return self.palletcontents_set.count()
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
@@ -641,6 +637,10 @@ class PalletContents(models.Model):
     pallet = models.ForeignKey('Pallet', db_column='palletid')
     product = models.ForeignKey('Product', db_column='productid')
     cases = models.IntegerField(db_column='qty')
+
+    @property
+    def gross_weight(self):
+        return self.product.gross_weight * self.cases
 
     def __unicode__(self):
         return ('{0}'.format(self.id))

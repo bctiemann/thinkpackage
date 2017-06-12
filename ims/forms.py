@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment
+from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet
 from ims import utils
 
 import logging
@@ -271,3 +271,10 @@ class ShipmentForm(forms.ModelForm):
             'shipper_address': forms.Select(attrs={'style': 'margin: 10px 0px;'}),
             'date_shipped': forms.DateInput(format='%m/%d/%Y'),
         }
+
+
+class PalletForm(forms.ModelForm):
+    class Meta:
+        model = Pallet
+        fields = ['shipment',]
+

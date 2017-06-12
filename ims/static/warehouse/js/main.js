@@ -117,7 +117,8 @@ function selectPallet(palletid) {
         $('.pallet_detail').html('');
         $('tr.pallet').removeClass('selected');
         $('#pallet_'+palletid).addClass('selected');
-        var url = cgiroot+'ajax_pallet_details.cfm?palletid='+palletid;
+//        var url = cgiroot+'ajax_pallet_details.cfm?palletid='+palletid;
+        var url = cgiroot + 'pallet/' + palletid + '/';
         $('#pallet_details').load(url,function() {
         });
     }

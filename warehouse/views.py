@@ -14,8 +14,8 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress
-from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm
+from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet
+from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm, PalletForm
 from ims import utils
 
 from datetime import datetime, timedelta
@@ -131,6 +131,7 @@ def warehouse_receivables_list(request):
 def warehouse_pallets(request):
 
     context = {
+        'pallets': Pallet.objects.filter(shipment__isnull=True, client__isnull=True).order_by('-date_created'),
     }
     return render(request, 'warehouse/pallets.html', context)
 
@@ -143,3 +144,11 @@ class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
     def get_object(self):
         return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
 
+
+class PalletUpdate(AjaxableResponseMixin, UpdateView):
+    model = Pallet
+    form_class = PalletForm
+    template_name = 'warehouse/pallet_details.html'
+
+    def get_object(self):
+        return get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])

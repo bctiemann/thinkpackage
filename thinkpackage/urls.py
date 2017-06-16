@@ -171,6 +171,7 @@ urlpatterns_warehouse = [
     url(r'^shipments/$', warehouse_views.warehouse_shipments, name='warehouse-shipments'),
     url(r'^shipments/list/$', warehouse_views.warehouse_shipments_list, name='warehouse-shipments-list'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', warehouse_views.ShipmentUpdate.as_view(), name='warehouse-shipment-details'),
+    url(r'^shipment/(?P<shipment_id>\d+)/ship/$', warehouse_views.ShipmentShip.as_view(), name='warehouse-shipment-ship'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', warehouse_views.ShipmentDocCreate.as_view(), name='warehouse-shipment-docs'),
 
     url(r'^receivables/$', warehouse_views.warehouse_receivables, name='warehouse-receivables'),

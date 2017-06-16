@@ -145,6 +145,28 @@ class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
 
 
+class ShipmentShip(AjaxableResponseMixin, UpdateView):
+    model = Shipment
+    template_name = 'warehouse/shipment_details.html'
+    fields = []
+
+    def form_valid(self, form):
+        response = super(ShipmentShip, self).form_valid(form)
+        self.object.date_shipped = timezone.now()
+        self.object.status = 2
+        self.object.save()
+        for transaction in self.object.transaction_set.all():
+            transaction.product.cases_inventory -= transaction.cases
+            if transaction.product.cases_inventory < 0:
+                transaction.product.cases_inventory = 0
+            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
+            transaction.product.save()
+        return response
+
+    def get_object(self):
+        return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+
+
 class PalletUpdate(AjaxableResponseMixin, UpdateView):
     model = Pallet
     form_class = PalletForm

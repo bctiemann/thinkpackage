@@ -4,7 +4,7 @@
 <div class="form_header dark">
 {% if shipment.status != 2 %}<button class="actionbtn floatright" id="generate_bol" onClick="window.open('gen_bol.cfm?shipmentid=#URL.shipmentid#')">BOL</button>{% endif %}
 {% if shipment.status == 1 or shipment.pallet_set.count > 0 %}
-    {% if shipment.status != 2 %}<button class="actionbtn floatright" id="ship_shipment" onClick="shipShipment(#URL.shipmentid#)">Shipped</button>{% endif %}
+    {% if shipment.status != 2 %}<button class="actionbtn floatright" id="ship_shipment" onClick="shipShipment({{ shipment.id }})">Shipped</button>{% endif %}
 {% endif %}
 {% if shipment.status != 1 and False %}<button class="actionbtn floatright" id="save_shipment" onClick="updateShipment(#URL.shipmentid#)">Save</button>{% endif %}
 

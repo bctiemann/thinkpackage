@@ -259,7 +259,8 @@ function execute_shipShipment() {
         shipmentid: globals['shipmentid']
     }
 console.log(shipment);
-    var url = cgiroot+'ajax_shipments_action.cfm';
+//    var url = cgiroot+'ajax_shipments_action.cfm';
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/ship/';
     $.post(url,shipment,function(data) {
 console.log(data);
         window.location.reload();

@@ -14,8 +14,8 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet
-from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm, PalletForm
+from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc
+from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm, PalletForm, ShipmentDocForm
 from ims import utils
 
 from datetime import datetime, timedelta
@@ -152,3 +152,40 @@ class PalletUpdate(AjaxableResponseMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
+
+
+class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
+    model = ShipmentDoc
+    form_class = ShipmentDocForm
+    template_name = 'warehouse/shipment_docs.html'
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+        logger.warning(self.request.FILES)
+        response = super(ShipmentDocCreate, self).form_valid(form)
+        uploaded_file = self.request.FILES['file']
+        self.object.content_type = uploaded_file.content_type
+        self.object.size = uploaded_file.size
+        filename_parts = uploaded_file.name.split('.')
+        self.object.basename = '.'.join(filename_parts[0:-1])
+        self.object.ext = filename_parts[-1]
+        self.object.save()
+        logger.info('ShipmentDoc {0} created.'.format(self.object))
+        return response
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShipmentDocCreate, self).get_context_data(*args, **kwargs)
+        shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+        context['shipment'] = shipment
+        return context
+
+
+class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
+    model = ShipmentDoc
+
+    def get_object(self):
+        return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
+
+    def get_success_url(self):
+        return reverse_lazy('warehouse-shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
+

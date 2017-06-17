@@ -573,7 +573,7 @@ console.log(data);
                 showShipmentDocs(globals['shipmentid']);
                 $('#shipment_upfile').val('');
             } else {
-                alert(data.error);
+                alert(data.message);
             }
         },
     });
@@ -588,14 +588,19 @@ var deleteShipmentDoc = function(docid) {
             fnc: 'delete_doc',
         };
         $.post(url, params, function(data) {
-            var successUrl = cgiroot + 'shipment/' + globals['shipmentid'] + '/docs/';
-            $('#shipment_details').load(successUrl,function() {
-                refreshUI();
-            });
-            refreshShipments(globals['shipmentid']);
-            showShipmentDocs(globals['shipmentid']);
-            $('#shipment_upfile').val('');
-        });
+console.log(data)
+            if (data.success) {
+                var successUrl = cgiroot + 'shipment/' + data.shipment_id + '/docs/';
+                $('#shipment_details').load(successUrl,function() {
+                    refreshUI();
+                });
+                refreshShipments(data.shipment_id);
+                showShipmentDocs(data.shipment_id);
+                $('#shipment_upfile').val('');
+            } else {
+                alert(data.message);
+            }
+        }, 'json');
     }
 };
 

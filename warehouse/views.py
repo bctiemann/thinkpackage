@@ -211,3 +211,6 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('warehouse-shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
 
+    def post(self, *args, **kwargs):
+        super(ShipmentDocDelete, self).post(*args, **kwargs)
+        return JsonResponse({'success': True, 'shipment_id': self.object.shipment_id})

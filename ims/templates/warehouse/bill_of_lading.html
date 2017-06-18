@@ -1,0 +1,344 @@
+{% load static %}
+<!--- generate BOL --->
+<CFIF IsDefined("URL.shipmentid")>
+
+<CFSET maxproducts = 20>
+
+<CFQUERY NAME="BShip" DATASOURCE="#DSN#">
+SELECT *,CustContacts.tel as custcontact_tel FROM Shipments,Customers,Locations,CustContacts
+WHERE shipmentid = <CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+AND Shipments.customerid=Customers.customerid
+AND Shipments.locationid=Locations.locationid
+AND Locations.custcontactid=CustContacts.custcontactid
+</CFQUERY>
+
+<CFQUERY NAME="ShipProductsTotal" DATASOURCE="#DSN#">
+SELECT *,SUM(cases) AS sum_cases FROM Shipments,Transactions,Products
+WHERE Shipments.shipmentid = <CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+AND Transactions.shipmentid=Shipments.shipmentid
+AND Transactions.productid=Products.productid
+GROUP BY Transactions.productid
+</CFQUERY>
+
+<CFIF BShip.recordcount IS 1>
+
+<CFSETTING ShowDebugOutput="no">
+
+<cfdocument format="pdf" fontEmbed="yes" localUrl="yes" encryption="128-bit" 
+ownerPassword="sdlkS435SDFj!$" permissions="AllowPrinting" saveAsName="Barcode.pdf"
+pageType="custom" pageWidth="8.5" pageHeight="11" marginTop="0.52" marginBottom="0" marginLeft="0.25" marginRight="0.25" overwrite="yes">
+
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+<title>Think Package Bill of Lading</title>
+<link rel=stylesheet href="{% static "warehouse/css/bol.css" %}" TYPE="text/css">
+</head>
+
+<body>
+
+<CFLOOP INDEX="pagenum" FROM="1" TO="#Ceiling(ShipProductsTotal.recordcount/maxproducts)#">
+
+<CFIF pagenum GT 1><cfdocumentitem type="pagebreak" /></CFIF>
+
+<CFQUERY NAME="ShipProducts" DATASOURCE="#DSN#">
+SELECT *,SUM(cases) AS sum_cases FROM Shipments,Transactions,Products
+WHERE Shipments.shipmentid = <CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+AND Transactions.shipmentid=Shipments.shipmentid
+AND Transactions.productid=Products.productid
+GROUP BY Transactions.productid
+ORDER BY itemnum
+LIMIT #maxproducts# <CFIF pagenum GT 1>OFFSET #(pagenum-1)*maxproducts#</CFIF>
+</CFQUERY>
+
+<CFOUTPUT QUERY="BShip">
+
+<div class="floatright">
+Ship Date: #DateFormat(shippedon,"MM/DD/YYYY")#
+</div>
+
+<div class="pagecount">
+Page #pagenum# of #Ceiling(ShipProductsTotal.recordCount/maxproducts)#
+</div>
+
+
+<div class="topwarning">
+STRAIGHT BILL OF LADING - ORIGINAL NOT NEGOTIABLE
+</div>
+<div class="mediumfine">
+This form contains only the information necessary for the motor carrier to deliver, rate, and invoice the shipment described below.
+</div>
+
+
+<div class="floatright">
+<table class="floatright1 shipping_info" cellspacing="0" style="width: 300px;">
+    <tr>
+        <td class="label">Carrier</td>
+        <td class="right_col">#carrier#</td>
+    </tr>
+    <tr>
+        <td class="label">Pro ##</td>
+        <td class="right_col">#pro#</td>
+    </tr>
+    <tr>
+        <td class="label">PO ##</td>
+        <td class="right_col">#loadnum#</td>
+    </tr>
+    <tr>
+        <td class="label bottom_row">Ship ID ##</td>
+        <td class="right_col bottom_row">#shipmentid#</td>
+    </tr>
+</table>
+
+<br />
+<div class="box style="width: 287px;">
+<p class="box_inner_heading">All Freight Charges PPD/3rd Party Bill To:</p>
+#BShip.3rdparty#<br />
+#REReplace(BShip.3rdpartyaddress,"\n","<br />","all")#
+</div>
+</div>
+
+<br />
+Shipper:
+<div class="box" style="width: 300px;">
+#ShipperAddresses[shipperaddress IS NOT "" ? shipperaddress : 1].address#
+</div>
+
+<br />
+Consignee:
+<div class="box" style="width: 300px;">
+#coname#<br />
+#addr#<CFIF addr2 IS NOT "">, #addr2#</CFIF><br />
+#city#, #state# #zip#<br />
+#custcontact_tel#<br />
+ATTN: #fname# #lname#
+</div>
+
+<br />
+<!---
+PPD/3rd Party
+<table class="shipping_info" cellspacing="0">
+    <tr>
+        <td class="bottom_row">
+            <p>Agent or Cashier:</p>
+            <p>Per: <span class="underline" style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+            <p class="mediumfine">(The signature here acknowledges only the amount prepaid)</p>
+        </td>
+        <td class="bottom_row">
+            <p>Received:</p>
+            <p>$ <span class="underline" style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+            <p class="mediumfine">to apply in prepayment of the charges on the property described hereon</p>
+        </td>
+        <td class="bottom_row right_col">
+            <p>Charges Advanced:</p>
+            <p>$ <span class="underline" style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+        </td>
+    </tr>
+</table>
+--->
+
+
+
+<table class="shipping_info" cellspacing="0" style="margin-top: 30px; border: 1px solid ##000;">
+<tr>
+    <th class="no_cases">## CASES</th>
+    <th class="item_id">ITEM ##</th>
+    <th class="item_descr">DESCRIPTION</th>
+    <th class="packing">PACKING PER CASE</th>
+    <th class="total_pcs">TOTAL ## OF PCS</th>
+    <th class="weight">WEIGHT (LBS)</th>
+</tr>
+</table>
+
+<table class="shipping_info" cellspacing="0" style="border-top: none; border-bottom: 1px solid ##000;">
+
+<CFSET palletsCount = 0>
+<CFSET casesCount = 0>
+<CFSET piecesCount = 0>
+
+<CFLOOP QUERY="ShipProductsTotal">
+
+    <CFQUERY NAME="PalletCheck" DATASOURCE="#DSN#">
+    SELECT DISTINCT(OnPallet.palletid) FROM OnPallet,Pallets
+    WHERE productid=#productid#
+    AND OnPallet.palletid=Pallets.palletid
+    AND shipmentid=#shipmentid#
+    </CFQUERY>
+
+    <CFLOOP QUERY="PalletCheck">
+        <CFQUERY NAME="PalletPartialCheck" DATASOURCE="#DSN#">
+        SELECT * FROM OnPallet
+        WHERE palletid=#palletid#
+        AND productid!=#ShipProductsTotal.productid#
+        </CFQUERY>
+
+        <CFIF PalletPartialCheck.recordCount GT 0>
+            <CFSET palletsCount = palletsCount + 1/(PalletPartialCheck.recordCount + 1)>
+        <CFELSE>
+            <CFSET palletsCount = palletsCount + 1>
+        </CFIF>
+
+    </CFLOOP>
+
+    <CFSET casesCount = casesCount + sum_cases>
+    <CFSET piecesCount = piecesCount + (sum_cases * packing)>
+
+</CFLOOP>
+
+<cfset totalWeight = 0>
+<CFLOOP QUERY="ShipProducts">
+
+    <tr>
+        <td class="no_cases">#sum_cases#</td>
+        <td class="item_id">#itemnum#</td>
+        <td class="item_descr">
+            #Left(pname,72)# <span class="account-label"><cfif account IS 1>[INVQ]<cfelseif account IS 2>[Prepaid]</cfif></span>
+        </td>
+        <td class="packing">#NumberFormat(packing,",")#</td>
+        <td class="total_pcs">#NumberFormat(sum_cases * packing,",")#</td>
+        <td class="weight"><CFIF IsNumeric(GW) AND IsNumeric(sum_cases)>#NumberFormat(GW * sum_cases * 2.20462,",")#</CFIF></td>
+    </tr>
+
+    <cfset totalWeight = IsNumeric(totalWeight) AND IsNumeric(GW) AND IsNumeric(sum_cases) ? totalWeight + (GW * sum_cases * 2.20462) : "">
+</CFLOOP>
+
+<CFLOOP INDEX="r" FROM="1" TO="#(maxproducts - (ShipProducts.recordcount * 1))#">
+    <tr>
+        <td class="no_cases">&nbsp;</td>
+        <td class="item_id">&nbsp;</td>
+        <td class="item_descr">&nbsp;</td>
+        <td class="packing">&nbsp;</td>
+        <td class="total_pcs">&nbsp;</td>
+        <td class="weight">&nbsp;</td>
+    </tr>
+</CFLOOP>
+
+<!---
+    <tr>
+        <td class="no_cases" style="border-bottom: none;">&nbsp;</td>
+        <td class="item_id" style="border-bottom: none;">&nbsp;</td>
+        <td class="item_descr" style="border-bottom: none;">&nbsp;</td>
+        <td class="packing" style="border-bottom: none;">&nbsp;</td>
+        <td class="total_pcs" style="border-bottom: none;">&nbsp;</td>
+        <td class="weight" style="border-bottom: none;">&nbsp;</td>
+    </tr>
+--->
+
+</table>
+
+<p class="total cases">CASES: <b>#casesCount#</b></p>
+<p class="total pallets">PALLETS: <b>#numpallets#</b></p>
+<p class="total class">CLASS: <b>#class#</b></p>
+<p class="total pieces">PIECES: <b>#NumberFormat(piecesCount,",")#</b></p>
+<p class="total weight">WEIGHT: <b>#NumberFormat(totalWeight,",")# lbs</b></p>
+<br clear="all" />
+
+<div id="requirements" class="floatright requirements">
+REQUIREMENTS:
+<p><input type="checkbox" <cfif insidedelivery IS 1>checked</cfif> /> INSIDE DELIVERY</p>
+<p><input type="checkbox" <cfif liftgate IS 1>checked</cfif> /> LIFTGATE</p>
+<p><input type="checkbox" <cfif appointment IS 1>checked</cfif> /> APPOINTMENT</p>
+<p><input type="checkbox" <cfif sortseg IS 1>checked</cfif> /> SORT & SEGREGATION</p>
+</div>
+
+<div class="special_instructions_header">
+SHIPPER SPECIAL INSTRUCTIONS:
+</div>
+<div class="recvhours"><cfif BShip.recvhours IS NOT "">Receiving hours: #BShip.recvhours#</cfif></div>
+<div class="special_instructions">
+#REReplace(BShip.shipperinstructions,"\n","<br />","all")#
+</div>
+
+<div class="special_instructions_header">
+CONSIGNEE SPECIAL INSTRUCTIONS:
+</div>
+<div class="special_instructions">
+#REReplace(BShip.consigneeinstructions,"\n","<br />","all")#
+</div>
+
+<div class="special_instructions_header">
+COMMENTS:
+</div>
+<div class="special_instructions">
+<p class="mediumfine">Delivery Requirements: The shipment will be refused if any of the below requirements are not met.</p>
+<p class="mediumfine">All pallets must be loaded properly. Sideways pallets are not authorized.</p>
+<p class="mediumfine">There is a height requirement of no more than 82" including the pallet.</p>
+<p class="mediumfine">If pallets are loaded sideways (pin-wheeled) it will be the responsibility of the carrier to have the pallets re-worked at the carrier's expense.</p>
+<p class="mediumfine" style="font-size: 8px; margin-top: 1px;">The Shipper certifies that the above named materials are properly classified, described, marked, labeled, and packaged, and are in proper condition for transportation, according to the applicable regulations of the Department of Transportation.</p>
+</div>
+
+
+<table class="signatures" cellspacing="0">
+<tr>
+    <td class="signature">SHIPPER SIGNATURE:</td>
+    <td class="signature">X<span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="date">DATE:</td>
+    <td class="date"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="extra">TRAILER ##:</td>
+    <td class="extra"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+</tr>
+<tr>
+    <td class="signature">CONSIGNEE SIGNATURE:</td>
+    <td class="signature">X<span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="date">DATE:</td>
+    <td class="date"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="extra">SEAL ##:</td>
+    <td class="extra"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+</tr>
+<tr>
+    <td class="signature">DRIVER SIGNATURE:</td>
+    <td class="signature">X<span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="date">DATE:</td>
+    <td class="date"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="extra">SEAL ##:</td>
+    <td class="extra"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+</tr>
+</table>
+
+<!---
+<div class="footer_info">
+<p><b>CLAIMS FOR CONCEALED DAMAGE MUST BE FILED WITHIN 24 HOURS AFTER TIME OF DELIVERY.</b></p>
+<p>DELIVERY RECEIPT - 1ST COPY / FREIGHT BILL - 2ND COPY / CONSIGNEE COPY - 3RD COPY</p>
+</div>
+--->
+
+
+<!---<cfdocumentitem type="pagebreak" />--->
+
+</CFOUTPUT>
+
+</CFLOOP>
+
+
+</body>
+</html>
+</cfdocument>
+
+
+
+
+<CFELSE>
+
+    <CFQUERY NAME="ValidShipment" DATASOURCE="#DSN#">
+    SELECT coname,Locations.name FROM Shipments,Customers,Locations
+    WHERE shipmentid = <CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+    AND Shipments.customerid=Customers.customerid
+    AND Shipments.locationid=Locations.locationid
+    </CFQUERY>
+
+    <CFIF ValidShipment.recordcount GT 0>
+        <CFOUTPUT><p>Client #ValidShipment.coname# has no contact assigned for location #ValidShipment.name#. Please correct this in the client configuration.</p></CFOUTPUT>
+    <CFELSE>
+        <p>Shipment not found.</p>
+    </CFIF>
+
+</CFIF>
+
+
+
+<CFELSE>
+<p>Incorrect script use.</p>
+</CFIF>

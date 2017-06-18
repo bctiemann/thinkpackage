@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -10,6 +11,8 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Sum, Count
 from django.contrib.auth import authenticate, login
+
+from django_pdfkit import PDFView
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
@@ -214,3 +217,14 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
     def post(self, *args, **kwargs):
         super(ShipmentDocDelete, self).post(*args, **kwargs)
         return JsonResponse({'success': True, 'shipment_id': self.object.shipment_id})
+
+
+class BillOfLadingView(TemplateView):
+#class BillOfLadingView(PDFView):
+    template_name = 'warehouse/bill_of_lading.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BillOfLadingView, self).get_context_data(**kwargs)
+        shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+        context['shipment'] = shipment
+        return context

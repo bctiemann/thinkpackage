@@ -449,6 +449,10 @@ class ShipperAddress(models.Model):
     name = models.CharField(max_length=100, blank=True)
     address = models.TextField(blank=True)
 
+    @property
+    def address_formatted(self):
+        return self.address.replace('\n', '<br />')
+
     def __unicode__(self):
         return (self.name)
 
@@ -512,6 +516,10 @@ class Shipment(models.Model):
         for transaction in self.transaction_set.all():
             total_cases += transaction.cases
         return total_cases
+
+    @property
+    def third_party_address_formatted(self):
+        return self.third_party_address.replace('\n', '<br />')
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
@@ -582,6 +590,14 @@ class Transaction(models.Model):
         if not self.product.packing:
             return None
         return self.cases * self.product.packing
+
+    @property
+    def total_weight(self):
+        return self.cases * self.product.gross_weight
+
+    @property
+    def total_weight_lbs(self):
+        return self.cases * self.product.gross_weight * 2.20462
 
     # Number of pallets dedicated to this product
     @property

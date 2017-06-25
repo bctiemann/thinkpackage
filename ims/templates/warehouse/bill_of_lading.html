@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!--- generate BOL --->
 <CFIF IsDefined("URL.shipmentid")>
 
@@ -36,6 +37,7 @@ pageType="custom" pageWidth="8.5" pageHeight="11" marginTop="0.52" marginBottom=
 <head>
 <title>Think Package Bill of Lading</title>
 <link rel=stylesheet href="{% static "warehouse/css/bol.css" %}" TYPE="text/css">
+<!---<link rel=stylesheet href="/static/warehouse/css/bol.css" TYPE="text/css">--->
 </head>
 
 <body>
@@ -57,7 +59,7 @@ LIMIT #maxproducts# <CFIF pagenum GT 1>OFFSET #(pagenum-1)*maxproducts#</CFIF>
 <CFOUTPUT QUERY="BShip">
 
 <div class="floatright">
-Ship Date: #DateFormat(shippedon,"MM/DD/YYYY")#
+Ship Date:  {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
 </div>
 
 <div class="pagecount">
@@ -77,44 +79,44 @@ This form contains only the information necessary for the motor carrier to deliv
 <table class="floatright1 shipping_info" cellspacing="0" style="width: 300px;">
     <tr>
         <td class="label">Carrier</td>
-        <td class="right_col">#carrier#</td>
+        <td class="right_col">{{ shipment.carrier }}</td>
     </tr>
     <tr>
-        <td class="label">Pro ##</td>
-        <td class="right_col">#pro#</td>
+        <td class="label">Pro #</td>
+        <td class="right_col">{{ shipment.pro_number }}</td>
     </tr>
     <tr>
-        <td class="label">PO ##</td>
-        <td class="right_col">#loadnum#</td>
+        <td class="label">PO #</td>
+        <td class="right_col">{{ shipment.purchase_order_number }}</td>
     </tr>
     <tr>
-        <td class="label bottom_row">Ship ID ##</td>
-        <td class="right_col bottom_row">#shipmentid#</td>
+        <td class="label bottom_row">Ship ID #</td>
+        <td class="right_col bottom_row">{{ shipment.id }}</td>
     </tr>
 </table>
 
 <br />
 <div class="box style="width: 287px;">
 <p class="box_inner_heading">All Freight Charges PPD/3rd Party Bill To:</p>
-#BShip.3rdparty#<br />
-#REReplace(BShip.3rdpartyaddress,"\n","<br />","all")#
+{{ shipment.third_party }}<br />
+{{ shipment.third_party_address_formatted|safe }}
 </div>
 </div>
 
 <br />
 Shipper:
 <div class="box" style="width: 300px;">
-#ShipperAddresses[shipperaddress IS NOT "" ? shipperaddress : 1].address#
+{{ shipment.shipper_address.address_formatted|safe }}
 </div>
 
 <br />
 Consignee:
 <div class="box" style="width: 300px;">
-#coname#<br />
-#addr#<CFIF addr2 IS NOT "">, #addr2#</CFIF><br />
-#city#, #state# #zip#<br />
-#custcontact_tel#<br />
-ATTN: #fname# #lname#
+{{ shipment.client.company_name }}<br />
+{{ shipment.location.address }} {{ shipment.location.address_2 }}<br />
+{{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.lcoation.zip }}<br />
+{{ shipment.location.customer_contact.phone_number }}<br />
+ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.customer_contact.last_name }}
 </div>
 
 <br />
@@ -144,11 +146,11 @@ PPD/3rd Party
 
 <table class="shipping_info" cellspacing="0" style="margin-top: 30px; border: 1px solid ##000;">
 <tr>
-    <th class="no_cases">## CASES</th>
-    <th class="item_id">ITEM ##</th>
+    <th class="no_cases"># CASES</th>
+    <th class="item_id">ITEM #</th>
     <th class="item_descr">DESCRIPTION</th>
     <th class="packing">PACKING PER CASE</th>
-    <th class="total_pcs">TOTAL ## OF PCS</th>
+    <th class="total_pcs">TOTAL # OF PCS</th>
     <th class="weight">WEIGHT (LBS)</th>
 </tr>
 </table>
@@ -189,17 +191,18 @@ PPD/3rd Party
 </CFLOOP>
 
 <cfset totalWeight = 0>
+{% for transaction in shipment.transaction_set.all %}
 <CFLOOP QUERY="ShipProducts">
 
     <tr>
-        <td class="no_cases">#sum_cases#</td>
-        <td class="item_id">#itemnum#</td>
-        <td class="item_descr">
-            #Left(pname,72)# <span class="account-label"><cfif account IS 1>[INVQ]<cfelseif account IS 2>[Prepaid]</cfif></span>
+        <td class="no_cases">{{ transaction.cases|intcomma }}</td>
+        <td class="item_id">{{ transaction.product.item_number }}</td>
+        <td class="item_descr">{{ transaction.product.name|truncatechars:72 }}
+            <span class="account-label">{% if transaction.product.account_prepay_type == 1 %}[INVQ]{% elif transaction.product.account_prepay_type == 2 %}[Prepaid]{% endif %}</span>
         </td>
-        <td class="packing">#NumberFormat(packing,",")#</td>
-        <td class="total_pcs">#NumberFormat(sum_cases * packing,",")#</td>
-        <td class="weight"><CFIF IsNumeric(GW) AND IsNumeric(sum_cases)>#NumberFormat(GW * sum_cases * 2.20462,",")#</CFIF></td>
+        <td class="packing">{{ transaction.product.packing|intcomma }}</td>
+        <td class="total_pcs">{{ transaction.total_quantity|intcomma }}</td>
+        <td class="weight">{{ transaction.total_weight_lbs|floatformat:1 }}</td>
     </tr>
 
     <cfset totalWeight = IsNumeric(totalWeight) AND IsNumeric(GW) AND IsNumeric(sum_cases) ? totalWeight + (GW * sum_cases * 2.20462) : "">
@@ -215,6 +218,7 @@ PPD/3rd Party
         <td class="weight">&nbsp;</td>
     </tr>
 </CFLOOP>
+{% endfor %}
 
 <!---
     <tr>

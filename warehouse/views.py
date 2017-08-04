@@ -223,7 +223,7 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
 #class BillOfLadingView(TemplateView):
 class BillOfLadingView(PDFView):
     template_name = 'warehouse/bill_of_lading.html'
-    max_products_per_page = 2
+    max_products_per_page = 20
 
     def get_context_data(self, **kwargs):
         context = super(BillOfLadingView, self).get_context_data(**kwargs)
@@ -231,6 +231,7 @@ class BillOfLadingView(PDFView):
         context['shipment'] = shipment
         context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
         context['pages'] = range(context['total_pages'])
+        context['max_products_per_page'] = self.max_products_per_page
         return context
 
     def get_pdfkit_options(self):

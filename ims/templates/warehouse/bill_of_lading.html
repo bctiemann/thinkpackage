@@ -1,5 +1,6 @@
 {% load static %}
 {% load humanize %}
+{% load filters %}
 <!--- generate BOL --->
 <CFIF IsDefined("URL.shipmentid")>
 
@@ -552,7 +553,9 @@ PPD/3rd Party
 </CFLOOP>
 
 <cfset totalWeight = 0>
+{% with page=forloop.counter pagestart=forloop.counter0|multiply:max_products_per_page pageend=forloop.counter|multiply:max_products_per_page %}
 {% for transaction in shipment.transaction_set.all %}
+    {% if forloop.counter0 >= pagestart and forloop.counter0 < pageend %}
 <CFLOOP QUERY="ShipProducts">
 
     <tr>
@@ -568,6 +571,9 @@ PPD/3rd Party
 
     <cfset totalWeight = IsNumeric(totalWeight) AND IsNumeric(GW) AND IsNumeric(sum_cases) ? totalWeight + (GW * sum_cases * 2.20462) : "">
 </CFLOOP>
+    {% endif %}
+{% endfor %}
+{% endwith %}
 
 <CFLOOP INDEX="r" FROM="1" TO="#(maxproducts - (ShipProducts.recordcount * 1))#">
     <tr>
@@ -579,7 +585,6 @@ PPD/3rd Party
         <td class="weight">&nbsp;</td>
     </tr>
 </CFLOOP>
-{% endfor %}
 
 <!---
     <tr>

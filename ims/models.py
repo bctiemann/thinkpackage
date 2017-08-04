@@ -518,6 +518,27 @@ class Shipment(models.Model):
         return total_cases
 
     @property
+    def total_pieces(self):
+        total_pieces = 0
+        for transaction in self.transaction_set.all():
+            total_pieces += transaction.cases * transaction.product.packing
+        return total_pieces
+
+    @property
+    def total_weight(self):
+        total_weight = 0
+        for transaction in self.transaction_set.all():
+            total_weight += transaction.total_weight
+        return total_weight
+
+    @property
+    def total_weight_imperial(self):
+        total_weight_imperial = 0
+        for transaction in self.transaction_set.all():
+            total_weight_imperial += transaction.total_weight_imperial
+        return total_weight_imperial
+
+    @property
     def third_party_address_formatted(self):
         return self.third_party_address.replace('\n', '<br />')
 
@@ -580,10 +601,6 @@ class Transaction(models.Model):
         return self.receivable.cases - self.cases
 
     @property
-    def total_weight(self):
-        return self.product.gross_weight * self.cases
-
-    @property
     def total_quantity(self):
         if not self.cases:
             return None
@@ -596,8 +613,8 @@ class Transaction(models.Model):
         return self.cases * self.product.gross_weight
 
     @property
-    def total_weight_lbs(self):
-        return self.cases * self.product.gross_weight * 2.20462
+    def total_weight_imperial(self):
+        return self.cases * self.product.gross_weight_imperial
 
     # Number of pallets dedicated to this product
     @property

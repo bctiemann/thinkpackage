@@ -241,7 +241,7 @@ function execute_saveShipment() {
         inside_delivery: $('#id_inside_delivery').prop('checked'),
         liftgate_required: $('#id_liftgate_required').prop('checked'),
         appointment_required: $('#id_appointment_required').prop('checked'),
-        sort_segregation: $('#id_sort_segregation_required').prop('checked'),
+        sort_segregation: $('#id_sort_segregation').prop('checked'),
     }
 console.log(shipment);
 //    var url = cgiroot+'ajax_shipments_action.cfm';

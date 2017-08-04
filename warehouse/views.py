@@ -24,6 +24,7 @@ from ims import utils
 from datetime import datetime, timedelta
 import json
 import re
+import math
 
 import logging
 logger = logging.getLogger(__name__)
@@ -219,12 +220,27 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
         return JsonResponse({'success': True, 'shipment_id': self.object.shipment_id})
 
 
-class BillOfLadingView(TemplateView):
-#class BillOfLadingView(PDFView):
+#class BillOfLadingView(TemplateView):
+class BillOfLadingView(PDFView):
     template_name = 'warehouse/bill_of_lading.html'
+    max_products_per_page = 2
 
     def get_context_data(self, **kwargs):
         context = super(BillOfLadingView, self).get_context_data(**kwargs)
         shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
         context['shipment'] = shipment
+        context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
+        context['pages'] = range(context['total_pages'])
         return context
+
+    def get_pdfkit_options(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.52in',
+            'margin-right': '0.25in',
+            'margin-bottom': '0.0in',
+            'margin-left': '0.25in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+        }
+        return options

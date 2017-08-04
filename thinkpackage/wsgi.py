@@ -16,7 +16,8 @@ env_variables_to_pass = [
     'SECRET_KEY',
     'DB_PASS',
     'TWILIO_AUTH_TOKEN',
-    'DJANGO_SETTINGS_MODULE'
+    'DJANGO_SETTINGS_MODULE',
+    'WKHTMLTOPDF_BIN',
 ]
 
 def application(environ, start_response):

@@ -449,10 +449,6 @@ class ShipperAddress(models.Model):
     name = models.CharField(max_length=100, blank=True)
     address = models.TextField(blank=True)
 
-    @property
-    def address_formatted(self):
-        return self.address.replace('\n', '<br />')
-
     def __unicode__(self):
         return (self.name)
 
@@ -537,10 +533,6 @@ class Shipment(models.Model):
         for transaction in self.transaction_set.all():
             total_weight_imperial += transaction.total_weight_imperial
         return total_weight_imperial
-
-    @property
-    def third_party_address_formatted(self):
-        return self.third_party_address.replace('\n', '<br />')
 
     def __unicode__(self):
         return ('{0}'.format(self.id))

@@ -412,14 +412,14 @@ This form contains only the information necessary for the motor carrier to deliv
 <div class="box style="width: 287px;">
 <p class="box_inner_heading">All Freight Charges PPD/3rd Party Bill To:</p>
 {{ shipment.third_party }}<br />
-{{ shipment.third_party_address_formatted|safe }}
+{{ shipment.third_party_address|format_newlines|safe }}
 </div>
 </div>
 
 <br />
 Shipper:
 <div class="box" style="width: 300px;">
-{{ shipment.shipper_address.address_formatted|safe }}
+{{ shipment.shipper_address.address|format_newlines|safe }}
 </div>
 
 <br />
@@ -515,7 +515,7 @@ PPD/3rd Party
 
 <p class="total cases">CASES: <b>{{ shipment.total_cases|intcomma }}</b></p>
 <p class="total pallets">PALLETS: <b>{{ shipment.total_pallets|intcomma }}</b></p>
-<p class="total class">CLASS: <b>#class#</b></p>
+<p class="total class">CLASS: <b>{{ shipment.shipment_class }}</b></p>
 <p class="total pieces">PIECES: <b>{{ shipment.total_pieces|intcomma }}</b></p>
 <p class="total weight">WEIGHT: <b>{{ shipment.total_weight_imperial|floatformat:1 }} lbs</b></p>
 <br clear="all" />
@@ -531,16 +531,16 @@ REQUIREMENTS:
 <div class="special_instructions_header">
 SHIPPER SPECIAL INSTRUCTIONS:
 </div>
-<div class="recvhours"><cfif BShip.recvhours IS NOT "">Receiving hours: #BShip.recvhours#</cfif></div>
+<div class="recvhours">{% if shipment.location.receiving_hours %}Receiving hours: {{ shipment.location.receiving_hours }}{% endif %}</div>
 <div class="special_instructions">
-#REReplace(BShip.shipperinstructions,"\n","<br />","all")#
+{{ shipment.shipper_instructions|format_newlines|safe }}
 </div>
 
 <div class="special_instructions_header">
 CONSIGNEE SPECIAL INSTRUCTIONS:
 </div>
 <div class="special_instructions">
-#REReplace(BShip.consigneeinstructions,"\n","<br />","all")#
+{{ shipment.consignee_instructions|format_newlines|safe }}
 </div>
 
 <div class="special_instructions_header">
@@ -582,19 +582,6 @@ COMMENTS:
 </tr>
 </table>
 
-<!---
-<div class="footer_info">
-<p><b>CLAIMS FOR CONCEALED DAMAGE MUST BE FILED WITHIN 24 HOURS AFTER TIME OF DELIVERY.</b></p>
-<p>DELIVERY RECEIPT - 1ST COPY / FREIGHT BILL - 2ND COPY / CONSIGNEE COPY - 3RD COPY</p>
-</div>
---->
-
-
-<!---<cfdocumentitem type="pagebreak" />--->
-
-</CFOUTPUT>
-
-</CFLOOP>
 {% if forloop.counter < total_pages %}
 <p class="pb_after"></p>
 {% endif %}
@@ -603,30 +590,3 @@ COMMENTS:
 
 </body>
 </html>
-</cfdocument>
-
-
-
-
-<CFELSE>
-
-    <CFQUERY NAME="ValidShipment" DATASOURCE="#DSN#">
-    SELECT coname,Locations.name FROM Shipments,Customers,Locations
-    WHERE shipmentid = <CFQUERYPARAM value="#URL.shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-    AND Shipments.customerid=Customers.customerid
-    AND Shipments.locationid=Locations.locationid
-    </CFQUERY>
-
-    <CFIF ValidShipment.recordcount GT 0>
-        <CFOUTPUT><p>Client #ValidShipment.coname# has no contact assigned for location #ValidShipment.name#. Please correct this in the client configuration.</p></CFOUTPUT>
-    <CFELSE>
-        <p>Shipment not found.</p>
-    </CFIF>
-
-</CFIF>
-
-
-
-<CFELSE>
-<p>Incorrect script use.</p>
-</CFIF>

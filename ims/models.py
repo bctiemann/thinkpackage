@@ -404,7 +404,7 @@ class Product(models.Model):
     @property
     def gross_weight_imperial(self):
         if not self.gross_weight:
-            return None
+            return 0
         return self.gross_weight * 2.20462
 
     @property

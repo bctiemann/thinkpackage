@@ -410,19 +410,19 @@ class Product(models.Model):
     @property
     def length_imperial(self):
         if not self.length:
-            return None
+            return 0
         return float(self.length) * 0.393701
 
     @property
     def width_imperial(self):
         if not self.width:
-            return None
+            return 0
         return float(self.width) * 0.393701
 
     @property
     def height_imperial(self):
         if not self.height:
-            return None
+            return 0
         return float(self.height) * 0.393701
 
     @property

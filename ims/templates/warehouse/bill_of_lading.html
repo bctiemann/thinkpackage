@@ -32,7 +32,7 @@ hr     { border:0; margin:0; padding:0; height:1px; color:#000; background-color
 .pbi_avoid { page-break-inside:avoid !important; }
 
 body {
-	font-size: 10px;
+	font-size: 14px;
 	font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
@@ -90,9 +90,12 @@ img.logo {
 .floatright {
 	float: right;
 }
+.ship-date {
+	white-space: nowrap;
+}
 
 .topwarning {
-	font-size: 15px;
+	font-size: 20px;
 	font-weight: normal;
 }
 
@@ -148,10 +151,11 @@ div.textblock {
 
 #requirements {
 	margin-top: 10px;
+	width: 200px;
 }
 #requirements p {
-	font-size: 8px;
-	margin-left: 10px;
+	font-size: 10px;
+	margin: 20px;
 }
 
 div.pagecount {
@@ -163,7 +167,7 @@ div.pagecount {
 
 table.shipping-info {
 	width: 100%;
-	font-size: 10px;
+	font-size: 14px;
 	border-spacing: 0px;
 }
 table.shipping-info td {
@@ -176,7 +180,7 @@ table.shipping-info td {
 
 .items-table {
 	width: 100%;
-	font-size: 10px;
+	font-size: 14px;
 	border-spacing: 0px;
 	border: 1px solid #000;
 }
@@ -184,7 +188,7 @@ table.shipping-info td {
 	padding: 3px;
 }
 table.items-table th {
-	font-size: 9px;
+	font-size: 10px;
 	font-weight: normal;
 	padding: 3px;
 	border-bottom: 1px solid #000;
@@ -213,27 +217,27 @@ table.items-table th {
 	text-align: right;
 }
 .items-table .item_id {
-	width: 60px;
+	width: 70px;
 }
 .items-table .item_descr {
 }
 .items-table .packing {
-	width: 70px;
+	width: 100px;
 }
 .items-table td.packing {
 	text-align: right;
 }
 .items-table .no_pallets {
-	width: 70px;
+	width: 100px;
 }
 .items-table .total_pcs {
-	width: 70px;
+	width: 100px;
 }
 .items-table td.total_pcs {
 	text-align: right;
 }
 .items-table .weight {
-	width: 70px;
+	width: 100px;
 }
 .items-table td.weight {
 	text-align: right;
@@ -243,32 +247,14 @@ table.items-table th {
 	border-bottom: 1px solid #aaa;
 }
 
-td.signature {
-	border-right: 1px solid #aaa;
-	border-bottom: 1px solid #aaa;
-	height: 30px;
-	font-size: 9px;
-}
-td.date {
-	border-right: 1px solid #aaa;
-	border-bottom: 1px solid #aaa;
-	height: 30px;
-	font-size: 9px;
-}
-td.extra {
-	border-bottom: 1px solid #aaa;
-	height: 30px;
-	font-size: 9px;
-}
-
 div.special_instructions {
 	width: 100%;
-	height: 50px;
+	height: 70px;
 	font-size: 10px;
 	font-weight: bold;
 }
 div.special_instructions_header {
-	font-size: 9px;
+	font-size: 12px;
 	margin-top: 5px;
 }
 
@@ -297,6 +283,17 @@ table.signatures {
 }
 table.signatures td {
 	border: none;
+	height: 30px;
+	font-size: 12px;
+}
+table.signatures input {
+	border-color: #000;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	width: 90%;
+}
+.signature-input {
+	width: 350px;
 }
 
 p.total {
@@ -304,20 +301,23 @@ p.total {
 	float: left;
 }
 
-.total.cases {
+.totals {
+	margin: 5px 0px 40px 0px;
+}
+.total.total-cases {
 	width: 130px;
 }
-.total.pallets {
-	width: 130px;
+.total.total-pallets {
+	width: 170px;
 }
-.total.class {
-	width: 250px;
+.total.total-class {
+	width: 350px;
 }
-.total.pieces {
-	width: 110px;
+.total.total-pieces {
+	width: 150px;
 }
-.total.weight {
-	width: 110px;
+.total.total-weight {
+	width: 150px;
 }
 
 td.label {
@@ -327,6 +327,13 @@ td.label {
 .requirements {
 	font-weight: bold;
 }
+.requirements p {
+	line-height: 15px;
+}
+.requirements .checkbox {
+	font-size: 28px;
+	vertical-align: middle;
+}
     </style>
 </head>
 
@@ -334,7 +341,7 @@ td.label {
 
 {% for page in pages %}
 
-<div class="floatright">
+<div class="floatright ship-date">
 Ship Date:  {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
 </div>
 
@@ -352,7 +359,7 @@ This form contains only the information necessary for the motor carrier to deliv
 
 
 <div class="floatright">
-<table class="shipping-info" style="width: 300px;">
+<table class="shipping-info" style="width: 400px;">
     <tr>
         <td class="label">Carrier</td>
         <td class="right_col">{{ shipment.carrier }}</td>
@@ -381,13 +388,13 @@ This form contains only the information necessary for the motor carrier to deliv
 
 <br />
 Shipper:
-<div class="box" style="width: 300px;">
+<div class="box" style="width: 400px;">
 {{ shipment.shipper_address.address|format_newlines|safe }}
 </div>
 
 <br />
 Consignee:
-<div class="box" style="width: 300px;">
+<div class="box" style="width: 400px;">
 {{ shipment.client.company_name }}<br />
 {{ shipment.location.address }} {{ shipment.location.address_2 }}<br />
 {{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.lcoation.zip }}<br />
@@ -396,28 +403,6 @@ ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.c
 </div>
 
 <br />
-<!---
-PPD/3rd Party
-<table class="shipping_info" cellspacing="0">
-    <tr>
-        <td class="bottom_row">
-            <p>Agent or Cashier:</p>
-            <p>Per: <span class="underline" style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-            <p class="mediumfine">(The signature here acknowledges only the amount prepaid)</p>
-        </td>
-        <td class="bottom_row">
-            <p>Received:</p>
-            <p>$ <span class="underline" style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-            <p class="mediumfine">to apply in prepayment of the charges on the property described hereon</p>
-        </td>
-        <td class="bottom_row right_col">
-            <p>Charges Advanced:</p>
-            <p>$ <span class="underline" style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-        </td>
-    </tr>
-</table>
---->
-
 
 
 <table class="items-table" style="margin-top: 30px; border: 1px solid ##000;">
@@ -462,32 +447,22 @@ PPD/3rd Party
 {% endfor %}
 {% endif %}
 
-<!---
-    <tr>
-        <td class="no_cases" style="border-bottom: none;">&nbsp;</td>
-        <td class="item_id" style="border-bottom: none;">&nbsp;</td>
-        <td class="item_descr" style="border-bottom: none;">&nbsp;</td>
-        <td class="packing" style="border-bottom: none;">&nbsp;</td>
-        <td class="total_pcs" style="border-bottom: none;">&nbsp;</td>
-        <td class="weight" style="border-bottom: none;">&nbsp;</td>
-    </tr>
---->
-
 </table>
 
-<p class="total cases">CASES: <b>{{ shipment.total_cases|intcomma }}</b></p>
-<p class="total pallets">PALLETS: <b>{{ shipment.total_pallets|intcomma }}</b></p>
-<p class="total class">CLASS: <b>{{ shipment.shipment_class }}</b></p>
-<p class="total pieces">PIECES: <b>{{ shipment.total_pieces|intcomma }}</b></p>
-<p class="total weight">WEIGHT: <b>{{ shipment.total_weight_imperial|floatformat:1 }} lbs</b></p>
-<br clear="all" />
+<div class="totals">
+<p class="total total-cases">CASES: <b>{{ shipment.total_cases|intcomma }}</b></p>
+<p class="total total-pallets">PALLETS: <b>{{ shipment.total_pallets|intcomma }}</b></p>
+<p class="total total-class">CLASS: <b>{{ shipment.shipment_class }}</b></p>
+<p class="total total-pieces">PIECES: <b>{{ shipment.total_pieces|intcomma }}</b></p>
+<p class="total total-weight">WEIGHT: <b>{{ shipment.total_weight_imperial|floatformat:1 }} lbs</b></p>
+</div>
 
 <div id="requirements" class="floatright requirements">
 REQUIREMENTS:
-<p><input type="checkbox" {% if shipment.inside_delivery %}checked{% endif %} /> INSIDE DELIVERY</p>
-<p><input type="checkbox" {% if shipment.liftgate_required %}checked{% endif %} /> LIFTGATE</p>
-<p><input type="checkbox" {% if shipment.appointment_required %}checked{% endif %} /> APPOINTMENT</p>
-<p><input type="checkbox" {% if shipment.sort_segregation %}checked{% endif %} /> SORT & SEGREGATION</p>
+<p><span class="checkbox">{% if shipment.inside_delivery %}&#9745;{% else %}&#9744;{% endif %}</span> INSIDE DELIVERY</p>
+<p><span class="checkbox">{% if shipment.liftgate_required %}&#9745;{% else %}&#9744;{% endif %}</span> LIFTGATE</p>
+<p><span class="checkbox">{% if shipment.appointment_required %}&#9745;{% else %}&#9744;{% endif %}</span> APPOINTMENT</p>
+<p><span class="checkbox">{% if shipment.sort_segregation %}&#9745;{% else %}&#9744;{% endif %}</span> SORT & SEGREGATION</p>
 </div>
 
 <div class="special_instructions_header">
@@ -520,27 +495,27 @@ COMMENTS:
 <table class="signatures" cellspacing="0">
 <tr>
     <td class="signature">SHIPPER SIGNATURE:</td>
-    <td class="signature">X<span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="signature-input">X<input class="signature" /></td>
     <td class="date">DATE:</td>
-    <td class="date"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-    <td class="extra">TRAILER ##:</td>
-    <td class="extra"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="date-input"><input class="signature" /></td>
+    <td class="extra">TRAILER #:</td>
+    <td class="extra-input"><input class="signature" /></td>
 </tr>
 <tr>
     <td class="signature">CONSIGNEE SIGNATURE:</td>
-    <td class="signature">X<span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="signature-input">X<input class="signature" /></td>
     <td class="date">DATE:</td>
-    <td class="date"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-    <td class="extra">SEAL ##:</td>
-    <td class="extra"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="date-input"><input class="signature" /></td>
+    <td class="extra">SEAL #:</td>
+    <td class="extra-input"><input class="signature" /></td>
 </tr>
 <tr>
     <td class="signature">DRIVER SIGNATURE:</td>
-    <td class="signature">X<span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="signature-input">X<input class="signature" /></td>
     <td class="date">DATE:</td>
-    <td class="date"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-    <td class="extra">SEAL ##:</td>
-    <td class="extra"><span class="underline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+    <td class="date-input"><input class="signature" /></td>
+    <td class="extra">SEAL #:</td>
+    <td class="extra-input"><input class="signature" /></td>
 </tr>
 </table>
 

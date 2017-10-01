@@ -489,7 +489,8 @@ PPD/3rd Party
 {% endfor %}
 {% endwith %}
 
-<CFLOOP INDEX="r" FROM="1" TO="#(maxproducts - (ShipProducts.recordcount * 1))#">
+{% if forloop.counter == total_pages %}
+{% for blank_row in remainder_rows %}
     <tr>
         <td class="no_cases">&nbsp;</td>
         <td class="item_id">&nbsp;</td>
@@ -498,7 +499,8 @@ PPD/3rd Party
         <td class="total_pcs">&nbsp;</td>
         <td class="weight">&nbsp;</td>
     </tr>
-</CFLOOP>
+{% endfor %}
+{% endif %}
 
 <!---
     <tr>

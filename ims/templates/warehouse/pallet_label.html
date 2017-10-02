@@ -1,145 +1,177 @@
-{{ pallet.client }}
-<!--- generate pallete barcode --->
-<CFIF IsDefined("URL.palletid")>
-<CFQUERY NAME="BPal" DATASOURCE="#DSN#">
-SELECT * FROM Pallets
-WHERE palletid = <CFQUERYPARAM value="#URL.palletid#" CFSQLType="CF_SQL_NUMERIC">
-</CFQUERY>  
-        
-<CFIF BPal.recordcount IS 1>
-
-    
-<CFQUERY NAME="BCust" DATASOURCE="#DSN#">
-SELECT coname FROM Customers
-WHERE customerid = #BPal.customerid#
-</CFQUERY>
-<CFQUERY NAME="BShip" DATASOURCE="#DSN#">
-SELECT * FROM Shipments,CustContacts,Locations
-WHERE shipmentid = #BPal.shipmentid#
-AND Shipments.locationid=Locations.locationid
-AND Locations.custcontactid=CustContacts.custcontactid
-</CFQUERY>
-<CFQUERY NAME="BOnPal" DATASOURCE="#DSN#">
-SELECT * FROM OnPallet,Products,Customers
-WHERE palletid = #BPal.palletid#
-AND Products.productid=OnPallet.productid
-AND Products.customerid=Customers.customerid
-</CFQUERY>
-    
-    
-<CFIF BOnPal.recordcount GT 0>
-<CFSET PalCont = "PC:">
-<CFLOOP QUERY="BOnPal">
-<CFSET PalCont = PalCont & "#BOnPal.productid#:#BOnPal.qty#,">
-        
-</CFLOOP>
-<CFELSE>
-<CFSET PalCont = "PC:0">
-</CFIF> 
-
-            
-            
-<CFSETTING ShowDebugOutput="no">
-
-<cfset BarCoder = CreateObject("component","2DBarCode").init()>
-
-<cfset ImgBarcode = BarCoder.createBarCode(text='1TP:#BPal.PID#;#PalCont#;#BShip.PO#',preferredFormat='C44X44')>
-        
-<CFIMAGE action="write" source="#ImgBarcode#" destination="./codes/pbar#BPal.palletid#.png" overwrite="yes">
-
-<cfdocument format="pdf" fontEmbed="yes" localUrl="yes" encryption="128-bit"
-ownerPassword="TPopen" permissions="AllowPrinting,AllowModifyContents" saveAsName="Barcode.pdf"
-pageType="custom" pageWidth="8.5" pageHeight="11" marginTop="0.1" marginBottom="0" marginLeft="0" marginRight="0" overwrite="yes">
-
-<!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+{% load humanize %}
+<!DOCTYPE html>
 <html>
 <head>
 <title>Think Package Pallet Barcode</title>
 <style type="text/css">
-  @import url("css/barcode_pal.css");
+/* Reset CSS. http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css  */
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,
+pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,
+cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}
+caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}
+sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,
+select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,
+select{*font-size:100%;}legend{color:#000;}
+
+/* Your Base Foundation */
+html,body { font-family: sans-serif; font-size:12px; }
+h1 { font-size:18px; }
+h2 { font-size:16px; }
+h3 { font-size:14px; }
+h4 { font-size:12px; }
+strong { font-weight:900 !important; }
+hr     { border:0; margin:0; padding:0; height:1px; color:#000; background-color:#000; }
+
+/* Page Breaks */
+.pb_before { page-break-before:always !important; }
+.pb_after  { page-break-after:always !important; }
+.pbi_avoid { page-break-inside:avoid !important; }
+
+body {
+	font-size: 16px;
+	font-family: sans-serif;
+}
+ 
+
+.box {
+	width: 8.5in;   
+	height: 5.5in;
+	border: 1px dashed #888888;
+	margin: 2em;
+	padding: 0.5em;
+	position: relative;
+	background: url('../images/tp.png') no-repeat;
+}
+ 
+.blurb {
+	width: 3in;
+	margin-top: 3em;
+}
+        
+.blurb tr {
+	vertical-align: top;
+}
+        
+.blurb td {
+	padding-bottom: 0.8em
+}
+
+td.label {   
+	text-align: right;
+	padding-right: 2em;
+}
+td.clientname {
+	font-weight: bold;
+}
+        
+.barcode {
+	position: absolute;
+	left: 26.5em;
+	top: 1em;
+	width: 400px;
+	height: 400px;
+	z-index: 2;
+}
+
+h3 {
+	font-size: 18px;
+	font-family: sans-serif;
+	font-weight: normal;
+}
+
+h4 {  
+	font-size: 16px;
+	font-family: sans-serif;
+	font-weight: normal;
+}
+
+code {
+	font-family: 'Source Code Pro', monospace;
+}
+        
+small {
+	font-size: 12px;
+	font-family: sans-serif;
+}
+
+        
+div.product {
+	font-size: 10px;
+	width: 350px;
+	margin-bottom: 20px;
+}
+div.product p.qty {
+	float: right;
+	margin-left: 20px;
+	font-size: 16px;
+}
+
+div.contact {
+	font-size: 16px;  
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+}
+div.contact p {
+	margin: 0px;
+}
+        
+div.weight {
+	font-size: 14px;
+}
 </style>
 </head>
 
 <body>
-    
-<CFLOOP INDEX="I" FROM="1" TO="2">
 
 <div class="box">
     <img class="barcode" asrc="{{ media_url }}codes/pallets/{{ pallet.pallet_id }}.png" src="{{ site_url }}{% url "pallet-code" pallet_id=pallet.pallet_id %}" />
     <table id="blurb_001" class="blurb">
         <tr>
             <td class="label">Pallet ID:</td>
-            <td class="data"><CFOUTPUT><TT>#BPal.PID#</TT></CFOUTPUT></td>
+            <td class="data"><code>{{ pallet.pallet_id }}</code></td>
         </tr>
-        <CFIF BCust.recordcount IS 1>
+        {% if pallet.client %}
         <tr>
             <td class="label">Client:</td>
-            <td class="data"><CFOUTPUT>#BCust.coname#</CFOUTPUT></td>
+            <td class="data">{{ pallet.client.company_name }}</td>
         </tr>
-        </CFIF>
+        {% endif %}
         <tr>
             <td class="label">Created:</td>
-            <td class="data"><CFOUTPUT>#DateFormat(BPal.createdon,"mm/dd/yyyy")#</CFOUTPUT></td>
+            <td class="data">{{ pallet.date_created|date:"m/d/Y" }}</td>
         </tr>
     </table>
 
-    <CFSET totalGW = 0>
-    <CFOUTPUT QUERY="BOnPal">
+    {% for content in pallet.palletcontents_set.all %}
     <div class="product">
-        <p class="qty">#NumberFormat(qty,",")#</p>
-        <CFIF BCust.recordcount IS 0><p class="coname">#coname#</p></CFIF>
-        <p class="pname">#itemnum#</p>
-        <p class="pname">#pname#</p>
+        <p class="qty">{{ content.cases|intcomma }}</p>
+        {% if pallet.client == None %}
+        <p class="coname">{{ content.product.client.company_name }}</p>
+        {% endif %}
+        <p class="pname">{{ content.product.item_number }}</p>
+        <p class="pname">{{ content.product.name }}</p>
     </div>
-    <CFIF IsNumeric(GW)><CFSET totalGW += GW * packing></CFIF>
-    </CFOUTPUT>
+    {% endfor %}
 
-    <CFOUTPUT>
     <div class="weight">
-        <p>Total gross weight: #NumberFormat(totalGW*2.205,",._")# lb (#NumberFormat(totalGW,",._")# kg)</p>
+        <p>Total gross weight: {{ pallet.gross_weight_imperial|floatformat:1 }} lb ({{ pallet.gross_weight|floatformat:1 }} kg)</p>
     </div>
-    </CFOUTPUT>
 
-    <CFOUTPUT QUERY="BShip">
+    {% if pallet.shipment %}
     <div class="contact">
-        <p>#name#</p>
-        <p>#addr# #addr2#</p>
-        <p>#city#, #state# #zip#</p>
-        <p>#BShip.fname# #BShip.lname#</p>
-        <p>#tel#</p>
+        <p>{{ pallet.shipment.location.name }}</p>
+        <p>{{ pallet.shipment.location.address }} {{ pallet.shipment.location.address_2 }}</p>
+        <p>{{ pallet.shipment.location.city }}, {{ pallet.shipment.location.state }} {{ pallet.shipment.location.zip }}</p>
+        <p>{{ pallet.shipment.location.customer_contact.first_name }} {{ pallet.shipment.location.customer_contact.last_name }}</p>
+        <p>{{ pallet.shipment.location.customer_contact.phone_number }}</p>
     </div>
-    </CFOUTPUT>
+    {% endif %}
 </div>
-        
-</CFLOOP>   
             
             
 </body>
                                                                                                                                                          
 </html>
-</cfdocument>
-            
-            
-        
-    
-
-    
-<CFELSE>
-<p>Pallet not found.</p> 
-</CFIF>
-        
-        
-<CFELSE>
-<p>Incorrect script use.</p>
-</CFIF>
-    
-
-    
-    
-        
-    
-    
-

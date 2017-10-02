@@ -681,6 +681,17 @@ class Pallet(models.Model):
         qr.make(fit=True)
         return qr.make_image()
 
+    @property
+    def gross_weight(self):
+        total_weight = 0
+        for content in self.palletcontents_set.all():
+            total_weight += content.gross_weight
+        return total_weight
+
+    @property
+    def gross_weight_imperial(self):
+        return self.gross_weight * 2.20462
+
     def __unicode__(self):
         return ('{0}'.format(self.id))
 

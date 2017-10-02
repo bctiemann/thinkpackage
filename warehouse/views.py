@@ -194,13 +194,16 @@ class PalletDelete(AjaxableResponseMixin, DeleteView):
         return JsonResponse({'success': True})
 
 
+#class PalletPrint(TemplateView):
 class PalletPrint(PDFView):
     template_name = 'warehouse/pallet_label.html'
 
     def get_context_data(self, **kwargs):
         context = super(PalletPrint, self).get_context_data(**kwargs)
         pallet = get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
+        pallet.create_qrcode()
         context['pallet'] = pallet
+        context['site_url'] = settings.SERVER_BASE_URL
         return context
 
     def get_pdfkit_options(self):

@@ -68,7 +68,7 @@ pageType="custom" pageWidth="8.5" pageHeight="11" marginTop="0.1" marginBottom="
 <CFLOOP INDEX="I" FROM="1" TO="2">
 
 <div class="box">
-    <img class="barcode" src="/pallet/code/IPTQQSRFON/" asrc="{% url "pallet-code" pallet_id=pallet.pallet_id %}" />
+    <img class="barcode" src="{{ site_url }}{% url "pallet-code" pallet_id=pallet.pallet_id %}" />
     <table id="blurb_001" class="blurb">
         <tr>
             <td class="label">Pallet ID:</td>

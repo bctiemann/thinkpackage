@@ -180,6 +180,20 @@ class PalletUpdate(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
 
 
+class PalletDelete(AjaxableResponseMixin, DeleteView):
+    model = Pallet
+
+    def get_object(self):
+        return get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
+
+    def get_success_url(self):
+        return reverse_lazy('warehouse-pallets')
+
+    def post(self, *args, **kwargs):
+        super(PalletDelete, self).post(*args, **kwargs)
+        return JsonResponse({'success': True})
+
+
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
     form_class = ShipmentDocForm

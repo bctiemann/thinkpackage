@@ -272,7 +272,8 @@ function execute_deletePallet() {
         fnc: 'delete',
         palletid: globals['palletid'],
     }
-    var url = cgiroot+'ajax_pallets_action.cfm';
+//    var url = cgiroot+'ajax_pallets_action.cfm';
+    var url = cgiroot + 'pallet/' + globals['palletid'] + '/delete/';
     $.post(url,pallet,function(data) {
 console.log(data);
         window.location.reload();

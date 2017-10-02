@@ -656,7 +656,7 @@ class Pallet(models.Model):
 
     def create_qrcode(self):
         img = self.get_qrcode(format='PNG')
-        img.save('{0}/codes/{1}.png'.format(settings.MEDIA_ROOT, self.pallet_id))
+        img.save('{0}/codes/pallets/{1}.png'.format(settings.MEDIA_ROOT, self.pallet_id))
 
     def get_qrcode(self, format='PNG'):
         if format == 'PNG':

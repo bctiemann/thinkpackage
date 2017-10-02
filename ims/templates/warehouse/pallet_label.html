@@ -1,0 +1,145 @@
+{{ pallet.client }}
+<!--- generate pallete barcode --->
+<CFIF IsDefined("URL.palletid")>
+<CFQUERY NAME="BPal" DATASOURCE="#DSN#">
+SELECT * FROM Pallets
+WHERE palletid = <CFQUERYPARAM value="#URL.palletid#" CFSQLType="CF_SQL_NUMERIC">
+</CFQUERY>  
+        
+<CFIF BPal.recordcount IS 1>
+
+    
+<CFQUERY NAME="BCust" DATASOURCE="#DSN#">
+SELECT coname FROM Customers
+WHERE customerid = #BPal.customerid#
+</CFQUERY>
+<CFQUERY NAME="BShip" DATASOURCE="#DSN#">
+SELECT * FROM Shipments,CustContacts,Locations
+WHERE shipmentid = #BPal.shipmentid#
+AND Shipments.locationid=Locations.locationid
+AND Locations.custcontactid=CustContacts.custcontactid
+</CFQUERY>
+<CFQUERY NAME="BOnPal" DATASOURCE="#DSN#">
+SELECT * FROM OnPallet,Products,Customers
+WHERE palletid = #BPal.palletid#
+AND Products.productid=OnPallet.productid
+AND Products.customerid=Customers.customerid
+</CFQUERY>
+    
+    
+<CFIF BOnPal.recordcount GT 0>
+<CFSET PalCont = "PC:">
+<CFLOOP QUERY="BOnPal">
+<CFSET PalCont = PalCont & "#BOnPal.productid#:#BOnPal.qty#,">
+        
+</CFLOOP>
+<CFELSE>
+<CFSET PalCont = "PC:0">
+</CFIF> 
+
+            
+            
+<CFSETTING ShowDebugOutput="no">
+
+<cfset BarCoder = CreateObject("component","2DBarCode").init()>
+
+<cfset ImgBarcode = BarCoder.createBarCode(text='1TP:#BPal.PID#;#PalCont#;#BShip.PO#',preferredFormat='C44X44')>
+        
+<CFIMAGE action="write" source="#ImgBarcode#" destination="./codes/pbar#BPal.palletid#.png" overwrite="yes">
+
+<cfdocument format="pdf" fontEmbed="yes" localUrl="yes" encryption="128-bit"
+ownerPassword="TPopen" permissions="AllowPrinting,AllowModifyContents" saveAsName="Barcode.pdf"
+pageType="custom" pageWidth="8.5" pageHeight="11" marginTop="0.1" marginBottom="0" marginLeft="0" marginRight="0" overwrite="yes">
+
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+<title>Think Package Pallet Barcode</title>
+<style type="text/css">
+  @import url("css/barcode_pal.css");
+</style>
+</head>
+
+<body>
+    
+<CFLOOP INDEX="I" FROM="1" TO="2">
+
+<div class="box">
+    <img class="barcode" src="/pallet/code/IPTQQSRFON/" asrc="{% url "pallet-code" pallet_id=pallet.pallet_id %}" />
+    <table id="blurb_001" class="blurb">
+        <tr>
+            <td class="label">Pallet ID:</td>
+            <td class="data"><CFOUTPUT><TT>#BPal.PID#</TT></CFOUTPUT></td>
+        </tr>
+        <CFIF BCust.recordcount IS 1>
+        <tr>
+            <td class="label">Client:</td>
+            <td class="data"><CFOUTPUT>#BCust.coname#</CFOUTPUT></td>
+        </tr>
+        </CFIF>
+        <tr>
+            <td class="label">Created:</td>
+            <td class="data"><CFOUTPUT>#DateFormat(BPal.createdon,"mm/dd/yyyy")#</CFOUTPUT></td>
+        </tr>
+    </table>
+
+    <CFSET totalGW = 0>
+    <CFOUTPUT QUERY="BOnPal">
+    <div class="product">
+        <p class="qty">#NumberFormat(qty,",")#</p>
+        <CFIF BCust.recordcount IS 0><p class="coname">#coname#</p></CFIF>
+        <p class="pname">#itemnum#</p>
+        <p class="pname">#pname#</p>
+    </div>
+    <CFIF IsNumeric(GW)><CFSET totalGW += GW * packing></CFIF>
+    </CFOUTPUT>
+
+    <CFOUTPUT>
+    <div class="weight">
+        <p>Total gross weight: #NumberFormat(totalGW*2.205,",._")# lb (#NumberFormat(totalGW,",._")# kg)</p>
+    </div>
+    </CFOUTPUT>
+
+    <CFOUTPUT QUERY="BShip">
+    <div class="contact">
+        <p>#name#</p>
+        <p>#addr# #addr2#</p>
+        <p>#city#, #state# #zip#</p>
+        <p>#BShip.fname# #BShip.lname#</p>
+        <p>#tel#</p>
+    </div>
+    </CFOUTPUT>
+</div>
+        
+</CFLOOP>   
+            
+            
+</body>
+                                                                                                                                                         
+</html>
+</cfdocument>
+            
+            
+        
+    
+
+    
+<CFELSE>
+<p>Pallet not found.</p> 
+</CFIF>
+        
+        
+<CFELSE>
+<p>Incorrect script use.</p>
+</CFIF>
+    
+
+    
+    
+        
+    
+    
+

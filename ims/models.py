@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.urls import reverse
 from django.db import models
 from django.db.models import F, FloatField, Sum
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.module_loading import import_string
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from jsonfield import JSONField
@@ -16,6 +18,8 @@ from ims import utils
 
 import uuid
 import random
+import qrcode
+import qrcode.image.svg
 
 import logging
 logger = logging.getLogger(__name__)
@@ -347,7 +351,7 @@ class Product(models.Model):
 
     id = models.AutoField(primary_key=True, db_column='productid')
     client = models.ForeignKey('Client', db_column='customerid')
-    product_id = models.CharField(max_length=10, db_column='PRID')
+    product_id = models.CharField(max_length=10, db_column='PRID', db_index=True)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     packing = models.IntegerField(null=True, blank=True)
     cases_inventory = models.IntegerField(null=True, blank=True, db_column='remain')
@@ -645,10 +649,37 @@ class Transaction(models.Model):
 
 class Pallet(models.Model):
     id = models.AutoField(primary_key=True, db_column='palletid')
-    pallet_id = models.CharField(max_length=10, db_column='PID')
+    pallet_id = models.CharField(max_length=10, db_column='PID', db_index=True)
     shipment = models.ForeignKey('Shipment', db_column='shipmentid', null=True, blank=True)
     client = models.ForeignKey('Client', db_column='customerid', null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+
+    def create_qrcode(self):
+        img = self.get_qrcode(format='PNG')
+        img.save('{0}/codes/{1}.png'.format(settings.MEDIA_ROOT, self.pallet_id))
+
+    def get_qrcode(self, format='PNG'):
+        if format == 'PNG':
+            image_factory_string = 'qrcode.image.pil.PilImage'
+        elif format == 'SVG':
+            image_factory_string = 'qrcode.image.svg.SvgPathFillImage'
+        image_factory = import_string(image_factory_string)
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=44,
+            border=1,
+            image_factory=image_factory,
+        )
+        try:
+            purchase_order = self.shipment.purchase_order
+        except AttributeError:
+            purchase_order = ''
+        code = '1TP:{pallet_id};{content};{purchase_order}'.format(pallet_id=self.pallet_id, content='', purchase_order=purchase_order)
+        qr.add_data(code)
+        qr.make(fit=True)
+        return qr.make_image()
 
     def __unicode__(self):
         return ('{0}'.format(self.id))

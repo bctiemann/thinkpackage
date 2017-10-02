@@ -194,6 +194,28 @@ class PalletDelete(AjaxableResponseMixin, DeleteView):
         return JsonResponse({'success': True})
 
 
+class PalletPrint(PDFView):
+    template_name = 'warehouse/pallet_label.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PalletPrint, self).get_context_data(**kwargs)
+        pallet = get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
+        context['pallet'] = pallet
+        return context
+
+    def get_pdfkit_options(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.52in',
+            'margin-right': '0.25in',
+            'margin-bottom': '0.0in',
+            'margin-left': '0.25in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+        }
+        return options
+
+
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
     form_class = ShipmentDocForm

@@ -182,6 +182,7 @@ urlpatterns_warehouse = [
     url(r'^pallets/$', warehouse_views.warehouse_pallets, name='warehouse-pallets'),
     url(r'^pallet/(?P<pallet_id>\d+)/$', warehouse_views.PalletUpdate.as_view(), name='warehouse-pallet-details'),
     url(r'^pallet/(?P<pallet_id>\d+)/delete/$', warehouse_views.PalletDelete.as_view(), name='warehouse-pallet-delete'),
+    url(r'^pallet/(?P<pallet_id>\d+)/print/$', warehouse_views.PalletPrint.as_view(), name='warehouse-pallet-print'),
 ]
 
 urlpatterns_api = [
@@ -194,6 +195,7 @@ urlpatterns = [
 
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),
+    url(r'^pallet/code/(?P<pallet_id>[A-Z]+)/$', ims_views.pallet_code, name='pallet-code'),
 
     url(
         r'^favicon.ico$',

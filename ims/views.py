@@ -20,7 +20,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, Pallet
 from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
 from ims import utils
 
@@ -54,4 +54,16 @@ def shipment_doc(request, doc_id=None):
     with open(filename, 'r') as file:
         response = HttpResponse(file.read(), content_type=shipment_doc.content_type)
         response['Content-Disposition'] = 'inline;filename=\'{0}.{1}\''.format(shipment_doc.basename, shipment_doc.ext)
+    return response
+
+
+def pallet_code(request, pallet_id=None):
+    pallet = get_object_or_404(Pallet, pallet_id=pallet_id)
+
+#    if not (request.user.is_authenticated):
+#        raise PermissionDenied
+
+    response = HttpResponse(content_type='image/png')
+    base_image = pallet.get_qrcode(format='PNG')
+    base_image.save(response, 'PNG')
     return response

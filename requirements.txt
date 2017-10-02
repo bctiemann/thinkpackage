@@ -10,3 +10,5 @@ git+https://github.com/alexhayes/django-pdfkit.git
 PyCrypto==2.6.1
 colorlog==2.10
 ConcurrentLogHandler==0.9.1
+qrcode==5.3
+Pillow==4.2.1

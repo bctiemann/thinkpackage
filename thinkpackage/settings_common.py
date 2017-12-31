@@ -126,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'ims.User'
 
 
-LOGIN_URL = 'two_factor:login'
+LOGIN_URL = 'mgmt-two_factor:login'
 
 LOGIN_EXEMPT_URLS = (
     r'^mgmt/account/login/$',

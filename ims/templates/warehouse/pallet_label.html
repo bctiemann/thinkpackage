@@ -121,6 +121,11 @@ div.contact p {
 div.weight {
 	font-size: 14px;
 }
+
+.products {
+	max-height: 250px;
+	overflow: hidden;
+}
 </style>
 </head>
 
@@ -145,6 +150,7 @@ div.weight {
         </tr>
     </table>
 
+    <div class="products">
     {% for content in pallet.palletcontents_set.all %}
     <div class="product">
         <p class="qty">{{ content.cases|intcomma }}</p>
@@ -155,6 +161,7 @@ div.weight {
         <p class="pname">{{ content.product.name }}</p>
     </div>
     {% endfor %}
+    </div>
 
     <div class="weight">
         <p>Total gross weight: {{ pallet.gross_weight_imperial|floatformat:1 }} lb ({{ pallet.gross_weight|floatformat:1 }} kg)</p>

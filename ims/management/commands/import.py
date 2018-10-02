@@ -21,7 +21,8 @@ class Command(BaseCommand):
 #        'do_warehouseusers': True,
 #        'do_locations': True,
 #        'do_products': True,
-        'do_receivables': True,
+#        'do_receivables': True,
+        'do_transactions': True,
     }
 
     def add_arguments(self, parser):
@@ -251,4 +252,48 @@ class Command(BaseCommand):
                     shipment_order = old['SO'] or '',
                     product = product,
                     cases = old['cases'],
+                )
+
+        if 'do_transactions' in self.enabled:
+            c.execute("""SELECT * FROM transactions""")
+            for old in c.fetchall():
+                print old['transactionid']
+                try:
+                    product = ims_models.Product.objects.get(pk=old['productid'])
+                except ims_models.Product.DoesNotExist:
+                    product = None
+                try:
+                    shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
+                except ims_models.Shipment.DoesNotExist:
+                    shipment = None
+                try:
+                    client = ims_models.Client.objects.get(pk=old['customerid'])
+                except ims_models.Client.DoesNotExist:
+                    client = None
+                try:
+                    receivable = ims_models.Receivable.objects.get(pk=old['receivableid'])
+                except ims_models.Receivable.DoesNotExist:
+                    receivable = None
+                try:
+                    transfer_client = ims_models.Client.objects.get(pk=old['transfercustomerid'])
+                except ims_models.Client.DoesNotExist:
+                    transfer_client = None
+                try:
+                    transfer_product = ims_models.Product.objects.get(pk=old['transferproductid'])
+                except ims_models.Product.DoesNotExist:
+                    transfer_product = None
+                new  = ims_models.Transaction.objects.create(
+                    id = old['transactionid'],
+                    date_created = old['stamp'],
+                    product = product,
+                    quantity = old['qty'],
+                    quantity_remaining = old['qtyremain'],
+                    is_outbound = old['direction'],
+                    shipment = shipment,
+                    client = client,
+                    cases = old['cases'],
+                    shipment_order = old['SO'] or '',
+                    receivable = receivable,
+                    transfer_client = transfer_client,
+                    transfer_product = transfer_product,
                 )

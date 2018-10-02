@@ -555,7 +555,7 @@ class Receivable(models.Model):
     date_received = models.DateTimeField(null=True, blank=True)
     purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
-    product = models.ForeignKey('Product', db_column='productid')
+    product = models.ForeignKey('Product', null=True, db_column='productid')
     cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
 
     def __unicode__(self):

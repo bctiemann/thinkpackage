@@ -21,7 +21,7 @@ class Command(BaseCommand):
 #        'do_warehouseusers': True,
 #        'do_locations': True,
 #        'do_products': True,
-        'do_shipments': True,
+        'do_receivables': True,
     }
 
     def add_arguments(self, parser):
@@ -231,3 +231,24 @@ class Command(BaseCommand):
                     invoice_number = old['invoice'],
                 )
 
+        if 'do_receivables' in self.enabled:
+            c.execute("""SELECT * FROM receivables""")
+            for old in c.fetchall():
+                print old['receivableid']
+                try:
+                    client = ims_models.Client.objects.get(pk=old['customerid'])
+                except ims_models.Client.DoesNotExist:
+                    client = None
+                try:
+                    product = ims_models.Product.objects.get(pk=old['productid'])
+                except ims_models.Product.DoesNotExist:
+                    product = None
+                new  = ims_models.Receivable.objects.create(
+                    id = old['receivableid'],
+                    client = client,
+                    date_created = old['createdon'],
+                    purchase_order = old['PO'] or '',
+                    shipment_order = old['SO'] or '',
+                    product = product,
+                    cases = old['cases'],
+                )

@@ -17,7 +17,9 @@ class Command(BaseCommand):
     enabled = {
 #        'do_clients': True,
 #        'do_custcontacts': True,
-        'do_locations': True,
+#        'do_adminusers': True,
+        'do_warehouseusers': True,
+#        'do_locations': True,
 #        'do_products': True,
     }
 
@@ -43,18 +45,17 @@ class Command(BaseCommand):
                     company_name = old['coname'],
                     has_warehousing = old['warehousing'],
                 )
-            c.execute("""SELECT * FROM customers""")
+            c.execute("""SELECT * FROM customers WHERE parent IS NOT NULL""")
             for old in c.fetchall():
-                if old['parent']:
-                    new = ims_models.Client.objects.get(id=old['customerid'])
-                    new.parent_id = old['parent']
-                    new.save()
+                new = ims_models.Client.objects.get(id=old['customerid'])
+                new.parent_id = old['parent']
+                new.save()
 
         if 'do_custcontacts' in self.enabled:
             c.execute("""SELECT * FROM custcontacts""")
             for old in c.fetchall():
                 print old['email']
-                new  = ims_models.CustContact.objects.create(
+                new = ims_models.CustContact.objects.create(
                     id = old['custcontactid'],
                     client_id = old['customerid'],
                     email = old['email'],
@@ -72,42 +73,82 @@ class Command(BaseCommand):
                     notes = old['notes'] or '',
                 )
 
-        if 'do_products' in self.enabled:
-            prepay = {}
-            for choice in ims_models.Product.PREPAY_CHOICES:
-                prepay[choice[0]] = choice[1]
-
-            c.execute("""SELECT * FROM products""")
+        if 'do_adminusers' in self.enabled:
+            c.execute("""SELECT * FROM admin""")
             for old in c.fetchall():
-                print old['pname']
-                new  = ims_models.Product.objects.create(
-                    id = old['productid'],
-                    client_id = old['client'],
-                    product_id = old['PRID'],
-                    date_created = old['createdon'],
-                    packing = old['packing'],
-                    cases_inventory = old['remain'],
-                    units_inventory = old['totalq'],
-                    unit_price = old['unitprice'],
-                    gross_weight = old['GW'],
-                    is_domestic = old['prodtype'],
-                    name = old['pname'],
-                    client_tag = old['ctag'],
-                    contracted_quantity = old['contqty'],
-                    is_active = old['active'],
-                    length = old['length'],
-                    width = old['width'],
-                    height = old['height'],
-                    item_number = old['itemnum'],
-                    location_id = old['locationid'],
-                    account_prepay_type = old['account']
+                print old['fullname'].encode('utf8')
+                new = ims_models.AdminUser.objects.create(
+                    id = old['adminid'],
+                    username = old['user'],
+                    password = old['pass'],
+                    is_authority = old['authority'],
+                    is_founder = old['founder'],
+                    full_name = old['fullname'],
+                    email = old['email'] or '',
+                    about = old['about'] or '',
+                    access_level = old['acclev'],
+                    is_sleeping = old['sleeping'] or False,
+                    date_created = old['stamp'],
+                    pic_first_name = old['picfname'] or '',
+                    mobile_number = old['cell'] or '',
+                    two_factor_type = old['twofac'],
+                    is_active = old['enable'],
                 )
+            c.execute("""SELECT * FROM admin WHERE createdbyadminid IS NOT NULL""")
+            for old in c.fetchall():
+                new = ims_models.AdminUser.objects.get(id=old['adminid'])
+                try:
+                    creator = ims_models.AdminUser.objects.get(pk=old['createdbyadminid'])
+                except ims_models.DoesNotExist:
+                    creator = None
+                new.created_by = creator
+                new.save()
+
+        if 'do_warehouseusers' in self.enabled:
+            c.execute("""SELECT * FROM wuser""")
+            for old in c.fetchall():
+                print old['fullname'].encode('utf8')
+                new = ims_models.WarehouseUser.objects.create(
+                    id = old['wuserid'],
+                    username = old['user'],
+                    password = old['pass'],
+                    full_name = old['fullname'] or '',
+                    email = old['email'],
+                    about = old['about'] or '',
+                    date_created = old['createdon'],
+                    last_login = old['lastlogin'],
+                    login_count = old['logintimes'],
+                    is_active = old['enable'],
+                    role = old['role'],
+                )
+            c.execute("""SELECT * FROM wuser WHERE createdbyadminid IS NOT NULL""")
+            for old in c.fetchall():
+                new = ims_models.WarehouseUser.objects.get(id=old['wuserid'])
+                try:
+                    creator = ims_models.AdminUser.objects.get(pk=old['createdbyadminid'])
+                except ims_models.DoesNotExist:
+                    creator = None
+                new.created_by = creator
+                new.save()
+
+#    id = models.AutoField(primary_key=True, db_column='wuserid')
+#    username = models.CharField(max_length=100, blank=True, db_column='user')
+#    password = models.CharField(max_length=255, blank=True, db_column='pass')
+#    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid')
+#    full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
+#    email = models.EmailField(max_length=192, blank=True)
+#    about = models.TextField(blank=True)
+#    date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
+#    last_login = models.DateTimeField(null=True, db_column='lastlogin')
+#    login_count = models.IntegerField(default=0, db_column='logintimes')
+#    is_active = models.BooleanField(default=True, db_column='enable')
+#    role = models.CharField(max_length=30, choices=ROLE_CHOICES)
 
         if 'do_locations' in self.enabled:
             c.execute("""SELECT * FROM locations""")
             for old in c.fetchall():
                 print old['name'].encode('utf8')
-                new  = ims_models.Location.objects.create(
+                new = ims_models.Location.objects.create(
                     id = old['locationid'],
                     client_id = old['customerid'],
                     name = old['name'],
@@ -125,3 +166,36 @@ class Command(BaseCommand):
                     notes = old['notes'] or '',
                     receiving_hours = old['recvhours'] or '',
                 )
+
+        if 'do_products' in self.enabled:
+            c.execute("""SELECT * FROM products""")
+            for old in c.fetchall():
+                print old['pname'].encode('utf8')
+                try:
+                    location = ims_models.Location.objects.get(pk=old['locationid'])
+                except ims_models.Location.DoesNotExist:
+                    location = None
+                new  = ims_models.Product.objects.create(
+                    id = old['productid'],
+                    client_id = old['customerid'] or None,
+                    product_id = old['PRID'],
+                    date_created = old['createdon'],
+                    packing = old['packing'],
+                    cases_inventory = old['remain'],
+                    units_inventory = old['totalq'],
+                    unit_price = old['unitprice'],
+                    gross_weight = old['GW'],
+                    is_domestic = old['prodtype'],
+                    name = old['pname'],
+                    client_tag = old['ctag'],
+                    contracted_quantity = old['contqty'],
+                    is_active = old['active'] if old['active'] >= 0 else False,
+                    is_deleted = True if old['active'] == -1 else False,
+                    length = old['length'],
+                    width = old['width'],
+                    height = old['height'],
+                    item_number = old['itemnum'],
+                    location = location,
+                    account_prepay_type = old['account']
+                )
+

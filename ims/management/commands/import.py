@@ -102,3 +102,26 @@ class Command(BaseCommand):
                     location_id = old['locationid'],
                     account_prepay_type = old['account']
                 )
+
+        if 'do_locations' in self.enabled:
+            c.execute("""SELECT * FROM locations""")
+            for old in c.fetchall():
+                print old['name'].encode('utf8')
+                new  = ims_models.Location.objects.create(
+                    id = old['locationid'],
+                    client_id = old['customerid'],
+                    name = old['name'],
+                    phone_number = old['tel'] or '',
+                    phone_extension = old['telext'] or '',
+                    fax_number = old['fax'] or '',
+                    address = old['addr'] or '',
+                    address_2 = old['addr2'] or '',
+                    city = old['city'] or '',
+                    state = old['state'] or '',
+                    zip = old['zip'] or '',
+                    country = old['country'] or '',
+                    non_us_state = old['ostate'] or '',
+                    customer_contact_id = old['custcontactid'] or None,
+                    notes = old['notes'] or '',
+                    receiving_hours = old['recvhours'] or '',
+                )

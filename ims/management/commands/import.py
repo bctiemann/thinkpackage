@@ -18,9 +18,10 @@ class Command(BaseCommand):
 #        'do_clients': True,
 #        'do_custcontacts': True,
 #        'do_adminusers': True,
-        'do_warehouseusers': True,
+#        'do_warehouseusers': True,
 #        'do_locations': True,
 #        'do_products': True,
+        'do_shipments': True,
     }
 
     def add_arguments(self, parser):
@@ -131,19 +132,6 @@ class Command(BaseCommand):
                 new.created_by = creator
                 new.save()
 
-#    id = models.AutoField(primary_key=True, db_column='wuserid')
-#    username = models.CharField(max_length=100, blank=True, db_column='user')
-#    password = models.CharField(max_length=255, blank=True, db_column='pass')
-#    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid')
-#    full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
-#    email = models.EmailField(max_length=192, blank=True)
-#    about = models.TextField(blank=True)
-#    date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
-#    last_login = models.DateTimeField(null=True, db_column='lastlogin')
-#    login_count = models.IntegerField(default=0, db_column='logintimes')
-#    is_active = models.BooleanField(default=True, db_column='enable')
-#    role = models.CharField(max_length=30, choices=ROLE_CHOICES)
-
         if 'do_locations' in self.enabled:
             c.execute("""SELECT * FROM locations""")
             for old in c.fetchall():
@@ -197,5 +185,49 @@ class Command(BaseCommand):
                     item_number = old['itemnum'],
                     location = location,
                     account_prepay_type = old['account']
+                )
+
+        if 'do_shipments' in self.enabled:
+            c.execute("""SELECT * FROM shipments""")
+            for old in c.fetchall():
+                print old['shipmentid']
+                try:
+                    client = ims_models.Client.objects.get(pk=old['customerid'])
+                except ims_models.Client.DoesNotExist:
+                    client = None
+                try:
+                    location = ims_models.Location.objects.get(pk=old['locationid'])
+                except ims_models.Location.DoesNotExist:
+                    location = None
+                new  = ims_models.Shipment.objects.create(
+                    id = old['shipmentid'],
+                    client = client,
+                    date_created = old['createdon'],
+                    date_shipped = old['shippedon'],
+                    status = old['status'],
+                    carrier = old['carrier'] or '',
+                    tracking = old['tracking'] or '',
+                    purchase_order = old['PO'] or '',
+                    shipment_order = old['SO'] or '',
+                    location = location,
+                    third_party = old['3rdparty'] or '',
+                    third_party_address = old['3rdpartyaddress'] or '',
+                    third_party_phone_number = old['3rdpartyphone'] or '',
+                    third_party_per = old['3rdpartyper'] or '',
+                    third_party_received = old['3rdpartyrecvd'] or '',
+                    third_party_charges_advanced = old['3rdpartychgadvanced'] or '',
+                    pro_number = old['pro'] or '',
+                    purchase_order_number = old['loadnum'] or '',
+                    shipper_instructions = old['shipperinstructions'] or '',
+                    consignee_instructions = old['consigneeinstructions'] or '',
+                    shipper_address_id = old['shipperaddress'],
+                    inside_delivery = old['insidedelivery'] or False,
+                    liftgate_required = old['liftgate'] or False,
+                    appointment_required = old['appointment'] or False,
+                    sort_segregation = old['sortseg'] or False,
+                    shipment_class = old['class'] or '',
+                    pallet_count = old['numpallets'],
+                    accounting_status = old['acctstatus'],
+                    invoice_number = old['invoice'],
                 )
 

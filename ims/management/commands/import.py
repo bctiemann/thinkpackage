@@ -22,7 +22,8 @@ class Command(BaseCommand):
 #        'do_locations': True,
 #        'do_products': True,
 #        'do_receivables': True,
-        'do_transactions': True,
+#        'do_transactions': True,
+        'do_pallets': True,
     }
 
     def add_arguments(self, parser):
@@ -296,4 +297,24 @@ class Command(BaseCommand):
                     receivable = receivable,
                     transfer_client = transfer_client,
                     transfer_product = transfer_product,
+                )
+
+        if 'do_pallets' in self.enabled:
+            c.execute("""SELECT * FROM pallets""")
+            for old in c.fetchall():
+                print old['palletid']
+                try:
+                    shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
+                except ims_models.Shipment.DoesNotExist:
+                    shipment = None
+                try:
+                    client = ims_models.Client.objects.get(pk=old['customerid'])
+                except ims_models.Client.DoesNotExist:
+                    client = None
+                new  = ims_models.Pallet.objects.create(
+                    id = old['palletid'],
+                    pallet_id = old['PID'] or '',
+                    shipment = shipment,
+                    client = client,
+                    date_created = old['createdon'],
                 )

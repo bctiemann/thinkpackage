@@ -31,6 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'thinkpackage.lionking.org',
+    'thinkpackage.lionwire.com',
 ]
 
 

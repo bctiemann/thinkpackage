@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 import os, sys
 from django.core.wsgi import get_wsgi_application
 
-sys.path.append('/usr/local/www/django/thinkpackage')
+sys.path.append('/usr/local/www/thinkpackage-dj')
 
 env_variables_to_pass = [
     'SECRET_KEY',

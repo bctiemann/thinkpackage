@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
 
+from two_factor.urls import urlpatterns as tf_urls
+
 from django.contrib.auth import views as auth_views
 from ims import views as ims_views
 from mgmt import views as mgmt_views
@@ -33,7 +35,7 @@ urlpatterns_mgmt = [
         mgmt_views.DisableView.as_view(),
         name='disable',
     ),
-    url(r'', include('two_factor.urls', 'mgmt-two_factor')),
+    url(r'', include(tf_urls, 'mgmt-two_factor')),
 
     url(r'^$', mgmt_views.home, name='mgmt-home'),
 
@@ -118,7 +120,7 @@ urlpatterns_client = [
         client_views.DisableView.as_view(),
         name='disable',
     ),
-    url(r'', include('two_factor.urls', 'client-two_factor')),
+    url(r'', include(tf_urls, 'client-two_factor')),
 
     url(r'^$', client_views.home, name='client-home'),
 
@@ -164,7 +166,7 @@ urlpatterns_warehouse = [
         warehouse_views.DisableView.as_view(),
         name='disable',
     ),
-    url(r'', include('two_factor.urls', 'warehouse-two_factor')),
+    url(r'', include(tf_urls, 'warehouse-two_factor')),
 
     url(r'^$', warehouse_views.home, name='warehouse-home'),
 

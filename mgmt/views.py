@@ -45,15 +45,15 @@ class LoginView(LoginView):
 
 
 class PhoneSetupView(PhoneSetupView):
-    success_url = reverse_lazy('two_factor:profile')
+    success_url = reverse_lazy('mgmt-two_factor:profile')
 
 
 class PhoneDeleteView(PhoneDeleteView):
-    success_url = reverse_lazy('two_factor:profile')
+    success_url = reverse_lazy('mgmt-two_factor:profile')
 
 
 class DisableView(DisableView):
-    success_url = reverse_lazy('two_factor:profile')
+    success_url = reverse_lazy('mgmt-two_factor:profile')
 
 
 ########################################################################

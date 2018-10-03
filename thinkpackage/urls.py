@@ -194,6 +194,7 @@ urlpatterns_api = [
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'', include(tf_urls, 'two_factor')),
 
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),

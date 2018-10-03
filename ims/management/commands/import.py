@@ -21,9 +21,11 @@ class Command(BaseCommand):
 #        'do_warehouseusers': True,
 #        'do_locations': True,
 #        'do_products': True,
+#        'do_shipments': True,
 #        'do_receivables': True,
 #        'do_transactions': True,
-        'do_pallets': True,
+#        'do_pallets': True,
+        'do_palletcontents': True,
     }
 
     def add_arguments(self, parser):
@@ -41,13 +43,14 @@ class Command(BaseCommand):
                 new = ims_models.Client.objects.create(
                     id = old['customerid'],
                     email = old['email'] or '',
-                    created_on = old['createdon'],
                     is_preferred = old['preferred'],
                     is_active = old['enabled'],
                     notes = old['notes'] or '',
                     company_name = old['coname'],
                     has_warehousing = old['warehousing'],
                 )
+                new.created_on = old['createdon']
+                new.save()
             c.execute("""SELECT * FROM customers WHERE parent IS NOT NULL""")
             for old in c.fetchall():
                 new = ims_models.Client.objects.get(id=old['customerid'])
@@ -91,12 +94,13 @@ class Command(BaseCommand):
                     about = old['about'] or '',
                     access_level = old['acclev'],
                     is_sleeping = old['sleeping'] or False,
-                    date_created = old['stamp'],
                     pic_first_name = old['picfname'] or '',
                     mobile_number = old['cell'] or '',
                     two_factor_type = old['twofac'],
                     is_active = old['enable'],
                 )
+                new.date_created = old['stamp']
+                new.save()
             c.execute("""SELECT * FROM admin WHERE createdbyadminid IS NOT NULL""")
             for old in c.fetchall():
                 new = ims_models.AdminUser.objects.get(id=old['adminid'])
@@ -118,12 +122,13 @@ class Command(BaseCommand):
                     full_name = old['fullname'] or '',
                     email = old['email'],
                     about = old['about'] or '',
-                    date_created = old['createdon'],
                     last_login = old['lastlogin'],
                     login_count = old['logintimes'],
                     is_active = old['enable'],
                     role = old['role'],
                 )
+                new.date_created = old['createdon']
+                new.save()
             c.execute("""SELECT * FROM wuser WHERE createdbyadminid IS NOT NULL""")
             for old in c.fetchall():
                 new = ims_models.WarehouseUser.objects.get(id=old['wuserid'])
@@ -169,7 +174,6 @@ class Command(BaseCommand):
                     id = old['productid'],
                     client_id = old['customerid'] or None,
                     product_id = old['PRID'],
-                    date_created = old['createdon'],
                     packing = old['packing'],
                     cases_inventory = old['remain'],
                     units_inventory = old['totalq'],
@@ -188,6 +192,8 @@ class Command(BaseCommand):
                     location = location,
                     account_prepay_type = old['account']
                 )
+                new.date_created = old['createdon']
+                new.save()
 
         if 'do_shipments' in self.enabled:
             c.execute("""SELECT * FROM shipments""")
@@ -204,7 +210,6 @@ class Command(BaseCommand):
                 new  = ims_models.Shipment.objects.create(
                     id = old['shipmentid'],
                     client = client,
-                    date_created = old['createdon'],
                     date_shipped = old['shippedon'],
                     status = old['status'],
                     carrier = old['carrier'] or '',
@@ -232,6 +237,8 @@ class Command(BaseCommand):
                     accounting_status = old['acctstatus'],
                     invoice_number = old['invoice'],
                 )
+                new.date_created = old['createdon']
+                new.save()
 
         if 'do_receivables' in self.enabled:
             c.execute("""SELECT * FROM receivables""")
@@ -248,12 +255,13 @@ class Command(BaseCommand):
                 new  = ims_models.Receivable.objects.create(
                     id = old['receivableid'],
                     client = client,
-                    date_created = old['createdon'],
                     purchase_order = old['PO'] or '',
                     shipment_order = old['SO'] or '',
                     product = product,
                     cases = old['cases'],
                 )
+                new.date_created = old['createdon']
+                new.save()
 
         if 'do_transactions' in self.enabled:
             c.execute("""SELECT * FROM transactions""")
@@ -285,7 +293,6 @@ class Command(BaseCommand):
                     transfer_product = None
                 new  = ims_models.Transaction.objects.create(
                     id = old['transactionid'],
-                    date_created = old['stamp'],
                     product = product,
                     quantity = old['qty'],
                     quantity_remaining = old['qtyremain'],
@@ -298,6 +305,8 @@ class Command(BaseCommand):
                     transfer_client = transfer_client,
                     transfer_product = transfer_product,
                 )
+                new.date_created = old['stamp']
+                new.save()
 
         if 'do_pallets' in self.enabled:
             c.execute("""SELECT * FROM pallets""")
@@ -316,5 +325,25 @@ class Command(BaseCommand):
                     pallet_id = old['PID'] or '',
                     shipment = shipment,
                     client = client,
-                    date_created = old['createdon'],
+                )
+                new.date_created = old['createdon']
+                new.save()
+
+        if 'do_palletcontents' in self.enabled:
+            c.execute("""SELECT * FROM onpallet""")
+            for old in c.fetchall():
+                print old['palletid'], old['productid']
+                try:
+                    pallet = ims_models.Pallet.objects.get(pk=old['palletid'])
+                except ims_models.Pallet.DoesNotExist:
+                    pallet = None
+                try:
+                    product = ims_models.Product.objects.get(pk=old['productid'])
+                except ims_models.Product.DoesNotExist:
+                    product = None
+                new  = ims_models.PalletContents.objects.create(
+                    id = old['onpalletid'],
+                    pallet = pallet,
+                    product = product,
+                    cases = old['qty'],
                 )

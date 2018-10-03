@@ -25,7 +25,8 @@ class Command(BaseCommand):
 #        'do_receivables': True,
 #        'do_transactions': True,
 #        'do_pallets': True,
-        'do_palletcontents': True,
+#        'do_palletcontents': True,
+        'do_shipmentdocs': True,
     }
 
     def add_arguments(self, parser):
@@ -347,3 +348,24 @@ class Command(BaseCommand):
                     product = product,
                     cases = old['qty'],
                 )
+
+        if 'do_shipmentdocs' in self.enabled:
+            c.execute("""SELECT * FROM shipmentdocs""")
+            for old in c.fetchall():
+                print old['docid']
+                try:
+                    shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
+                except ims_models.Shipment.DoesNotExist:
+                    shipment = None
+                new  = ims_models.ShipmentDoc.objects.create(
+                    id = old['docid'],
+                    shipment = shipment,
+                    uuid = old['uuid'],
+                    file = '{0}/{1}.{2}'.format(old['uuid'], old['basename'], old['ext']),
+                    basename = old['basename'] or '',
+                    ext = old['ext'] or '',
+                    size = old['size'],
+                    content_type = old['mimetype'],
+                )
+                new.date_created = old['stamp']
+                new.save()

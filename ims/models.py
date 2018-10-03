@@ -722,7 +722,7 @@ def get_image_path(instance, filename):
 
 class ShipmentDoc(models.Model):
     id = models.AutoField(primary_key=True, db_column='docid')
-    shipment = models.ForeignKey('Shipment', db_column='shipmentid')
+    shipment = models.ForeignKey('Shipment', null=True, db_column='shipmentid')
     uuid = models.CharField(max_length=36, blank=True)
     file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)

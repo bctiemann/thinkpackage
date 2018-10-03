@@ -7,7 +7,7 @@ import unicodedata, re
 import logging
 logger = logging.getLogger(__name__)
 
-from ims.models import WarehouseUser, User
+from ims.models import AdminUser, User
 from ims.cipher import AESCipher
 
 
@@ -31,32 +31,35 @@ class Command(BaseCommand):
 
         aes = AESCipher(key)
 
-        for wuser in WarehouseUser.objects.all():
-            password = self.remove_control_chars(aes.decrypt(wuser.password))
-            name_parts = wuser.full_name.split(' ')
+        for admin in AdminUser.objects.all():
+            try:
+                password = self.remove_control_chars(aes.decrypt(admin.password))
+            except TypeError:
+                password = admin.password
+            name_parts = admin.full_name.split(' ')
             first_name, last_name = name_parts[0], ''
             if len(name_parts) > 1:
                 first_name = name_parts[0]
                 last_name = name_parts[1]
 
             try:
-                user = User.objects.get(email=wuser.email)
+                user = User.objects.get(email=admin.email)
             except User.DoesNotExist:
-                print('Creating {0} ({1})'.format(wuser.email, password))
+                print('Creating {0} ({1})'.format(admin.email, password))
                 user = User.objects.create_user(
-                    email = wuser.email,
+                    email = admin.email,
                     password = password,
                 )
             user.first_name = first_name
             user.last_name = last_name
-            user.login_count = wuser.login_count
-            user.last_login = wuser.last_login
-            user.created_by = User.objects.get(email=wuser.created_by.email)
-            user.date_joined = wuser.date_created
-            user.is_active = wuser.is_active
+            user.date_joined = admin.date_created
+            user.notes = admin.about
+            user.phone_number = admin.mobile_number
+            user.is_admin = True
+            user.is_active = user.is_active
+            user.save()
 
-            if wuser.role == 'warehouse':
-                user.is_warehouse = True
-            elif wuser.role == 'accounting':
-                user.is_accounting = True
+        for admin in AdminUser.objects.all():
+            user = User.objects.get(email=admin.email)
+            user.created_by = User.objects.get(email=admin.created_by.email)
             user.save()

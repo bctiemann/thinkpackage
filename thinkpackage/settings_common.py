@@ -74,12 +74,15 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 ROOT_URLCONF = 'thinkpackage.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
+#        'DIRS': ['templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -165,8 +168,8 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+STATICFILES_DIRS = ['static',]
 STATIC_URL = '/static/'
-
 STATIC_ROOT = '/usr/local/www/django/thinkpackage/static_root'
 MEDIA_ROOT = '/usr/local/www/django/thinkpackage/media'
 MEDIA_URL = '/media/'

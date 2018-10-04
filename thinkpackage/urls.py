@@ -12,6 +12,8 @@ from ims import views as ims_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'home'}, name='sign-out'),
+
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),
     url(r'^pallet/code/(?P<pallet_id>[A-Z]+)/$', ims_views.pallet_code, name='pallet-code'),

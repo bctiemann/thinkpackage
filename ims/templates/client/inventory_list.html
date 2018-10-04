@@ -9,7 +9,7 @@
 {% if tab == "request" %}
 
 {% if shipment %}
-    Editing pending delivery order #{{ shipment.id }}. <a href="{% url "client-inventory" %}">Cancel</a>
+    Editing pending delivery order #{{ shipment.id }}. <a href="{% url "client:inventory" %}">Cancel</a>
 {% endif %}
 
 <form onSubmit="addProduct(); return false;">

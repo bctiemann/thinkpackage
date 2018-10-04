@@ -1,7 +1,7 @@
 <ul class="nav">
-    <a href="{% url "client-profile" %}"><li id="li_profile" {% if page_selected == "profile" %}class="selected"{% endif %}>Profile</li></a>
-    <a href="{% url "client-inventory" %}"><li id="li_inventory" {% if page_selected == "inventory" %}class="selected"{% endif %}>Inventory / Request</li></a>
-    <a href="{% url "client-history" %}"><li id="li_history" {% if page_selected == "history" %}class="selected"{% endif %}>History</li></a>
-    <a href="{% url "client-reorder" %}"><li id="li_reorder" {% if page_selected == "reorder" %}class="selected"{% endif %}>Reorder</li></a>
+    <a href="{% url "client:profile" %}"><li id="li_profile" {% if page_selected == "profile" %}class="selected"{% endif %}>Profile</li></a>
+    <a href="{% url "client:inventory" %}"><li id="li_inventory" {% if page_selected == "inventory" %}class="selected"{% endif %}>Inventory / Request</li></a>
+    <a href="{% url "client:history" %}"><li id="li_history" {% if page_selected == "history" %}class="selected"{% endif %}>History</li></a>
+    <a href="{% url "client:reorder" %}"><li id="li_reorder" {% if page_selected == "reorder" %}class="selected"{% endif %}>Reorder</li></a>
 </ul>
 

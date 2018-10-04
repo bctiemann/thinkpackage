@@ -54,7 +54,7 @@ class DisableView(DisableView):
 
 
 def home(request):
-    return redirect('client-inventory')
+    return redirect('client:inventory')
 
 
 @require_POST

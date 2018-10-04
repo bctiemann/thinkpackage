@@ -106,7 +106,7 @@ def home(request):
 
 
 def mgmt_redirect(request, client_id=None):
-    return redirect('mgmt-inventory', client_id=client_id)
+    return redirect('mgmt:inventory', client_id=client_id)
 
 
 def mgmt_profile(request, client_id=None):
@@ -677,7 +677,7 @@ class ReceivableDelete(AjaxableResponseMixin, DeleteView):
         return get_object_or_404(Receivable, pk=self.kwargs['receivable_id'])
 
     def get_success_url(self):
-        return reverse_lazy('mgmt-product-history', kwargs={'product_id': self.object.product.id})
+        return reverse_lazy('mgmt:product-history', kwargs={'product_id': self.object.product.id})
 
 
 class ShipmentDetail(DetailView):
@@ -719,7 +719,7 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
         return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
 
     def get_success_url(self):
-        return reverse_lazy('mgmt-shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
+        return reverse_lazy('mgmt:shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
 
     def post(self, *args, **kwargs):
         super(ShipmentDocDelete, self).post(*args, **kwargs)

@@ -1,7 +1,7 @@
 {% load humanize %}
 
 <div class="form_header dark">
-<button class="actionbtn floatright" id="print_pallet" onClick="window.open('{% url "warehouse-pallet-print" pallet_id=pallet.id %}?inline');">Print</button>
+<button class="actionbtn floatright" id="print_pallet" onClick="window.open('{% url "warehouse:pallet-print" pallet_id=pallet.id %}?inline');">Print</button>
 <button class="actionbtn red floatright" id="delete_pallet" onClick="deletePallet({{ pallet.id }})">Delete</button>
 <span class="title">Contents of pallet {{ pallet.pallet_id }}</span>
 </div>

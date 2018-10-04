@@ -59,7 +59,7 @@ class DisableView(DisableView):
 
 
 def home(request):
-    return redirect('warehouse-shipments')
+    return redirect('warehouse:shipments')
 
 
 def warehouse_shipments(request):
@@ -187,7 +187,7 @@ class PalletDelete(AjaxableResponseMixin, DeleteView):
         return get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
 
     def get_success_url(self):
-        return reverse_lazy('warehouse-pallets')
+        return reverse_lazy('warehouse:pallets')
 
     def post(self, *args, **kwargs):
         super(PalletDelete, self).post(*args, **kwargs)
@@ -260,7 +260,7 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
         return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
 
     def get_success_url(self):
-        return reverse_lazy('warehouse-shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
+        return reverse_lazy('warehouse:shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
 
     def post(self, *args, **kwargs):
         super(ShipmentDocDelete, self).post(*args, **kwargs)

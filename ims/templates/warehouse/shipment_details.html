@@ -2,7 +2,7 @@
 {% load humanize %}
 
 <div class="form_header dark">
-<button class="actionbtn floatright" id="generate_bol" onClick="window.open('{% url "warehouse-bill-of-lading" shipment_id=shipment.id %}?inline')">BOL</button>
+<button class="actionbtn floatright" id="generate_bol" onClick="window.open('{% url "warehouse:bill-of-lading" shipment_id=shipment.id %}?inline')">BOL</button>
 {% if shipment.status == 1 or shipment.pallet_set.count > 0 %}
     {% if shipment.status != 2 %}<button class="actionbtn floatright" id="ship_shipment" onClick="shipShipment({{ shipment.id }})">Shipped</button>{% endif %}
 {% endif %}

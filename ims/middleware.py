@@ -35,11 +35,11 @@ class LoginRequiredMiddleware:
             path = request.path_info.lstrip('/')
             if not any(m.match(path) for m in EXEMPT_URLS):
                 if path.startswith('mgmt/'):
-                    return HttpResponseRedirect(reverse_lazy('mgmt-two_factor:login'))
+                    return HttpResponseRedirect(reverse_lazy('mgmt-login'))
                 if path.startswith('client/'):
-                    return HttpResponseRedirect(reverse_lazy('client-two_factor:login'))
+                    return HttpResponseRedirect(reverse_lazy('client-login'))
                 if path.startswith('warehouse/'):
-                    return HttpResponseRedirect(reverse_lazy('warehouse-two_factor:login'))
+                    return HttpResponseRedirect(reverse_lazy('warehouse-login'))
 #                return HttpResponseRedirect(settings.LOGIN_URL)
 
 
@@ -52,6 +52,6 @@ class PermissionsMiddleware:
                 raise PermissionDenied
             if request.user.is_authenticated() and path.startswith('client/') and not request.user.is_authorized_for_client(request):
                 logout(request)
-                return HttpResponseRedirect(reverse_lazy('client-two_factor:login'))
+                return HttpResponseRedirect(reverse_lazy('client-login'))
             if request.user.is_authenticated() and path.startswith('warehouse/') and not request.user.is_warehouse:
                 raise PermissionDenied

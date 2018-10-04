@@ -15,27 +15,27 @@ from api import views as api_views
 from ims.forms import UserLoginForm
 
 urlpatterns_mgmt = [
-    url(
-        r'^account/login/$',
-        mgmt_views.LoginView.as_view(),
-        name='login',
-    ),
-     url(
-        r'^account/two_factor/backup/phone/register/$',
-        mgmt_views.PhoneSetupView.as_view(),
-        name='phone_create',
-    ),
-    url(
-        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
-        mgmt_views.PhoneDeleteView.as_view(),
-        name='phone_delete',
-    ),
-    url(
-        r'^account/two_factor/disable/$',
-        mgmt_views.DisableView.as_view(),
-        name='disable',
-    ),
-    url(r'', include(tf_urls, 'mgmt-two_factor')),
+#    url(
+#        r'^account/login/$',
+#        mgmt_views.LoginView.as_view(),
+#        name='login',
+#    ),
+#     url(
+#        r'^account/two_factor/backup/phone/register/$',
+#        mgmt_views.PhoneSetupView.as_view(),
+#        name='phone_create',
+#    ),
+#    url(
+#        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+#        mgmt_views.PhoneDeleteView.as_view(),
+#        name='phone_delete',
+#    ),
+#    url(
+#        r'^account/two_factor/disable/$',
+#        mgmt_views.DisableView.as_view(),
+#        name='disable',
+#    ),
+#    url(r'', include(tf_urls, 'mgmt-two_factor')),
 
     url(r'^$', mgmt_views.home, name='mgmt-home'),
 
@@ -48,7 +48,7 @@ urlpatterns_mgmt = [
 #        },
 #        name='sign-in'
 #    ),
-    url(r'^sign_out/', auth_views.logout, {'next_page': 'login'}, name='sign-out'),
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'mgmt-login'}, name='mgmt-sign-out'),
     url(r'^password_reset/$', auth_views.password_reset, {'template_name': 'accounts/password_reset_form.html',}, name='password-reset'),
     url(r'^password_reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html',},name='password-reset-done'),
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.password_reset_confirm, {'template_name': 'accounts/password_reset_confirm.html',}, name='password-reset-confirm'),
@@ -100,29 +100,30 @@ urlpatterns_mgmt = [
 ]
 
 urlpatterns_client = [
-    url(
-        r'^account/login/$',
-        client_views.LoginView.as_view(),
-        name='login',
-    ),
-     url(
-        r'^account/two_factor/backup/phone/register/$',
-        client_views.PhoneSetupView.as_view(),
-        name='phone_create',
-    ),
-    url(
-        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
-        client_views.PhoneDeleteView.as_view(),
-        name='phone_delete',
-    ),
-    url(
-        r'^account/two_factor/disable/$',
-        client_views.DisableView.as_view(),
-        name='disable',
-    ),
-    url(r'', include(tf_urls, 'client-two_factor')),
+#    url(
+#        r'^account/login/$',
+#        client_views.LoginView.as_view(),
+#        name='login',
+#    ),
+#     url(
+#        r'^account/two_factor/backup/phone/register/$',
+#        client_views.PhoneSetupView.as_view(),
+#        name='phone_create',
+#    ),
+#    url(
+#        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+#        client_views.PhoneDeleteView.as_view(),
+#        name='phone_delete',
+#    ),
+#    url(
+#        r'^account/two_factor/disable/$',
+#        client_views.DisableView.as_view(),
+#        name='disable',
+#    ),
+#    url(r'', include(tf_urls, 'client-two_factor')),
 
     url(r'^$', client_views.home, name='client-home'),
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'client-login'}, name='client-sign-out'),
 
     url(r'^change_password/$', client_views.change_password, name='client-change-password'),
 
@@ -146,29 +147,30 @@ urlpatterns_client = [
 ]
 
 urlpatterns_warehouse = [
-    url(
-        r'^account/login/$',
-        warehouse_views.LoginView.as_view(),
-        name='login',
-    ),
-     url(
-        r'^account/two_factor/backup/phone/register/$',
-        warehouse_views.PhoneSetupView.as_view(),
-        name='phone_create',
-    ),
-    url(
-        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
-        warehouse_views.PhoneDeleteView.as_view(),
-        name='phone_delete',
-    ),
-    url(
-        r'^account/two_factor/disable/$',
-        warehouse_views.DisableView.as_view(),
-        name='disable',
-    ),
-    url(r'', include(tf_urls, 'warehouse-two_factor')),
+#    url(
+#        r'^account/login/$',
+#        warehouse_views.LoginView.as_view(),
+#        name='login',
+#    ),
+#     url(
+#        r'^account/two_factor/backup/phone/register/$',
+#        warehouse_views.PhoneSetupView.as_view(),
+#        name='phone_create',
+#    ),
+#    url(
+#        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+#        warehouse_views.PhoneDeleteView.as_view(),
+#        name='phone_delete',
+#    ),
+#    url(
+#        r'^account/two_factor/disable/$',
+#        warehouse_views.DisableView.as_view(),
+#        name='disable',
+#    ),
+#    url(r'', include(tf_urls, 'warehouse-two_factor')),
 
     url(r'^$', warehouse_views.home, name='warehouse-home'),
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'warehouse-login'}, name='warehouse-sign-out'),
 
     url(r'^shipments/$', warehouse_views.warehouse_shipments, name='warehouse-shipments'),
     url(r'^shipments/list/$', warehouse_views.warehouse_shipments_list, name='warehouse-shipments-list'),
@@ -194,7 +196,6 @@ urlpatterns_api = [
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'', include(tf_urls, 'two_factor')),
 
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),
@@ -212,4 +213,22 @@ urlpatterns = [
     url(r'^client/', include(urlpatterns_client)),
     url(r'^warehouse/', include(urlpatterns_warehouse)),
     url(r'^api/', include(urlpatterns_api)),
+
+    url(
+        r'^mgmt/account/login/$',
+        mgmt_views.LoginView.as_view(),
+        name='mgmt-login',
+    ),
+    url(
+        r'^client/account/login/$',
+        mgmt_views.LoginView.as_view(),
+        name='client-login',
+    ),
+    url(
+        r'^warehouse/account/login/$',
+        warehouse_views.LoginView.as_view(),
+        name='warehouse-login',
+    ),
+    url(r'', include(tf_urls, 'two_factor')),
+
 ]

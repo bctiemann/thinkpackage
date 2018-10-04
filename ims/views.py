@@ -67,3 +67,13 @@ def pallet_code(request, pallet_id=None):
     base_image = pallet.get_qrcode(format='PNG')
     base_image.save(response, 'PNG')
     return response
+
+
+class LoginView(LoginView):
+    template_name = 'login.html'
+    form_list = (
+        ('auth', UserLoginForm),
+        ('token', AuthenticationTokenForm),
+        ('backup', BackupTokenForm),
+    )
+

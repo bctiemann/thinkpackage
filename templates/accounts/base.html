@@ -3,7 +3,8 @@
 <html>
     <head>
     <title>Think Package Administration</title>
-    <link rel=stylesheet href="{% static "accounts/css/style_gen.css" %}" type="text/css">
+<!---    <link rel=stylesheet href="{% static "accounts/css/style_gen.css" %}" type="text/css">--->
+    <link rel=stylesheet href="{% static "css/common.css" %}" type="text/css">
     <link rel=stylesheet href="{% static "accounts/css/style.css" %}" type="text/css">
     <link rel=stylesheet href="{% static "accounts/css/jquery-ui.css" %}" type="text/css">
     <script type="text/javascript" src="{% static "accounts/js/jquery-1.11.1.min.js" %}"></script>
@@ -32,10 +33,10 @@ globals['customerid_current'] = {{ client_id }};
 
 <body id="content" class="login">
 
-{% endif %}
-
 <img src="{% static "accounts/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
 <p>{% block login_page_title %}{% endblock %}</p>
+
+{% endif %}
 
 {% block content %}{% endblock %}
 

@@ -36,6 +36,12 @@ urlpatterns = [
     url(r'^warehouse/', include('warehouse.urls', 'warehouse')),
     url(r'^api/', include('api.urls', 'api')),
 
+    url(
+        r'^account/login/$',
+        ims_views.LoginView.as_view(),
+        name='login',
+    ),
+
     url(r'', include(tf_urls, 'two_factor')),
 
 ]

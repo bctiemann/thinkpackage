@@ -142,6 +142,9 @@ div.customerheader span.disabledlabel {
 	color: #888;
 }
 
+
+/* Login Form */
+
 div.above_login {
         position: absolute;
         width: 99%;
@@ -208,6 +211,32 @@ div#login_status h3 {
         color: #fff;
         text-decoration: none;
 }
+.loginform p {
+	margin: 0.5em 0px;
+}
+.loginform input[type="number"] {
+	text-align: left;
+}
+
+.inputs li {
+	display: flex;
+	flex-direction: row;
+}
+.inputs li input {
+	flex-grow: 1;
+}
+.button-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+.button-row button.btn {
+	flex-grow: 1;
+	margin: 0px 3px;
+}
+
+
+/* Formatting */
 
 .numeric {
 	text-align: right;
@@ -359,7 +388,8 @@ tr.detail.shipment-pending {
 	font-style: italic;
 }
 
-button.actionbtn {
+button.actionbtn,
+button.btn {
 	margin: 0px;
 	padding: 0px 60px 0px 40px;
 	height: 50px;
@@ -374,10 +404,12 @@ button.actionbtn {
 	color: #fff;
 	cursor: pointer;
 }
-button.actionbtn:hover {
+button.actionbtn:hover,
+button.btn:hover {
 	background-color: #3D9AD9;
 }
-button.actionbtn:disabled {
+button.actionbtn:disabled,
+button.btn:disabled {
 	background-color: #6DA0C2;
 	color: #eee;
 	background-image: none;

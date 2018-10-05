@@ -314,6 +314,9 @@ table.infotable td {
 	padding: 8px;
 	position: relative;
 }
+table.infotable td.label {
+	line-height: 40px;
+}
 table.infotable td.editable {
 	padding: 0px;
 }
@@ -717,7 +720,8 @@ div.non-input span {
 	background-color: #fffec4;
 }
 
-.infotable input {
+.infotable input,
+.form_header input {
 	margin: 0px;
 	height: 29px;
 	font-size: 13px;
@@ -725,6 +729,13 @@ div.non-input span {
 	box-shadow: none;
 	outline: none;
 }
+.infotable input {
+	box-shadow: none;
+}
+.infotable input[type=checkbox] {
+	height: auto;
+}
+
 table.infotable.alternating > tbody > tr:nth-child(even) input {
 	background-color: #f3f3f4;
 }
@@ -787,6 +798,10 @@ table.infotable tr.deleted.selected td {
 
 table.infotable.search td {
 	cursor: pointer;
+}
+
+table.infotable tr.detail {
+	vertical-align: middle;
 }
 
 tr.detail td {
@@ -1019,3 +1034,19 @@ span.low_qty {
     font-size: 30px;
     color: #aaa;
 }
+
+.dialog textarea,
+.dialog input[type=text],
+.dialog input[type=number] {
+        width: 100%;
+        margin: 2px 0px;
+        padding: 5px;
+        border: 1px solid #a0a0a0;
+        height: 24px;
+        line-height: 24px;
+        font-size: 16px;
+}
+.dialog textarea {
+	width: 97%;
+}
+

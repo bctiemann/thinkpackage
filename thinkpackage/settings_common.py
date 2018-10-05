@@ -90,6 +90,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ims.context_processors.settings_constants',
             ],
         },
     },
@@ -136,7 +137,7 @@ LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/account/two_factor/'
 
 LOGIN_EXEMPT_URLS = (
-#    r'^account/login/$',
+    r'^recovery/',
     r'^mgmt/account/login/$',
     r'^client/$',
     r'^client/account/login/$',

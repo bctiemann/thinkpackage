@@ -39,6 +39,7 @@
 </CFIF>
 {% endcomment %}
 
+  {% block login_form %}
   <div class="login-form-container">
 
 {#   <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>#}
@@ -99,6 +100,7 @@
   </form>
 
   </div>
+  {% endblock %}
 
 </div>
 {% endblock %}

@@ -92,28 +92,18 @@ ul.nav li.selected {
 
 #li_home {
 	background-image:
-		url('../images/icon_home.png'),
-		url('../images/icon_rightarrow.png');
 }
 #li_profile {
 	background-image:
-		url('../images/icon_profile.png'),
-		url('../images/icon_rightarrow.png');
 }
 #li_inventory {
 	background-image:
-		url('../images/icon_inventory.png'),
-		url('../images/icon_rightarrow.png');
 }
 #li_history {
 	background-image:
-		url('../images/icon_history.png'),
-		url('../images/icon_rightarrow.png');
 }
 #li_reorder {
 	background-image:
-		url('../images/icon_reorder.png'),
-		url('../images/icon_rightarrow.png');
 }
 
 

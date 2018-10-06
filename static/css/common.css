@@ -389,10 +389,10 @@ tr.detail.shipment-pending {
 }
 
 button.actionbtn,
-button.btn {
+.btn {
+	display: inline-block;
 	margin: 0px;
 	padding: 0px 60px 0px 40px;
-	height: 50px;
 	line-height: 50px;
 	font-size: 16px;
 	border: 1px solid #d9dadc;
@@ -403,19 +403,22 @@ button.btn {
 	font-family: 'Trebuchet MS';
 	color: #fff;
 	cursor: pointer;
+	text-decoration: none;
 }
 button.actionbtn:hover,
-button.btn:hover {
+.btn:hover {
 	background-color: #3D9AD9;
+	color: #fff;
+	text-decoration: none;
 }
 button.actionbtn:disabled,
-button.btn:disabled {
+.btn:disabled {
 	background-color: #6DA0C2;
 	color: #eee;
 	background-image: none;
 } 
 button.minibtn,
-button.btn-xs {
+.btn-xs {
     font-size: 13px;
     line-height: 34px;
     height: 34px;
@@ -425,12 +428,12 @@ button.btn-xs {
 	background-position: calc(100% - 20px) -3px;
 }
 button.red,
-button.btn-warning {
+.btn-warning {
 	background-color: #964D07;
 	background-image: url('../images/icon_x_white.png');
 }
 button.red:hover,
-button.btn-warning:hover {
+.btn-warning:hover {
 	background-color: #CC731F;
 }
 

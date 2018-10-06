@@ -3,7 +3,6 @@
 <html>
     <head>
     <title>Think Package Administration</title>
-<!---    <link rel=stylesheet href="{% static "accounts/css/style_gen.css" %}" type="text/css">--->
     <link rel=stylesheet href="{% static "css/common.css" %}" type="text/css">
     <link rel=stylesheet href="{% static "accounts/css/style.css" %}" type="text/css">
     <link rel=stylesheet href="{% static "accounts/css/jquery-ui.css" %}" type="text/css">
@@ -29,16 +28,21 @@ globals['customerid_current'] = {{ client_id }};
     <div class="logoutlink">{% now "D F j, g:i A" %}</div>
     <a href="{% url "home" %}"><div class="homelink"></div></a>
     </div>
+
+    <div class="content">
+    {% block content %}{% endblock %}
+    </div>
+
 {% else %}
 
 <body id="content" class="login">
 
-<img src="{% static "accounts/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
-<p>{% block login_page_title %}{% endblock %}</p>
+    <img src="{% static "accounts/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
+    <p>{% block login_page_title %}{% endblock %}</p>
+
+    {% block login_content %}{% endblock %}
 
 {% endif %}
-
-{% block content %}{% endblock %}
 
 </body>
 </html>

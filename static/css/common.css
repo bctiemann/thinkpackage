@@ -414,19 +414,23 @@ button.btn:disabled {
 	color: #eee;
 	background-image: none;
 } 
-button.minibtn {
+button.minibtn,
+button.btn-xs {
     font-size: 13px;
     line-height: 34px;
     height: 34px;
     width: 260px;
     margin: 3px;
     background-image: none;
+	background-position: calc(100% - 20px) -3px;
 }
-button.red {
+button.red,
+button.btn-warning {
 	background-color: #964D07;
 	background-image: url('../images/icon_x_white.png');
 }
-button.red:hover {
+button.red:hover,
+button.btn-warning:hover {
 	background-color: #CC731F;
 }
 

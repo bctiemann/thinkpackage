@@ -1,0 +1,145 @@
+<a id="adminmenulink" class="headermenu">Administration</a>
+<a id="toolsmenulink" class="headermenu">Tools</a>
+
+<div id="menu_admin" class="popupbox">
+<ul class="navmenu">
+
+<li><a class="tnav {% if page_selected == 'accounts' %}selected{% endif %}" href="{% url "admin:ims_user_changelist" %}">Accounts</a></li>
+<CFIF YourID.acclev IS 1>
+<li><a class="tnav {% if page_selected == 'waccounts' %}selected{% endif %}" href="waccounts.cfm">Operational Users</a></li>
+</CFIF>
+<li><a class="tnav {% if page_selected == 'securitylogs' %}selected{% endif %}" href="securitylogs.cfm">Security Logs</a></li>
+<li><a class="tnav {% if page_selected == 'actionlogs' %}selected{% endif %}" href="actionlogs.cfm">Action Logs</a></li>
+</ul>
+</div>
+
+
+<div id="menu_tools" class="popupbox">
+<ul class="navmenu">
+
+<li><a class="tnav" href="#" onClick="setupSearch();">Search</a></li>
+<li><a class="tnav" href="#" onClick="setupItemLookup();">Global Item Lookup</a></li>
+
+<cfif IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
+<cfoutput>
+<li><a class="tnav" href="#" onClick="setupInventoryList(#URL.customerid#);">Inventory List</a></li>
+<li><a class="tnav" href="#" onClick="setupDeliveryList(#URL.customerid#);">Delivery List</a></li>
+<li><a class="tnav" href="#" onClick="setupIncomingList(#URL.customerid#);">Incoming List</a></li>
+<li><a class="tnav" href="#" onClick="setupInventoryAnalysis(#URL.customerid#);">Inventory Analysis</a></li>
+</cfoutput>
+</cfif>
+</ul>
+</div>
+
+
+
+<div class="dialog" id="dialog_inventory_list" title="Inventory List">
+    <p>Fetch a report of all inventory items and quantities over time.</p>
+
+    <cfset fromdate = DateFormat(DateAdd("yyyy",-1,Now()),"mm/dd/yyyy")>
+    <cfset todate = DateFormat(DateAdd("m",1,Now()),"mm/dd/yyyy")>
+
+    <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+    <cfoutput>
+    <p>
+    Show from
+    <input type="text" id="inventory_list_fromdate" value="#fromdate#" style="width: 100px;" />
+    to
+    <input type="text" id="inventory_list_todate" value="#todate#" style="width: 100px;" />
+    </span>
+    </p>
+    </cfoutput>
+</div>
+
+<div class="dialog" id="dialog_delivery_list" title="Delivery List">
+    <p>Fetch a chronological report of all deliveries over time.</p>
+
+    <cfset fromdate = DateFormat(DateAdd("yyyy",-1,Now()),"mm/dd/yyyy")>
+    <cfset todate = DateFormat(DateAdd("m",1,Now()),"mm/dd/yyyy")>
+
+    <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+    <cfoutput>
+    <p>
+    Show from
+    <input type="text" id="delivery_list_fromdate" value="#fromdate#" style="width: 100px;" />
+    to
+    <input type="text" id="delivery_list_todate" value="#todate#" style="width: 100px;" />
+    </span>
+    </p>
+    </cfoutput>
+</div>
+
+<div class="dialog" id="dialog_incoming_list" title="Incoming List">
+    <p>Fetch a chronological report of all receivables over time.</p>
+
+    <cfset fromdate = DateFormat(DateAdd("yyyy",-1,Now()),"mm/dd/yyyy")>
+    <cfset todate = DateFormat(DateAdd("m",1,Now()),"mm/dd/yyyy")>
+
+    <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+    <cfoutput>
+    <p>
+    Show from
+    <input type="text" id="incoming_list_fromdate" value="#fromdate#" style="width: 100px;" />
+    to
+    <input type="text" id="incoming_list_todate" value="#todate#" style="width: 100px;" />
+    </span>
+    </p>
+    </cfoutput>
+</div>
+
+<div class="dialog" id="dialog_inventory_analysis" title="Inventory Analysis">
+    <p>(Under Construction)</p>
+</div>
+
+<div class="dialog" id="dialog_search" title="Search">
+    <cfform id="form_search">
+    <table class="infotable">
+    <tr>
+        <td class="label">Item #</td>
+        <td><cfinput type="text" class="clear" name="search_itemnum" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">DL #</td>
+        <td><cfinput type="text" class="clear" name="search_shipmentid" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">Shipment Date</td>
+        <td><cfinput type="text" class="clear" name="search_shippedon" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">Client</td>
+        <td><cfinput type="text" name="search_client" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">SO #</td>
+        <td><cfinput type="text" class="clear" name="search_so" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">PO #</td>
+        <td><cfinput type="text" class="clear" name="search_po" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">Carrier</td>
+        <td><cfinput type="text" class="clear" name="search_carrier" maxlength="50" value="" /></td>
+    </tr>
+    <tr>
+        <td class="label">Location</td>
+        <td><cfinput type="text" class="clear" name="search_location" maxlength="50" value="" /></td>
+    </tr>
+    </table>
+    </cfform>
+</div>
+
+<div class="dialog" id="dialog_item_lookup" title="Global Item Lookup">
+    <cfform id="form_item_lookup">
+    <table class="infotable">
+    <tr>
+        <td class="label">Item #</td>
+        <td><cfinput type="text" class="clear" name="item_lookup_itemnum" maxlength="50" value="" /></td>
+    </tr>
+    </table>
+    </cfform>
+</div>
+
+
+

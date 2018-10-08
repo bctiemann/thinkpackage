@@ -14,8 +14,8 @@
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 
     <script type="text/javascript">
-{% if client_id %}
-globals['customerid_current'] = {{ client_id }};
+{% if client %}
+globals['customerid_current'] = {{ client.id }};
 {% endif %}
     </script>
 </head>

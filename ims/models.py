@@ -117,34 +117,39 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
-    def get_selected_client(self, request):
-        "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
-        try:
-            if 'selected_client_id' in request.session:
-                try:
-                    client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
-                    if ClientUser.objects.filter(user=self, client__id__in=client.ancestors).count() == 0:
-                        client = None
-                except ClientUser.DoesNotExist:
-                    client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
-                    if client:
-                        request.session['selected_client_id'] = client.id
-                return client
-            else:
-                client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
-                if client:
-                    request.session['selected_client_id'] = client.id
-            return client
-        except Exception, e:
-            return None
+#    def get_selected_client(self, request):
+#        "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
+#        try:
+#            if 'selected_client_id' in request.session:
+#                try:
+#                    client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
+#                    if ClientUser.objects.filter(user=self, client__id__in=client.ancestors).count() == 0:
+#                        client = None
+#                except ClientUser.DoesNotExist:
+#                    client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
+#                    if client:
+#                        request.session['selected_client_id'] = client.id
+#                return client
+#            else:
+#                client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
+#                if client:
+#                    request.session['selected_client_id'] = client.id
+#            return client
+#        except Exception, e:
+#            return None
 
-    def get_children_of_selected(self, request):
-        "Get list of clients at or below the selected client in the hierarchy"
-        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self.get_selected_client(request))
+#    def get_children_of_selected_client(self, request):
+#        # Get list of clients at or below the selected client in the hierarchy
+#        return self.get_children_of_client(self.get_selected_client(request))
+##        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self.get_selected_client(request))
+
+#    def get_children_of_client(self, client):
+#        # Get list of clients at or below the selected client in the hierarchy
+#        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), client)
 
     @property
     def child_clients(self):
-        "List of clients this user is associated with, along with depth for rendering with indents in a select menu"
+        # List of clients this user is associated with, along with depth for rendering with indents in a select menu
         child_clients = []
         client_users = ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')
         for cu in client_users:
@@ -155,16 +160,16 @@ class User(AbstractBaseUser):
                     child_clients.append(child)
         return child_clients
 
-    def is_authorized_for_client(self, request):
-        "Takes the current request and returns whether the user is authorized to access the selected client defined in the session"
-        client = self.get_selected_client(request)
+    def is_authorized_for_client(self, client):
+        # Takes the current request and returns whether the user is authorized to access the selected client defined in the session
+#        client = self.get_selected_client(request)
         if not client:
             return False
-        return ClientUser.objects.filter(user=self, client__id__in=client.ancestors).count() > 0
+        return ClientUser.objects.filter(user=self, client__id__in=client.ancestors).exists()
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
+        # Is the user a member of staff?
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
@@ -197,6 +202,10 @@ class Client(models.Model):
             new_ancestors.append(self.parent)
             new_ancestors += self.parent.get_ancestors(new_ancestors)
         return new_ancestors
+
+    def get_children(self):
+        # Get list of clients at or below the selected client in the hierarchy
+        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self)
 
     def save(self, *args, **kwargs):
         if not self.created_on:

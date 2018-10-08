@@ -95,8 +95,8 @@ def select_client(request, client_id):
 
 
 def client_profile(request):
-    selected_client = request.user.get_selected_client(request)
-    primary_contact = selected_client.clientuser_set.filter(is_primary=True).first()
+#    selected_client = get_selected_client(request)
+    primary_contact = request.selected_client.clientuser_set.filter(is_primary=True).first()
 
     context = {
         'company_info': company_info,
@@ -107,8 +107,8 @@ def client_profile(request):
 
 
 def client_profile_locations(request):
-    selected_client = request.user.get_selected_client(request)
-    locations = Location.objects.filter(client=selected_client, is_active=True).order_by('name')
+#    selected_client = get_selected_client(request)
+    locations = Location.objects.filter(client=request.selected_client, is_active=True).order_by('name')
     context = {
         'locations': locations,
     }
@@ -116,8 +116,8 @@ def client_profile_locations(request):
 
 
 def client_profile_location_detail(request, location_id):
-    selected_client = request.user.get_selected_client(request)
-    location = get_object_or_404(Location, pk=location_id, is_active=True, client=selected_client)
+#    selected_client = get_selected_client(request)
+    location = get_object_or_404(Location, pk=location_id, is_active=True, client=request.selected_client)
     context = {
         'location': location,
     }
@@ -125,14 +125,14 @@ def client_profile_location_detail(request, location_id):
 
 
 def client_inventory(request):
-    selected_client = request.user.get_selected_client(request)
-    children_of_selected = request.user.get_children_of_selected(request)
-    locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected], is_active=True).order_by('name')
+#    selected_client = get_selected_client(request)
+    children_of_selected_client = request.selected_client.get_children()
+    locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected_client], is_active=True).order_by('name')
 
     context = {
         'company_info': company_info,
-        'selected_client': selected_client,
-        'children_of_selected': children_of_selected,
+        'selected_client': request.selected_client,
+        'children_of_selected_client': children_of_selected_client,
         'locations': locations,
         'shipmentid': request.GET.get('shipmentid', None),
     }
@@ -148,13 +148,13 @@ def client_inventory_list(request):
         for transaction in shipment.transaction_set.all():
             shipment_product_cases[transaction.product.id] = transaction.cases
 
-    selected_client = request.user.get_selected_client(request)
-    children_of_selected = request.user.get_children_of_selected(request)
-    filter_clients = [c['obj'] for c in children_of_selected]
+#    selected_client = get_selected_client(request)
+    children_of_selected_client = request.selected_client.get_children()
+    filter_clients = [c['obj'] for c in children_of_selected_client]
 
     tab = request.GET.get('tab', 'request')
     context = {
-        'selected_client': selected_client,
+        'selected_client': request.selected_client,
         'shipment': shipment,
         'tab': tab,
     }
@@ -162,7 +162,7 @@ def client_inventory_list(request):
     if tab == 'request':
 
         products = []
-        if selected_client:
+        if request.selected_client:
             for product in Product.objects.filter(client__in=filter_clients, is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
                 shipment_cases = None
                 if shipment and product.id in shipment_product_cases:
@@ -185,7 +185,8 @@ def client_inventory_list(request):
 
 def client_delivery_products(request, shipment_id):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
-    children_of_selected = request.user.get_children_of_selected(request)
+#    selected_client = get_selected_client(request)
+    children_of_selected_client = request.selected_client.get_children()
 
     context = {
         'shipment': shipment,
@@ -197,7 +198,7 @@ def client_delivery_products(request, shipment_id):
 def client_inventory_request_delivery(request):
 
     # First validate the JSON data in the request
-    selected_client = request.user.get_selected_client(request)
+#    selected_client = get_selected_client(request)
     if not 'json' in request.POST:
         return JsonResponse({'success': False, 'message': 'Malformed request.'})
     try:
@@ -209,7 +210,7 @@ def client_inventory_request_delivery(request):
     requested_products = []
     for requested_product in delivery_data['products']:
         try:
-            product = Product.objects.get(pk=requested_product['productid'], client=selected_client)
+            product = Product.objects.get(pk=requested_product['productid'], client=request.selected_client)
         except Product.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
         if requested_product['cases'] > product.cases_available:
@@ -237,7 +238,7 @@ def client_inventory_request_delivery(request):
         shipment_updated = True
     else:
         shipment = Shipment(
-            client = selected_client,
+            client = request.selected_client,
             user = request.user,
             status = 0,
         )
@@ -252,7 +253,7 @@ def client_inventory_request_delivery(request):
             product = product['obj'],
             is_outbound = True,
             shipment = shipment,
-            client = selected_client,
+            client = request.selected_client,
             cases = product['cases'],
         )
         transaction.save()
@@ -262,7 +263,7 @@ def client_inventory_request_delivery(request):
     context = {
         'user': request.user,
         'shipment': shipment,
-        'client': selected_client,
+        'client': request.selected_client,
         'location': location,
         'total_cases': total_cases,
         'requested_products': requested_products,
@@ -282,14 +283,14 @@ def client_inventory_request_delivery(request):
 
 def client_history(request):
 
-    selected_client = request.user.get_selected_client(request)
+#    selected_client = get_selected_client(request)
     products = None
-    if selected_client:
-        products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
+    if request.selected_client:
+        products = request.selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
         'company_info': company_info,
-        'selected_client': selected_client,
+        'selected_client': request.selected_client,
         'products': products,
     }
     return render(request, 'client/history.html', context)
@@ -297,14 +298,14 @@ def client_history(request):
 
 def client_reorder(request):
 
-    selected_client = request.user.get_selected_client(request)
+#    selected_client = get_selected_client(request)
     products = None
-    if selected_client:
-        products = selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
+    if request.selected_client:
+        products = request.selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
         'company_info': company_info,
-        'selected_client': selected_client,
+        'selected_client': request.selected_client,
         'products': products,
     }
     return render(request, 'client/reorder.html', context)

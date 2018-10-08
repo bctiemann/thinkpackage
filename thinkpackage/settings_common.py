@@ -69,6 +69,7 @@ MIDDLEWARE_CLASSES = [
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'ims.middleware.LoginRequiredMiddleware',
+    'ims.middleware.SelectedClientMiddleware',
     'ims.middleware.PermissionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

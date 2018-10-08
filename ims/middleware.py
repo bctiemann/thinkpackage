@@ -5,6 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
 from re import compile
 
+from ims.models import Client, ClientUser
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -41,14 +43,49 @@ class LoginRequiredMiddleware:
 #                return HttpResponseRedirect(settings.LOGIN_URL)
 
 
+class SelectedClientMiddleware:
+
+    def get_selected_client(self, request):
+        "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
+        try:
+            if 'selected_client_id' in request.session:
+                try:
+                    client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
+                    if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
+                        client = None
+                except ClientUser.DoesNotExist:
+                    client = ClientUser.objects.filter(user=request.user, client__is_active=True).first().client
+                    if client:
+                        request.session['selected_client_id'] = client.id
+                return client
+            else:
+                client = ClientUser.objects.filter(user=request.user, client__is_active=True).first().client
+                if client:
+                    request.session['selected_client_id'] = client.id
+            return client
+        except Exception, e:
+            logger.info(e)
+            return None
+
+    def process_request(self, request):
+        request.selected_client = self.get_selected_client(request)
+
+
 class PermissionsMiddleware:
+
+    def is_authorized_for_client(self, user, client):
+        if not client:
+            return False
+        return ClientUser.objects.filter(user=user, client__id__in=client.ancestors).exists()
 
     def process_request(self, request):
         path = request.path_info.lstrip('/')
         if not any(m.match(path) for m in EXEMPT_URLS):
             if request.user.is_authenticated() and path.startswith('mgmt/') and not request.user.is_admin:
                 raise PermissionDenied
-            if request.user.is_authenticated() and path.startswith('client/') and not request.user.is_authorized_for_client(request):
+#            if request.user.is_authenticated() and path.startswith('client/') and not self.is_authorized_for_client(request.user, self.get_selected_client(request)):
+            if request.user.is_authenticated() and path.startswith('client/') and not self.is_authorized_for_client(request.user, request.selected_client):
+                logger.info('Unauthorized client login; logging out')
                 logout(request)
                 return HttpResponseRedirect(reverse_lazy('client:login'))
             if request.user.is_authenticated() and path.startswith('warehouse/') and not request.user.is_warehouse:

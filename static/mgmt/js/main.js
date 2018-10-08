@@ -856,7 +856,7 @@ console.log('refreshInventory');
     }
 
     $('#list_inventory tbody').empty().append($('<img>', {
-        src: '/static/ims/images/loading_bar.gif',
+        src: '/static/images/loading_bar.gif',
         class: 'loading',
     }));
 
@@ -920,10 +920,11 @@ console.log(url);
 }
 
 function hideLocationFilter() {
-    if ($('#location_filter').is(':hover'))
+    if ($('#location_filter').is(':hover')) {
         setTimeout('hideLocationFilter()',filter_popup_timeout);
-    else
+    } else {
         $('#location_filter').hide();
+    }
 }
 
 function refreshShipments(shipmentid) {
@@ -932,7 +933,7 @@ function refreshShipments(shipmentid) {
     }
 
     $('#list_shipments tbody').empty().append($('<img>', {
-        src: '/static/ims/images/loading_bar.gif',
+        src: '/static/images/loading_bar.gif',
         class: 'loading',
     }));
 

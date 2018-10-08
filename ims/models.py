@@ -476,28 +476,28 @@ class Shipment(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     date_shipped = models.DateTimeField(null=True, blank=True, db_column='shippedon')
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
-    carrier = models.CharField(max_length=50, blank=True)
-    tracking = models.CharField(max_length=50, blank=True)
+    carrier = models.CharField(max_length=50, blank=True, default='')
+    tracking = models.CharField(max_length=50, blank=True, default='')
     ship_by = models.IntegerField(null=True, blank=True, db_column='shipby')
-    purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
-    shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
+    purchase_order = models.CharField(max_length=50, blank=True, default='', db_column='PO')
+    shipment_order = models.CharField(max_length=50, blank=True, default='', db_column='SO')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
-    third_party = models.CharField(max_length=50, blank=True, db_column='3rdparty')
-    third_party_address = models.TextField(blank=True, db_column='3rdpartyaddress')
-    third_party_phone_number = models.CharField(max_length=30, blank=True, db_column='3rdpartyphone')
-    third_party_per = models.CharField(max_length=30, blank=True, db_column='3rdpartyper')
-    third_party_received = models.CharField(max_length=16, blank=True, db_column='3rdpartyrecvd')
-    third_party_charges_advanced = models.CharField(max_length=16, blank=True, db_column='3rdpartychgadvanced')
-    pro_number = models.CharField(max_length=50, blank=True, db_column='pro')
-    purchase_order_number = models.CharField(max_length=50, blank=True, db_column='loadnum')
-    shipper_instructions = models.TextField(blank=True, db_column='shipperinstructions')
-    consignee_instructions = models.TextField(blank=True, db_column='consigneeinstructions')
+    third_party = models.CharField(max_length=50, blank=True, default='', db_column='3rdparty')
+    third_party_address = models.TextField(null=True, blank=True, db_column='3rdpartyaddress')
+    third_party_phone_number = models.CharField(max_length=30, blank=True, default='', db_column='3rdpartyphone')
+    third_party_per = models.CharField(max_length=30, blank=True, default='', db_column='3rdpartyper')
+    third_party_received = models.CharField(max_length=16, blank=True, default='', db_column='3rdpartyrecvd')
+    third_party_charges_advanced = models.CharField(max_length=16, blank=True, default='', db_column='3rdpartychgadvanced')
+    pro_number = models.CharField(max_length=50, blank=True, default='', db_column='pro')
+    purchase_order_number = models.CharField(max_length=50, blank=True, default='', db_column='loadnum')
+    shipper_instructions = models.TextField(null=True, blank=True, db_column='shipperinstructions')
+    consignee_instructions = models.TextField(null=True, blank=True, default='', db_column='consigneeinstructions')
     shipper_address = models.ForeignKey('ShipperAddress', null=True, blank=True, db_column='shipperaddress')
-    inside_delivery = models.BooleanField(default=False, db_column='insidedelivery')
-    liftgate_required = models.BooleanField(default=False, db_column='liftgate')
-    appointment_required = models.BooleanField(default=False, db_column='appointment')
-    sort_segregation = models.BooleanField(default=False, db_column='sortseg')
-    shipment_class = models.CharField(max_length=50, blank=True, db_column='class')
+    inside_delivery = models.NullBooleanField(default=False, db_column='insidedelivery')
+    liftgate_required = models.NullBooleanField(default=False, db_column='liftgate')
+    appointment_required = models.NullBooleanField(default=False, db_column='appointment')
+    sort_segregation = models.NullBooleanField(default=False, db_column='sortseg')
+    shipment_class = models.CharField(max_length=50, blank=True, default='', db_column='class')
     pallet_count = models.IntegerField(null=True, blank=True, db_column='numpallets')
     accounting_status = models.IntegerField(choices=ACCOUNTING_STATUS_CHOICES, default=0, db_column='acctstatus')
     invoice_number = models.IntegerField(null=True, blank=True, db_column='invoice')
@@ -746,3 +746,43 @@ class ShipmentDoc(models.Model):
     class Meta:
         db_table = 'ShipmentDocs'
 
+
+class BulkOrder(models.Model):
+    id = models.AutoField(primary_key=True, db_column='bulkorderid')
+    client = models.ForeignKey('Client', null=True, db_column='customerid')
+    filename = models.CharField(max_length=50, blank=True, default='')
+    date_ordered = models.DateTimeField(null=True, blank=True, db_column='stamp')
+    date_imported = models.DateTimeField(auto_now_add=True, db_column='imported')
+    location = models.ForeignKey('Location', null=True, db_column='locationid')
+    purchase_order = models.CharField(max_length=40, blank=True, default='', db_column='PO')
+    date_delivery = models.DateTimeField(null=True, blank=True, db_column='deliverydate')
+    account_number = models.CharField(max_length=32, blank=True, default='', db_column='accountnum')
+    message = models.CharField(max_length=50, blank=True, default='')
+    location_address_1 = models.CharField(max_length=200, blank=True, default='', db_column='locaddress1')
+    location_address_2 = models.CharField(max_length=200, blank=True, default='', db_column='locaddress2')
+    location_city = models.CharField(max_length=160, blank=True, default='', db_column='loccity')
+    location_state = models.CharField(max_length=12, blank=True, default='', db_column='locstate')
+    location_zip = models.CharField(max_length=40, blank=True, default='', db_column='loczip')
+    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid')
+
+    class Meta:
+        db_table = 'BulkOrders'
+
+
+class BulkOrderItem(models.Model):
+    SPLIT_FLAG_CHOICES = (
+        ('Y', 'Yes'),
+        ('N', 'No'),
+    )
+
+    id = models.AutoField(primary_key=True, db_column='bulkorderitemid')
+    bulk_order = models.ForeignKey('BulkOrder', null=True, db_column='bulkorderid')
+    item_number = models.CharField(max_length=40, blank=True, default='', db_column='itemnum')
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, db_column='quantity')
+    package_type = models.CharField(max_length=20, blank=True, default='', db_column='pkgtype')
+    split_flag = models.CharField(choices=SPLIT_FLAG_CHOICES, max_length=1, blank=True, default='', db_column='splitflag')
+    product_name = models.TextField(null=True, blank=True, db_column='pname')
+    bid_price = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True, db_column='bidprice')
+
+    class Meta:
+        db_table = 'BulkOrderItems'

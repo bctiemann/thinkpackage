@@ -383,7 +383,7 @@ class Product(models.Model):
 
     @property
     def cases_unshipped(self):
-        return Shipment.objects.filter(transaction__product=self, date_shipped__isnull=True).aggregate(cases_unshipped=Sum('transaction__cases'))['cases_unshipped'] or 0
+        return Shipment.objects.filter(transaction__product=self, status__lt=2).aggregate(cases_unshipped=Sum('transaction__cases'))['cases_unshipped'] or 0
 
     @property
     def cases_available(self):

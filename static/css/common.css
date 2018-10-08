@@ -886,6 +886,7 @@ ul.mode_toggle a li.selected {
 }
 
 td.flashing a {
+	transform: translate3d(0, 0, 0);
         animation: flash 1s ease-out; 
         animation-iteration-count: infinite;
         -webkit-animation: flash 1s ease-out; 
@@ -920,6 +921,7 @@ td.flashing a {
 
 span.partial_receivable,
 span.low_qty {
+	transform: translate3d(0, 0, 0);
 	padding: 4px;
 	border-radius: 3px;
 	animation: bg-flash 1s ease-out; 

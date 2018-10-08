@@ -189,7 +189,7 @@ class Client(models.Model):
         return (self.company_name)
 
     def get_absolute_url(self):
-        return reverse('mgmt-profile', kwargs={'client_id': self.id})
+        return reverse('mgmt:profile', kwargs={'client_id': self.id})
 
     def get_ancestors(self, ancestors=None):
         new_ancestors = []
@@ -242,7 +242,7 @@ class CustContact(models.Model):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
     def get_absolute_url(self):
-        return reverse('mgmt-profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
+        return reverse('mgmt:profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
 
     class Meta:
         db_table = 'CustContacts'
@@ -336,7 +336,7 @@ class Location(models.Model):
         return (self.name)
 
     def get_absolute_url(self):
-        return reverse('mgmt-profile', kwargs={'client_id': self.client_id, 'location_id': self.pk})
+        return reverse('mgmt:profile', kwargs={'client_id': self.client_id, 'location_id': self.pk})
 
     class Meta:
         db_table = 'Locations'
@@ -437,7 +437,7 @@ class Product(models.Model):
         return (self.name)
 
     def get_absolute_url(self):
-        return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
 
     def save(self, *args, **kwargs):
         if not self.product_id:
@@ -542,7 +542,7 @@ class Shipment(models.Model):
         return ('{0}'.format(self.id))
 
     def get_absolute_url(self):
-        return reverse('warehouse-shipment-details', kwargs={'shipment_id': self.id})
+        return reverse('warehouse:shipment-details', kwargs={'shipment_id': self.id})
 
     class Meta:
         db_table = 'Shipments'
@@ -562,7 +562,7 @@ class Receivable(models.Model):
         return ('{0}'.format(self.id))
 
     def get_absolute_url(self):
-        return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
 
     class Meta:
         db_table = 'Receivables'
@@ -637,7 +637,7 @@ class Transaction(models.Model):
         return '1/{0}'.format(self.total_pallet_shares)
 
     def get_absolute_url(self):
-        return reverse('mgmt-inventory', kwargs={'client_id': self.client_id})
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
@@ -738,7 +738,7 @@ class ShipmentDoc(models.Model):
         super(ShipmentDoc, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('mgmt-shipment-docs', kwargs={'shipment_id': self.shipment_id})
+        return reverse('mgmt:shipment-docs', kwargs={'shipment_id': self.shipment_id})
 
     def __unicode__(self):
         return ('{0}.{1}'.format(self.basename, self.ext))

@@ -170,7 +170,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
             transaction.product.cases_inventory_orig = transaction.product.cases_inventory
             transaction.product.cases_inventory -= transaction.cases
             if transaction.product.cases_inventory < 0:
-                logger.warning('Shipment {0}: {1} cases deducted from product {2}, greater than {3} cases in stock.'format(self.object.id, transaction.cases, transaction.product.cases_inventory_orig))
+                logger.warning('Shipment {0}: {1} cases deducted from product {2}, greater than {3} cases in stock'.format(self.object.id, transaction.cases, transaction.product.cases_inventory_orig))
                 transaction.product.cases_inventory = 0
 #            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
             transaction.product.save()

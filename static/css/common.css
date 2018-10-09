@@ -1091,3 +1091,39 @@ span.low_qty {
 	width: 97%;
 }
 
+
+h1.pageheader {
+        background-color: none;
+        font-family: Trebuchet MS;
+        font-size: 22px;
+        height: 28px;
+        margin: 0px;
+        padding-top: 45px;
+        padding-left: 10px;
+}
+h1.pageheader a {
+        display: inline-block;
+        float: right;
+        margin: 1px 10px 1px 0px;
+        font-size: 12px;
+        padding: 5px;
+        background-color: #eeeeee;
+        border-radius: 10px;
+        color: #000;
+        font-family: Arial Bold, Arial;
+        text-decoration: none;
+}
+h1.pageheader a:hover {
+        box-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+}
+h1.pageheader a.selected {
+        box-shadow:inset 0px 1px 3px rgba(0,0,0,0.8);
+}
+ 
+table.pageheader {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: #dedede;
+        font-size: 10pt;
+}
+

@@ -376,14 +376,17 @@ class Command(BaseCommand):
             c.execute("""SELECT * FROM actionlogs""")
             for old in c.fetchall():
                 print old['log_message']
+                app = ''
                 try:
                     admin_user = ims_models.AdminUser.objects.get(pk=old['adminid'])
+                    app = 'mgmt'
                 except ims_models.AdminUser.DoesNotExist:
                     admin_user = None
                 try:
                     warehouse_user = ims_models.WarehouseUser.objects.get(pk=old['wuserid'])
                 except ims_models.WarehouseUser.DoesNotExist:
                     warehouse_user = None
+                    app = 'warehouse'
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -398,6 +401,7 @@ class Command(BaseCommand):
                     client = client,
                     product = product,
                     log_message = old['log_message'],
+                    app = app,
                 )
                 new.date_created = old['stamp']
                 new.save()

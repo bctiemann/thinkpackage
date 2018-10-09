@@ -298,6 +298,25 @@ def mgmt_location_form(request):
     return render(request, 'mgmt/location_form.html', context)
 
 
+def mgmt_action_log(request):
+    logs = ActionLog.objects.all()
+
+    product_id = request.GET.get('product_id', None)
+    if product_id:
+        product = get_object_or_404(Product, pk=product_id)
+        logs = logs.filter(product=product)
+
+    client_id = request.GET.get('client_id', None)
+    if client_id:
+        client = get_object_or_404(Client, pk=client_id)
+        logs = logs.filter(client=client)
+
+    context = {
+        'logs': logs,
+    }
+    return render(request, 'mgmt/action_log.html', context)
+
+
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
     form_class = ClientForm
@@ -433,6 +452,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
             client = self.object.client,
             product = self.object,
             log_message = 'Created',
+            app = 'mgmt',
         )
         logger.info('Product {0} ({1}) created.'.format(self.object, self.object.id))
         return response
@@ -462,6 +482,7 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
             client = self.object.client,
             product = self.object,
             log_message = 'Updated cases to {0}'.format(self.object.cases_inventory),
+            app = 'mgmt',
         )
         logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
         return response
@@ -495,6 +516,7 @@ class ProductDelete(AjaxableResponseMixin, UpdateView):
             client = self.object.client,
             product = self.object,
             log_message = log_message,
+            app = 'mgmt',
         )
         return response
 
@@ -566,6 +588,7 @@ class ProductTransfer(APIView):
             client = self.object.client,
             product = self.object,
             log_message = 'Transferred {0} to {1}'.format(cases, to_product.id),
+            app = 'mgmt',
         )
 
         # Create incoming transaction
@@ -586,6 +609,7 @@ class ProductTransfer(APIView):
             client = self.object.client,
             product = self.object,
             log_message = 'Transferred {0} from {1}'.format(cases, from_product.id),
+            app = 'mgmt',
         )
 
         logger.info('Product {0} ({1}) transferred from {2} ({3}) to {4} ({5})'.format(from_product, from_product.id, from_product.client, from_product.client.id, to_product.client, to_product.client.id))
@@ -661,6 +685,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             client = self.object.client,
             product = self.object,
             log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases'])
+            app = 'mgmt',
         )
 
         # If we received fewer cases than expected, create a new receivable with the remainder

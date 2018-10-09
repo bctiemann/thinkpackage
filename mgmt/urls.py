@@ -67,4 +67,6 @@ urlpatterns = [
 
     url(r'^(?P<client_id>\d+)/inventory/list/$', mgmt_views.mgmt_inventory_list, name='inventory-list'),
     url(r'^(?P<client_id>\d+)/shipments/list/$', mgmt_views.mgmt_shipments_list, name='shipments-list'),
+
+    url(r'^action_log/$', mgmt_views.mgmt_action_log, name='action-log'),
 ]

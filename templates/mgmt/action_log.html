@@ -1,0 +1,125 @@
+{% extends "mgmt/base.html" %}
+
+{% block content %}
+<!-- -->
+<CFIF NOT IsDefined("OpCode")>
+<CFIF IsDefined("URL.Option")>
+        <CFSET OpCode = #URL.Option#> 
+<CFELSE>
+        <CFSET OpCode = 0>
+</CFIF>
+</CFIF>
+
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+    <cfset sortCols = "log_stamp">
+        
+    <cfif NOT IsDefined("URL.sortby") OR NOT ListContains(sortCols, URL.sortby)>
+        <cfset URL.sortby = "log_stamp">
+    </cfif>
+    <cfif NOT IsDefined("URL.sortdir") OR NOT ListContains("ASC,DESC", URL.sortdir)>
+        <cfset URL.sortdir = "DESC">
+    </cfif>
+    <cfif NOT IsDefined("URL.page") OR NOT IsNumeric(URL.page) OR URL.page LT 1>
+        <cfset URL.page = 1>
+    </cfif>
+
+
+<h1 class="pageheader">
+Action Logs
+<cfoutput><a href="#CGI.SCRIPT_NAME#?sortby=#URL.sortby#&sortdir=#URL.sortdir#">clear filters</a></cfoutput>
+</h1>
+
+<div id="content">
+
+<!-- -->
+<CFIF OpCode IS 0>
+
+        <CFQUERY NAME="AllRecords" DATASOURCE="#DSN#">
+                SELECT *,ActionLogs.stamp AS log_stamp,admin.fullname as admin_fullname,wuser.fullname as wuser_fullname FROM ActionLogs
+                LEFT JOIN admin ON admin.adminid=ActionLogs.adminid
+                LEFT JOIN wuser ON wuser.wuserid=ActionLogs.wuserid
+                LEFT JOIN Products ON Products.productid=ActionLogs.productid
+                LEFT JOIN Customers ON Customers.customerid=Products.customerid
+                WHERE 1
+                <cfif IsDefined("URL.productid") AND IsValid("integer",URL.productid)>
+                    AND ActionLogs.productid = <CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_INTEGER">
+                </cfif>
+                <cfif IsDefined("URL.customerid") AND IsValid("integer",URL.customerid)>
+                    AND Products.customerid = <CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_INTEGER">
+                </cfif>
+        </CFQUERY>
+
+        <cfset pageViewLink = getPageViewLink(allRecords.recordCount)>
+        <CFSET Pages = pagesLink(#allRecords.recordCount#,#rowsperpage#,int(#URL.page#),#CGI.SCRIPT_NAME#,#URL#)>
+
+        <CFQUERY NAME="AccessLogs" DATASOURCE="#DSN#">
+                SELECT *,ActionLogs.stamp AS log_stamp,admin.fullname as admin_fullname,wuser.fullname as wuser_fullname,Products.customerid as product_customerid FROM ActionLogs
+                LEFT JOIN admin ON admin.adminid=ActionLogs.adminid
+                LEFT JOIN wuser ON wuser.wuserid=ActionLogs.wuserid
+                LEFT JOIN Products ON Products.productid=ActionLogs.productid
+                LEFT JOIN Customers ON Customers.customerid=Products.customerid
+                WHERE 1
+                <cfif IsDefined("URL.productid") AND IsValid("integer",URL.productid)>
+                    AND ActionLogs.productid = <CFQUERYPARAM value="#URL.productid#" CFSQLType="CF_SQL_INTEGER">
+                </cfif>
+                <cfif IsDefined("URL.customerid") AND IsValid("integer",URL.customerid)>
+                    AND Products.customerid = <CFQUERYPARAM value="#URL.customerid#" CFSQLType="CF_SQL_INTEGER">
+                </cfif>
+                ORDER BY #URL.sortby# #URL.sortdir#
+                LIMIT #Pages.offset#,#Pages.thispage#
+         </CFQUERY>
+
+<p class="info"></p>
+
+    <CFOUTPUT>
+    <div class="pager">
+    #pageViewLink#
+    #Pages.pages#
+    </div>
+    </CFOUTPUT>
+
+<div class="form_header dark">
+<span class="title">Actions</span>
+</div>
+
+        <table class="infotable alternating">
+        <tr>
+                <th></th>
+                <th>User</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Message</th>
+        </tr>
+        {% for log in logs %}
+        <CFOUTPUT QUERY="AccessLogs">
+	<tr style="background-color: ###iif(currentrow MOD 2,DE('#row1color#'),DE('#row2color#'))#; vertical-align: top">
+                <td><small>{{ log.date_created|date:"DATETIME_FORMAT" }}</small></td>
+                <td><small>#admin_fullname IS NOT "" ? "[admin] " & admin_fullname : "[#role#] " & wuser_fullname#</small></td>
+                <td><small><a href="#CGI.SCRIPT_NAME#?sortby=#URL.sortby#&sortdir=#URL.sortdir#&customerid=#product_customerid#">{{ log.client.company_name }}</a></small></td>
+                <td><small><a href="#CGI.SCRIPT_NAME#?sortby=#URL.sortby#&sortdir=#URL.sortdir#&productid=#productid#">[{{ log.product.item_number }}] {{ log.product.name|truncatechars:50 }}</a></small></td>
+                <td><small>{{ log.log_message }}</small></td>
+        </tr>
+	</CFOUTPUT>
+        {% endfor %}
+        </table>
+</CFIF>
+<!-- -->
+<CFIF OpCode IS 1>
+        <CFQUERY NAME="SecurityLogs" DATASOURCE="#DSN#" MAXROWS=100>
+                SELECT * FROM securitylogs
+                ORDER BY Stamp DESC
+        </CFQUERY>
+
+<p class="info">
+Administration security logs are listed below.
+These are <b>failed</b> attempts to access the 
+<b>Administration</b> section.
+Last <CFOUTPUT>#SecurityLogs.RecordCount#</CFOUTPUT>.</p>
+</CFIF>
+
+
+</div>
+<CFINCLUDE TEMPLATE="inc_footer.cfm">
+
+{% endblock %}

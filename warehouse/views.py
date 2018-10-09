@@ -165,6 +165,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
                 client = self.object.client,
                 product = self.object,
                 log_message = 'Shipment {0} shipped. {1} cases deducted'.format(self.object.id, transaction.cases)
+                app = 'warehouse',
             )
 
             transaction.product.cases_inventory_orig = transaction.product.cases_inventory

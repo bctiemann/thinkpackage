@@ -780,6 +780,10 @@ class ActionLog(models.Model):
     client = models.ForeignKey('Client', null=True, blank=True, db_column='customerid')
     product = models.ForeignKey('Product', null=True, blank=True, db_column='productid')
     log_message = models.TextField(null=True, blank=True)
+    app = models.CharField(max_length=20, blank=True, default='')
+
+    class Meta:
+        ordering = ('-date_created',)
 
 
 class BulkOrder(models.Model):

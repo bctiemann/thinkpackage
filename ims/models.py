@@ -646,6 +646,16 @@ class Transaction(models.Model):
             return self.total_pallets_for_product
         return '1/{0}'.format(self.total_pallet_shares)
 
+    @property
+    def is_transfer(self):
+        return self.transfer_client != None
+
+    @property
+    def is_shipped(self):
+        if not self.shipment:
+            return False
+        return self.shipment.status == 2
+
     def get_absolute_url(self):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
 

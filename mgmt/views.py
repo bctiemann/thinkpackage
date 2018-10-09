@@ -211,7 +211,17 @@ def mgmt_product_history(request, product_id):
     except:
         pass
 
-    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('shipment__status', '-date_created')
+#    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('shipment__status', '-date_created')
+    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('-date_created')
+
+    cases_balance_differential = product.cases_inventory
+    for transaction in history:
+        transaction.cases_remaining_differential = cases_balance_differential
+        if transaction.is_shipped or not transaction.is_outbound or transaction.is_transfer:
+            if transaction.is_outbound:
+                cases_balance_differential += transaction.cases
+            else:
+                cases_balance_differential -= transaction.cases
 
     context = {
         'product': product,

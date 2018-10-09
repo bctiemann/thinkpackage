@@ -65,7 +65,7 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% if transaction.shipment == None and transaction.receivable == None %}
                 {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
             {% elif not transaction.is_outbound %}
-                {{ transaction.receivable.date_received|date:"SHORT_DATE_FORMAT" }}
+                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
             {% else %}
                 {{ transaction.shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
             {% endif %}
@@ -123,11 +123,14 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% endif %}
         </td>
         <td class="numeric">
+{% comment %}
             {% if transaction.quantity_remaining and transaction.product.packing %}
                 {{ transaction.cases_remaining }}
             {% else %}
                 0
             {% endif %}
+{% endcomment %}
+            {{ transaction.cases_remaining_differential }}
         </td>
         <td class="numeric"><a href="shipments.cfm?customerid=#customerid#&shipmentid=#shipmentid#">{{ transaction.shipment.id }}</a></td>
         <td class="action" style="width: 60px;">

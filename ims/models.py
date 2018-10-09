@@ -511,6 +511,7 @@ class Shipment(models.Model):
     pallet_count = models.IntegerField(null=True, blank=True, db_column='numpallets')
     accounting_status = models.IntegerField(choices=ACCOUNTING_STATUS_CHOICES, default=0, db_column='acctstatus')
     invoice_number = models.IntegerField(null=True, blank=True, db_column='invoice')
+    delivery_charge = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, db_column='deliverycharge')
 
     @property
     def is_pending(self):

@@ -237,6 +237,7 @@ class Command(BaseCommand):
                     pallet_count = old['numpallets'],
                     accounting_status = old['acctstatus'],
                     invoice_number = old['invoice'],
+                    delivery_charge = old['deliverycharge'],
                 )
                 new.date_created = old['createdon']
                 new.save()

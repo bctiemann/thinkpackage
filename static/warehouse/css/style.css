@@ -36,3 +36,6 @@ ul.mode_toggle {
 	overflow-x: hidden;
 }
 
+div.shipping_info {
+	float: right;
+}

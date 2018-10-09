@@ -33,7 +33,17 @@
 <div id="shipment_details"></div>
 
 <div class="dialog" id="dialog_ship_shipment" title="Ship shipment">
-This shipment will be changed to Shipped status, and quantities of all items on pallets will be updated.
+    <p>This shipment will be changed to Shipped status, and quantities of all items on pallets will be updated.</p>
+
+    <p>
+        Delivery charge?
+        <button id="delivery_charge_yes">Yes</button>
+        <button id="delivery_charge_no">No</button>
+    </p>
+
+    <p class="delivery_charge_input">
+        Delivery charge: $ <input type="number" id="delivery_charge" step=".01" min="0" style="width: 100px;" />
+    </p>
 </div>
 
 <div class="dialog" id="bol_upload_form" title="Upload Signed BOL">

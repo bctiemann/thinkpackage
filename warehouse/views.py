@@ -152,7 +152,7 @@ class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
 class ShipmentShip(AjaxableResponseMixin, UpdateView):
     model = Shipment
     template_name = 'warehouse/shipment_details.html'
-    fields = []
+    fields = ['delivery_charge',]
 
     def form_valid(self, form):
         response = super(ShipmentShip, self).form_valid(form)

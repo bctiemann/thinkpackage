@@ -256,7 +256,8 @@ console.log(data);
 function execute_shipShipment() {
     var shipment = {
         fnc: 'ship',
-        shipmentid: globals['shipmentid']
+        shipmentid: globals['shipmentid'],
+        delivery_charge: $('#delivery_charge').val(),
     }
 console.log(shipment);
 //    var url = cgiroot+'ajax_shipments_action.cfm';
@@ -325,6 +326,11 @@ function refreshUI() {
     });
 }
 
+function validatePrice(input) {
+    if (!input) return false;
+    return /^(\d{1,3})?(,?\d{3})*(\.\d{2})?$/.test(input);
+}
+
 $(document).ready(function() {
     refreshUI();
 
@@ -333,15 +339,23 @@ $(document).ready(function() {
         resizable: false,
         modal: true,
         position: { my: "top", at: "top+200", of: window },
-        buttons: {
-            Ship: function() {
-                $( this ).dialog( "close" );
-                execute_shipShipment();
+        buttons: [
+            {
+                id: 'ship_button_ship',
+                text: 'Ship',
+                click: function() {
+                    $( this ).dialog( "close" );
+                    execute_shipShipment();
+                }
             },
-            Cancel: function() {
-                $( this ).dialog( "close" );
-            }
-        }
+            {
+                id: 'ship_button_cancel',
+                text: 'Cancel',
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+        ]
     });
 
     $('#dialog_delete_pallet').dialog({
@@ -380,6 +394,27 @@ $(document).ready(function() {
         width: 600,
         position: { my: "top", at: "top+200", of: window },
     });
+
+    $('#delivery_charge_yes').button().click(function() {
+        $(this).addClass('ui-state-active');
+        $('#delivery_charge_no').removeClass('ui-state-active');
+        $('.delivery_charge_input').css('visibility', 'visible');
+        $('#ship_button_ship').button('disable');
+    });
+    $('#delivery_charge_no').button().click(function() {
+        $(this).addClass('ui-state-active');
+        $('#delivery_charge_yes').removeClass('ui-state-active');
+        $('.delivery_charge_input').css('visibility', 'hidden');
+        $('#ship_button_ship').button('enable');
+    });
+    $('#delivery_charge').keyup(function(e) {
+        if (validatePrice($(this).val())) {
+            $('#ship_button_ship').button('enable');
+        } else {
+            $('#ship_button_ship').button('disable');
+        }
+    });
+    $('#ship_button_ship').button('disable');
 
 });
 

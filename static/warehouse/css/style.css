@@ -39,3 +39,8 @@ ul.mode_toggle {
 div.shipping_info {
 	float: right;
 }
+
+.delivery_charge_input {
+	visibility: hidden;
+}
+

@@ -445,7 +445,7 @@ function saveProduct(productid) {
         client:               $('#customerid').val(),
         item_number:          $('#itemnum_'+productid).val(),
         location:             $('#location_'+productid).val() || null,
-        client_product_id:    $('#ctag_'+productid).val(),
+        client_tag:           $('#ctag_'+productid).val(),
         name:                 $('#pname_'+productid).val(),
         packing:              Math.floor($('#packing_'+productid).val()),
         cases_inventory:      Math.floor($('#remain_'+productid).val()),
@@ -457,7 +457,7 @@ function saveProduct(productid) {
         width:                isNaN(parseFloat($('#id_width').val())) ? 0 : parseFloat($('#id_width').val()),
         height:               isNaN(parseFloat($('#id_height').val())) ? 0 : parseFloat($('#id_height').val()),
         is_domestic:          $('#id_is_domestic').val(),
-        account_prepay_type:  $('#id_account_prepay_type').val(),
+        account_prepay_type:  $('#id_account_prepay_type').val() || $('#account_prepay_type_'+productid).val(),
     };
 console.log($('#id_contracted_quantity'));
     if (units == 'imperial') {

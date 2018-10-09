@@ -365,7 +365,7 @@ class Product(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     packing = models.IntegerField(null=True, blank=True)
     cases_inventory = models.IntegerField(null=True, blank=True, db_column='remain')
-    units_inventory = models.IntegerField(null=True, blank=True, db_column='totalq')
+    units_inventory_old = models.IntegerField(null=True, blank=True, db_column='totalq')
     unit_price = models.FloatField(null=True, blank=True, db_column='unitprice')
     gross_weight = models.FloatField(null=True, blank=True, db_column='GW')
     is_domestic = models.BooleanField(default=False, db_column='prodtype')
@@ -380,6 +380,10 @@ class Product(models.Model):
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
     account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, null=True, blank=True, db_column='account')
+
+    @property
+    def units_inventory(self):
+        return self.cases_inventory * self.packing
 
     @property
     def is_low(self):
@@ -766,6 +770,16 @@ class ShipmentDoc(models.Model):
 
     class Meta:
         db_table = 'ShipmentDocs'
+
+
+class ActionLog(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
+    user = models.ForeignKey('User', null=True, blank=True)
+    admin_user = models.ForeignKey('AdminUser', null=True, blank=True, db_column='adminid')
+    warehouse_user = models.ForeignKey('WarehouseUser', null=True, blank=True, db_column='wuserid')
+    client = models.ForeignKey('Client', null=True, blank=True, db_column='customerid')
+    product = models.ForeignKey('Product', null=True, blank=True, db_column='productid')
+    log_message = models.TextField(null=True, blank=True)
 
 
 class BulkOrder(models.Model):

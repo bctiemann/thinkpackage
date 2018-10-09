@@ -26,7 +26,8 @@ class Command(BaseCommand):
 #        'do_transactions': True,
 #        'do_pallets': True,
 #        'do_palletcontents': True,
-        'do_shipmentdocs': True,
+#        'do_shipmentdocs': True,
+        'do_actionlogs': True,
     }
 
     def add_arguments(self, parser):
@@ -177,7 +178,7 @@ class Command(BaseCommand):
                     product_id = old['PRID'],
                     packing = old['packing'],
                     cases_inventory = old['remain'],
-                    units_inventory = old['totalq'],
+                    units_inventory_old = old['totalq'],
                     unit_price = old['unitprice'],
                     gross_weight = old['GW'],
                     is_domestic = old['prodtype'],
@@ -367,6 +368,36 @@ class Command(BaseCommand):
                     ext = old['ext'] or '',
                     size = old['size'],
                     content_type = old['mimetype'],
+                )
+                new.date_created = old['stamp']
+                new.save()
+
+        if 'do_actionlogs' in self.enabled:
+            c.execute("""SELECT * FROM actionlogs""")
+            for old in c.fetchall():
+                print old['log_message']
+                try:
+                    admin_user = ims_models.AdminUser.objects.get(pk=old['adminid'])
+                except ims_models.AdminUser.DoesNotExist:
+                    admin_user = None
+                try:
+                    warehouse_user = ims_models.WarehouseUser.objects.get(pk=old['wuserid'])
+                except ims_models.WarehouseUser.DoesNotExist:
+                    warehouse_user = None
+                try:
+                    client = ims_models.Client.objects.get(pk=old['customerid'])
+                except ims_models.Client.DoesNotExist:
+                    client = None
+                try:
+                    product = ims_models.Product.objects.get(pk=old['productid'])
+                except ims_models.Product.DoesNotExist:
+                    product = None
+                new = ims_models.ActionLog.objects.create(
+                    admin_user = admin_user,
+                    warehouse_user = warehouse_user,
+                    client = client,
+                    product = product,
+                    log_message = old['log_message'],
                 )
                 new.date_created = old['stamp']
                 new.save()

@@ -173,7 +173,7 @@ class ProductForm(forms.ModelForm):
             self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
     def clean_contracted_quantity(self):
-        if not self.cleaned_data.get('packing'):
+        if not self.cleaned_data.get('packing') or not self.cleaned_data.get('contracted_quantity'):
             return 0
         return self.cleaned_data.get('contracted_quantity') / self.cleaned_data.get('packing')
 
@@ -189,7 +189,7 @@ class ProductForm(forms.ModelForm):
             'name',
             'packing',
             'cases_inventory',
-            'units_inventory',
+#            'units_inventory',
             'account_prepay_type',
             'contracted_quantity',
             'unit_price',

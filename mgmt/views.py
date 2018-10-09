@@ -20,7 +20,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
 from ims import utils
 
@@ -426,8 +426,14 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         logger.warning(form.data)
         response = super(ProductCreate, self).form_valid(form)
-        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
+#        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
         self.object.save()
+        ActionLog.objects.create(
+            user = self.request.user,
+            client = self.object.client,
+            product = self.object,
+            log_message = 'Created',
+        )
         logger.info('Product {0} ({1}) created.'.format(self.object, self.object.id))
         return response
 
@@ -449,8 +455,14 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         logger.warning(form.data)
-        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
+#        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
         response = super(ProductUpdate, self).form_valid(form)
+        ActionLog.objects.create(
+            user = self.request.user,
+            client = self.object.client,
+            product = self.object,
+            log_message = 'Updated cases to {0}'.format(self.object.cases_inventory),
+        )
         logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
         return response
 
@@ -469,12 +481,21 @@ class ProductDelete(AjaxableResponseMixin, UpdateView):
         logger.warning(form.data)
         response = super(ProductDelete, self).form_valid(form)
         if self.object.is_active:
+            log_message = 'Undeleted'
             logger.info('Product {0} ({1}) undeleted.'.format(self.object, self.object.id))
         else:
             if self.object.is_deleted:
+                log_message = 'Deleted permanently'
                 logger.info('Product {0} ({1}) deleted permanently.'.format(self.object, self.object.id))
             else:
+                log_message = 'Deleted'
                 logger.info('Product {0} ({1}) deleted.'.format(self.object, self.object.id))
+        ActionLog.objects.create(
+            user = self.request.user,
+            client = self.object.client,
+            product = self.object,
+            log_message = log_message,
+        )
         return response
 
     def get_object(self):
@@ -502,7 +523,7 @@ class ProductTransfer(APIView):
                 name = from_product.name,
                 packing = from_product.packing,
                 cases_inventory = 0,
-                units_inventory = 0,
+#                units_inventory = 0,
                 is_active = True,
                 account_prepay_type = from_product.account_prepay_type,
                 contracted_quantity = from_product.contracted_quantity,
@@ -521,9 +542,9 @@ class ProductTransfer(APIView):
 
         # Move inventory count from one product to the other
         from_product.cases_inventory -= cases
-        from_product.units_inventory = from_product.cases_inventory * from_product.packing
+#        from_product.units_inventory = from_product.cases_inventory * from_product.packing
         to_product.cases_inventory += cases
-        to_product.units_inventory = to_product.cases_inventory * to_product.packing
+#        to_product.units_inventory = to_product.cases_inventory * to_product.packing
         from_product.save()
         to_product.save()
 
@@ -540,6 +561,13 @@ class ProductTransfer(APIView):
         )
         outgoing_transaction.save()
 
+        ActionLog.objects.create(
+            user = self.request.user,
+            client = self.object.client,
+            product = self.object,
+            log_message = 'Transferred {0} to {1}'.format(cases, to_product.id),
+        )
+
         # Create incoming transaction
         incoming_transaction = Transaction(
             product = to_product,
@@ -552,6 +580,13 @@ class ProductTransfer(APIView):
             date_completed = timezone.now(),
         )
         incoming_transaction.save()
+
+        ActionLog.objects.create(
+            user = self.request.user,
+            client = self.object.client,
+            product = self.object,
+            log_message = 'Transferred {0} from {1}'.format(cases, from_product.id),
+        )
 
         logger.info('Product {0} ({1}) transferred from {2} ({3}) to {4} ({5})'.format(from_product, from_product.id, from_product.client, from_product.client.id, to_product.client, to_product.client.id))
 
@@ -621,6 +656,13 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             }
             return JsonResponse(data)
 
+        ActionLog.objects.create(
+            user = self.request.user,
+            client = self.object.client,
+            product = self.object,
+            log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases'])
+        )
+
         # If we received fewer cases than expected, create a new receivable with the remainder
         if form.cleaned_data['cases'] < self.object.cases:
             split_receivable = Receivable(
@@ -661,7 +703,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
 
         # Update product quantity
         self.object.product.cases_inventory += form.cleaned_data['cases']
-        self.object.product.units_inventory = self.object.product.cases_inventory * self.object.product.packing
+#        self.object.product.units_inventory = self.object.product.cases_inventory * self.object.product.packing
         self.object.product.save()
 
         logger.warning(self.object.purchase_order)

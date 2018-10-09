@@ -1516,6 +1516,13 @@ $(document).ready(function() {
         window.open(url);
     });
 
+    $('#inventory_list_fromdate').datepicker();
+    $('#inventory_list_todate').datepicker();
+    $('#delivery_list_fromdate').datepicker();
+    $('#delivery_list_todate').datepicker();
+    $('#incoming_list_fromdate').datepicker();
+    $('#incoming_list_todate').datepicker();
+
 });
 
 

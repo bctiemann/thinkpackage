@@ -17,7 +17,7 @@ from django_pdfkit import PDFView
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc
+from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm, PalletForm, ShipmentDocForm
 from ims import utils
 
@@ -160,11 +160,21 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
         self.object.status = 2
         self.object.save()
         for transaction in self.object.transaction_set.all():
+            ActionLog.objects.create(
+                user = self.request.user,
+                client = self.object.client,
+                product = self.object,
+                log_message = 'Shipment {0} shipped. {1} cases deducted'.format(self.object.id, transaction.cases)
+            )
+
+            transaction.product.cases_inventory_orig = transaction.product.cases_inventory
             transaction.product.cases_inventory -= transaction.cases
             if transaction.product.cases_inventory < 0:
+                logger.warning('Shipment {0}: {1} cases deducted from product {2}, greater than {3} cases in stock.'format(self.object.id, transaction.cases, transaction.product.cases_inventory_orig))
                 transaction.product.cases_inventory = 0
-            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
+#            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
             transaction.product.save()
+
         return response
 
     def get_object(self):

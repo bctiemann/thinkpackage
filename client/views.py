@@ -95,19 +95,16 @@ def select_client(request, client_id):
 
 
 def client_profile(request):
-#    selected_client = get_selected_client(request)
     primary_contact = request.selected_client.clientuser_set.filter(is_primary=True).first()
 
     context = {
         'company_info': company_info,
-        'selected_client': selected_client,
         'primary_contact': primary_contact,
     }
     return render(request, 'client/profile.html', context)
 
 
 def client_profile_locations(request):
-#    selected_client = get_selected_client(request)
     locations = Location.objects.filter(client=request.selected_client, is_active=True).order_by('name')
     context = {
         'locations': locations,
@@ -116,7 +113,6 @@ def client_profile_locations(request):
 
 
 def client_profile_location_detail(request, location_id):
-#    selected_client = get_selected_client(request)
     location = get_object_or_404(Location, pk=location_id, is_active=True, client=request.selected_client)
     context = {
         'location': location,
@@ -125,14 +121,10 @@ def client_profile_location_detail(request, location_id):
 
 
 def client_inventory(request):
-#    selected_client = get_selected_client(request)
-    children_of_selected_client = request.selected_client.get_children()
-    locations = Location.objects.filter(client__in=[c['obj'] for c in children_of_selected_client], is_active=True).order_by('name')
+    locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
         'company_info': company_info,
-        'selected_client': request.selected_client,
-        'children_of_selected_client': children_of_selected_client,
         'locations': locations,
         'shipmentid': request.GET.get('shipmentid', None),
     }
@@ -148,13 +140,10 @@ def client_inventory_list(request):
         for transaction in shipment.transaction_set.all():
             shipment_product_cases[transaction.product.id] = transaction.cases
 
-#    selected_client = get_selected_client(request)
-    children_of_selected_client = request.selected_client.get_children()
-    filter_clients = [c['obj'] for c in children_of_selected_client]
+    filter_clients = [c['obj'] for c in request.selected_client.children]
 
     tab = request.GET.get('tab', 'request')
     context = {
-        'selected_client': request.selected_client,
         'shipment': shipment,
         'tab': tab,
     }
@@ -185,8 +174,6 @@ def client_inventory_list(request):
 
 def client_delivery_products(request, shipment_id):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
-#    selected_client = get_selected_client(request)
-    children_of_selected_client = request.selected_client.get_children()
 
     context = {
         'shipment': shipment,
@@ -198,7 +185,6 @@ def client_delivery_products(request, shipment_id):
 def client_inventory_request_delivery(request):
 
     # First validate the JSON data in the request
-#    selected_client = get_selected_client(request)
     if not 'json' in request.POST:
         return JsonResponse({'success': False, 'message': 'Malformed request.'})
     try:
@@ -283,14 +269,12 @@ def client_inventory_request_delivery(request):
 
 def client_history(request):
 
-#    selected_client = get_selected_client(request)
     products = None
     if request.selected_client:
         products = request.selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
         'company_info': company_info,
-        'selected_client': request.selected_client,
         'products': products,
     }
     return render(request, 'client/history.html', context)
@@ -298,14 +282,12 @@ def client_history(request):
 
 def client_reorder(request):
 
-#    selected_client = get_selected_client(request)
     products = None
     if request.selected_client:
         products = request.selected_client.product_set.filter(is_deleted=False, is_active=True).order_by('item_number')
 
     context = {
         'company_info': company_info,
-        'selected_client': request.selected_client,
         'products': products,
     }
     return render(request, 'client/reorder.html', context)

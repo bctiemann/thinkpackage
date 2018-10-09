@@ -8,6 +8,7 @@ def settings_constants(request):
         'site_email': settings.SITE_EMAIL,
         'delivery_email': settings.DELIVERY_EMAIL,
         'company_phone_number': settings.COMPANY_PHONE_NUMBER,
+        'selected_client': request.selected_client,
     }
     return context
 

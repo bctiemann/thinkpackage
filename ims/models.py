@@ -190,6 +190,11 @@ class Client(models.Model):
     parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent')
     ancestors = JSONField(null=True, blank=True)
 
+    @property
+    def children(self):
+        # Get list of clients at or below the selected client in the hierarchy
+        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self)
+
     def __unicode__(self):
         return (self.company_name)
 
@@ -202,10 +207,6 @@ class Client(models.Model):
             new_ancestors.append(self.parent)
             new_ancestors += self.parent.get_ancestors(new_ancestors)
         return new_ancestors
-
-    def get_children(self):
-        # Get list of clients at or below the selected client in the hierarchy
-        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self)
 
     def save(self, *args, **kwargs):
         if not self.created_on:

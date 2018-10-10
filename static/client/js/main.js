@@ -150,8 +150,22 @@ function hideLocationFilter() {
 }  
 
 function refreshUI() {
-    $('input.delivery_request').keyup(function(e) {
+    var inputs = $('input.delivery_request').keyup(function(e) {
         updateTotalCases();
+    }).keydown(function(e) {
+        if (e.which == 38) {
+            e.preventDefault();
+            var prevInput = inputs.get(inputs.index(this) - 1);
+            if (prevInput) {
+                prevInput.focus();
+            }
+        } else if (e.which == 40) {
+            e.preventDefault();
+            var nextInput = inputs.get(inputs.index(this) + 1);
+            if (nextInput) {
+                nextInput.focus();
+            }
+        }
     });
 
     $('table.deliveries tr.delivery td.clickable').click(function() {

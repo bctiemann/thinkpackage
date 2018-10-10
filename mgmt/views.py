@@ -508,6 +508,9 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
     def form_valid(self, form):
         logger.warning(form.data)
 #        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
+
+        self.object.cases_inventory = form.cleaned_data['cases_inventory'] + self.object.cases_unshipped
+
         response = super(ProductUpdate, self).form_valid(form)
         ActionLog.objects.create(
             user = self.request.user,

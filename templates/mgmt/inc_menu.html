@@ -9,7 +9,7 @@
 <li><a class="tnav {% if page_selected == 'waccounts' %}selected{% endif %}" href="waccounts.cfm">Operational Users</a></li>
 </CFIF>
 <li><a class="tnav {% if page_selected == 'securitylogs' %}selected{% endif %}" href="securitylogs.cfm">Security Logs</a></li>
-<li><a class="tnav {% if page_selected == 'actionlogs' %}selected{% endif %}" href="actionlogs.cfm">Action Logs</a></li>
+<li><a class="tnav {% if page_selected == 'actionlogs' %}selected{% endif %}" href="{% url "mgmt:action-log" %}">Action Logs</a></li>
 </ul>
 </div>
 

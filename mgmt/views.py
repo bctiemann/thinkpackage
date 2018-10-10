@@ -324,20 +324,20 @@ class FilteredActionLogListView(SingleTableMixin, FilterView):
 
 
 def mgmt_action_log(request):
-#    logs = ActionLog.objects.all()
+    logs = ActionLog.objects.all()
 
-    logs_table = ActionLogTable(ActionLog.objects.all())
+    product_id = request.GET.get('product_id', None)
+    if product_id:
+        product = get_object_or_404(Product, pk=product_id)
+        logs = logs.filter(product=product)
+
+    client_id = request.GET.get('client_id', None)
+    if client_id:
+        client = get_object_or_404(Client, pk=client_id)
+        logs = logs.filter(client=client)
+
+    logs_table = ActionLogTable(logs)
     tables.RequestConfig(request).configure(logs_table)
-
-#    product_id = request.GET.get('product_id', None)
-#    if product_id:
-#        product = get_object_or_404(Product, pk=product_id)
-#        logs = logs.filter(product=product)
-
-#    client_id = request.GET.get('client_id', None)
-#    if client_id:
-#        client = get_object_or_404(Client, pk=client_id)
-#        logs = logs.filter(client=client)
 
     context = {
         'logs_table': logs_table,

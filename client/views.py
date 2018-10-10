@@ -296,8 +296,8 @@ def client_reorder(request):
 def client_product_history(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
-    date_to = timezone.now()
-    date_from = date_to - timedelta(days=90)
+    date_to = timezone.now() + timedelta(days=30)
+    date_from = timezone.now() - timedelta(days=365)
     try:
         date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y')
         date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y')

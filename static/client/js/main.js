@@ -212,7 +212,7 @@ function updateTotalCases() {
     var totalcases = 0;
     $('input.delivery_request').each(function() {
         var remain = parseInt($(this).attr('remain'));
-        if ($(this).val()) {
+        if ($(this).val() > 0) {
             $(this).val($(this).val() > remain ? remain : $(this).val());
             $(this).val($(this).val() < 0 ? '' : $(this).val());
             totalcases += parseInt($(this).val());

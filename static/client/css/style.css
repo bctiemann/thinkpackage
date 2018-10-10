@@ -132,3 +132,10 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
         background-color: #fff;
         color: #000;
 }
+
+.zero-inventory-warning {
+	display: none;
+	color: #ff0000;
+	margin: 20px;
+}
+

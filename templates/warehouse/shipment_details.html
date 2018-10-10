@@ -54,6 +54,7 @@
     </thead>
     <tbody>
     {% for transaction in shipment.transaction_set.all %}
+        {% if transaction.cases > 0 %}
     <tr class="detail" id="productdetail_{{ transaction.product.id }}">
         <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text">{{ shipment.client.company_name }}</td>
@@ -64,6 +65,7 @@
         <td class="numeric">{{ transaction.total_weight|floatformat:1 }}</td>
         <td class="text">{{ transaction.product.length|floatformat:1 }} &times; {{ transaction.product.width|floatformat:1 }} &times; {{ transaction.product.height|floatformat:1 }}</td>
     </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>

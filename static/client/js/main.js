@@ -212,10 +212,10 @@ function updateTotalCases() {
     var totalcases = 0;
     $('input.delivery_request').each(function() {
         var remain = parseInt($(this).attr('remain'));
-        if ($(this).val() > 0) {
-            $(this).val($(this).val() > remain ? remain : $(this).val());
-            $(this).val($(this).val() < 0 ? '' : $(this).val());
-            totalcases += parseInt($(this).val());
+        var inputVal = parseInt($(this).val());
+        if ($(this).val()) {
+            $(this).val(inputVal > remain ? remain : inputVal);
+            totalcases += inputVal;
         }
     });
     $('#total_cases').html(totalcases);
@@ -226,7 +226,9 @@ function requestDelivery(locationid) {
     var products = [];
     $('#request_details tbody ').empty();
     $('input.delivery_request').each(function() {
-        if ($(this).val()) {
+        if ($(this).val().indexOf('0') == 0) {
+            $('.zero-inventory-warning').show();
+        } else if ($(this).val() > 0) {
             var tr = $('<tr>');
             tr.append($('<td>',{
                 html: $('#itemnum_'+$(this).attr('productid')).html()
@@ -243,6 +245,7 @@ function requestDelivery(locationid) {
                 class: 'numeric'
             }));
             $('#request_details tbody').append(tr);
+            $('.zero-inventory-warning').hide();
         }
     });
     var tr = $('<tr>');

@@ -1,15 +1,9 @@
-* {
-	-webkit-box-sizing: content-box;
-	-moz-box-sizing: content-box;
-	box-sizing: content-box;
-}
-
 body {
 	padding: 0px;
 	margin: 0px;
 	font-family: 'Trebuchet MS', sans-serif;
 	font-size: 13px;
-	line-height: inherit;
+/*	line-height: inherit;*/
 }
 
 body.login {
@@ -245,10 +239,12 @@ div#login_status h3 {
 
 /* Formatting */
 
+/*
 button, input, select, textarea {
 	line-height: normal;
 	color: #000;
 }
+*/
 
 .numeric {
 	text-align: right;
@@ -328,6 +324,12 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .floatright {
 	float: right;
+}
+
+#content {
+	margin: 10px;
+	font-family: "Trebuchet MS",Chicago;
+	font-size: 14px;
 }
 
 table.infotable {

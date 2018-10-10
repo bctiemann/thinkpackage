@@ -310,7 +310,7 @@ def mgmt_location_form(request):
 class ActionLogTable(tables.Table):
     class Meta:
         model = ActionLog
-        template_name = 'django_tables2/bootstrap.html'
+        template_name = 'django_tables2/infotable.html'
 
 
 class ActionLogFilter(FilterSet):

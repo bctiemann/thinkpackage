@@ -12,6 +12,11 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 
+import django_tables2 as tables
+from django_filters import FilterSet
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
+
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
@@ -298,21 +303,44 @@ def mgmt_location_form(request):
     return render(request, 'mgmt/location_form.html', context)
 
 
+class ActionLogTable(tables.Table):
+    class Meta:
+        model = ActionLog
+        template_name = 'django_tables2/bootstrap.html'
+
+
+class ActionLogFilter(FilterSet):
+    class Meta:
+        model = ActionLog
+        fields = ['product',]
+
+
+class FilteredActionLogListView(SingleTableMixin, FilterView):
+    table_class = ActionLogTable
+    model = ActionLog
+    template_name = 'mgmt/action_log.html'
+
+    filterset_class = ActionLogFilter
+
+
 def mgmt_action_log(request):
-    logs = ActionLog.objects.all()
+#    logs = ActionLog.objects.all()
 
-    product_id = request.GET.get('product_id', None)
-    if product_id:
-        product = get_object_or_404(Product, pk=product_id)
-        logs = logs.filter(product=product)
+    logs_table = ActionLogTable(ActionLog.objects.all())
+    tables.RequestConfig(request).configure(logs_table)
 
-    client_id = request.GET.get('client_id', None)
-    if client_id:
-        client = get_object_or_404(Client, pk=client_id)
-        logs = logs.filter(client=client)
+#    product_id = request.GET.get('product_id', None)
+#    if product_id:
+#        product = get_object_or_404(Product, pk=product_id)
+#        logs = logs.filter(product=product)
+
+#    client_id = request.GET.get('client_id', None)
+#    if client_id:
+#        client = get_object_or_404(Client, pk=client_id)
+#        logs = logs.filter(client=client)
 
     context = {
-        'logs': logs,
+        'logs_table': logs_table,
     }
     return render(request, 'mgmt/action_log.html', context)
 
@@ -684,7 +712,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             user = self.request.user,
             client = self.object.client,
             product = self.object,
-            log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases'])
+            log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases']),
             app = 'mgmt',
         )
 

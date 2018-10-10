@@ -1,4 +1,5 @@
 {% extends "mgmt/base.html" %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
 <!-- -->
@@ -83,24 +84,26 @@ Action Logs
 <span class="title">Actions</span>
 </div>
 
+{% render_table logs_table %}
+
         <table class="infotable alternating">
         <tr>
                 <th></th>
+                <th>App</th>
                 <th>User</th>
                 <th>Customer</th>
                 <th>Product</th>
                 <th>Message</th>
         </tr>
         {% for log in logs %}
-        <CFOUTPUT QUERY="AccessLogs">
-	<tr style="background-color: ###iif(currentrow MOD 2,DE('#row1color#'),DE('#row2color#'))#; vertical-align: top">
-                <td><small>{{ log.date_created|date:"DATETIME_FORMAT" }}</small></td>
-                <td><small>#admin_fullname IS NOT "" ? "[admin] " & admin_fullname : "[#role#] " & wuser_fullname#</small></td>
+	<tr>
+                <td><small>{{ log.date_created|date:"l, N j, Y, P " }}</small></td>
+                <td><small>{{ log.app }}</small></td>
+                <td><small>{{ log.user.full_name }}</small></td>
                 <td><small><a href="#CGI.SCRIPT_NAME#?sortby=#URL.sortby#&sortdir=#URL.sortdir#&customerid=#product_customerid#">{{ log.client.company_name }}</a></small></td>
                 <td><small><a href="#CGI.SCRIPT_NAME#?sortby=#URL.sortby#&sortdir=#URL.sortdir#&productid=#productid#">[{{ log.product.item_number }}] {{ log.product.name|truncatechars:50 }}</a></small></td>
                 <td><small>{{ log.log_message }}</small></td>
         </tr>
-	</CFOUTPUT>
         {% endfor %}
         </table>
 </CFIF>

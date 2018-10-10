@@ -69,4 +69,5 @@ urlpatterns = [
     url(r'^(?P<client_id>\d+)/shipments/list/$', mgmt_views.mgmt_shipments_list, name='shipments-list'),
 
     url(r'^action_log/$', mgmt_views.mgmt_action_log, name='action-log'),
+#    url(r'^action_log/$', mgmt_views.FilteredActionLogListView.as_view(), name='action-log'),
 ]

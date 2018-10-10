@@ -225,6 +225,7 @@ function deletePallet(palletid) {
 }
 
 function execute_saveShipment() {
+    var dateShipped = isNaN(new Date($('#id_date_shipped').val())) ? null : $('#id_date_shipped').val();
     var shipment = {
         fnc: 'updateshipment',
         shipmentid: globals['shipmentid'],
@@ -235,7 +236,7 @@ function execute_saveShipment() {
         third_party: $('#id_third_party').val(),
         shipment_class: $('#id_shipment_class').val(),
         pallet_count: $('#id_pallet_count').val(),
-        date_shipped: $('#id_date_shipped').val(),
+        date_shipped: dateShipped,
         shipper_instructions: $('#id_shipper_instructions').val(),
         consignee_instructions: $('#id_consignee_instructions').val(),
         inside_delivery: $('#id_inside_delivery').prop('checked'),
@@ -247,9 +248,9 @@ console.log(shipment);
 //    var url = cgiroot+'ajax_shipments_action.cfm';
     var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/';
     $.post(url,shipment,function(data) {
+console.log(data);
         $('#shipment_'+globals['shipmentid']).removeClass('selected');
         selectShipment(globals['shipmentid']);
-console.log(data);
     },'json');
 }
 

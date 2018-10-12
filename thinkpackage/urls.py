@@ -34,6 +34,8 @@ urlpatterns = [
     url(r'^mgmt/', include('mgmt.urls', 'mgmt')),
     url(r'^client/', include('client.urls', 'client')),
     url(r'^warehouse/', include('warehouse.urls', 'warehouse')),
+    url(r'^warehouse_app/', include('warehouse_app.urls', 'warehouse_app')),
+    url(r'^accounting/', include('accounting.urls', 'accounting')),
     url(r'^api/', include('api.urls', 'api')),
 
     url(

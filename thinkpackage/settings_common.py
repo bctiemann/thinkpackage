@@ -59,6 +59,9 @@ INSTALLED_APPS = [
     'ims',
     'mgmt',
     'client',
+    'warehouse',
+    'warehouse_app',
+    'accounting',
     'api',
 ]
 

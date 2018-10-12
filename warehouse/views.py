@@ -46,16 +46,16 @@ class LoginView(LoginView):
     )
 
 
-class PhoneSetupView(PhoneSetupView):
-    success_url = reverse_lazy('two_factor:profile')
+#class PhoneSetupView(PhoneSetupView):
+#    success_url = reverse_lazy('two_factor:profile')
 
 
-class PhoneDeleteView(PhoneDeleteView):
-    success_url = reverse_lazy('two_factor:profile')
+#class PhoneDeleteView(PhoneDeleteView):
+#    success_url = reverse_lazy('two_factor:profile')
 
 
-class DisableView(DisableView):
-    success_url = reverse_lazy('two_factor:profile')
+#class DisableView(DisableView):
+#    success_url = reverse_lazy('two_factor:profile')
 
 
 def home(request):

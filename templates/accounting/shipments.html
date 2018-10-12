@@ -1,4 +1,5 @@
 {% extends "accounting/base.html" %}
+{% load static %}
 
 {% block content %}
 <CFINCLUDE TEMPLATE="inc_header.cfm">
@@ -9,7 +10,7 @@
 
 <div class="" id="list_shipments">
 <!---<CFINCLUDE TEMPLATE="ajax_shipments_list.cfm">--->
-<img src="images/loading_bar.gif" />
+<img src="{% static "accounting/images/loading_bar.gif" %}" />
 </div>
 
 <div id="shipment_details"></div>

@@ -16,7 +16,7 @@
             <th style="width: 132px;" class="numeric">Curr. inventory (cs)</th>
             <th style="width: 131px;" class="numeric">Total quantity (pcs)</th>
             <th style="width: 34px;" class="spacer20"></th>
-            <th style="width: 150px;" class="action" colspan="4"></th>
+            <th style="width: 137px;" class="action" colspan="5"></th>
             <th style="width: 42px;" class="glyph"></th>
         </tr>
     </thead>
@@ -40,10 +40,11 @@
             </td>
             <td style="width: 124px;" class="numeric clickable" productid="{{ product.id }}"><span class="{% if product.is_low %}low_qty{% endif %}">{{ product.units_inventory|intcomma }}</span></td>
             <td style="width: 20px;" class="spacer20 clickable" productid="{{ product.id }}"></td>
-            <td style="width: 22px;" class="action" id="action_incoming_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="setupProductTransfer({{ product.id }}, null)" class="ui-icon ui-icon-transfer-e-w" title="Transfer"></a>{% endif %}</td>
-            <td style="width: 22px;" class="action" id="action_incoming_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="incomingProduct({{ product.id }})" class="ui-icon ui-icon-clipboard" title="Incoming"></a>{% else %}<a href="javascript:nop()" onClick="deleteProduct({{ product.id }},true)" class="ui-icon ui-icon-trash" title="Clear Permanently"></a>{% endif %}</td>
-            <td style="width: 22px;" class="action" id="action_delete_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="deleteProduct({{ product.id }},false)" class="ui-icon ui-icon-trash" title="Delete"></a>{% else %}<a href="javascript:nop()" onClick="undeleteProduct({{ product.id }})" class="ui-icon ui-icon-cancel" title="Restore"></a>{% endif %}</td>
-            <td style="width: 22px;" class="action" id="action_history_{{ product.id }}"><a href="javascript:nop()" onClick="showProductHistory({{ product.id }},null,null)" class="ui-icon ui-icon-clock" title="History"></a></td>
+            <td style="width: 17px; padding: 8px 5px;" class="action" id="action_incoming_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="setupProductTransfer({{ product.id }}, null)" class="ui-icon ui-icon-transfer-e-w" title="Transfer"></a>{% endif %}</td>
+            <td style="width: 17px; padding: 8px 5px;" class="action" id="action_incoming_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="incomingProduct({{ product.id }})" class="ui-icon ui-icon-clipboard" title="Incoming"></a>{% endif %}</td>
+            <td style="width: 17px; padding: 8px 5px;" class="action" id="action_return_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="setupReturn({{ product.id }}, '{{ product.item_number }}', '{{ product.name }}')" class="ui-icon ui-icon-arrowreturnthick-1-w" title="Return"></a>{% else %}<a href="javascript:nop()" onClick="deleteProduct({{ product.id }},true)" class="ui-icon ui-icon-trash" title="Clear Permanently"></a>{% endif %}</td>
+            <td style="width: 17px; padding: 8px 5px;" class="action" id="action_delete_{{ product.id }}">{% if product.is_active %}<a href="javascript:nop()" onClick="deleteProduct({{ product.id }},false)" class="ui-icon ui-icon-trash" title="Delete"></a>{% else %}<a href="javascript:nop()" onClick="undeleteProduct({{ product.id }})" class="ui-icon ui-icon-cancel" title="Restore"></a>{% endif %}</td>
+            <td style="width: 17px; padding: 8px 5px;" class="action" id="action_history_{{ product.id }}"><a href="javascript:nop()" onClick="showProductHistory({{ product.id }},null,null)" class="ui-icon ui-icon-clock" title="History"></a></td>
 
             <td style="width: 30px;" class="glyph flashing">{% if product.pending_receivables.count > 0 %}<a href="javascript:nop()" onClick="showProductHistory({{ product.id }},null,null)" title="Pending Incoming">&#10144;</a>{% endif %}</td>
         </tr>
@@ -64,7 +65,7 @@
                     {% endfor %}
                 </select>
             </td>
-            <td style="width: 230px;" class="text editable" productid="new">
+            <td style="width: 434px;" class="text editable" productid="new">
                 <input type="text" id="pname_new" productid="new" style="width: 280px;" maxlength="255" />
                 <span class="account-label">
                 <select id="account_prepay_type_new">
@@ -77,10 +78,11 @@
             <td style="width: 140px;" class="numeric editable" productid="new"><input type="hidden" id="remain_new" productid="new" style="width: 80px;" maxlength="10" /></td>
             <td style="width: 124px;" class="numeric" productid="new"><input type="hidden" id="totalq_new" productid="new" style="width: 100px;" /></td>
             <td style="width: 20px;" class="spacer20"></td>
-            <td style="width: 22px;" class="action"></td>
-            <td style="width: 22px;" class="action"></td>
-            <td style="width: 22px;" class="action"></td>
-            <td style="width: 22px;" class="action"><a href="javascript:nop()" onClick="saveProduct('new')">add</a></td>
+            <td style="width: 17px; padding: 8px 5px;" class="action"></td>
+            <td style="width: 17px; padding: 8px 5px;" class="action"></td>
+            <td style="width: 17px; padding: 8px 5px;" class="action"></td>
+            <td style="width: 17px; padding: 8px 5px;" class="action"></td>
+            <td style="width: 17px; padding: 8px 5px;" class="action"><a href="javascript:nop()" onClick="saveProduct('new')">add</a></td>
             <td style="width: 30px;" class="glyph"></td>
         </tr>
     {% endif %}

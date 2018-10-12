@@ -25,8 +25,8 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog
-from ims.forms import AjaxableResponseMixin, UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct
+from ims.forms import AjaxableResponseMixin, UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ReturnedProductForm, ShipmentDocForm
 from ims import utils
 
 import math
@@ -650,6 +650,52 @@ class ProductTransfer(APIView):
         logger.info('Product {0} ({1}) transferred from {2} ({3}) to {4} ({5})'.format(from_product, from_product.id, from_product.client, from_product.client.id, to_product.client, to_product.client.id))
 
         return Response(response)
+
+
+class ProductReturn(AjaxableResponseMixin, CreateView):
+    model = ReturnedProduct
+    form_class = ReturnedProductForm
+    template_name = 'mgmt/product_detail.html'
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+        returned_product = form.save(commit=False)
+        returned_product.product = product
+        returned_product.client = product.client
+        returned_product.save()
+
+        if form.cleaned_data['cases_undamaged']:
+            return_receivable = Receivable(
+                client = product.client,
+                date_created = timezone.now(),
+                date_received = form.cleaned_data['date_created'],
+                product = product,
+                cases = form.cleaned_data['cases_undamaged'],
+                returned_product = returned_product,
+            )
+            return_receivable.save()
+
+            product.cases_inventory += form.cleaned_data['cases_undamaged']
+            product.save()
+
+            transaction = Transaction(
+                date_created = timezone.now(),
+                product = product,
+                client = product.client,
+                is_outbound = False,
+                receivable = return_receivable,
+                cases = form.cleaned_data['cases_undamaged'],
+                quantity = form.cleaned_data['cases_undamaged'] * product.packing,
+                quantity_remaining = product.cases_inventory * product.packing,
+            )
+            transaction.save()
+
+        response = super(ProductReturn, self).form_valid(form)
+        return response
+
+#    def get_success_url(self):
+#        return reverse_lazy('mgmt:product-history', kwargs={'product_id': self.object.product.id})
 
 
 class ReceivableCreate(AjaxableResponseMixin, CreateView):

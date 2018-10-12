@@ -1,3 +1,8 @@
+div.content {
+	min-width: 1373px;
+	width: 1373px;
+}
+
 a.headermenu {
         display: inline-block;
         position: absolute;

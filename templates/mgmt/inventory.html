@@ -91,6 +91,42 @@ The product details have been updated.
     </table>
 </div>
 
+<div class="dialog" id="dialog_return" title="Return">
+    <p id="return_product_name"></p>
+    <p>Enter the details of the returned items.</p>
+    <table>
+        <tr>
+            <td class="label">Non-damaged:</td>
+            <td><input type="number" id="undamaged_cases" /> cases</td>
+        </tr>
+        <tr>
+            <td class="label">Damaged:</td>
+            <td><input type="number" id="damaged_cases" /> cases</td>
+        </tr>
+        <tr>
+            <td class="label">Location:</td>
+            <td>
+                <select id="return_location">
+                    <option value="">(Select)</option>
+                    {% for location in client.location_set.all %}
+                    <cfoutput query="Locations">
+                        <option value="{{ location.id }}">{{ location.name }}</option>
+                    </cfoutput>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">Date:</td>
+            <td><input class="datepicker" type="text" id="return_date" /></td>
+        </tr>
+    </table>
+</div>
+
+<div class="dialog" id="dialog_errors" title="Error">
+
+</div>
+
 
 <input type="hidden" id="customerid" value="{{ client.id }}" />
 <input type="hidden" id="cases_new" value="0" />

@@ -72,7 +72,9 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% endif %}
         </td>
         <td class="text" style="max-width: 94px; overflow: hidden; text-overflow: ellipsis;">
-            {% if transaction.shipment %}
+            {% if transaction.receivable.returned_product %}
+                {{ transaction.receivable.returned_product.location.name }}
+            {% elif transaction.shipment %}
                 {{ transaction.shipment.location.name }}
             {% elif transaction.receivable %}
                 {{ transaction.receivable.location.name }}
@@ -140,7 +142,11 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% endif %}
         </td>
         <td class="text">
-            {{ transaction.shipment.get_status_display }}
+            {% if transaction.receivable.returned_product %}
+                Returned
+            {% else %}
+                {{ transaction.shipment.get_status_display }}
+            {% endif %}
         </td>
         <td class="action" style="width: 330px;">
             {% if not transaction.is_outbound and not transaction.cases %}

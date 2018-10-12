@@ -197,6 +197,7 @@ div#login_status h3 {
 }
 .loginform td.label {
         padding-right: 20px;
+	text-align: right;
 }
 .loginform td.data {
 	padding-left: 40px;
@@ -324,6 +325,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .floatright {
 	float: right;
+}
+.label {
+	text-align: right;
 }
 
 #content {
@@ -867,10 +871,6 @@ td.hoverinfo {
     color: #444;
 }
 
-div.dialog {
-	display: none;
-}
-
 ul.mode_toggle {
 	list-style: none;
 	width: 140px;
@@ -1090,10 +1090,18 @@ span.low_qty {
     color: #aaa;
 }
 
+div.dialog {
+	display: none;
+}
+
+div.dialog table {
+	width: 100%;
+}
+
 .dialog textarea,
 .dialog input[type=text],
 .dialog input[type=number] {
-        width: 100%;
+/*        width: 100%;*/
         margin: 2px 0px;
         padding: 5px;
         border: 1px solid #a0a0a0;

@@ -47,6 +47,7 @@ urlpatterns = [
     url(r'^product/(?P<product_id>\d+)/delete/$', mgmt_views.ProductDelete.as_view(), name='product-delete'),
     url(r'^product/(?P<product_id>\d+)/history/$', mgmt_views.mgmt_product_history, name='product-history'),
     url(r'^product/(?P<product_id>\d+)/transfer/$', mgmt_views.ProductTransfer.as_view(), name='product-transfer'),
+    url(r'^product/(?P<product_id>\d+)/return/$', mgmt_views.ProductReturn.as_view(), name='product-return'),
 
     url(r'^receivable/add/(?P<product_id>\d+)/$', mgmt_views.ReceivableCreate.as_view(), name='receivable-create'),
     url(r'^receivable/(?P<receivable_id>\d+)/confirm/$', mgmt_views.ReceivableConfirm.as_view(), name='receivable-confirm'),

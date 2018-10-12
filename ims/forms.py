@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet
+from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
 from ims import utils
 
 import logging
@@ -240,6 +240,12 @@ class ReceivableConfirmForm(forms.ModelForm):
     class Meta:
         model = Receivable
         fields = ['cases', 'purchase_order', 'shipment_order']
+
+
+class ReturnedProductForm(forms.ModelForm):
+    class Meta:
+        model = ReturnedProduct
+        fields = ['cases_undamaged', 'cases_damaged', 'location', 'date_created',]
 
 
 class ShipmentDocForm(forms.ModelForm):

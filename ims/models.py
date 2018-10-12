@@ -576,6 +576,7 @@ class Receivable(models.Model):
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
     product = models.ForeignKey('Product', null=True, db_column='productid')
     cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
+    returned_product = models.ForeignKey('ReturnedProduct', null=True, blank=True, db_column='returnid')
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
@@ -666,7 +667,7 @@ class Transaction(models.Model):
         return self.shipment.status == 2
 
     def get_absolute_url(self):
-        return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client.id, 'product_id': self.product.id})
 
     def __unicode__(self):
         return ('{0}'.format(self.id))
@@ -674,6 +675,23 @@ class Transaction(models.Model):
     class Meta:
         db_table = 'Transactions'
         ordering = ['product__item_number']
+
+
+class ReturnedProduct(models.Model):
+    id = models.AutoField(primary_key=True, db_column='returnid')
+    date_created = models.DateTimeField(null=True, db_column='stamp')
+    client = models.ForeignKey('Client', db_column='customerid', null=True)
+    product = models.ForeignKey('Product', db_column='productid', null=True)
+    location = models.ForeignKey('Location', db_column='locationid', null=True)
+    cases_damaged = models.IntegerField(null=True, blank=True, default=0)
+    cases_undamaged = models.IntegerField(null=True, blank=True, default=0)
+    date_reconciled = models.DateTimeField(null=True, blank=True, db_column='reconciled')
+
+    def get_absolute_url(self):
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client.id, 'product_id': self.product.id})
+
+    class Meta:
+        db_table = 'Returns'
 
 
 class Pallet(models.Model):

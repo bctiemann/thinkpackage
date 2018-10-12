@@ -604,6 +604,37 @@ console.log(data)
     }
 };
 
+var setupReturn = function(productid, itemnum, pname) {
+    globals['productid'] = productid;
+    $('#return_product_name').html(itemnum + ': ' + pname);
+    $('#dialog_return input, #dialog_return select').val('');
+    $('#dialog_return').dialog('open');
+};
+
+var execute_return = function() {
+//    var url = cgiroot+'ajax_product_action.cfm';
+    var url = cgiroot + 'product/' + globals['productid'] + '/return/';
+    var params = {
+        fnc: 'addreturn',
+//        productid: globals['productid'],
+        cases_undamaged: $('#undamaged_cases').val() || 0,
+        cases_damaged: $('#damaged_cases').val() || 0,
+        location: $('#return_location').val(),
+        date_created: $('#return_date').val(),
+    };
+console.log(params);
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            refreshInventory();
+            $('#dialog_return').dialog('close');
+        } else {
+            displayErrorDialog(data);
+//            alert(data.error);
+        }
+    }, 'json');
+};
+
 function execute_addCustomer() {
     var url = cgiroot+'ajax_coname_action.cfm';
     var customer = {
@@ -1138,6 +1169,31 @@ function execute_search() {
     window.open(url);
 }
 
+function displayErrorDialog(data) {
+    var errorList = $('<ul>', {
+        class: 'error-list',
+    });
+    for (var error in data) {
+        var errorLi = $('<li>', {
+            class: 'error',
+        });
+        errorLi.append($('<span>', {
+            class: 'error-label',
+            text: error,
+        }));
+        var errorMessages = $('<ul>', {
+            class: 'error-messages',
+        });
+        for (var message in data[error]) {
+            errorMessages.append($('<li>', {
+                text: data[error][message].message,
+            }));
+        }
+        errorLi.append(errorMessages);
+        errorList.append(errorLi);
+    }
+    $('#dialog_errors').empty().append(errorList).dialog('open');
+};
 
 $(document).ready(function() {
     $('#toolsmenulink').click(function() {
@@ -1467,6 +1523,36 @@ $(document).ready(function() {
         modal: true,
         width: 600,
         position: { my: "top", at: "top+200", of: window },
+    });
+
+    $('#return_date').datepicker();
+    $('#dialog_return').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        minWidth: 500,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Submit: function() {
+                execute_return();
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_errors').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        minWidth: 400,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            OK: function() {
+                $( this ).dialog( "close" );
+            }
+        }
     });
 
     // Expand/collapse notification panels

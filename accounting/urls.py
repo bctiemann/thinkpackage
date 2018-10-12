@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^sign_out/', auth_views.logout, {'next_page': 'accounting:login'}, name='sign-out'),
 
     url(r'^shipments/$', accounting_views.accounting_shipments, name='shipments'),
+    url(r'^shipments/list/$', accounting_views.accounting_shipments_list, name='shipments-list'),
 ]
 

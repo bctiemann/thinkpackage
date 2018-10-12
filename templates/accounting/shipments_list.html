@@ -1,0 +1,79 @@
+<CFSET status_filter = (IsDefined("URL.status_filter") AND IsNumeric(URL.status_filter) ? URL.status_filter : 0)>
+
+<ul class="mode_toggle">
+<a href="javascript:nop()" onClick="showStatus(0)"><li <CFIF status_filter IS 0>class="selected"</CFIF>>INVQ</li></a>
+<a href="javascript:nop()" onClick="showStatus(1)"><li <CFIF status_filter IS 1>class="selected"</CFIF>>pending</li></a>
+<a href="javascript:nop()" onClick="showStatus(2)"><li <CFIF status_filter IS 2>class="selected"</CFIF>>submitted</li></a>
+</ul>
+
+<CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
+SELECT *,Shipments.createdon as shipment_create_date,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
+INNER JOIN Customers ON Customers.customerid=Shipments.customerid
+INNER JOIN Locations ON Shipments.locationid=Locations.locationid
+INNER JOIN Transactions ON Transactions.shipmentid=Shipments.shipmentid
+INNER JOIN Products ON Transactions.productid=Products.productid
+LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
+WHERE status=2
+AND (Products.account=1 OR deliverycharge > 0)
+AND Shipments.acctstatus=<CFQUERYPARAM value="#status_filter#" CFSQLType="CF_SQL_NUMERIC">
+<CFIF status_filter IS 2>
+AND Shipments.shippedon > DATE_SUB(NOW(), INTERVAL 90 DAY)
+</CFIF>
+GROUP BY Shipments.shipmentid
+ORDER BY DATE(Shipments.createdon) DESC, invoice DESC
+LIMIT 100
+</CFQUERY>
+
+<table class="infotable alternating shipments editable scrollable">
+    <thead>
+        <tr>
+            <th style="width: 125px" class="text">Shipped Date</th>
+            <th style="width: 45px" class="numeric">INV #</th>
+            <th style="width: 45px" class="numeric">DL #</th>
+            <th style="width: 134px" class="spacer20"></th>
+            <th style="width: 125px" class="text">Client Name</th>
+            <th style="width: 199px" class="text">Location</th>
+            <th style="width: 100px" class="numeric">Total Cases</th>
+            <th style="width: 420px" class="spacer20"></th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 400px">
+    <CFOUTPUT QUERY="Shipments">
+
+        <CFQUERY NAME="Pallets" DATASOURCE="#DSN#">
+        SELECT * FROM Pallets
+        WHERE shipmentid=#Shipments.shipmentid#
+        </CFQUERY>
+
+        <CFQUERY NAME="ShipProducts" DATASOURCE="#DSN#">
+        SELECT *,SUM(cases) AS total_cases FROM Shipments,Transactions,Products
+        WHERE Shipments.shipmentid=<CFQUERYPARAM value="#shipmentid#" CFSQLType="CF_SQL_NUMERIC">
+        AND Transactions.shipmentid=Shipments.shipmentid
+        AND Transactions.productid=Products.productid
+        GROUP BY Shipments.shipmentid
+        </CFQUERY>
+
+        <tr class="shipment" id="shipment_#shipmentid#">
+            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">#DateFormat(createdon,"MM/DD/YYYY")#</td>
+            <td style="width: 35px" class="numeric clickable" shipmentid="#shipmentid#">#invoice#</td>
+            <td style="width: 35px" class="numeric clickable" shipmentid="#shipmentid#">#shipmentid#</td>
+            <td style="width: 120px" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
+            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">#coname#</td>
+            <td style="width: 194px" class="text clickable" shipmentid="#shipmentid#">#name#</td>
+            <td style="width: 90px" class="numeric clickable" shipmentid="#shipmentid#">#ShipProducts.total_cases#</td>
+            <td style="width: 145px" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
+            <td style="width: 60px" class="text clickable" shipmentid="#shipmentid#">
+                <cfif status_filter IS 1 OR status_filter IS 2>
+                <button class="show-shipment-docs" onClick="showShipmentDocs(#shipmentid#);">#document_count#</button>
+                </cfif>
+            </td>
+            <td class="action" style="width: 185px; padding: 0px;">
+                <cfif status_filter IS 1>
+                <button class="actionbtn" onClick="submitInvoice(#shipmentid#)">Submit</button>
+                </cfif>
+            </td>
+        </tr>
+    </CFOUTPUT>
+    </tbody>
+</table>
+

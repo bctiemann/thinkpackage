@@ -6,6 +6,9 @@
 
 <div class="content">
 
+{% with page_selected="shipments" %}
+{% include "accounting/inc_nav.html" %}
+{% endwith %}
 <CFINCLUDE TEMPLATE="inc_nav.cfm">
 
 <div class="" id="list_shipments">

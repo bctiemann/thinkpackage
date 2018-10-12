@@ -1,4 +1,4 @@
-var cgiroot = '';
+var cgiroot = '/accounting/';
 var globals = {};
 
 function nop() {}
@@ -18,7 +18,8 @@ function refreshShipments(shipmentid) {
     if (!('status_filter' in globals)) {
         globals['status_filter'] = 0;
     }
-    var url = cgiroot+'ajax_shipments_list.cfm?status_filter='+globals['status_filter'];
+//    var url = cgiroot+'ajax_shipments_list.cfm?status_filter='+globals['status_filter'];
+    var url = cgiroot + 'shipments/list/?status_filter=' + globals['status_filter'];
     $('#list_shipments').load(url,function(data) {
         refreshUI();
         if (shipmentid && parseInt(globals['status_filter']) == 0) {

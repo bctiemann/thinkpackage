@@ -1,0 +1,22 @@
+{% extends "accounting/base.html" %}
+
+{% block content %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+<div class="content">
+
+{% with page_selected="reconciliation" %}
+{% include "accounting/inc_nav.html" %}
+{% endwith %}
+<CFINCLUDE TEMPLATE="inc_nav.cfm">
+
+<div class="" id="list_reconciliation">
+<CFINCLUDE TEMPLATE="ajax_reconciliation_list.cfm">
+</div>
+
+<div id="reconciliation_details"></div>
+
+</body>
+</html>
+
+{% endblock %}

@@ -20,5 +20,10 @@ urlpatterns = [
 
     url(r'^shipments/$', accounting_views.accounting_shipments, name='shipments'),
     url(r'^shipments/list/$', accounting_views.accounting_shipments_list, name='shipments-list'),
+
+    url(r'^reconciliation/$', accounting_views.accounting_reconciliation, name='reconciliation'),
+    url(r'^reconciliation/list/$', accounting_views.accounting_reconciliation_list, name='reconciliation-list'),
+
+    url(r'^incoming/$', accounting_views.accounting_incoming, name='incoming'),
 ]
 

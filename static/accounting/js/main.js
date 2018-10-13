@@ -34,7 +34,8 @@ function refreshReconciliation() {
     if (!('completed_filter' in globals)) {
         globals['completed_filter'] = 0;
     }
-    var url = cgiroot+'ajax_reconciliation_list.cfm?completed_filter='+globals['completed_filter'];
+//    var url = cgiroot+'ajax_reconciliation_list.cfm?completed_filter='+globals['completed_filter'];
+    var url = cgiroot + 'reconciliation/list/?completed_filter=' + globals['completed_filter'];
     $('#list_reconciliation').load(url,function(data) {
         refreshUI();
     });
@@ -356,6 +357,7 @@ function refreshUI() {
 $(document).ready(function() {
     refreshUI();
     refreshShipments();
+    refreshReconciliation();
 
     $('#dialog_ship_shipment').dialog({
         autoOpen: false,

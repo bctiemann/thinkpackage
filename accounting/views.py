@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.contrib.auth import authenticate, login
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
@@ -48,22 +48,42 @@ def accounting_shipments(request):
 def accounting_shipments_list(request):
 
     try:
-        shipped_filter = int(request.GET.get('shipped_filter', 1))
+        status_filter = int(request.GET.get('status_filter', 1))
     except:
-        shipped_filter = 1
+        status_filter = 1
 
-    shipments = Shipment.objects.all().order_by('status', '-date_created')
+    shipments = Shipment.objects.filter(Q(transaction__product__account_prepay_type=1) | Q(delivery_charge__gt=0), status=2).order_by('-date_created', '-invoice_number')
 
-    three_weeks_ago = timezone.now() - timedelta(days=21)
+    three_months_ago = timezone.now() - timedelta(days=90)
 
-    if shipped_filter:
-        shipments = shipments.exclude(status=2)
-    else:
-        shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
+    if status_filter == 2:
+        shipments = shipments.filter(date_shipped__gt=three_months_ago)
+#    else:
+#        shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
 
     context = {
-        'shipments': shipments,
-        'shipped_filter': shipped_filter,
+        'shipments': shipments[0:100],
+        'status_filter': status_filter,
     }
     return render(request, 'accounting/shipments_list.html', context)
 
+
+def accounting_reconciliation(request):
+
+    context = {
+    }
+    return render(request, 'accounting/reconciliation.html', context)
+
+
+def accounting_reconciliation_list(request):
+
+    context = {
+    }
+    return render(request, 'accounting/reconciliation_list.html', context)
+
+
+def accounting_incoming(request):
+
+    context = {
+    }
+    return render(request, 'accounting/incoming.html', context)

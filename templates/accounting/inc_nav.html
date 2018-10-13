@@ -1,7 +1,5 @@
-<CFOUTPUT>
 <ul class="nav">
-    <a href="shipments.cfm"><li id="li_shipments" <CFIF TemplateName IS "shipments.cfm">class="selected"</CFIF>>INVQ</li></a>
-    <a href="reconciliation.cfm"><li id="li_reconciliation" <CFIF TemplateName IS "reconciliation.cfm">class="selected"</CFIF>>Reconciliation</li></a>
-    <a href="incoming.cfm"><li id="li_incoming" <CFIF TemplateName IS "incoming.cfm">class="selected"</CFIF>>Incoming</li></a>
+    <a href="{% url "accounting:shipments" %}"><li id="li_shipments" {% if page_selected == "shipments" %}class="selected"{% endif %}>INVQ</li></a>
+    <a href="{% url "accounting:reconciliation" %}"><li id="li_reconciliation" {% if page_selected == "reconciliation" %}class="selected"{% endif %}>Reconciliation</li></a>
+    <a href="{% url "accounting:incoming" %}"><li id="li_incoming" {% if page_selected == "incoming" %}">class="selected"{% endif %}>Incoming</li></a>
 </ul>
-</CFOUTPUT>

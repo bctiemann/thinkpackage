@@ -52,7 +52,7 @@ def shipments_list(request):
     except:
         status_filter = 1
 
-    shipments = Shipment.objects.filter(Q(transaction__product__account_prepay_type=1) | Q(delivery_charge__gt=0), status=2).order_by('-date_created', '-invoice_number')
+    shipments = Shipment.objects.filter(Q(transaction__product__account_prepay_type=1) | Q(delivery_charge__gt=0), status=2).distinct().order_by('-date_created', '-invoice_number')
 
     three_months_ago = timezone.now() - timedelta(days=90)
 

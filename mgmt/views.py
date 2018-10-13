@@ -669,7 +669,7 @@ class ProductReturn(AjaxableResponseMixin, CreateView):
             return_receivable = Receivable(
                 client = product.client,
                 date_created = timezone.now(),
-                date_received = form.cleaned_data['date_created'],
+                date_received = form.cleaned_data['date_returned'],
                 product = product,
                 cases = form.cleaned_data['cases_undamaged'],
                 returned_product = returned_product,

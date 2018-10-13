@@ -245,7 +245,7 @@ class ReceivableConfirmForm(forms.ModelForm):
 class ReturnedProductForm(forms.ModelForm):
     class Meta:
         model = ReturnedProduct
-        fields = ['cases_undamaged', 'cases_damaged', 'location', 'date_created',]
+        fields = ['cases_undamaged', 'cases_damaged', 'location', 'date_returned',]
 
 
 class ShipmentDocForm(forms.ModelForm):

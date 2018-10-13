@@ -1,5 +1,3 @@
-<CFSET status_filter = (IsDefined("URL.status_filter") AND IsNumeric(URL.status_filter) ? URL.status_filter : 0)>
-
 <ul class="mode_toggle">
 <a href="javascript:nop()" onClick="showStatus(0)"><li {% if status_filter == 0 %}class="selected"{% endif %}>INVQ</li></a>
 <a href="javascript:nop()" onClick="showStatus(1)"><li {% if status_filter == 1 %}class="selected"{% endif %}>pending</li></a>
@@ -58,29 +56,25 @@ LIMIT 100
         </CFQUERY>
 {% endcomment %}
 
-        <tr class="shipment" id="shipment_#shipmentid#">
-            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
-            <td style="width: 35px" class="numeric clickable" shipmentid="#shipmentid#">{{ shipment.invoice_number }}</td>
-            <td style="width: 35px" class="numeric clickable" shipmentid="#shipmentid#">{{ shipment.id }}</td>
-            <td style="width: 120px" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
-            <td style="width: 120px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.client.company_name }}</td>
-            <td style="width: 194px" class="text clickable" shipmentid="#shipmentid#">{{ shipment.location.name }}</td>
-            <td style="width: 90px" class="numeric clickable" shipmentid="#shipmentid#">{{ shipment.total_cases }}</td>
-            <td style="width: 145px" class="spacer20 clickable" shipmentid="#shipmentid#"></td>
-            <td style="width: 60px" class="text clickable" shipmentid="#shipmentid#">
+        <tr class="shipment" id="shipment_{{ shipment.id }}">
+            <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+            <td style="width: 35px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.invoice_number }}</td>
+            <td style="width: 35px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.id }}</td>
+            <td style="width: 120px" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
+            <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.client.company_name }}</td>
+            <td style="width: 194px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>
+            <td style="width: 90px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.total_cases }}</td>
+            <td style="width: 145px" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
+            <td style="width: 60px" class="text clickable" shipmentid="{{ shipmentid }}">
                 {% if status_filter == 1 or status_filter == 2 %}
-                {% if shipment.shipmentdoc_set.count %}
-                <cfif document_count GT 0>
-                <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>
-                </cfif>
-                {% endif %}
+                    {% if shipment.shipmentdoc_set.count %}
+                    <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>
+                    {% endif %}
                 {% endif %}
             </td>
             <td class="action" style="width: 185px; padding: 0px;">
                 {% if status_filter == 1 %}
-                <cfif status_filter IS 1>
-                <button class="actionbtn" onClick="submitInvoice(#shipmentid#)">Submit</button>
-                </cfif>
+                <button class="actionbtn" onClick="submitInvoice({{ shipment.id }})">Submit</button>
                 {% endif %}
             </td>
         </tr>

@@ -13,7 +13,7 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
+from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ReturnedProduct
 from ims.forms import UserLoginForm
 from ims import utils
 
@@ -77,7 +77,21 @@ def accounting_reconciliation(request):
 
 def accounting_reconciliation_list(request):
 
+    try:
+        completed_filter = int(request.GET.get('completed_filter', 0))
+    except:
+        completed_filter = 0
+
+    returned_products = ReturnedProduct.objects.all().order_by('-date_returned')
+
+    if completed_filter == 1:
+        returned_products = returned_products.filter(date_reconciled__isnull=False)
+    else:
+        returned_products = returned_products.filter(date_reconciled__isnull=True)
+
     context = {
+        'completed_filter': completed_filter,
+        'returned_products': returned_products,
     }
     return render(request, 'accounting/reconciliation_list.html', context)
 

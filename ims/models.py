@@ -679,7 +679,7 @@ class Transaction(models.Model):
 
 class ReturnedProduct(models.Model):
     id = models.AutoField(primary_key=True, db_column='returnid')
-    date_created = models.DateTimeField(null=True, db_column='stamp')
+    date_returned = models.DateTimeField(null=True, db_column='stamp')
     client = models.ForeignKey('Client', db_column='customerid', null=True)
     product = models.ForeignKey('Product', db_column='productid', null=True)
     location = models.ForeignKey('Location', db_column='locationid', null=True)

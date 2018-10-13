@@ -620,7 +620,7 @@ var execute_return = function() {
         cases_undamaged: $('#undamaged_cases').val() || 0,
         cases_damaged: $('#damaged_cases').val() || 0,
         location: $('#return_location').val(),
-        date_created: $('#return_date').val(),
+        date_returned: $('#return_date').val(),
     };
 console.log(params);
     $.post(url, params, function(data) {

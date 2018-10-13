@@ -62,14 +62,14 @@ def home(request):
     return redirect('warehouse:shipments')
 
 
-def warehouse_shipments(request):
+def shipments(request):
 
     context = {
     }
     return render(request, 'warehouse/shipments.html', context)
 
 
-def warehouse_shipments_list(request):
+def shipments_list(request):
 
     try:
         shipped_filter = int(request.GET.get('shipped_filter', 1))
@@ -92,7 +92,7 @@ def warehouse_shipments_list(request):
     return render(request, 'warehouse/shipments_list.html', context)
 
 
-def warehouse_shipment_details(request, shipment_id):
+def shipment_details(request, shipment_id):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
 
     context = {
@@ -102,14 +102,14 @@ def warehouse_shipment_details(request, shipment_id):
     return render(request, 'warehouse/shipment_details.html', context)
 
 
-def warehouse_receivables(request):
+def receivables(request):
 
     context = {
     }
     return render(request, 'warehouse/receivables.html', context)
 
 
-def warehouse_receivables_list(request):
+def receivables_list(request):
 
     try:
         received_filter = int(request.GET.get('received_filter', 1))
@@ -132,7 +132,7 @@ def warehouse_receivables_list(request):
     return render(request, 'warehouse/receivables_list.html', context)
 
 
-def warehouse_pallets(request):
+def pallets(request):
 
     context = {
         'pallets': Pallet.objects.filter(shipment__isnull=True, client__isnull=True).order_by('-date_created'),

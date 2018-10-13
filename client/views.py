@@ -94,7 +94,7 @@ def select_client(request, client_id):
     return JsonResponse({'success': True})
 
 
-def client_profile(request):
+def profile(request):
     primary_contact = request.selected_client.clientuser_set.filter(is_primary=True).first()
 
     context = {
@@ -104,7 +104,7 @@ def client_profile(request):
     return render(request, 'client/profile.html', context)
 
 
-def client_profile_locations(request):
+def profile_locations(request):
     locations = Location.objects.filter(client=request.selected_client, is_active=True).order_by('name')
     context = {
         'locations': locations,
@@ -112,7 +112,7 @@ def client_profile_locations(request):
     return render(request, 'client/locations_list.html', context)
 
 
-def client_profile_location_detail(request, location_id):
+def profile_location_detail(request, location_id):
     location = get_object_or_404(Location, pk=location_id, is_active=True, client=request.selected_client)
     context = {
         'location': location,
@@ -120,7 +120,7 @@ def client_profile_location_detail(request, location_id):
     return render(request, 'client/location_detail.html', context)
 
 
-def client_inventory(request):
+def inventory(request):
     locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
@@ -131,7 +131,7 @@ def client_inventory(request):
     return render(request, 'client/inventory.html', context)
 
 
-def client_inventory_list(request):
+def inventory_list(request):
     shipment_product_cases = {}
     shipment_id = request.GET.get('shipmentid', None)
     shipment = None
@@ -172,7 +172,7 @@ def client_inventory_list(request):
     return render(request, 'client/inventory_list.html', context)
 
 
-def client_delivery_products(request, shipment_id):
+def delivery_products(request, shipment_id):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
 
     context = {
@@ -182,7 +182,7 @@ def client_delivery_products(request, shipment_id):
 
 
 @require_POST
-def client_inventory_request_delivery(request):
+def inventory_request_delivery(request):
 
     # First validate the JSON data in the request
     if not 'json' in request.POST:
@@ -267,7 +267,7 @@ def client_inventory_request_delivery(request):
     return JsonResponse({'success': True})
 
 
-def client_history(request):
+def history(request):
 
     products = None
     if request.selected_client:
@@ -280,7 +280,7 @@ def client_history(request):
     return render(request, 'client/history.html', context)
 
 
-def client_reorder(request):
+def reorder(request):
 
     products = None
     if request.selected_client:
@@ -293,7 +293,7 @@ def client_reorder(request):
     return render(request, 'client/reorder.html', context)
 
 
-def client_product_history(request, product_id):
+def product_history(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
     date_to = timezone.now() + timedelta(days=30)
@@ -317,7 +317,7 @@ def client_product_history(request, product_id):
     return render(request, 'client/product_history.html', context)
 
 
-def client_shipment_docs(request, shipment_id):
+def shipment_docs(request, shipment_id):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
 
     context = {

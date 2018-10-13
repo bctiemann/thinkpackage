@@ -110,11 +110,11 @@ def home(request):
     return render(request, 'mgmt/home.html', context)
 
 
-def mgmt_redirect(request, client_id=None):
+def redirect(request, client_id=None):
     return redirect('mgmt:inventory', client_id=client_id)
 
 
-def mgmt_profile(request, client_id=None):
+def profile(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
     all_clients = []
     for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
@@ -130,7 +130,7 @@ def mgmt_profile(request, client_id=None):
     return render(request, 'mgmt/profile.html', context)
 
 
-def mgmt_inventory(request, client_id=None, product_id=None):
+def inventory(request, client_id=None, product_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
     context = {
@@ -141,7 +141,7 @@ def mgmt_inventory(request, client_id=None, product_id=None):
     return render(request, 'mgmt/inventory.html', context)
 
 
-def mgmt_inventory_list(request, client_id=None):
+def inventory_list(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
     try:
         active_filter = int(request.GET.get('active_filter', 0))
@@ -163,7 +163,7 @@ def mgmt_inventory_list(request, client_id=None):
     return render(request, 'mgmt/inventory_list.html', context)
 
 
-def mgmt_shipments(request, client_id=None, shipment_id=None):
+def shipments(request, client_id=None, shipment_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
     context = {
@@ -173,7 +173,7 @@ def mgmt_shipments(request, client_id=None, shipment_id=None):
     return render(request, 'mgmt/shipments.html', context)
 
 
-def mgmt_shipments_list(request, client_id=None):
+def shipments_list(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
     try:
@@ -196,7 +196,7 @@ def mgmt_shipments_list(request, client_id=None):
     return render(request, 'mgmt/shipments_list.html', context)
 
 
-def mgmt_shipment_docs(request, shipment_id=None):
+def shipment_docs(request, shipment_id=None):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
 
     context = {
@@ -205,7 +205,7 @@ def mgmt_shipment_docs(request, shipment_id=None):
     return render(request, 'mgmt/shipment_docs.html', context)
 
 
-def mgmt_product_history(request, product_id):
+def product_history(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
 #    date_to = timezone.now()
@@ -241,7 +241,7 @@ def mgmt_product_history(request, product_id):
     return render(request, 'mgmt/product_history.html', context)
 
 
-def mgmt_customers_list(request):
+def customers_list(request):
     filter = request.GET.get('filter', None)
 
     clients = Client.objects.all().order_by('company_name')
@@ -261,7 +261,7 @@ def mgmt_customers_list(request):
     return render(request, 'mgmt/customers_list.html', context)
 
 
-def mgmt_contacts_list(request, client_id):
+def contacts_list(request, client_id):
     client = get_object_or_404(Client, pk=client_id)
 
     context = {
@@ -270,7 +270,7 @@ def mgmt_contacts_list(request, client_id):
     return render(request, 'mgmt/contacts_list.html', context)
 
 
-def mgmt_locations_list(request, client_id):
+def locations_list(request, client_id):
     client = get_object_or_404(Client, pk=client_id)
 
     context = {
@@ -279,7 +279,7 @@ def mgmt_locations_list(request, client_id):
     return render(request, 'mgmt/locations_list.html', context)
 
 
-def mgmt_contact_form(request):
+def contact_form(request):
     client_id = request.GET.get('client_id', None)
     custcontact_id = request.GET.get('custcontact_id', None)
 
@@ -293,7 +293,7 @@ def mgmt_contact_form(request):
     return render(request, 'mgmt/contact_form.html', context)
 
 
-def mgmt_location_form(request):
+def location_form(request):
     client_id = request.GET.get('client_id', None)
     location_id = request.GET.get('location_id', None)
     logger.warning(location_id)
@@ -319,15 +319,15 @@ class ActionLogFilter(FilterSet):
         fields = ['product',]
 
 
-class FilteredActionLogListView(SingleTableMixin, FilterView):
-    table_class = ActionLogTable
-    model = ActionLog
-    template_name = 'mgmt/action_log.html'
+#class FilteredActionLogListView(SingleTableMixin, FilterView):
+#    table_class = ActionLogTable
+#    model = ActionLog
+#    template_name = 'mgmt/action_log.html'
 
-    filterset_class = ActionLogFilter
+#    filterset_class = ActionLogFilter
 
 
-def mgmt_action_log(request):
+def action_log(request):
     logs = ActionLog.objects.all()
 
     product_id = request.GET.get('product_id', None)

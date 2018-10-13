@@ -37,7 +37,7 @@ def home(request):
     return redirect('accounting:shipments')
 
 
-def accounting_shipments(request):
+def shipments(request):
 #    locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
@@ -45,7 +45,7 @@ def accounting_shipments(request):
     return render(request, 'accounting/shipments.html', context)
 
 
-def accounting_shipments_list(request):
+def shipments_list(request):
 
     try:
         status_filter = int(request.GET.get('status_filter', 1))
@@ -68,7 +68,7 @@ def accounting_shipments_list(request):
     return render(request, 'accounting/shipments_list.html', context)
 
 
-def accounting_shipment_details(request, shipment_id):
+def shipment_details(request, shipment_id):
     shipment = get_object_or_404(Shipment, pk=shipment_id)
 
     context = {
@@ -78,14 +78,14 @@ def accounting_shipment_details(request, shipment_id):
     return render(request, 'accounting/shipment_details.html', context)
 
 
-def accounting_reconciliation(request):
+def reconciliation(request):
 
     context = {
     }
     return render(request, 'accounting/reconciliation.html', context)
 
 
-def accounting_reconciliation_list(request):
+def reconciliation_list(request):
 
     try:
         completed_filter = int(request.GET.get('completed_filter', 0))
@@ -106,7 +106,7 @@ def accounting_reconciliation_list(request):
     return render(request, 'accounting/reconciliation_list.html', context)
 
 
-def accounting_incoming(request):
+def incoming(request):
 
     context = {
     }

@@ -19,18 +19,18 @@ urlpatterns = [
     url(r'^$', warehouse_views.home, name='home'),
     url(r'^sign_out/', auth_views.logout, {'next_page': 'warehouse:login'}, name='sign-out'),
 
-    url(r'^shipments/$', warehouse_views.warehouse_shipments, name='shipments'),
-    url(r'^shipments/list/$', warehouse_views.warehouse_shipments_list, name='shipments-list'),
+    url(r'^shipments/$', warehouse_views.shipments, name='shipments'),
+    url(r'^shipments/list/$', warehouse_views.shipments_list, name='shipments-list'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', warehouse_views.ShipmentUpdate.as_view(), name='shipment-details'),
     url(r'^shipment/(?P<shipment_id>\d+)/ship/$', warehouse_views.ShipmentShip.as_view(), name='shipment-ship'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', warehouse_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
     url(r'^shipment/(?P<shipment_id>\d+)/bill_of_lading/$', warehouse_views.BillOfLadingView.as_view(), name='bill-of-lading'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', warehouse_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 
-    url(r'^receivables/$', warehouse_views.warehouse_receivables, name='receivables'),
-    url(r'^receivables/list/$', warehouse_views.warehouse_receivables_list, name='receivables-list'),
+    url(r'^receivables/$', warehouse_views.receivables, name='receivables'),
+    url(r'^receivables/list/$', warehouse_views.receivables_list, name='receivables-list'),
 
-    url(r'^pallets/$', warehouse_views.warehouse_pallets, name='pallets'),
+    url(r'^pallets/$', warehouse_views.pallets, name='pallets'),
     url(r'^pallet/(?P<pallet_id>\d+)/$', warehouse_views.PalletUpdate.as_view(), name='pallet-details'),
     url(r'^pallet/(?P<pallet_id>\d+)/delete/$', warehouse_views.PalletDelete.as_view(), name='pallet-delete'),
     url(r'^pallet/(?P<pallet_id>\d+)/print/$', warehouse_views.PalletPrint.as_view(), name='pallet-print'),

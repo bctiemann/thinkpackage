@@ -18,13 +18,13 @@ urlpatterns = [
     url(r'^$', accounting_views.home, name='home'),
     url(r'^sign_out/', auth_views.logout, {'next_page': 'accounting:login'}, name='sign-out'),
 
-    url(r'^shipments/$', accounting_views.accounting_shipments, name='shipments'),
-    url(r'^shipments/list/$', accounting_views.accounting_shipments_list, name='shipments-list'),
-    url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.accounting_shipment_details, name='shipment-details'),
+    url(r'^shipments/$', accounting_views.shipments, name='shipments'),
+    url(r'^shipments/list/$', accounting_views.shipments_list, name='shipments-list'),
+    url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.shipment_details, name='shipment-details'),
 
-    url(r'^reconciliation/$', accounting_views.accounting_reconciliation, name='reconciliation'),
-    url(r'^reconciliation/list/$', accounting_views.accounting_reconciliation_list, name='reconciliation-list'),
+    url(r'^reconciliation/$', accounting_views.reconciliation, name='reconciliation'),
+    url(r'^reconciliation/list/$', accounting_views.reconciliation_list, name='reconciliation-list'),
 
-    url(r'^incoming/$', accounting_views.accounting_incoming, name='incoming'),
+    url(r'^incoming/$', accounting_views.incoming, name='incoming'),
 ]
 

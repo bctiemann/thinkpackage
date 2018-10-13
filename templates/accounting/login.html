@@ -1,0 +1,6 @@
+{% extends "login.html" %}
+
+{% block login_page_title %}Accounting Login{% endblock %}
+
+{% block next %}<input type="hidden" name="next" value="{% url "accounting:home" %}" />{% endblock %}
+

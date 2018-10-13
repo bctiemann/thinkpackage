@@ -11,7 +11,7 @@ from mgmt import views as mgmt_views
 
 urlpatterns = [
     url(
-        r'^account/login/$',
+        r'^login/$',
         mgmt_views.LoginView.as_view(),
         name='login',
     ),

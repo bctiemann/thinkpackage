@@ -11,7 +11,7 @@ from warehouse import views as warehouse_views
 
 urlpatterns = [
     url(
-        r'^account/login/$',
+        r'^login/$',
         warehouse_views.LoginView.as_view(),
         name='login',
     ),

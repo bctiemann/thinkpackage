@@ -11,7 +11,7 @@ from accounting import views as accounting_views
 
 urlpatterns = [
     url(
-        r'^account/login/$',
+        r'^login/$',
         accounting_views.LoginView.as_view(),
         name='login',
     ),

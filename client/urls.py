@@ -11,7 +11,7 @@ from client import views as client_views
 
 urlpatterns = [
     url(
-        r'^account/login/$',
+        r'^login/$',
         client_views.LoginView.as_view(),
         name='login',
     ),

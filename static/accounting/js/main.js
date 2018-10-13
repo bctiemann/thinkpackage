@@ -51,7 +51,8 @@ function selectShipment(shipmentid) {
         $('.shipment_detail').html('');
         $('tr.shipment').removeClass('selected');
         $('#shipment_'+shipmentid).addClass('selected');
-        var url = cgiroot+'ajax_shipment_details.cfm?shipmentid='+shipmentid;
+//        var url = cgiroot+'ajax_shipment_details.cfm?shipmentid='+shipmentid;
+        var url = cgiroot + 'shipment/' + shipmentid + '/';
         $('#shipment_details').load(url,function() {
 //            $('tr.product input').prop('disabled',true);
 //            $('#product_'+productid+' input').prop('disabled',false);

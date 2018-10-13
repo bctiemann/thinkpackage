@@ -68,6 +68,16 @@ def accounting_shipments_list(request):
     return render(request, 'accounting/shipments_list.html', context)
 
 
+def accounting_shipment_details(request, shipment_id):
+    shipment = get_object_or_404(Shipment, pk=shipment_id)
+
+    context = {
+        'shipment': shipment,
+#        'shipper_addresses': ShipperAddress.objects.all(),
+    }
+    return render(request, 'accounting/shipment_details.html', context)
+
+
 def accounting_reconciliation(request):
 
     context = {

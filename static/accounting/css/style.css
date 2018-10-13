@@ -23,3 +23,9 @@ ul.mode_toggle {
 	color: #aaa; 
 }
 
+div.form_header span.delivery-charge {
+	float: right;
+	line-height: 50px;
+	margin-right: 10px;
+}
+

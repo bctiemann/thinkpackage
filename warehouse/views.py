@@ -18,7 +18,8 @@ from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, Disable
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc, ActionLog
-from ims.forms import AjaxableResponseMixin, UserLoginForm, ShipmentForm, PalletForm, ShipmentDocForm
+from ims.forms import AjaxableResponseMixin, UserLoginForm
+from warehouse import forms
 from ims import utils
 
 from datetime import datetime, timedelta
@@ -142,7 +143,7 @@ def pallets(request):
 
 class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
     model = Shipment
-    form_class = ShipmentForm
+    form_class = forms.ShipmentForm
     template_name = 'warehouse/shipment_details.html'
 
     def get_object(self):
@@ -184,7 +185,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 
 class PalletUpdate(AjaxableResponseMixin, UpdateView):
     model = Pallet
-    form_class = PalletForm
+    form_class = forms.PalletForm
     template_name = 'warehouse/pallet_details.html'
 
     def get_object(self):
@@ -240,7 +241,7 @@ class PalletPrint(PDFView):
 
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
-    form_class = ShipmentDocForm
+    form_class = forms.ShipmentDocForm
     template_name = 'warehouse/shipment_docs.html'
 
     def form_valid(self, form):

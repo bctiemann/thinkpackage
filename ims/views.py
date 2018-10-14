@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, Pallet
-from ims.forms import UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ShipmentDocForm
+from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims import utils
 
 import math

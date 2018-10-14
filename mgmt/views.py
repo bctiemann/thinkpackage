@@ -26,7 +26,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct
-from ims.forms import AjaxableResponseMixin, UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ReturnedProductForm, ShipmentDocForm
+#from ims.forms import AjaxableResponseMixin, UserLoginForm, ClientForm, LocationForm, CustContactForm, ProductForm, ReceivableForm, ReceivableConfirmForm, ReturnedProductForm, ShipmentDocForm
+from ims.forms import AjaxableResponseMixin, UserLoginForm
+from mgmt import forms
 from ims import utils
 
 import math
@@ -351,7 +353,7 @@ def action_log(request):
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
-    form_class = ClientForm
+    form_class = forms.ClientForm
     template_name = 'mgmt/profile.html'
 
     def get_object(self):
@@ -371,7 +373,7 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
 
 class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location
-    form_class = LocationForm
+    form_class = forms.LocationForm
     template_name = 'mgmt/location_form.html'
 
 #    def get_context_data(self, *args, **kwargs):
@@ -382,7 +384,7 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
 
 class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
-    form_class = LocationForm
+    form_class = forms.LocationForm
     template_name = 'mgmt/location_form.html'
 
     def get_object(self):
@@ -404,7 +406,7 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
 
 class CustContactCreate(AjaxableResponseMixin, CreateView):
     model = CustContact
-    form_class = CustContactForm
+    form_class = forms.CustContactForm
     template_name = 'mgmt/contact_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
@@ -423,7 +425,7 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
 
 class CustContactUpdate(AjaxableResponseMixin, UpdateView):
     model = CustContact
-    form_class = CustContactForm
+    form_class = forms.CustContactForm
     template_name = 'mgmt/contact_form.html'
 
     def get_object(self):
@@ -470,7 +472,7 @@ class CustContactDelete(AjaxableResponseMixin, UpdateView):
 
 class ProductCreate(AjaxableResponseMixin, CreateView):
     model = Product
-    form_class = ProductForm
+    form_class = forms.ProductForm
     template_name = 'mgmt/product_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
@@ -499,7 +501,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
 
 class ProductUpdate(AjaxableResponseMixin, UpdateView):
     model = Product
-    form_class = ProductForm
+    form_class = forms.ProductForm
     template_name = 'mgmt/product_details.html'
 
     def get_object(self):
@@ -654,7 +656,7 @@ class ProductTransfer(APIView):
 
 class ProductReturn(AjaxableResponseMixin, CreateView):
     model = ReturnedProduct
-    form_class = ReturnedProductForm
+    form_class = forms.ReturnedProductForm
     template_name = 'mgmt/product_detail.html'
 
     def form_valid(self, form):
@@ -700,7 +702,7 @@ class ProductReturn(AjaxableResponseMixin, CreateView):
 
 class ReceivableCreate(AjaxableResponseMixin, CreateView):
     model = Receivable
-    form_class = ReceivableForm
+    form_class = forms.ReceivableForm
     template_name = 'mgmt/receivable.html'
 
     def form_valid(self, form):
@@ -736,7 +738,7 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
 
 class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
     model = Receivable
-    form_class = ReceivableConfirmForm
+    form_class = forms.ReceivableConfirmForm
     template_name = 'mgmt/receivable.html'
 
     def get_object(self):
@@ -846,7 +848,7 @@ class ShipmentDetail(DetailView):
 
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
-    form_class = ShipmentDocForm
+    form_class = forms.ShipmentDocForm
     template_name = 'mgmt/shipment_docs.html'
 
     def form_valid(self, form):

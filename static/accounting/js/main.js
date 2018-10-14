@@ -154,54 +154,53 @@ console.log(data);
 }
 
 function uploadShipmentDoc(shipmentid) {
-    globals['shipmentid'] = shipmentid; 
+    globals['shipmentid'] = shipmentid;
     $('#shipment_upfile').val('');
     $('#shipment_upload_form').dialog("open");
 }
-                
+
 var execute_uploadShipmentDoc = function(shipmentid) {
     var data = new FormData();
     $.each($('#shipment_upfile')[0].files, function(i, file) {
-        data.append('shipment_upfile', file);
+        data.append('file', file);
     });
     data.append('fnc', 'upload_doc');
-    data.append('shipmentid', globals['shipmentid']);
-          
+    data.append('shipment', globals['shipmentid']);
+
     $('.spinner-upload').show();
-  
+
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/docs/';
     $.ajax({
-        url: 'ajax_shipment_action.cfm', 
+        url: url,
         data: data,
         cache: false,
         contentType: false,
         dataType: 'json',
-        processData: false,   
+        processData: false,
         type: 'POST',
         success: function(data) {
 console.log(data);
             $('.spinner-upload').hide();
             $('#shipment_upload_form').dialog('close');
             if (data.success) {
-                $('#shipment_'+globals['shipmentid']).removeClass('selected');
-                if (globals['status_filter'] == 0) {
-                    var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
-                    $('#shipment_details').load(successUrl,function() {
-                        refreshUI();
-                    });
-                }
+                var successUrl = url;
+                $('#shipment_details').load(successUrl,function() {
+                    refreshUI();
+                });
                 refreshShipments(globals['shipmentid']);
-                showShipmentDocs(data.shipmentid);
+                showShipmentDocs(globals['shipmentid']);
                 $('#shipment_upfile').val('');
             } else {
-                alert(data.error);
+                alert(data.message);
             }
         },
-    }); 
+    });
 };
 
 var deleteShipmentDoc = function(docid) {
     if (confirm('Are you sure you want to delete this document?')) {
-        var url = 'ajax_shipment_action.cfm';
+//        var url = 'ajax_shipment_action.cfm';
+        var url = cgiroot + 'shipment/doc/' + docid + '/delete/';
         var params = {
             docid: docid,
             fnc: 'delete_doc',
@@ -209,18 +208,16 @@ var deleteShipmentDoc = function(docid) {
         $.post(url, params, function(data) {
 console.log(data);
             if (data.success) {
-                $('#shipment_'+globals['shipmentid']).removeClass('selected');
-                if (globals['status_filter'] == 0) {
-                    var successUrl = cgiroot+'ajax_shipment_details.cfm?shipmentid='+data.shipmentid;
-                    $('#shipment_details').load(successUrl,function() {
-                        refreshUI();
-                    });
-                }
-                refreshShipments(globals['shipmentid']);
-                showShipmentDocs(data.shipmentid);
+                $('#shipment_'+data.shipment_id).removeClass('selected');
+                var successUrl = cgiroot + 'shipment/' + data.shipment_id + '/docs/';
+                $('#shipment_details').load(successUrl,function() {
+                    refreshUI();
+                });
+                refreshShipments(data.shipment_id);
+                showShipmentDocs(data.shipment_id);
                 $('#shipment_upfile').val('');
             } else {
-                alert(data.error);
+                alert(data.message);
             }
         }, 'json');
     }
@@ -302,7 +299,8 @@ console.log(data);
 
 function showShipmentDocs(shipmentid) {
     globals['shipmentid'] = shipmentid;
-    var url = 'ajax_shipment_docs.cfm?shipmentid=' + shipmentid;
+//    var url = 'ajax_shipment_docs.cfm?shipmentid=' + shipmentid;
+    var url = cgiroot + 'shipment/' + shipmentid + '/docs/';
     $('#documents_list').load(url, function() {
         $('#documents_list button').button({
             icons: {

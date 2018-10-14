@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ReturnedProduct
+from ims.models import Product, Transaction, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from accounting import forms
 from ims import utils
@@ -146,4 +146,44 @@ class ReturnedProductReconcile(AjaxableResponseMixin, UpdateView):
     def form_valid(self, form):
         self.object.date_reconciled = timezone.now()
         return super(ReturnedProductReconcile, self).form_valid(form)
+
+
+class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
+    model = ShipmentDoc
+    form_class = forms.ShipmentDocForm
+    template_name = 'warehouse/shipment_docs.html'
+
+    def form_valid(self, form):
+        logger.warning(form.data)
+        logger.warning(self.request.FILES)
+        response = super(ShipmentDocCreate, self).form_valid(form)
+        uploaded_file = self.request.FILES['file']
+        self.object.content_type = uploaded_file.content_type
+        self.object.size = uploaded_file.size
+        filename_parts = uploaded_file.name.split('.')
+        self.object.basename = '.'.join(filename_parts[0:-1])
+        self.object.ext = filename_parts[-1]
+        self.object.save()
+        logger.info('ShipmentDoc {0} created.'.format(self.object))
+        return response
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShipmentDocCreate, self).get_context_data(*args, **kwargs)
+        shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+        context['shipment'] = shipment
+        return context
+
+
+class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
+    model = ShipmentDoc
+
+    def get_object(self):
+        return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
+
+    def get_success_url(self):
+        return reverse_lazy('warehouse:shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
+
+    def post(self, *args, **kwargs):
+        super(ShipmentDocDelete, self).post(*args, **kwargs)
+        return JsonResponse({'success': True, 'shipment_id': self.object.shipment_id})
 

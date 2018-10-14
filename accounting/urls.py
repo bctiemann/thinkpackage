@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^shipments/list/$', accounting_views.shipments_list, name='shipments-list'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.ShipmentUpdateInvoice.as_view(), name='shipment-details'),
     url(r'^shipment/(?P<shipment_id>\d+)/submit/$', accounting_views.ShipmentSubmitInvoice.as_view(), name='shipment-submit-invoice'),
+    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', accounting_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', accounting_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 
     url(r'^reconciliation/$', accounting_views.reconciliation, name='reconciliation'),
     url(r'^reconciliation/list/$', accounting_views.reconciliation_list, name='reconciliation-list'),

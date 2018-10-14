@@ -124,7 +124,9 @@ var execute_saveInvoice = function() {
     $.post(url,shipment,function(data) {
 console.log(data);
         if (data.success) {
-            window.location.reload();
+            showStatus(0);
+            $('#dialog_invoice').dialog("close");
+//            window.location.reload();
         } else {
             displayErrorDialog(data);
         }
@@ -134,19 +136,21 @@ console.log(data);
 function submitInvoice(shipmentid) {
     if (confirm('Submit this invoice?')) {
         var shipment = {
-        fnc: 'submitInvoice',
-        shipmentid: shipmentid,
+//            fnc: 'submitInvoice',
+//            shipmentid: shipmentid,
+            accounting_status: 2,
         };
-    }
-    var url = cgiroot+'ajax_shipments_action.cfm';
-    $.post(url,shipment,function(data) {
+//        var url = cgiroot+'ajax_shipments_action.cfm';
+        var url = cgiroot + 'shipment/' + shipmentid + '/submit/';
+        $.post(url,shipment,function(data) {
 console.log(data);
-        if (data.STATUS == 'success') {
-            showStatus(1);
-        } else {
-            alert(data.error);
-        }
-    },'json');
+            if (data.success) {
+                showStatus(1);
+            } else {
+                displayErrorDialog(data);
+            }
+        },'json');
+    }
 }
 
 function uploadShipmentDoc(shipmentid) {

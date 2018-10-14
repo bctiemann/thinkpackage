@@ -122,7 +122,7 @@ def incoming(request):
     return render(request, 'accounting/incoming.html', context)
 
 
-class ShipmentAddInvoice(AjaxableResponseMixin, UpdateView):
+class ShipmentUpdateInvoice(AjaxableResponseMixin, UpdateView):
     model = Shipment
     form_class = forms.ShipmentInvoiceForm
     template_name = 'accounting/shipment_details.html'
@@ -130,3 +130,6 @@ class ShipmentAddInvoice(AjaxableResponseMixin, UpdateView):
     def get_object(self):
         return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
 
+
+class ShipmentSubmitInvoice(ShipmentUpdateInvoice):
+    form_class = forms.ShipmentSubmitInvoiceForm

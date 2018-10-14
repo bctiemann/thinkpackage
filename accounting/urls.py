@@ -20,7 +20,8 @@ urlpatterns = [
 
     url(r'^shipments/$', accounting_views.shipments, name='shipments'),
     url(r'^shipments/list/$', accounting_views.shipments_list, name='shipments-list'),
-    url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.ShipmentAddInvoice.as_view(), name='shipment-details'),
+    url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.ShipmentUpdateInvoice.as_view(), name='shipment-details'),
+    url(r'^shipment/(?P<shipment_id>\d+)/submit/$', accounting_views.ShipmentSubmitInvoice.as_view(), name='shipment-submit-invoice'),
 
     url(r'^reconciliation/$', accounting_views.reconciliation, name='reconciliation'),
     url(r'^reconciliation/list/$', accounting_views.reconciliation_list, name='reconciliation-list'),

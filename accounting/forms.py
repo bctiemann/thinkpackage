@@ -20,3 +20,9 @@ class ShipmentInvoiceForm(forms.ModelForm):
         model = Shipment
         fields = ['invoice_number', 'accounting_status']
 
+
+class ShipmentSubmitInvoiceForm(forms.ModelForm):
+    class Meta:
+        model = Shipment
+        fields = ['accounting_status']
+

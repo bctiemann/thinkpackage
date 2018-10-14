@@ -316,10 +316,11 @@ function showShipmentDocs(shipmentid) {
 
 function completeReconciliation(returnid) {
     if (confirm('Are you sure you want to complete this reconciliation item?')) {
-        var url = 'ajax_reconciliation_action.cfm';
+//        var url = 'ajax_reconciliation_action.cfm';
+        var url = cgiroot + 'reconciliation/' + returnid + '/';
         var params = {
-            fnc: 'reconcile_return',
-            returnid: returnid,
+//            fnc: 'reconcile_return',
+//            returnid: returnid,
         };
         $.post(url, params, function(data) {
 console.log(data);

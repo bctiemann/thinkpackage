@@ -25,6 +25,7 @@ urlpatterns = [
 
     url(r'^reconciliation/$', accounting_views.reconciliation, name='reconciliation'),
     url(r'^reconciliation/list/$', accounting_views.reconciliation_list, name='reconciliation-list'),
+    url(r'^reconciliation/(?P<returned_product_id>\d+)/$', accounting_views.ReturnedProductReconcile.as_view(), name='reconciliation-reconcile'),
 
     url(r'^incoming/$', accounting_views.incoming, name='incoming'),
 ]

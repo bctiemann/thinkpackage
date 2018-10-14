@@ -26,3 +26,8 @@ class ShipmentSubmitInvoiceForm(forms.ModelForm):
         model = Shipment
         fields = ['accounting_status']
 
+
+class ReconciliationForm(forms.ModelForm):
+    class Meta:
+        model = ReturnedProduct
+        fields = []

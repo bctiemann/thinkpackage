@@ -133,3 +133,17 @@ class ShipmentUpdateInvoice(AjaxableResponseMixin, UpdateView):
 
 class ShipmentSubmitInvoice(ShipmentUpdateInvoice):
     form_class = forms.ShipmentSubmitInvoiceForm
+
+
+class ReturnedProductReconcile(AjaxableResponseMixin, UpdateView):
+    model = ReturnedProduct
+    form_class = forms.ReconciliationForm
+    template_name = 'accounting/reconciliation.html'
+
+    def get_object(self):
+        return get_object_or_404(ReturnedProduct, pk=self.kwargs['returned_product_id'])
+
+    def form_valid(self, form):
+        self.object.date_reconciled = timezone.now()
+        return super(ReturnedProductReconcile, self).form_valid(form)
+

@@ -1,7 +1,4 @@
 var cgiroot = '/accounting/';
-var globals = {};
-
-function nop() {}
 
 function showStatus(show_status) {
     globals['status_filter'] = show_status;
@@ -117,17 +114,19 @@ function promptInvoice(shipmentid) {
 
 var execute_saveInvoice = function() {
     var shipment = {
-        fnc: 'saveInvoice',
-        shipmentid: globals['shipmentid'],
-        invoice: $('#shipment_invoice').val(),
+//        fnc: 'saveInvoice',
+//        shipment: globals['shipmentid'],
+        invoice_number: $('#shipment_invoice').val(),
+        accounting_status: 1,
     }
-    var url = cgiroot+'ajax_shipments_action.cfm';
+//    var url = cgiroot+'ajax_shipments_action.cfm';
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/';
     $.post(url,shipment,function(data) {
 console.log(data);
-        if (data.STATUS == 'success') {
+        if (data.success) {
             window.location.reload();
         } else {
-            alert(data.error);
+            displayErrorDialog(data);
         }
     },'json');
 };
@@ -413,7 +412,6 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Submit: function() {
-                $( this ).dialog( "close" );
                 execute_saveInvoice();
             },
             Cancel: function() {

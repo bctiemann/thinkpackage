@@ -9,6 +9,7 @@
     <link rel=stylesheet href="{% static "client/css/jquery-ui.css" %}" type="text/css">
     <script type="text/javascript" src="{% static "client/js/jquery-1.11.1.min.js" %}"></script>
     <script type="text/javascript" src="{% static "client/js/jquery-ui.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/common.js" %}"></script>
     <script type="text/javascript" src="{% static "client/js/main.js" %}"></script>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
@@ -17,27 +18,6 @@
 {% if user.is_authenticated %}
 
 <body>
-
-<div class="dialog" id="dialog_support" title="Support">
-Please contact {{ company_info.name }} Support at {{ company_info.phone_number }} or email <a href="mailto:{{ company_info.site_email }}">{{ company_info.site_email }}</a> for assistance.
-</div>
-
-<div class="dialog" id="dialog_change_password" title="Change Password">
-<table>
-    <tr>
-        <td class="label">Current password:</td>
-        <td><input type="password" id="current_password"></td>
-    </tr>
-    <tr>
-        <td class="label">New password:</td>
-        <td><input type="password" id="new_password_1"></td>
-    </tr>
-    <tr>
-        <td class="label">Repeat password:</td>
-        <td><input type="password" id="new_password_2"></td>
-    </tr>
-</table>
-</div>
 
 <div id="header">
     <div class="logoutlink"><a href="{% url "client:sign-out" %}">Log out</a></div>
@@ -71,6 +51,30 @@ Please contact {{ company_info.name }} Support at {{ company_info.phone_number }
 {% endif %}
 
 {% block content %}{% endblock %}
+
+<div class="dialog" id="dialog_support" title="Support">
+Please contact {{ company_info.name }} Support at {{ company_info.phone_number }} or email <a href="mailto:{{ company_info.site_email }}">{{ company_info.site_email }}</a> for assistance.
+</div>
+
+<div class="dialog" id="dialog_change_password" title="Change Password">
+<table>
+    <tr>
+        <td class="label">Current password:</td>
+        <td><input type="password" id="current_password"></td>
+    </tr>
+    <tr>
+        <td class="label">New password:</td>
+        <td><input type="password" id="new_password_1"></td>
+    </tr>
+    <tr>
+        <td class="label">Repeat password:</td>
+        <td><input type="password" id="new_password_2"></td>
+    </tr>
+</table>
+</div>
+
+<div class="dialog" id="dialog_errors" title="Error">
+</div>
 
 </body>
 </html>

@@ -58,7 +58,7 @@ LIMIT 100
 
         <tr class="shipment" id="shipment_{{ shipment.id }}">
             <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
-            <td style="width: 35px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.invoice_number }}</td>
+            <td style="width: 35px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.invoice_number|default_if_none:"" }}</td>
             <td style="width: 35px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.id }}</td>
             <td style="width: 120px" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
             <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.client.company_name }}</td>

@@ -1,6 +1,5 @@
 var cgiroot = '/mgmt/';
 var apiroot = '/api/';
-var globals = {};
 var keyinput = '';
 var keyinput_timeout = null;
 var filter_popup_timeout = 2000;
@@ -10,33 +9,6 @@ var units = 'metric';
 $(document).ajaxError(function() {
     alert('An error occurred executing this function.');
   $( ".log" ).text( "Triggered ajaxError handler." );
-});
-
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-var csrftoken = getCookie('csrftoken');
-
-function csrfSafeMethod(method) {
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
 });
 
 var SchedElements = new Array();
@@ -1167,8 +1139,10 @@ function execute_search() {
     var search = $('#form_search').serialize();
     var url = 'search.cfm?' + search;
     window.open(url);
+
 }
 
+/*
 function displayErrorDialog(data) {
     var errorList = $('<ul>', {
         class: 'error-list',
@@ -1194,6 +1168,7 @@ function displayErrorDialog(data) {
     }
     $('#dialog_errors').empty().append(errorList).dialog('open');
 };
+*/
 
 $(document).ready(function() {
     $('#toolsmenulink').click(function() {
@@ -1542,6 +1517,7 @@ $(document).ready(function() {
         }
     });
 
+/*
     $('#dialog_errors').dialog({
         autoOpen: false,
         resizable: false,
@@ -1554,6 +1530,7 @@ $(document).ready(function() {
             }
         }
     });
+*/
 
     // Expand/collapse notification panels
     $('#notifications .list_header').click(function() {

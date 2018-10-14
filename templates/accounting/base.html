@@ -9,6 +9,7 @@
     <link rel=stylesheet href="{% static "css/jquery-ui.css" %}" type="text/css">
     <script type="text/javascript" src="{% static "js/jquery-1.11.1.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery-ui.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/common.js" %}"></script>
     <script type="text/javascript" src="{% static "accounting/js/main.js" %}"></script>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
@@ -31,6 +32,9 @@
 {% endif %}
 
 {% block content %}{% endblock %}
+
+<div class="dialog" id="dialog_errors" title="Error">
+</div>
 
 </body>
 </html>

@@ -13,8 +13,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 
 import django_tables2 as tables
-from django_filters import FilterSet
-from django_filters.views import FilterView
+#from django_filters import FilterSet
+#from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
@@ -315,10 +315,10 @@ class ActionLogTable(tables.Table):
         template_name = 'django_tables2/infotable.html'
 
 
-class ActionLogFilter(FilterSet):
-    class Meta:
-        model = ActionLog
-        fields = ['product',]
+#class ActionLogFilter(FilterSet):
+#    class Meta:
+#        model = ActionLog
+#        fields = ['product',]
 
 
 #class FilteredActionLogListView(SingleTableMixin, FilterView):

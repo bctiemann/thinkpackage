@@ -1,4 +1,4 @@
-var cgiroot = '';
+var cgiroot = '/warehouse_app/';
 var scanInput = '';
 var scanMode = null;
 //var onPallet = {};
@@ -7,11 +7,11 @@ var removeScanResult = null;
 var idleTime = 0;
 var mins_timeout = 540; // Auto-logout after 9 hours
 var product_tapped = false;
-var globals = {};
+//var globals = {};
 
 $.ajax({async:false})
 
-function nop() {}
+//function nop() {}
 
 
 function doSend() {
@@ -262,7 +262,7 @@ function openActionPage(page) {
 }
 
 function doLogout() {
-    window.location="index.cfm?exit=1";
+    window.location = cgiroot + 'sign_out/';
 }
 
 function timerIncrement() {

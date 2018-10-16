@@ -149,6 +149,8 @@ LOGIN_EXEMPT_URLS = (
     r'^client/login/$',
     r'^warehouse/$',
     r'^warehouse/login/$',
+    r'^warehouse_app/$',
+    r'^warehouse_app/login/$',
     r'^accounting/$',
     r'^accounting/login/$',
 )

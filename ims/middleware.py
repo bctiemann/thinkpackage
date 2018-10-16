@@ -40,6 +40,8 @@ class LoginRequiredMiddleware:
                     return HttpResponseRedirect(reverse_lazy('client:login'))
                 if path.startswith('warehouse/'):
                     return HttpResponseRedirect(reverse_lazy('warehouse:login'))
+                if path.startswith('warehouse_app/'):
+                    return HttpResponseRedirect(reverse_lazy('warehouse_app:login'))
                 if path.startswith('accounting/'):
                     return HttpResponseRedirect(reverse_lazy('accounting:login'))
 #                return HttpResponseRedirect(settings.LOGIN_URL)
@@ -49,6 +51,8 @@ class SelectedClientMiddleware:
 
     def get_selected_client(self, request):
         "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
+        if not request.user.is_authenticated:
+            return None
         try:
             if 'selected_client_id' in request.session:
                 try:

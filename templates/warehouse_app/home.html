@@ -1,4 +1,7 @@
 {% extends "warehouse_app/base.html" %}
+{% load static %}
+
+{% block content %}
 <CFINCLUDE TEMPLATE="inc_header.cfm">
 
 <div id="status"></div>
@@ -22,10 +25,11 @@ Not all required cases were scanned for this pallet. Please create an additional
 <!---An incorrect number of items was scanned for this pallet. Please check and rescan.--->
 </div>
 
-<div id="reconnect_info">To reconnect scanner, press <b>up</b> button. <img src="images/kdc300_up.png" /></div>
+<div id="reconnect_info">To reconnect scanner, press <b>up</b> button. <img src="{% static "warehouse_app/images/kdc300_up.png" %}" /></div>
 
 <div class="content" id="content">
 
+{% include "warehouse_app/menu.html" %}
 <CFINCLUDE TEMPLATE="menu.cfm">
 
 </div>
@@ -33,3 +37,4 @@ Not all required cases were scanned for this pallet. Please create an additional
 </body>
 </html>
 
+{% endblock %}

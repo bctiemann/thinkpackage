@@ -1,0 +1,72 @@
+<h1>Build Pallet</h1>
+
+<div class="barcode_mask">
+<input id="barcode" type="text" autocapitalize="off" autocorrect="off" />
+<div class="mask"></div>
+</div>
+
+<div class="pallets_wrap">
+
+
+<div class="pallet for_storage" id="pallet_new">
+
+    <p class="pallet_title">Storage Pallet</p>
+    <p>Scan products to add to pallet.</p>
+    <table class="pallet_contents infotable" id="pallet_contents_new">
+    </table>
+
+    <button class="actionbtn buildpallet" id="build_pallet_new" onClick="selectPallet('new')">Build Pallet</button>
+    <button class="actionbtn completepallet" id="complete_pallet_new" disabled onClick="completePallet('new',false)">Complete Pallet</button>
+
+</div>
+
+
+<CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
+SELECT * FROM Shipments,Customers,Locations
+WHERE Shipments.customerid=Customers.customerid
+AND Shipments.locationid=Locations.locationid
+AND Shipments.status=0
+ORDER BY zip, Shipments.createdon desc
+</CFQUERY>
+
+<CFLOOP QUERY="Shipments">
+
+    <CFOUTPUT>
+    <div class="pallet" id="pallet_#Shipments.shipmentid#">
+    </CFOUTPUT>
+
+    <CFQUERY NAME="ProdCheck" DATASOURCE="#DSN#">
+    SELECT Products.*,cases FROM Products,Transactions
+    WHERE Products.productid=Transactions.productid
+    AND Transactions.shipmentid=#Shipments.shipmentid#
+    AND Transactions.qtyremain IS NULL
+    </CFQUERY>
+
+    <CFOUTPUT>
+    <p class="floatright">#Shipments.name#<br />#Shipments.city# #Shipments.state# #Shipments.zip#</p>
+    <p class="pallet_title">#Shipments.coname#</p>
+    <p>#DateFormat(Shipments.createdon,"mm/dd/yyyy")#</p>
+    </CFOUTPUT>
+    <table class="pallet_contents infotable" id="pallet_contents_<CFOUTPUT>#Shipments.shipmentid#</CFOUTPUT>">
+        <CFOUTPUT QUERY="ProdCheck">
+        <tr PRID="#PRID#" productid="#productid#">
+            <td class="product_name">#pname#</td>
+            <td class="cases_required" id="cases_req_#Shipments.shipmentid#_#PRID#">#cases#</td>
+            <td class="cases_incomplete" id="cases_#Shipments.shipmentid#_#ProdCheck.PRID#">0</td>
+        </tr>
+        </CFOUTPUT>
+    </table>
+
+    <CFOUTPUT>
+    <button class="actionbtn buildpallet" id="build_pallet_#Shipments.shipmentid#" onClick="selectPallet(#Shipments.shipmentid#)">Build Pallet</button>
+    <button class="actionbtn completepallet" id="complete_pallet_#Shipments.shipmentid#" disabled onClick="completePallet(#Shipments.shipmentid#,false)">Complete Pallet</button>
+    </CFOUTPUT>
+
+    </div>
+
+</CFLOOP>
+
+</div>
+
+
+

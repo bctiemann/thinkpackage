@@ -1,0 +1,26 @@
+<h1>Receive Shipment</h1>
+
+<CFQUERY NAME="Recs" DATASOURCE="#DSN#">
+SELECT * FROM Transactions,Receivables,Customers,Products
+WHERE Transactions.receivableid=Receivables.receivableid
+AND Receivables.customerid=Customers.customerid
+AND Receivables.productid=Products.productid
+AND Transactions.cases IS NULL
+ORDER BY Transactions.stamp
+</CFQUERY>
+
+
+<CFIF Recs.recordcount GT 0>
+<select name="receivableid" id="receivableid" onChange="$('#receivable_details').html('')">
+<CFOUTPUT QUERY="Recs">
+<option value="#Recs.receivableid#">#Recs.coname# - #Recs.pname#</option>
+</CFOUTPUT>
+</select>
+<button class="actionbtn" onClick="selectReceivable()">Select</button>
+
+<CFELSE>
+<p>Currently no receivables are pending.</p>
+</CFIF>
+
+<div id="receivable_details"></div>
+

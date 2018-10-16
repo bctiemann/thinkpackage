@@ -1,0 +1,34 @@
+{% import static %}
+<!DOCTYPE HTML>
+<html>
+        <head>
+        <title>Think Package Warehouse App</title>
+        <link rel=stylesheet href="css/style_gen.css" TYPE="text/css">
+        <link rel=stylesheet href="css/style.css" TYPE="text/css">
+        <link rel=stylesheet href="css/jquery-ui.css" TYPE="text/css">
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+        <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+
+<div id="modal_overlay"><div class="loading_spinner"><p><a href="index.cfm"><img src="images/spinner.gif" /></a></p></div></div>
+
+<CFINCLUDE TEMPLATE="inc_lib.cfm">
+
+<CFIF IsDefined("Login") AND Login IS false>
+
+    <div id="header">
+    <div class="logoutlink">User: <CFOUTPUT>#YourID.user#</CFOUTPUT></div>
+    <a href="javascript:nop()" onClick="openActionPage('menu');"><div class="homelink"></div></a>
+    </div>
+
+</CFIF>
+</div>
+
+{% block content %}{% endblock %}

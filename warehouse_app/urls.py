@@ -10,5 +10,12 @@ from warehouse_app import views as warehouse_app_views
 
 
 urlpatterns = [
+    url(
+        r'^login/$',
+        warehouse_app_views.LoginView.as_view(),
+        name='login',
+    ),
+    url(r'^$', warehouse_app_views.home, name='home'),
+    url(r'^sign_out/', auth_views.logout, {'next_page': 'warehouse_app:login'}, name='sign-out'),
 ]
 

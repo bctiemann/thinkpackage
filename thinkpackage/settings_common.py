@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'phonenumber_field',
     'django_tables2',
-    'django_filters',
+#    'django_filters',
 
     'django_otp',
     'django_otp.plugins.otp_static',

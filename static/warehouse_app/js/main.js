@@ -245,7 +245,8 @@ console.log(data);
 function openActionPage(page) {
     pallet_selected = null;
     $('#modal_overlay').show();
-    var url = cgiroot+page+'.cfm';
+//    var url = cgiroot+page+'.cfm';
+    var url = cgiroot + '/' + page + '/';
     $('#content').load(url,function() {
         $('#modal_overlay').hide();
         $('#barcode').focus();

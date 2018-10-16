@@ -43,3 +43,38 @@ def home(request):
     }
     return render(request, 'warehouse_app/home.html', context)
 
+
+def menu(request):
+
+    context = {
+    }
+    return render(request, 'warehouse_app/menu.html', context)
+
+
+def receive(request):
+
+    context = {
+    }
+    return render(request, 'warehouse_app/receive.html', context)
+
+
+def pallet(request):
+
+    context = {
+    }
+    return render(request, 'warehouse_app/pallet.html', context)
+
+
+def check_pallet_contents(request):
+
+    context = {
+    }
+    return render(request, 'warehouse_app/check_pallet_contents.html', context)
+
+
+def check_product(request):
+
+    context = {
+    }
+    return render(request, 'warehouse_app/check_product.html', context)
+

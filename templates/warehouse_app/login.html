@@ -1,0 +1,72 @@
+{% extends "login.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel=stylesheet href="{% static "warehouse_app/css/style.css" %}" type="text/css">
+{% endblock %}
+
+{% block login_page_title %}Account Management{% endblock %}
+
+{% block next %}<input type="hidden" name="next" value="{% url "warehouse_app:home" %}" />{% endblock %}
+
+
+{% block content_bak %}
+<CFINCLUDE TEMPLATE="inc_header.cfm">
+
+<div id="content">
+
+<img src="{% static "warehouse_app/images/tp.png" %}" border=0 hspace=0 vspace=0 alt="Think Package iPad App" />
+
+<div class="above_login" id="toggle_info">
+<img src="{% static "warehouse_app/images/kdc300_text.png" %}" />
+</div>
+
+<CFIF NOT StructIsEmpty(Form)>
+<div class="above_login"> 
+<div id="login_status">   
+<h3>ACCESS DENIED</h3>
+<CFIF IsDefined("AccessDenied")>
+    <p>You have entered an incorrect password for the specified account.</p>
+</CFIF>
+<CFIF IsDefined("NoMail")>
+    <p>The user account you have entered does not exist.</p>
+</CFIF>
+<CFIF IsDefined("Disabled")>
+    <p>Your account has been disabled.</p>
+</CFIF>
+<CFIF IsDefined("BadKey") AND NOT IsDefined("AccessDenied")>
+    <p>Your 2-factor authenticator is invalid or has expired.</p>
+</CFIF>
+<CFIF IsDefined("Disabled")>
+    <p>Your account has been disabled.</p>
+</CFIF>
+<CFIF IsDefined("NoKey")>
+    <p>You do not have a 2-factor key.</p>
+</CFIF>
+<CFIF IsDefined("KeyExpired")>
+    <p>Your 2-factor key has expired.</p>
+</CFIF>   
+</div>    
+</div> 
+</CFIF>
+
+<form method="post" action="index.cfm">
+<table class="loginform">
+<tr>
+    <td class="data"><input type="text" size="20" name="user" id="user" required="yes" message="You must enter a user name." placeholder="Login" onFocus="showToggleInfo()" autocapitalize="off" /></td>
+</tr>
+<tr>
+    <td class="data"><input type="password" size="20" name="pass" required="yes" message="You must enter a password." placeholder="Password" onFocus="showToggleInfo()" /></td>
+</tr>
+<tr>
+    <td colspan="2" align="center"><input type="submit" value="Log In"></td>
+</tr>
+</table>
+</form>
+
+</div>
+
+<CFINCLUDE TEMPLATE="inc_footer.cfm">
+<CFABORT>
+
+{% endblock %}

@@ -1,3 +1,4 @@
+/*
 body {
 	padding: 0px;
 	margin: 0px;
@@ -5,6 +6,7 @@ body {
 	font-size: 16px;
 	min-height: 100%;
 }
+*/
 
 .nodisplay {
 	display: none;
@@ -86,6 +88,8 @@ div.content,
 #content {
 	position: relative;
 	margin: 100px 50px 0px 50px;
+	min-width: auto;
+	width: auto;
 }
 
 div.logo {

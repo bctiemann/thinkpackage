@@ -1,5 +1,6 @@
 <h1>Receive Shipment</h1>
 
+{% comment %}
 <CFQUERY NAME="Recs" DATASOURCE="#DSN#">
 SELECT * FROM Transactions,Receivables,Customers,Products
 WHERE Transactions.receivableid=Receivables.receivableid
@@ -8,19 +9,25 @@ AND Receivables.productid=Products.productid
 AND Transactions.cases IS NULL
 ORDER BY Transactions.stamp
 </CFQUERY>
+{% endcomment %}
 
 
+{% if receivables.exists %}
 <CFIF Recs.recordcount GT 0>
 <select name="receivableid" id="receivableid" onChange="$('#receivable_details').html('')">
+{% for transaction in receivables %}
 <CFOUTPUT QUERY="Recs">
-<option value="#Recs.receivableid#">#Recs.coname# - #Recs.pname#</option>
+<option value="{{ transaction.receivable.id }}">{{ transaction.receivable.client.company_name }} - {{ transaction.product.name }}</option>
 </CFOUTPUT>
+{% endfor %}
 </select>
 <button class="actionbtn" onClick="selectReceivable()">Select</button>
 
+{% else %}
 <CFELSE>
 <p>Currently no receivables are pending.</p>
 </CFIF>
+{% endif %}
 
 <div id="receivable_details"></div>
 

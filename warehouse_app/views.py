@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct
+from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from accounting import forms
 from ims import utils
@@ -54,8 +54,30 @@ def menu(request):
 def receive(request):
 
     context = {
+        'receivables': Transaction.objects.filter(receivable__isnull=False, cases__isnull=True).order_by('date_created'),
     }
     return render(request, 'warehouse_app/receive.html', context)
+
+
+def receive_form(request, receivable_id):
+
+    receivable = get_object_or_404(Receivable, pk=receivable_id)
+
+    context = {
+        'receivable': receivable
+    }
+    return render(request, 'warehouse_app/receive_form.html', context)
+
+
+@require_POST
+def receive_confirm(request, receivable_id):
+
+    receivable = get_object_or_404(Receivable, pk=receivable_id)
+
+    response = {
+        'success': True,
+    }
+    return JsonResponse(response)
 
 
 def pallet(request):

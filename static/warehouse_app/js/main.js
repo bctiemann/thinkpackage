@@ -145,7 +145,8 @@ function showToggleInfo() {
 }
 
 function selectReceivable() {
-    var url = cgiroot+'ajax_receivable.cfm?r='+$('#receivableid').val();
+//    var url = cgiroot+'ajax_receivable.cfm?r='+$('#receivableid').val();
+    var url = cgiroot + 'receive/' + $('#receivableid').val() + '/form/';
 console.log(url);
     $('#receivable_details').load(url,function() {
     });
@@ -173,7 +174,8 @@ function submitReceivable(receivableid) {
         receivableid: receivableid,
         cases: $('#cases').val()
     };
-    var url = cgiroot+'ajax_receivable.cfm'
+//    var url = cgiroot+'ajax_receivable.cfm'
+    var url = cgiroot + '/receive/' + receivableid + '/confirm/';
     $.post(url,receivable,function(data) {
         if ('ERROR' in data) {
             $('#dialog_error_receivable').html(data.ERROR);

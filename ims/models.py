@@ -578,6 +578,10 @@ class Receivable(models.Model):
     cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
     returned_product = models.ForeignKey('ReturnedProduct', null=True, blank=True, db_column='returnid')
 
+    @property
+    def transaction(self):
+        return self.transaction_set.first()
+
     def __unicode__(self):
         return ('{0}'.format(self.id))
 

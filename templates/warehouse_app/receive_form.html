@@ -1,0 +1,14 @@
+{% load static %}
+
+    <p>Packing: {{ receivable.transaction_set.first.product.packing }} per case</p>
+    <p>Expected: {{ receivable.cases }} cases</p>
+    <p>Enter the number of cases received.</p>
+    <input type="number" name="cases" id="cases" placeholder="Cases" min="0" onFocus="showToggleInfo()" />
+    <button class="actionbtn" onClick="submitReceivable({{ receivable.id }})">Done</button>
+
+    <div id="toggle_info">
+    <img src="{% static "warehouse_app/images/kdc300_text.png" %}" />
+    </div>
+
+    <div id="error"></div>
+

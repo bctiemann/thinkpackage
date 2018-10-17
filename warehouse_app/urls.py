@@ -7,6 +7,7 @@ from two_factor.urls import urlpatterns as tf_urls
 from django.contrib.auth import views as auth_views
 from ims import views as ims_views
 from warehouse_app import views as warehouse_app_views
+from mgmt import views as mgmt_views
 
 
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
     url(r'^menu/$', warehouse_app_views.menu, name='menu'),
     url(r'^receive/$', warehouse_app_views.receive, name='receive'),
     url(r'^receive/(?P<receivable_id>\d+)/form/$', warehouse_app_views.receive_form, name='receive-form'),
-    url(r'^receive/(?P<receivable_id>\d+)/confirm/$', warehouse_app_views.receive_confirm, name='receive-confirm'),
+    url(r'^receive/(?P<receivable_id>\d+)/confirm/$', mgmt_views.ReceivableConfirm.as_view(), name='receive-confirm'),
     url(r'^pallet/$', warehouse_app_views.pallet, name='pallet'),
     url(r'^check_pallet_contents/$', warehouse_app_views.check_pallet_contents, name='check-pallet-contents'),
     url(r'^check_product/$', warehouse_app_views.check_product, name='check-product'),

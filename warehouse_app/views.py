@@ -17,7 +17,7 @@ from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct
 from ims.forms import AjaxableResponseMixin, UserLoginForm
-from accounting import forms
+from warehouse_app import forms
 from ims import utils
 
 from datetime import datetime, timedelta
@@ -69,15 +69,18 @@ def receive_form(request, receivable_id):
     return render(request, 'warehouse_app/receive_form.html', context)
 
 
-@require_POST
-def receive_confirm(request, receivable_id):
+#@require_POST
+#def receive_confirm(request, receivable_id):
+#    response = {'success': False}
 
-    receivable = get_object_or_404(Receivable, pk=receivable_id)
+#    logger.info(request.POST)
+#    logger.info(request.POST.get('cases'))
+##    if request.POST.get('cases')
 
-    response = {
-        'success': True,
-    }
-    return JsonResponse(response)
+#    receivable = get_object_or_404(Receivable, pk=receivable_id)
+
+#    response['success'] = True
+#    return JsonResponse(response)
 
 
 def pallet(request):

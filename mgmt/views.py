@@ -766,7 +766,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         ActionLog.objects.create(
             user = self.request.user,
             client = self.object.client,
-            product = self.object,
+            product = self.object.product,
             log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases']),
             app = 'mgmt',
         )

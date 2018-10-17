@@ -486,7 +486,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
             client = self.object.client,
             product = self.object,
             log_message = 'Created',
-            app = 'mgmt',
+            app = self.request.resolver_match.app_name,
         )
         logger.info('Product {0} ({1}) created.'.format(self.object, self.object.id))
         return response
@@ -519,7 +519,7 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
             client = self.object.client,
             product = self.object,
             log_message = 'Updated cases to {0}'.format(self.object.cases_inventory),
-            app = 'mgmt',
+            app = self.request.resolver_match.app_name,
         )
         logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
         return response
@@ -553,7 +553,7 @@ class ProductDelete(AjaxableResponseMixin, UpdateView):
             client = self.object.client,
             product = self.object,
             log_message = log_message,
-            app = 'mgmt',
+            app = self.request.resolver_match.app_name,
         )
         return response
 
@@ -625,7 +625,7 @@ class ProductTransfer(APIView):
             client = self.object.client,
             product = self.object,
             log_message = 'Transferred {0} to {1}'.format(cases, to_product.id),
-            app = 'mgmt',
+            app = self.request.resolver_match.app_name,
         )
 
         # Create incoming transaction
@@ -646,7 +646,7 @@ class ProductTransfer(APIView):
             client = self.object.client,
             product = self.object,
             log_message = 'Transferred {0} from {1}'.format(cases, from_product.id),
-            app = 'mgmt',
+            app = self.request.resolver_match.app_name,
         )
 
         logger.info('Product {0} ({1}) transferred from {2} ({3}) to {4} ({5})'.format(from_product, from_product.id, from_product.client, from_product.client.id, to_product.client, to_product.client.id))
@@ -768,7 +768,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             client = self.object.client,
             product = self.object.product,
             log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases']),
-            app = 'mgmt',
+            app = self.request.resolver_match.app_name,
         )
 
         # If we received fewer cases than expected, create a new receivable with the remainder

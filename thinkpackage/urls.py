@@ -31,12 +31,12 @@ urlpatterns = [
         name="favicon"
     ),
 
-    url(r'^mgmt/', include('mgmt.urls', 'mgmt')),
-    url(r'^client/', include('client.urls', 'client')),
-    url(r'^warehouse/', include('warehouse.urls', 'warehouse')),
-    url(r'^warehouse_app/', include('warehouse_app.urls', 'warehouse_app')),
-    url(r'^accounting/', include('accounting.urls', 'accounting')),
-    url(r'^api/', include('api.urls', 'api')),
+    url(r'^mgmt/', include(('mgmt.urls', 'mgmt'), namespace='mgmt')),
+    url(r'^client/', include(('client.urls', 'client'), namespace='client')),
+    url(r'^warehouse/', include(('warehouse.urls', 'warehouse'), namespace='warehouse')),
+    url(r'^warehouse_app/', include(('warehouse_app.urls', 'warehouse_app'), namespace='warehouse_app')),
+    url(r'^accounting/', include(('accounting.urls', 'accounting'), namespace='accounting')),
+    url(r'^api/', include(('api.urls', 'api'), namespace='api')),
 
     url(
         r'^account/login/$',

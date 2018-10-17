@@ -764,7 +764,8 @@ console.log(data);
             $('#dialog_confirmreceivable_result').dialog("open");
 //            showProductHistory(globals['productid']);
         } else {
-            alert(data.message);
+            displayErrorDialog(data);
+//            alert(data.message);
         }
     },'json');
 }

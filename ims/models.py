@@ -575,7 +575,7 @@ class Receivable(models.Model):
     purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
     product = models.ForeignKey('Product', null=True, db_column='productid')
-    cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
+    cases = models.IntegerField(validators=[MinValueValidator(1)])
     returned_product = models.ForeignKey('ReturnedProduct', null=True, blank=True, db_column='returnid')
 
     @property

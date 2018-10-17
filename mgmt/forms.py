@@ -197,6 +197,12 @@ class ReceivableForm(forms.ModelForm):
 
 
 class ReceivableConfirmForm(forms.ModelForm):
+
+    def clean_cases(self):
+        if self.cleaned_data['cases'] > self.instance.cases:
+            raise forms.ValidationError('More cases entered than expected.', code='more_than_expected')
+        return self.cleaned_data['cases']
+
     class Meta:
         model = Receivable
         fields = ['cases', 'purchase_order', 'shipment_order']

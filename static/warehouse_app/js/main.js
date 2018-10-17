@@ -177,7 +177,15 @@ function submitReceivable(receivableid) {
 //    var url = cgiroot+'ajax_receivable.cfm'
     var url = cgiroot + '/receive/' + receivableid + '/confirm/';
     $.post(url,receivable,function(data) {
-        if ('ERROR' in data) {
+console.log(data);
+        if (data.success) {
+            $('#dialog_success_receivable').dialog("open");
+//            setTimeout("openActionPage('menu')",5000);
+        } else {
+            displayErrorDialog(data);
+        }
+/*
+        } else if ('ERROR' in data) {
             $('#dialog_error_receivable').html(data.ERROR);
             $('#dialog_error_receivable').dialog("open");
 //            $('#error').html(data.ERROR);
@@ -187,10 +195,8 @@ function submitReceivable(receivableid) {
             $('#dialog_warning_receivable').dialog("open");
 //            $('#error').html(data.WARNING);
 //            setTimeout("openActionPage('menu')",5000);
-        } else {
-            $('#dialog_success_receivable').dialog("open");
-//            setTimeout("openActionPage('menu')",5000);
         }
+*/
     },'json');
 }
 

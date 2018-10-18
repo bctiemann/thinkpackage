@@ -94,7 +94,15 @@ def check_product(request):
 
 def barcode_lookup_product(request):
 
+    code = request.GET.get('c')
+    if code.upper().startswith('1TP:'):
+        try:
+            product = Product.objects.get(product_id=code[4:])
+        except Product.DoesNotExist:
+            product = None
+
     context = {
+        'product': product,
     }
     return render(request, 'warehouse_app/lookup_product.html', context)
 
@@ -107,7 +115,6 @@ def barcode_lookup_pallet_contents(request):
             pallet = Pallet.objects.get(pallet_id=code[4:])
         except Pallet.DoesNotExist:
             pallet = None
-            pallet = Pallet.objects.get(pk=7704)
 
     context = {
         'pallet': pallet,

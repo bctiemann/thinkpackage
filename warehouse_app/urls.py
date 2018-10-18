@@ -22,8 +22,13 @@ urlpatterns = [
     url(r'^receive/(?P<receivable_id>\d+)/form/$', warehouse_app_views.receive_form, name='receive-form'),
     url(r'^receive/(?P<receivable_id>\d+)/confirm/$', mgmt_views.ReceivableConfirm.as_view(), name='receive-confirm'),
     url(r'^pallet/$', warehouse_app_views.pallet, name='pallet'),
+    url(r'^pallet/create/$', warehouse_app_views.PalletCreate.as_view(), name='pallet-create'),
     url(r'^check_pallet_contents/$', warehouse_app_views.check_pallet_contents, name='check-pallet-contents'),
     url(r'^check_product/$', warehouse_app_views.check_product, name='check-product'),
+
+    url(r'^barcode/lookup/check_product/$', warehouse_app_views.barcode_lookup_product, name='barcode-lookup-product'),
+    url(r'^barcode/lookup/check_pallet_contents/$', warehouse_app_views.barcode_lookup_pallet_contents, name='barcode-lookup-pallet-contents'),
+    url(r'^barcode/lookup/pallet/$', warehouse_app_views.barcode_pallet, name='barcode-pallet'),
 
     url(r'^sign_out/', auth_views.logout, {'next_page': 'warehouse_app:login'}, name='sign-out'),
 ]

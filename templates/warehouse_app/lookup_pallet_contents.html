@@ -1,0 +1,73 @@
+{% if pallet %}
+
+        <table class="infotable alternating decoded_info" style="margin-top: 20px;">
+        <tr>
+            <td class="label">Pallet ID</td>
+            <td class="data">{{ pallet.pallet_id }}</td>
+        </tr>
+        <tr>
+            <td class="label">Customer</td>
+            <td class="data">
+                {% if pallet.shipment %}
+                    {{ pallet.client.company_name }}
+                {% else %}
+                    (Storage Pallet)
+                {% endif %}
+            </td>
+        </tr>
+        {% if pallet.shipment %}
+        <CFIF TShip.recordcount>
+        <tr>
+            <td class="label">Shipment</td>
+            <td class="data">{{ pallet.shipment.id }}</td>
+        </tr>
+        </CFIF>
+        {% endif %}
+        <tr>
+            <td class="label">Created</td>
+            <td class="data">{{ pallet.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+        </tr>
+        </table>
+
+        </CFOUTPUT>
+
+        <p>Products:</p>
+
+        <table class="infotable alternating decoded_info">
+        <CFSET totalGW = 0>
+        {% for content in pallet.palletcontents_set.all %}
+        <CFOUTPUT QUERY="BOnPal">
+            <tr>
+                <td>
+                {% if not pallet.shipment %}<CFIF TShip.recordcount IS 0><p class="coname">{{ content.product.client.company_name }}</p></CFIF>{% endif %}
+                {{ content.product.name }} {{ content.product.gross_weight }}
+                </td>
+                <td class="numeric">{{ content.cases }}</td>
+            </tr>
+        </CFOUTPUT>
+        {% endfor %}
+        </table>
+        
+        <CFOUTPUT>
+        <div class="weight">
+            <p>Total gross weight: {{ pallet.gross_weight_imperial|floatformat:1 }} lb ({{ pallet.gross_weight|floatformat:1 }} kg)</p>
+        </div>
+        </CFOUTPUT>
+
+        {% if pallet.shipment %}
+        <CFOUTPUT QUERY="TShip">
+        <div class="contact">   
+            <p>{{ pallet.shipment.location.name }}</p>
+            <p>{{ pallet.shipment.location.address }} {{ pallet.shipment.location.address_2 }}</p>
+            <p>{{ pallet.shipment.location.city }}, {{ pallet.shipment.location.state }} {{ pallet.shipment.location.zip }}</p>
+            <p>{{ pallet.shipment.location.customer_contact }}</p>
+            <p>{{ pallet.shipment.location.customer_contact.phone_number }}</p>
+        </div>
+        </CFOUTPUT>
+        {% endif %}
+
+{% else %}
+
+    <p>Sorry, an error occurred fetching details for that pallet.</p>
+
+{% endif %}

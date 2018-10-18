@@ -1,4 +1,3 @@
-/*
 body {
 	padding: 0px;
 	margin: 0px;
@@ -6,7 +5,6 @@ body {
 	font-size: 16px;
 	min-height: 100%;
 }
-*/
 
 .nodisplay {
 	display: none;
@@ -90,6 +88,7 @@ div.content,
 	margin: 100px 50px 0px 50px;
 	min-width: auto;
 	width: auto;
+	font-size: inherit;
 }
 
 div.logo {
@@ -345,6 +344,7 @@ table.infotable {
         width: 100%;
         border: 1px solid #d9dadc;
         margin-bottom: 10px;
+	font-size: inherit;
 }
 table.infotable thead {
 }
@@ -360,6 +360,9 @@ table.infotable tr {
 table.infotable td {
         padding: 8px;
 }
+table.infotable td.label {
+	line-height: inherit;
+}
 table.infotable td.editable {
         padding: 0px;
 }
@@ -369,6 +372,9 @@ table.infotable.alternating > tbody > tr:nth-child(even) {
 }
 table.infotable.alternating > tbody > tr:nth-child(odd) {
         background-color: #d1d2d4;
+}
+table.infotable.alternating > tbody > tr:hover {
+	color: inherit;
 }
 
 p.pallet_title {

@@ -746,6 +746,11 @@ class Pallet(models.Model):
     def __unicode__(self):
         return ('{0}'.format(self.id))
 
+    def save(self, *args, **kwargs):
+        if not self.pallet_id:
+            self.pallet_id = ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
+        super(Pallet, self).save(*args, **kwargs)
+
     class Meta:
         db_table = 'Pallets'
 

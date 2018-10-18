@@ -26,7 +26,8 @@ $.get("tkt.cfm", { aid: +aid} );
 function processScancode() {
     console.log(scanInput);
     if (scanInput.match(/^1TP:/)) {
-        var url = cgiroot+'ajax_barcode.cfm?m='+scanMode+'&c='+scanInput;
+//        var url = cgiroot+'ajax_barcode.cfm?m='+scanMode+'&c='+scanInput;
+        var url = cgiroot + 'barcode/lookup/' + scanMode + '/?c=' + scanInput;
         if (scanMode == 'pallet') {
             var PRID = scanInput.substring(4);
             var cases_scanned = parseInt($('#cases_'+pallet_selected+'_'+PRID).html()) + 1;
@@ -203,7 +204,7 @@ console.log(data);
 function completePallet(shipmentid,force) {
     var pallet = {
         products: '',
-        shipmentid: shipmentid == 'new' ? 0 : shipmentid
+        shipment: shipmentid == 'new' ? 0 : shipmentid
     };
     var products = [];
 
@@ -222,7 +223,8 @@ function completePallet(shipmentid,force) {
         $('#modal_overlay').show();
         pallet['products'] = products.join(',');
 console.log(pallet);
-        var url = cgiroot+'ajax_pallet.cfm'
+//        var url = cgiroot+'ajax_pallet.cfm'
+        var url = cgiroot + 'pallet/create/';
         $.post(url,pallet,function(data) {
 console.log(data);
             $('#modal_overlay').hide();

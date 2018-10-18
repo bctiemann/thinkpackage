@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct
+from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct, Pallet
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from warehouse_app import forms
 from ims import utils
@@ -70,23 +70,10 @@ def receive_form(request, receivable_id):
     return render(request, 'warehouse_app/receive_form.html', context)
 
 
-#@require_POST
-#def receive_confirm(request, receivable_id):
-#    response = {'success': False}
-
-#    logger.info(request.POST)
-#    logger.info(request.POST.get('cases'))
-##    if request.POST.get('cases')
-
-#    receivable = get_object_or_404(Receivable, pk=receivable_id)
-
-#    response['success'] = True
-#    return JsonResponse(response)
-
-
 def pallet(request):
 
     context = {
+        'shipments': Shipment.objects.filter(status=0).order_by('location__zip', '-date_created')
     }
     return render(request, 'warehouse_app/pallet.html', context)
 
@@ -103,4 +90,52 @@ def check_product(request):
     context = {
     }
     return render(request, 'warehouse_app/check_product.html', context)
+
+
+def barcode_lookup_product(request):
+
+    context = {
+    }
+    return render(request, 'warehouse_app/lookup_product.html', context)
+
+
+def barcode_lookup_pallet_contents(request):
+
+    code = request.GET.get('c')
+    if code.upper().startswith('1TP:'):
+        try:
+            pallet = Pallet.objects.get(pallet_id=code[4:])
+        except Pallet.DoesNotExist:
+            pallet = None
+            pallet = Pallet.objects.get(pk=7704)
+
+    context = {
+        'pallet': pallet,
+    }
+    return render(request, 'warehouse_app/lookup_pallet_contents.html', context)
+
+
+def barcode_pallet(request):
+    response = {}
+
+    return JsonResponse({})
+
+
+class PalletCreate(AjaxableResponseMixin, CreateView):
+    model = Pallet
+    form_class = forms.PalletCreateForm
+    template_name = 'warehouse_app/pallet.html'
+
+    def form_valid(self, form):
+        data = {
+            'success': True,
+        }
+        logger.warning(form.data)
+        logger.warning(form.cleaned_data)
+
+        pallet = form.save(commit=False)
+        pallet.client = pallet.shipment.client
+        pallet.save()
+
+        return JsonResponse(data)
 

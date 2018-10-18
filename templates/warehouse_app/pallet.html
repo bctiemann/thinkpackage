@@ -21,50 +21,39 @@
 </div>
 
 
-<CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
-SELECT * FROM Shipments,Customers,Locations
-WHERE Shipments.customerid=Customers.customerid
-AND Shipments.locationid=Locations.locationid
-AND Shipments.status=0
-ORDER BY zip, Shipments.createdon desc
-</CFQUERY>
-
+{% for shipment in shipments %}
 <CFLOOP QUERY="Shipments">
 
     <CFOUTPUT>
-    <div class="pallet" id="pallet_#Shipments.shipmentid#">
+    <div class="pallet" id="pallet_{{ shipment.id }}">
     </CFOUTPUT>
-
-    <CFQUERY NAME="ProdCheck" DATASOURCE="#DSN#">
-    SELECT Products.*,cases FROM Products,Transactions
-    WHERE Products.productid=Transactions.productid
-    AND Transactions.shipmentid=#Shipments.shipmentid#
-    AND Transactions.qtyremain IS NULL
-    </CFQUERY>
 
     <CFOUTPUT>
-    <p class="floatright">#Shipments.name#<br />#Shipments.city# #Shipments.state# #Shipments.zip#</p>
-    <p class="pallet_title">#Shipments.coname#</p>
-    <p>#DateFormat(Shipments.createdon,"mm/dd/yyyy")#</p>
+    <p class="floatright">{{ shipment.location.name }}<br />{{ shipment.location.city }} {{ shipment.location.state }} {{ shipment.location.zip }}</p>
+    <p class="pallet_title">{{ shipment.client.company_name }}</p>
+    <p>{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</p>
     </CFOUTPUT>
-    <table class="pallet_contents infotable" id="pallet_contents_<CFOUTPUT>#Shipments.shipmentid#</CFOUTPUT>">
+    <table class="pallet_contents infotable" id="pallet_contents_<CFOUTPUT>{{ shipment.id }}</CFOUTPUT>">
+        {% for transaction in shipment.transaction_set.all %}
         <CFOUTPUT QUERY="ProdCheck">
-        <tr PRID="#PRID#" productid="#productid#">
-            <td class="product_name">#pname#</td>
-            <td class="cases_required" id="cases_req_#Shipments.shipmentid#_#PRID#">#cases#</td>
-            <td class="cases_incomplete" id="cases_#Shipments.shipmentid#_#ProdCheck.PRID#">0</td>
+        <tr PRID="{{ transaction.product.product_id }}" productid="{{ transaction.product.id }}">
+            <td class="product_name">{{ transaction.product.name }}</td>
+            <td class="cases_required" id="cases_req_{{ shipment.id }}_{{ transaction.product.product_id }}">{{ transaction.cases }}</td>
+            <td class="cases_incomplete" id="cases_{{ shipment.id }}_{{ transaction.product.product_id }}">0</td>
         </tr>
         </CFOUTPUT>
+        {% endfor %}
     </table>
 
     <CFOUTPUT>
-    <button class="actionbtn buildpallet" id="build_pallet_#Shipments.shipmentid#" onClick="selectPallet(#Shipments.shipmentid#)">Build Pallet</button>
-    <button class="actionbtn completepallet" id="complete_pallet_#Shipments.shipmentid#" disabled onClick="completePallet(#Shipments.shipmentid#,false)">Complete Pallet</button>
+    <button class="actionbtn buildpallet" id="build_pallet_{{ shipment.id }}" onClick="selectPallet({{ shipment.id }})">Build Pallet</button>
+    <button class="actionbtn completepallet" id="complete_pallet_{{ shipment.id }}" disabled onClick="completePallet({{ shipment.id }},false)">Complete Pallet</button>
     </CFOUTPUT>
 
     </div>
 
 </CFLOOP>
+{% endfor %}
 
 </div>
 

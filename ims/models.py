@@ -597,8 +597,9 @@ class Transaction(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
     date_completed = models.DateTimeField(null=True, blank=True)
     product = models.ForeignKey('Product', db_column='productid')
-    quantity = models.IntegerField(null=True, blank=True, db_column='qty')
-    quantity_remaining = models.BigIntegerField(null=True, blank=True, db_column='qtyremain')
+#    quantity = models.IntegerField(null=True, blank=True, db_column='qty')
+#    quantity_remaining = models.BigIntegerField(null=True, blank=True, db_column='qtyremain')
+    cases_remaining = models.BigIntegerField(null=True, blank=True)
     is_outbound = models.BooleanField(default=False, db_column='direction')
     shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid')
     client = models.ForeignKey('Client', db_column='customerid')
@@ -608,9 +609,17 @@ class Transaction(models.Model):
     transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers')
     transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers')
 
+#    @property
+#    def cases_remaining(self):
+#        return int(float(self.quantity_remaining) / float(self.product.packing))
+
     @property
-    def cases_remaining(self):
-        return int(float(self.quantity_remaining) / float(self.product.packing))
+    def quantity_remaining(self):
+        return self.units_remaining
+
+    @property
+    def units_remaining(self):
+        return int(float(self.cases_remaining) * float(self.product.packing))
 
     @property
     def cases_received_split(self):

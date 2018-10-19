@@ -610,7 +610,7 @@ class ProductTransfer(APIView):
         # Create outgoing transaction
         outgoing_transaction = Transaction(
             product = from_product,
-            quantity_remaining = (from_product.cases_available - cases) * from_product.packing,
+            cases_remaining = from_product.cases_available - cases,
             is_outbound = True,
             client = from_product.client,
             cases = cases,
@@ -631,7 +631,7 @@ class ProductTransfer(APIView):
         # Create incoming transaction
         incoming_transaction = Transaction(
             product = to_product,
-            quantity_remaining = (to_product.cases_available + cases) * to_product.packing,
+            cases_remaining = to_product.cases_available + cases,
             is_outbound = False,
             client = to_product.client,
             cases = cases,
@@ -688,8 +688,7 @@ class ProductReturn(AjaxableResponseMixin, CreateView):
                 is_outbound = False,
                 receivable = return_receivable,
                 cases = form.cleaned_data['cases_undamaged'],
-                quantity = form.cleaned_data['cases_undamaged'] * product.packing,
-                quantity_remaining = product.cases_inventory * product.packing,
+                cases_remaining = product.cases_inventory,
             )
             transaction.save()
 
@@ -805,7 +804,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         transaction.purchase_order = form.cleaned_data['purchase_order']
         transaction.shipment_order = form.cleaned_data['shipment_order']
         logger.warning(transaction.product.packing)
-        transaction.quantity_remaining = (transaction.product.cases_inventory + int(transaction.cases)) * transaction.product.packing
+        transaction.cases_remaining = transaction.product.cases_inventory + int(transaction.cases)
         transaction.date_completed = timezone.now()
         transaction.save()
 

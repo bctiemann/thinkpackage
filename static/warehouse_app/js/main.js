@@ -433,5 +433,9 @@ $(document).ready(function() {
         idleTime = 0;
     });
 
+    $('#id_auth-username').focus(function() {
+        showToggleInfo();
+    });
+
 });
 

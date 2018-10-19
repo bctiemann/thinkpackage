@@ -13,7 +13,7 @@
 {% block content %}
 <CFINCLUDE TEMPLATE="inc_header.cfm">
 
-<div id="content">
+<div id="content" class="content login">
 
 <img src="{% static "warehouse_app/images/tp.png" %}" border=0 hspace=0 vspace=0 alt="Think Package iPad App" />
 
@@ -53,6 +53,7 @@
 {% endcomment %}
 
 <form method="post" no_action="{% url "warehouse_app:login" %}">
+    <div class="loginform">
     {% include "two_factor/_wizard_forms.html" %}                            
 
 {% comment %}
@@ -70,8 +71,9 @@
 {% endcomment %}
 <button type="submit" class="btn btn-primary">Log In</button>
 <input type="hidden" name="next" value="{% url "warehouse_app:home" %}" />
-<div style="margin-left: -9999px"><input type="submit" value=""/></div>
+<input type="submit" class="hidden-submit" value="" />
 {% csrf_token %}
+    </div>
 </form>
 
 </div>

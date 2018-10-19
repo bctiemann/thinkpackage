@@ -82,13 +82,15 @@ div.pagetitle {
 	margin-left: 300px;
 }
 
-div.content,
 #content {
 	position: relative;
 	margin: 100px 50px 0px 50px;
 	min-width: auto;
 	width: auto;
 	font-size: inherit;
+}
+#content.login {
+	margin: 0px;
 }
 
 div.logo {
@@ -234,31 +236,8 @@ div#reconnect_info img {
 	top: 10px;
 }
 
-div#login_status {
-	background-color: #f0f0f2;
-	border-radius: 10px;
-	padding: 25px;
-	width: 300px;
-	margin: 0px auto;
-}
-div#login_status h3 {
-	font-size: 18px;
-}
-
-table.loginform {
-	width: 300px;
-	margin: 200px auto 0px auto;
-	font-size: 24px;
-}
-table.loginform td {
-	padding: 10px;
-}
-table.loginform td.label {
-	padding-right: 20px;
-}
-
-
 input[type="text"],
+input[type="email"],
 input[type="password"],
 input[type="number"] {
 	-webkit-appearance: none;
@@ -274,6 +253,7 @@ input:focus {
 }
 
 button.actionbtn,
+button[type="submit"],
 input[type="submit"] {
         margin: 0px;
         padding: 0px 60px 0px 40px;
@@ -496,5 +476,54 @@ div.contact p {
 }
 .no-close .ui-dialog-titlebar-close {
   display: none;
+}
+
+
+.loginform {
+	width: 300px;
+	margin: 200px auto 0px auto;
+	font-size: 24px;
+}
+table.loginform td {
+	padding: 10px;
+}
+table.loginform td.label {
+	padding-right: 20px;
+}
+.loginform li {
+	display: block;
+	margin: 20px 0px;
+}
+.loginform label {
+	display: none;
+}
+.loginform input {
+	width: 100%;
+}
+.loginform button {
+	display: block;
+	margin: 0px auto;
+}
+.loginform .hidden-submit {
+	margin-left: -9999px;
+}
+
+div#login_status,
+.errorlist {
+	background-color: #f0f0f2;
+	border-radius: 10px;
+	padding: 25px;
+	width: 250px;
+	margin: 0px auto;
+	font-size: 16px;
+	position: absolute;
+	top: 100px;
+}
+.errorlist li {
+	margin: 10px 0px;
+}
+div#login_status h3,
+.errorlist h3 {
+	font-size: 18px;
 }
 

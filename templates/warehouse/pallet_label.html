@@ -131,6 +131,8 @@ div.weight {
 
 <body>
 
+{% for iteration in copies %}
+
 <div class="box">
     <img class="barcode" asrc="{{ media_url }}codes/pallets/{{ pallet.pallet_id }}.png" src="{{ site_url }}{% url "pallet-code" pallet_id=pallet.pallet_id %}" />
     <table id="blurb_001" class="blurb">
@@ -177,7 +179,8 @@ div.weight {
     </div>
     {% endif %}
 </div>
-            
+
+{% endfor %}            
             
 </body>
                                                                                                                                                          

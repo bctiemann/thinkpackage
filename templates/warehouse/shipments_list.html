@@ -34,7 +34,7 @@
             <td style="width: 120px" class="text monospace clickable" shipmentid="{{ shipment.id }}">
             {% for pallet in shipment.pallet_set.all %}
             <CFLOOP QUERY="Pallets">
-                <p class="pallet"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#">{{ pallet.pallet_id }}</a> <span class="glyph"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#"><img src="{% static "warehouse/images/barcode.gif" %}" /></a></span></p>
+                <p class="pallet"><a target="_blank" href="{% url "warehouse:pallet-print" pallet_id=pallet.id %}?inline">{{ pallet.pallet_id }}</a> <span class="glyph"><a target="_blank" href="gen_barcode_pal.cfm?palletid=#palletid#"><img src="{% static "warehouse/images/barcode.gif" %}" /></a></span></p>
             </CFLOOP>
             {% endfor %}
             </td>

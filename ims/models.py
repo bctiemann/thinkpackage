@@ -764,7 +764,7 @@ class Pallet(models.Model):
     def save(self, *args, **kwargs):
         if not self.pallet_id:
             self.pallet_id = ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
-        self.create_qrcode()
+#        self.create_qrcode()
         super(Pallet, self).save(*args, **kwargs)
 
     class Meta:

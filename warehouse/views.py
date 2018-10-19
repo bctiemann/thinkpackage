@@ -226,6 +226,7 @@ class PalletPrint(PDFView):
         context['pallet'] = pallet
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
+        context['copies'] = range(2)
         return context
 
     def get_pdfkit_options(self):

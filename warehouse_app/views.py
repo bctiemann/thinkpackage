@@ -212,6 +212,8 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
                 pallet.shipment.status = 1
                 pallet.shipment.save()
 
+        pallet.create_qrcode()
+
         data['success'] = True
         return JsonResponse(data)
 

@@ -737,7 +737,12 @@ class Pallet(models.Model):
             purchase_order = self.shipment.purchase_order
         except AttributeError:
             purchase_order = ''
-        code = '1TP:{pallet_id};{content};{purchase_order}'.format(pallet_id=self.pallet_id, content='', purchase_order=purchase_order)
+
+        contents = []
+        for content in self.palletcontents_set.all():
+            contents.append('{0}:{1}'.format(content.product.id, content.cases))
+
+        code = '1TP:{pallet_id};{content};{purchase_order}'.format(pallet_id=self.pallet_id, content=','.join(contents), purchase_order=purchase_order)
         qr.add_data(code)
         qr.make(fit=True)
         return qr.make_image()
@@ -759,6 +764,7 @@ class Pallet(models.Model):
     def save(self, *args, **kwargs):
         if not self.pallet_id:
             self.pallet_id = ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
+        self.create_qrcode()
         super(Pallet, self).save(*args, **kwargs)
 
     class Meta:

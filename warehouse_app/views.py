@@ -23,6 +23,7 @@ from ims import utils
 from datetime import datetime, timedelta
 import json
 import re
+import copy
 
 import logging
 logger = logging.getLogger(__name__)
@@ -160,7 +161,7 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
         pallet.save()
 
         for product_data in products.split(','):
-            product_id, cases = product_data.split(':')
+            product_id, cases = [int(val) for val in product_data.split(':')]
             try:
                 product = Product.objects.get(pk=product_id)
             except Product.DoesNotExist:
@@ -179,18 +180,14 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
                 if product_transaction.cases > cases:
 
                     # Create new shipment with same client, PO, SO, location
-                    split_shipment = Shipment.objects.create(
-                        client = shipment.client,
-                        location = shipment.location,
-                        status = 0,
-                        purchase_order = shipment.purchase_order,
-                        shipment_order = shipment.shipment_order,
-                    )
+                    split_shipment = copy.deepcopy(pallet.shipment)
+                    split_shipment.pk = None
+                    split_shipment.save()
 
                     # Create new transaction with cases = product_transaction.cases - cases
                     split_transaction = Transaction.objects.create(
                         shipment = split_shipment,
-                        client = shipment.client,
+                        client = pallet.shipment.client,
                         product = product,
                         cases = product_transaction.cases - cases,
                         is_outbound = True,

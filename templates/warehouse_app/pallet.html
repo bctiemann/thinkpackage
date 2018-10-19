@@ -33,7 +33,7 @@
     <p class="pallet_title">{{ shipment.client.company_name }}</p>
     <p>{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</p>
     </CFOUTPUT>
-    <table class="pallet_contents infotable" id="pallet_contents_<CFOUTPUT>{{ shipment.id }}</CFOUTPUT>">
+    <table class="pallet_contents infotable" id="pallet_contents_{{ shipment.id }}">
         {% for transaction in shipment.transaction_set.all %}
         <CFOUTPUT QUERY="ProdCheck">
         <tr PRID="{{ transaction.product.product_id }}" productid="{{ transaction.product.id }}">

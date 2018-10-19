@@ -27,7 +27,7 @@
 <CFIF IsDefined("Login") AND Login IS false>
 
     <div id="header">
-    <div class="logoutlink">User: <CFOUTPUT>#YourID.user#</CFOUTPUT></div>
+    <div class="logoutlink">User: <CFOUTPUT>{{ user }}</CFOUTPUT></div>
     <a href="javascript:nop()" onClick="openActionPage('menu');"><div class="homelink"></div></a>
     </div>
 

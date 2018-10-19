@@ -1,16 +1,16 @@
-{% extends "login.html" %}
+{% extends "warehouse_app/base.html" %}
 {% load static %}
 
 {% block extra_css %}
     <link rel=stylesheet href="{% static "warehouse_app/css/style.css" %}" type="text/css">
 {% endblock %}
 
-{% block login_page_title %}Account Management{% endblock %}
+{% block login_page_title %}{% endblock %}
 
 {% block next %}<input type="hidden" name="next" value="{% url "warehouse_app:home" %}" />{% endblock %}
 
 
-{% block content_bak %}
+{% block content %}
 <CFINCLUDE TEMPLATE="inc_header.cfm">
 
 <div id="content">
@@ -21,6 +21,7 @@
 <img src="{% static "warehouse_app/images/kdc300_text.png" %}" />
 </div>
 
+{% comment %}
 <CFIF NOT StructIsEmpty(Form)>
 <div class="above_login"> 
 <div id="login_status">   
@@ -49,8 +50,12 @@
 </div>    
 </div> 
 </CFIF>
+{% endcomment %}
 
-<form method="post" action="index.cfm">
+<form method="post" no_action="{% url "warehouse_app:login" %}">
+    {% include "two_factor/_wizard_forms.html" %}                            
+
+{% comment %}
 <table class="loginform">
 <tr>
     <td class="data"><input type="text" size="20" name="user" id="user" required="yes" message="You must enter a user name." placeholder="Login" onFocus="showToggleInfo()" autocapitalize="off" /></td>
@@ -59,9 +64,14 @@
     <td class="data"><input type="password" size="20" name="pass" required="yes" message="You must enter a password." placeholder="Password" onFocus="showToggleInfo()" /></td>
 </tr>
 <tr>
-    <td colspan="2" align="center"><input type="submit" value="Log In"></td>
+    <td colspan="2" align="center"><button type="submit" class="btn btn-primary">Log In</button></td>
 </tr>
 </table>
+{% endcomment %}
+<button type="submit" class="btn btn-primary">Log In</button>
+<input type="hidden" name="next" value="{% url "warehouse_app:home" %}" />
+<div style="margin-left: -9999px"><input type="submit" value=""/></div>
+{% csrf_token %}
 </form>
 
 </div>

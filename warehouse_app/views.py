@@ -174,19 +174,39 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
             if pallet.shipment:
                 product_transaction = Transaction.objects.get(shipment=pallet.shipment, product=product)
 
+                # If we have scanned fewer products to this pallet than exist in the shipment, we need to split off a new shipment
+                # containing the leftover products.
                 if product_transaction.cases > cases:
-                    pass
+
                     # Create new shipment with same client, PO, SO, location
+                    split_shipment = Shipment.objects.create(
+                        client = shipment.client,
+                        location = shipment.location,
+                        status = 0,
+                        purchase_order = shipment.purchase_order,
+                        shipment_order = shipment.shipment_order,
+                    )
+
                     # Create new transaction with cases = product_transaction.cases - cases
+                    split_transaction = Transaction.objects.create(
+                        shipment = split_shipment,
+                        client = shipment.client,
+                        product = product,
+                        cases = product_transaction.cases - cases,
+                        is_outbound = True,
+                    )
 
                 product_transaction.cases = cases
                 product_transaction.cases_remaining = product.cases_available
+                product_transaction.is_scanned_to_pallet = True
                 product_transaction.save()
 
         if pallet.shipment:
-            pass
             # Check for any transactions in this shipment with is_scanned_to_pallet = False
             # If none, set shipment status=1
+            if not Transaction.objects.filter(shipment=pallet.shipment, is_scanned_to_pallet=False).exists():
+                pallet.shipment.status = 1
+                pallet.shipment.save()
 
         data['success'] = True
         return JsonResponse(data)

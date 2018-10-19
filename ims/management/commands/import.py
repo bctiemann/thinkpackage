@@ -308,6 +308,7 @@ class Command(BaseCommand):
                     receivable = receivable,
                     transfer_client = transfer_client,
                     transfer_product = transfer_product,
+                    is_scanned_to_pallet = old['qtyremain'] != None,
                 )
                 new.date_created = old['stamp']
                 new.save()

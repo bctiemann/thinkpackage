@@ -608,6 +608,7 @@ class Transaction(models.Model):
     receivable = models.ForeignKey('Receivable', null=True, blank=True, db_column='receivableid')
     transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers')
     transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers')
+    is_scanned_to_pallet = models.BooleanField(default=False)
 
 #    @property
 #    def cases_remaining(self):
@@ -620,12 +621,6 @@ class Transaction(models.Model):
     @property
     def units_remaining(self):
         return int(float(self.cases_remaining) * float(self.product.packing))
-
-    @property
-    def is_scanned_to_pallet(self):
-        if not self.shipment:
-            return False
-        return self.cases_remaining != None
 
     @property
     def cases_received_split(self):

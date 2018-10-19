@@ -17,8 +17,8 @@ import django_tables2 as tables
 #from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
-from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
-from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+#from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
+#from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -28,6 +28,7 @@ from rest_framework.permissions import IsAuthenticated
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct
 from ims import models
 from ims.forms import AjaxableResponseMixin, UserLoginForm
+from ims.views import LoginView
 from mgmt import forms
 from ims import utils
 
@@ -44,11 +45,12 @@ logger = logging.getLogger(__name__)
 
 class LoginView(LoginView):
     template_name = 'mgmt/login.html'
-    form_list = (
-        ('auth', UserLoginForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
-    )
+    home_url = reverse_lazy('mgmt:home')
+#    form_list = (
+#        ('auth', UserLoginForm),
+#        ('token', AuthenticationTokenForm),
+#        ('backup', BackupTokenForm),
+#    )
 
 
 #class PhoneSetupView(PhoneSetupView):

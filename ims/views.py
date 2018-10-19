@@ -7,7 +7,7 @@ from django.db.models import Func, F, Count
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
@@ -76,4 +76,9 @@ class LoginView(LoginView):
         ('token', AuthenticationTokenForm),
         ('backup', BackupTokenForm),
     )
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return HttpResponseRedirect(self.home_url)
+        return super(LoginView, self).dispatch(request, *args, **kwargs)
 

@@ -12,11 +12,12 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from django.db.models import Sum, Q
 from django.contrib.auth import authenticate, login
 
-from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
-from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+#from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
+#from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct, Pallet, PalletContents
 from ims.forms import AjaxableResponseMixin, UserLoginForm
+from ims.views import LoginView
 from warehouse_app import forms
 from ims import utils
 
@@ -31,11 +32,17 @@ logger = logging.getLogger(__name__)
 
 class LoginView(LoginView):
     template_name = 'warehouse_app/login.html'
-    form_list = (
-        ('auth', UserLoginForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
-    )
+    home_url = reverse_lazy('warehouse_app:home')
+#    form_list = (
+#        ('auth', UserLoginForm),
+#        ('token', AuthenticationTokenForm),
+#        ('backup', BackupTokenForm),
+#    )
+
+#    def dispatch(self, request, *args, **kwargs):
+#        if self.request.user.is_authenticated:
+#            return HttpResponseRedirect(reverse_lazy('warehouse_app:home'))
+#        return super(LoginView, self).dispatch(request, *args, **kwargs)
 
 
 def home(request):

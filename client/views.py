@@ -10,11 +10,12 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login
 
-from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
-from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+#from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
+#from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
 from ims.forms import UserLoginForm
+from ims.views import LoginView
 from ims import utils
 
 from datetime import datetime, timedelta
@@ -34,11 +35,12 @@ company_info = {
 
 class LoginView(LoginView):
     template_name = 'client/login.html'
-    form_list = (
-        ('auth', UserLoginForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
-    )
+    home_url = reverse_lazy('client:home')
+#    form_list = (
+#        ('auth', UserLoginForm),
+#        ('token', AuthenticationTokenForm),
+#        ('backup', BackupTokenForm),
+#    )
 
 
 #class PhoneSetupView(PhoneSetupView):

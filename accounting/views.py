@@ -12,11 +12,12 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from django.db.models import Sum, Q
 from django.contrib.auth import authenticate, login
 
-from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
-from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+#from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
+#from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct
 from ims.forms import AjaxableResponseMixin, UserLoginForm
+from ims.views import LoginView
 from accounting import forms
 from ims import utils
 
@@ -30,11 +31,12 @@ logger = logging.getLogger(__name__)
 
 class LoginView(LoginView):
     template_name = 'accounting/login.html'
-    form_list = (
-        ('auth', UserLoginForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
-    )
+    home_url = reverse_lazy('accounting:home')
+#    form_list = (
+#        ('auth', UserLoginForm),
+#        ('token', AuthenticationTokenForm),
+#        ('backup', BackupTokenForm),
+#    )
 
 def home(request):
     return redirect('accounting:shipments')

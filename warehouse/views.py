@@ -14,11 +14,12 @@ from django.contrib.auth import authenticate, login
 
 from django_pdfkit import PDFView
 
-from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
-from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+#from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
+#from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm
+from ims.views import LoginView
 from warehouse import forms
 from ims import utils
 
@@ -40,11 +41,12 @@ company_info = {
 
 class LoginView(LoginView):
     template_name = 'warehouse/login.html'
-    form_list = (
-        ('auth', UserLoginForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
-    )
+    home_url = reverse_lazy('warehouse:home')
+#    form_list = (
+#        ('auth', UserLoginForm),
+#        ('token', AuthenticationTokenForm),
+#        ('backup', BackupTokenForm),
+#    )
 
 
 #class PhoneSetupView(PhoneSetupView):

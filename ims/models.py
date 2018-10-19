@@ -622,6 +622,12 @@ class Transaction(models.Model):
         return int(float(self.cases_remaining) * float(self.product.packing))
 
     @property
+    def is_scanned_to_pallet(self):
+        if not self.shipment:
+            return False
+        return self.cases_remaining != None
+
+    @property
     def cases_received_split(self):
         if not self.receivable:
             return None

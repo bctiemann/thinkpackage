@@ -185,7 +185,7 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
 
         if pallet.shipment:
             pass
-            # Check for any transactions in this shipment with cases_remaining = null
+            # Check for any transactions in this shipment with is_scanned_to_pallet = False
             # If none, set shipment status=1
 
         data['success'] = True

@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, login
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
-from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct, Pallet
+from ims.models import Product, Transaction, Receivable, Shipment, ShipmentDoc, Client, ClientUser, Location, ReturnedProduct, Pallet, PalletContents
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from warehouse_app import forms
 from ims import utils
@@ -125,7 +125,18 @@ def barcode_lookup_pallet_contents(request):
 def barcode_pallet(request):
     response = {}
 
-    return JsonResponse({})
+    code = request.GET.get('c')
+    if code.upper().startswith('1TP:'):
+        try:
+            product = Product.objects.get(product_id=code[4:])
+            response['id'] = product.id
+            response['product_id'] = product.product_id
+            response['product_name'] = product.name
+            response['company_name'] = product.client.company_name
+        except Product.DoesNotExist:
+            product = None
+
+    return JsonResponse(response)
 
 
 class PalletCreate(AjaxableResponseMixin, CreateView):
@@ -135,14 +146,48 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
 
     def form_valid(self, form):
         data = {
-            'success': True,
+            'success': False,
         }
-        logger.warning(form.data)
-        logger.warning(form.cleaned_data)
+
+        products = form.data.get('products')
+        if not products:
+            data['error'] = 'No products scanned; pallet not built.'
+            return JsonResponse(data)
 
         pallet = form.save(commit=False)
-        pallet.client = pallet.shipment.client
+        if pallet.shipment:
+            pallet.client = pallet.shipment.client
         pallet.save()
 
+        for product_data in products.split(','):
+            product_id, cases = product_data.split(':')
+            try:
+                product = Product.objects.get(pk=product_id)
+            except Product.DoesNotExist:
+                continue
+            PalletContents.objects.create(
+                pallet = pallet,
+                product = product,
+                cases = cases,
+            )
+
+            if pallet.shipment:
+                product_transaction = Transaction.objects.get(shipment=pallet.shipment, product=product)
+
+                if product_transaction.cases > cases:
+                    pass
+                    # Create new shipment with same client, PO, SO, location
+                    # Create new transaction with cases = product_transaction.cases - cases
+
+                product_transaction.cases = cases
+                product_transaction.cases_remaining = product.cases_available
+                product_transaction.save()
+
+        if pallet.shipment:
+            pass
+            # Check for any transactions in this shipment with cases_remaining = null
+            # If none, set shipment status=1
+
+        data['success'] = True
         return JsonResponse(data)
 

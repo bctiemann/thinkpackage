@@ -46,18 +46,18 @@ function processScancode() {
 
                 if (pallet_selected == 'new') {
 
-                    if (data.PRID) {
-                        if (!$('#product_new_'+PRID).length) {
+                    if (data.product_id) {
+                        if (!$('#product_new_' + PRID).length) {
                             var tr = $('<tr>',{
-                                id: 'product_new_'+data.PRID,
-                                PRID: data.PRID,
-                                productid: data.PRODUCTID
+                                id: 'product_new_'+data.product_id,
+                                PRID: data.product_id,
+                                productid: data.id
                             });
                             var td_product = $('<td>',{ class: 'product_name' });
-                            td_product.append($('<p>',{ text: data.CONAME, class: 'co_name' }));
-                            td_product.append($('<p>',{ text: data.PNAME }));
+                            td_product.append($('<p>',{ text: data.company_name, class: 'co_name' }));
+                            td_product.append($('<p>',{ text: data.product_name }));
                             tr.append(td_product);
-                            tr.append($('<td>',{ id: 'cases_new_'+PRID, class: 'numeric', text: 1 }));
+                            tr.append($('<td>',{ id: 'cases_new_' + PRID, class: 'numeric', text: 1 }));
                             $('#pallet_contents_new').append(tr);
                         }
                     }
@@ -73,7 +73,7 @@ function processScancode() {
 
                 } else {
 
-                    $('p#scanned_pname').html(data.PNAME);
+                    $('p#scanned_pname').html(data.product_name);
                     var dialog_timeout = 1000;
                     if ($('#cases_'+pallet_selected+'_'+PRID).length) {
                         $('p#scan_validity').html('');
@@ -94,7 +94,7 @@ function processScancode() {
                         $('p#scan_validity').html('INVALID SCAN');
                         $('#scan_result').addClass('wrong_scan');
                         var dialog_timeout = 2000;
-                        if (!data.PRODUCTID) {
+                        if (!data.id) {
                             $('p#scanned_pname').html(PRID+' - unrecognized code');
                         }
                         product_tapped = false;
@@ -132,11 +132,20 @@ function enterCount() {
     var ic = $('#item_count');
     $('#barcode').focus();
     ic.val(ic.val() > 0 ? ic.val() : 0);
-    if (ic.val() > parseInt($('#cases_req_'+pallet_selected+'_'+ic.attr('PRID')).html())) {
+    var cases_entered = parseInt($('#cases_req_'+pallet_selected+'_'+ic.attr('PRID')).html());
+    if (ic.val() > cases_entered) {
         $('#dialog_count_exceeded').dialog("open");
-        ic.val(parseInt($('#cases_req_'+pallet_selected+'_'+ic.attr('PRID')).html()));
+        ic.val(cases_entered);
     }
     $('#cases_'+pallet_selected+'_'+ic.attr('PRID')).html(ic.val());
+    var cases_req = parseInt($('#cases_req_'+pallet_selected+'_'+ic.attr('PRID')).html());
+    if (cases_entered == cases_req) {
+        $('#cases_'+pallet_selected+'_'+ic.attr('PRID')).removeClass('cases_incomplete');
+        $('#cases_'+pallet_selected+'_'+ic.attr('PRID')).addClass('cases_complete');
+    } else {
+        $('#cases_'+pallet_selected+'_'+ic.attr('PRID')).addClass('cases_incomplete');
+        $('#cases_'+pallet_selected+'_'+ic.attr('PRID')).removeClass('cases_complete');
+    }
     hideScanResult();
 }
 
@@ -204,7 +213,7 @@ console.log(data);
 function completePallet(shipmentid,force) {
     var pallet = {
         products: '',
-        shipment: shipmentid == 'new' ? 0 : shipmentid
+        shipment: shipmentid == 'new' ? '' : shipmentid
     };
     var products = [];
 
@@ -228,21 +237,21 @@ console.log(pallet);
         $.post(url,pallet,function(data) {
 console.log(data);
             $('#modal_overlay').hide();
-            if ('ERROR' in data) {
-                $('#dialog_error_pallet').html(data.ERROR);
-                $('#dialog_error_pallet').dialog("open");
-//                setTimeout("$('#error').html('')",5000);
-            } else if ('WARNING' in data) {
-                $('#dialog_warning_pallet').html(data.WARNING);
-                $('#dialog_warning_pallet').dialog("open");
-//                setTimeout("openActionPage('pallet')",5000);
-            } else {
+            if (data.success) {
                 if (!required_match && !force) {
                     $('#dialog_mismatch_warning').dialog("open");
                     openActionPage('pallet');
                 } else {
                     $('#dialog_success_pallet').dialog("open");
                 }
+//                setTimeout("openActionPage('pallet')",5000);
+            } else if (data.error) {
+                $('#dialog_error_pallet').html(data.error);
+                $('#dialog_error_pallet').dialog("open");
+//                setTimeout("$('#error').html('')",5000);
+            } else if (data.warning) {
+                $('#dialog_warning_pallet').html(data.warning);
+                $('#dialog_warning_pallet').dialog("open");
 //                setTimeout("openActionPage('pallet')",5000);
             }
         },'json');

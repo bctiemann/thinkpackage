@@ -33,5 +33,5 @@ urlpatterns = [
     url(r'^pallets/$', warehouse_views.pallets, name='pallets'),
     url(r'^pallet/(?P<pallet_id>\d+)/$', warehouse_views.PalletUpdate.as_view(), name='pallet-details'),
     url(r'^pallet/(?P<pallet_id>\d+)/delete/$', warehouse_views.PalletDelete.as_view(), name='pallet-delete'),
-    url(r'^pallet/(?P<pallet_id>\d+)/print/$', warehouse_views.PalletPrint.as_view(), name='pallet-print'),
+    url(r'^pallet/(?P<pallet_id>\d+)/print/$', ims_views.PalletPrint.as_view(), name='pallet-print'),
 ]

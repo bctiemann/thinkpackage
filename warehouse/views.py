@@ -208,40 +208,6 @@ class PalletDelete(AjaxableResponseMixin, DeleteView):
         return JsonResponse({'success': True})
 
 
-#class PalletPrint(TemplateView):
-class PalletPrint(PDFView):
-    template_name = 'warehouse/pallet_label.html'
-
-    def get(self, *args, **kwargs):
-        try:
-            return super(PalletPrint, self).get(*args, **kwargs)
-        except:
-            logger.warning('PDF generation failed; retrying')
-            return self.get(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        pallet = get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
-        pallet.create_qrcode()
-        context = super(PalletPrint, self).get_context_data(**kwargs)
-        context['pallet'] = pallet
-        context['site_url'] = settings.SERVER_BASE_URL
-        context['media_url'] = settings.MEDIA_URL
-        context['copies'] = range(2)
-        return context
-
-    def get_pdfkit_options(self):
-        options = {
-            'page-size': 'Letter',
-            'margin-top': '0.52in',
-            'margin-right': '0.25in',
-            'margin-bottom': '0.0in',
-            'margin-left': '0.25in',
-            'encoding': "UTF-8",
-            'no-outline': None,
-        }
-        return options
-
-
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
     form_class = forms.ShipmentDocForm

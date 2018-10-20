@@ -652,14 +652,17 @@ console.log(product);
 
 function execute_cancelShipment() {
     var shipment = {fnc: 'cancel', shipmentid: globals['shipmentid']}
-    var url = cgiroot+'ajax_shipments_action.cfm';
+//    var url = cgiroot+'ajax_shipments_action.cfm';
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/delete/';
     $.post(url,shipment,function(data) {
 console.log(data);
-        var url_ship = cgiroot+'ajax_shipments_list.cfm?customerid='+$('#customerid').val();
-        $('#list_shipments').load(url_ship,function(data) {
-            refreshUI();
-        });
-    },'json');
+        refreshShipments();
+        globals['shipmentid'] = null;
+//        var url_ship = cgiroot+'ajax_shipments_list.cfm?customerid='+$('#customerid').val();
+//        $('#list_shipments').load(url_ship,function(data) {
+//            refreshUI();
+//        });
+    });
 }
 
 function incomingProduct(productid) {

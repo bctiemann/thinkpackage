@@ -850,6 +850,16 @@ class ShipmentDetail(DetailView):
     template_name = 'mgmt/shipment_detail.html'
 
 
+class ShipmentDelete(AjaxableResponseMixin, DeleteView):
+    model = Shipment
+
+    def get_object(self):
+        return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+
+    def get_success_url(self):
+        return reverse_lazy('mgmt:shipments', kwargs={'client_id': self.object.client.id})
+
+
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
     form_class = forms.ShipmentDocForm

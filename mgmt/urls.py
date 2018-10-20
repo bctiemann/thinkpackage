@@ -54,9 +54,11 @@ urlpatterns = [
     url(r'^receivable/(?P<receivable_id>\d+)/delete/$', mgmt_views.ReceivableDelete.as_view(), name='receivable-delete'),
 
     url(r'^shipment/(?P<shipment_id>\d+)/$', mgmt_views.ShipmentDetail.as_view(), name='shipment-detail'),
+    url(r'^shipment/(?P<shipment_id>\d+)/delete/$', mgmt_views.ShipmentDelete.as_view(), name='shipment-delete'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', mgmt_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', mgmt_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 #    url(r'^shipment/doc/(?P<doc_id>\d+)/$', mgmt_views.mgmt_shipment_doc, name='shipment-doc'),
+
     url(r'^pallet/(?P<pallet_id>\d+)/print/$', ims_views.PalletPrint.as_view(), name='pallet-print'),
 
     url(r'^(?P<client_id>\d+)/$', mgmt_views.redirect, name='redirect'),

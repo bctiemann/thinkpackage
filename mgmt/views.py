@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
+from django.db.models.functions import Coalesce, Trunc
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -222,8 +223,10 @@ def product_history(request, product_id):
     except:
         pass
 
-#    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('shipment__status', '-date_created')
-    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('-date_created')
+    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to)
+    history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
+    history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
+    history = history.order_by('-date_in_out', '-shipment__id')
 
     cases_balance_differential = product.cases_inventory
     for transaction in history:

@@ -633,9 +633,9 @@ class Transaction(models.Model):
     @property
     def total_quantity(self):
         if not self.cases:
-            return None
+            return 0
         if not self.product.packing:
-            return None
+            return 0
         return self.cases * self.product.packing
 
     @property

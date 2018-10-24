@@ -156,6 +156,7 @@ div.textblock {
 #requirements p {
 	font-size: 10px;
 	margin: 20px;
+	line-height: 18px;
 }
 
 div.pagecount {
@@ -333,6 +334,14 @@ td.label {
 .requirements .checkbox {
 	font-size: 28px;
 	vertical-align: middle;
+	background-image: url('{% static "images/checkbox_unchecked.png" %}');
+	background-size: cover;
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+}
+.requirements .checkbox.checked {
+	background-image: url('{% static "images/checkbox_checked.png" %}');
 }
     </style>
 </head>
@@ -459,10 +468,10 @@ ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.c
 
 <div id="requirements" class="floatright requirements">
 REQUIREMENTS:
-<p><span class="checkbox">{% if shipment.inside_delivery %}&#9745;{% else %}&#9744;{% endif %}</span> INSIDE DELIVERY</p>
-<p><span class="checkbox">{% if shipment.liftgate_required %}&#9745;{% else %}&#9744;{% endif %}</span> LIFTGATE</p>
-<p><span class="checkbox">{% if shipment.appointment_required %}&#9745;{% else %}&#9744;{% endif %}</span> APPOINTMENT</p>
-<p><span class="checkbox">{% if shipment.sort_segregation %}&#9745;{% else %}&#9744;{% endif %}</span> SORT & SEGREGATION</p>
+<p><span class="checkbox {% if shipment.inside_delivery %}checked{% endif %}"></span> INSIDE DELIVERY</p>
+<p><span class="checkbox {% if shipment.liftgate_required %}checked{% endif %}"></span> LIFTGATE</p>
+<p><span class="checkbox {% if shipment.appointment_required %}checked{% endif %}"></span> APPOINTMENT</p>
+<p><span class="checkbox {% if shipment.sort_segregation %}checked{% endif %}"></span> SORT & SEGREGATION</p>
 </div>
 
 <div class="special_instructions_header">

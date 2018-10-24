@@ -454,6 +454,30 @@ class Product(models.Model):
     def __unicode__(self):
         return (self.name)
 
+    def create_qrcode(self):
+        img = self.get_qrcode(format='PNG')
+        img.save('{0}/codes/products/{1}.png'.format(settings.MEDIA_ROOT, self.product_id))
+
+    def get_qrcode(self, format='PNG'):
+        if format == 'PNG':
+            image_factory_string = 'qrcode.image.pil.PilImage'
+        elif format == 'SVG':
+            image_factory_string = 'qrcode.image.svg.SvgPathFillImage'
+        image_factory = import_string(image_factory_string)
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=44,
+            border=1,
+            image_factory=image_factory,
+        )
+
+        code = '1TP:{product_id}'.format(product_id=self.product_id)
+        qr.add_data(code)
+        qr.make(fit=True)
+        return qr.make_image()
+
     def get_absolute_url(self):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
 

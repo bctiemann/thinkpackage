@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Think Package Product Barcode</title>
+<style type="text/css">
+/* Reset CSS. http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css  */
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,
+pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,
+cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}
+caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}
+sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,
+select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,
+select{*font-size:100%;}legend{color:#000;}
+
+/* Your Base Foundation */
+html,body { font-family: sans-serif; font-size:12px; }
+h1 { font-size:18px; }
+h2 { font-size:16px; }
+h3 { font-size:14px; }
+h4 { font-size:12px; }
+strong { font-weight:900 !important; }
+hr     { border:0; margin:0; padding:0; height:1px; color:#000; background-color:#000; }
+
+/* Page Breaks */
+.pb_before { page-break-before:always !important; }
+.pb_after  { page-break-after:always !important; }
+.pbi_avoid { page-break-inside:avoid !important; }
+
+body {
+	font-family: sans-serif;
+	padding: 1em 12em 0em 2em;
+}
+
+.column {
+	float: left;
+	width: 2.6in;
+	margin: 1.5em;
+}
+
+.box {
+	border: 1px dashed #888888;
+	border: none;
+	height: 3in;
+	margin: 0.7em 0em 1.5em 0em;
+	margin: 0px;
+	padding: 0.5em;
+	position: relative;
+	background: url('{% static "images/tp_prod.png" %}') no-repeat;
+	background: none;
+}
+.box:last-child {
+	margin-bottom: 0em;
+}
+
+.header {
+	margin-top: 2.5em;
+	margin-bottom: 0.5em;
+	margin: 0px;
+	font-size: 15px;
+	font-size: 30px;
+	font-weight: normal;
+}
+.piececount {
+	font-size: 30px;
+}
+.item_num {
+	font-size: 60px;
+	position: absolute;
+	right: 170px;
+	top: 300px;
+}
+.item_num_label {
+	height: 55px;
+	position: absolute;
+	left: -25px;
+	top: 5px;
+}
+
+.blurb {
+	width: 20em;
+	font-size: 14px;
+}
+
+.blurb tr {
+	vertical-align: top;
+}
+
+.blurb td {
+	padding-bottom: 0.1em
+}
+
+td.label {
+	text-align: right;
+	padding-right: 0.2em;
+}
+td.header {
+}
+
+.barcode {
+	position: absolute;
+	right: 0.1em;
+	top: 80px;
+	width: 1.3in;
+	height: 1.3in;
+	z-index: 2;
+}
+
+/*
+h3 {
+	font-size: 18px;
+	font-family: sans-serif;
+	font-weight: normal;
+}
+
+h4 {
+	font-size: 16px;
+	font-family: sans-serif;
+	font-weight: normal;
+}
+
+small {
+	font-size: 12px;
+	font-family: sans-serif;
+}
+*/
+
+
+img.logo {
+	width: 800px;
+	position: absolute;
+	top: 256px;
+}
+</style>
+</head>
+        
+<body>
+
+<div class="box">
+    <img class="barcode" asrc="./codes/bar<CFOUTPUT>#BProd.productid#</CFOUTPUT>.png" src="{{ site_url }}{% url "product-code" product_id=product.product_id %}"/>
+    <div class="header">
+        <CFOUTPUT>{{ product.name|truncatechars:255 }}</CFOUTPUT>
+    </div>
+    <div class="header">
+        <CFOUTPUT>{{ product.client.company_name|truncatechars:18 }}</CFOUTPUT>
+    </div>
+
+    <div class="piececount">
+        <CFOUTPUT>{{ product.packing }} PCS</CFOUTPUT>
+    </div>
+
+    <table class="blurb">
+    <tr>
+        <td class="label">SIZE:</td>
+        <td class="data"><CFOUTPUT>{{ product.length }} &times; {{ product.width }} &times; {{ product.height }}</CFOUTPUT> (cm)</td>
+    </tr>
+    <tr>
+        <td class="label">NW:</td>
+        <td class="data"></td>
+    </tr>
+    <tr>
+        <td class="label">GW:</td>
+        <td class="data"><CFOUTPUT>{{ product.gross_weight }}</CFOUTPUT></td>
+    </tr>
+    <tr>
+        <td class="label">PO #:</td>
+        <td class="data"><CFOUTPUT><CFIF IsDefined("BRecv")>{{ last_received.purchase_order }}</CFIF></CFOUTPUT></td>
+    </tr>
+    </table>
+</div>
+
+<img src="{% static "images/tp_logo_barcode.png" %}" class="logo" />
+
+<div class="item_num">
+    <CFOUTPUT>{{ product.item_number }}</CFOUTPUT>
+    <img src="{% static "images/item_label.png" %}" class="item_num_label" />
+</div>
+
+
+</body>
+</html>

@@ -71,6 +71,18 @@ def pallet_code(request, pallet_id=None):
     return response
 
 
+def product_code(request, product_id=None):
+    product = get_object_or_404(Product, product_id=product_id)
+
+#    if not (request.user.is_authenticated):
+#        raise PermissionDenied
+
+    response = HttpResponse(content_type='image/png')
+    base_image = product.get_qrcode(format='PNG')
+    base_image.save(response, 'PNG')
+    return response
+
+
 class PalletPrint(PDFView):
     template_name = 'warehouse/pallet_label.html'
 
@@ -90,6 +102,41 @@ class PalletPrint(PDFView):
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
         context['copies'] = range(2)
+        return context
+
+    def get_pdfkit_options(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.52in',
+            'margin-right': '0.25in',
+            'margin-bottom': '0.0in',
+            'margin-left': '0.25in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+        }
+        return options
+
+
+class ProductPrint(PDFView):
+    template_name = 'warehouse/product_label.html'
+
+    def get_bak(self, *args, **kwargs):
+        try:
+            return super(ProductPrint, self).get(*args, **kwargs)
+        except Exception, e:
+            logger.warning(e)
+            logger.warning('PDF generation failed; retrying')
+            return self.get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+        product.create_qrcode()
+        context = super(ProductPrint, self).get_context_data(**kwargs)
+        context['product'] = product
+        context['last_received'] = Receivable.objects.filter(transaction__product=product).order_by('-date_created').first()
+        context['site_url'] = settings.SERVER_BASE_URL
+        context['media_url'] = settings.MEDIA_URL
+#        context['copies'] = range(2)
         return context
 
     def get_pdfkit_options(self):

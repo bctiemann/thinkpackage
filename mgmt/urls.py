@@ -60,6 +60,7 @@ urlpatterns = [
 #    url(r'^shipment/doc/(?P<doc_id>\d+)/$', mgmt_views.mgmt_shipment_doc, name='shipment-doc'),
 
     url(r'^pallet/(?P<pallet_id>\d+)/print/$', ims_views.PalletPrint.as_view(), name='pallet-print'),
+    url(r'^product/(?P<product_id>\d+)/print/$', ims_views.ProductPrint.as_view(), name='product-print'),
 
     url(r'^(?P<client_id>\d+)/$', mgmt_views.redirect, name='redirect'),
 #    url(r'^(?P<client_id>\d+)/profile/$', ims_views.mgmt_profile, name='profile'),

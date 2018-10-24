@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),
     url(r'^pallet/code/(?P<pallet_id>[A-Z]+)/$', ims_views.pallet_code, name='pallet-code'),
+    url(r'^product/code/(?P<product_id>[A-Z]+)/$', ims_views.product_code, name='product-code'),
 
     url(
         r'^favicon.ico$',

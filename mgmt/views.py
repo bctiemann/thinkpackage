@@ -356,6 +356,33 @@ def action_log(request):
     return render(request, 'mgmt/action_log.html', context)
 
 
+def search(request):
+
+    transactions = Transaction.objects.filter(is_outbound=True).order_by('-shipment__date_created')
+    if request.GET.get('search_itemnum'):
+        transactions = transactions.filter(product__item_number=request.GET.get('search_itemnum'))
+    if request.GET.get('search_shipmentid'):
+        transactions = transactions.filter(shipment__id=request.GET.get('search_shipmentid'))
+    if request.GET.get('search_shippedon'):
+        date_filter = datetime.strptime(request.GET.get('search_shippedon', ''), '%m/%d/%Y')
+        transactions = transactions.annotate(date_shipped_day = Trunc('shipment__date_shipped', 'day')).filter(date_shipped_day=date_filter)
+    if request.GET.get('search_client'):
+        transactions = transactions.filter(client__company_name__icontains=request.GET.get('search_client'))
+    if request.GET.get('search_so'):
+        transactions = transactions.filter(shipment_order=request.GET.get('search_so'))
+    if request.GET.get('search_po'):
+        transactions = transactions.filter(shipment__purchase_order=request.GET.get('search_po'))
+    if request.GET.get('search_carrier'):
+        transactions = transactions.filter(shipment__carrier__icontains=request.GET.get('search_carrier'))
+    if request.GET.get('search_location'):
+        transactions = transactions.filter(shipment__location__name__icontains=request.GET.get('search_location'))
+
+    context = {
+        'transactions': transactions[0:50],
+    }
+    return render(request, 'mgmt/search.html', context)
+
+
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
     form_class = forms.ClientForm
@@ -529,11 +556,11 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
         logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
         return response
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductUpdate, self).get_context_data(*args, **kwargs)
-        context['last_received'] = Receivable.objects.filter(transaction__product=self.object).order_by('-date_created').first()
-        context['last_shipped'] = Shipment.objects.filter(transaction__product=self.object).order_by('-date_created').first()
-        return context
+#    def get_context_data(self, *args, **kwargs):
+#        context = super(ProductUpdate, self).get_context_data(*args, **kwargs)
+#        context['last_received'] = Receivable.objects.filter(transaction__product=self.object).order_by('-date_created').first()
+#        context['last_shipped'] = Shipment.objects.filter(transaction__product=self.object).order_by('-date_created').first()
+#        return context
 
 
 class ProductDelete(AjaxableResponseMixin, UpdateView):

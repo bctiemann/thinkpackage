@@ -451,6 +451,18 @@ class Product(models.Model):
     def cases_available(self):
         return self.cases_inventory - self.cases_unshipped
 
+    @property
+    def last_shipment(self):
+        return self.transaction_set.filter(is_outbound=True).order_by('-date_created').first().shipment
+
+    @property
+    def last_transaction(self):
+        return self.transaction_set.order_by('-date_created').first()
+
+    @property
+    def last_receivable(self):
+        return self.receivable_set.order_by('-date_created').first()
+
     def __unicode__(self):
         return (self.name)
 

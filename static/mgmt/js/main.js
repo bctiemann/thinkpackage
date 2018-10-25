@@ -1141,7 +1141,7 @@ function setupSearch() {
 
 function execute_search() {
     var search = $('#form_search').serialize();
-    var url = 'search.cfm?' + search;
+    var url = cgiroot + 'search/?' + search;
     window.open(url);
 
 }
@@ -1576,9 +1576,9 @@ $(document).ready(function() {
         var productid = $(this).attr('productid');
         var url;
         if (globals['search_itemnum']) {
-            url = 'inventory.cfm?customerid=' + customerid + '&history=' + productid;
+            url = cgiroot + customerid + '/inventory/?history=' + productid;
         } else {
-            url = 'shipments.cfm?customerid=' + customerid + '&shipmentid=' + shipmentid;
+            url = cgiroot + customerid + '/shipments/?shipmentid=' + shipmentid;
         }
         window.open(url);
     });

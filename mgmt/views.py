@@ -35,6 +35,7 @@ from ims import utils
 
 import math
 import os
+import csv
 from datetime import datetime, timedelta
 
 import logging
@@ -381,6 +382,42 @@ def search(request):
         'transactions': transactions[0:50],
     }
     return render(request, 'mgmt/search.html', context)
+
+
+def item_lookup_csv(request):
+
+    item_number = request.GET.get('itemnum', None)
+    products = Product.objects.filter(item_number=item_number)
+
+    now = timezone.now()
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="ItemLookup-{0}.csv"'.format(item_number)
+
+    writer = csv.writer(response)
+    writer.writerow([
+        'CURRENT Date',
+        'Item Number',
+        'Client Name',
+        'Item Description',
+        'Packing per Case',
+        'Current Case Count',
+        'Current Quantity',
+        'Status',
+    ])
+    for product in products:
+        writer.writerow([
+            now.strftime('%m/%d/%Y'),
+            product.item_number,
+            product.client.company_name,
+            product.name,
+            product.packing,
+            product.cases_inventory,
+            product.units_inventory,
+            'Active' if product.is_active else 'Inactive',
+        ])
+
+    return response
 
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):

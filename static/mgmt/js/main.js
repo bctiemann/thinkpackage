@@ -1146,6 +1146,17 @@ function execute_search() {
 
 }
 
+function setupItemLookup() {
+    $('#dialog_item_lookup .clear').val('');
+    $('#dialog_item_lookup').dialog('open');
+}
+
+function execute_itemLookup() {
+//    var url = 'gen_item_lookup.cfm?itemnum=' + $('#item_lookup_itemnum').val();
+    var url = cgiroot + 'report/lookup/?itemnum=' + $('#item_lookup_itemnum').val();
+    window.open(url);
+}
+
 /*
 function displayErrorDialog(data) {
     var errorList = $('<ul>', {
@@ -1489,6 +1500,23 @@ $(document).ready(function() {
             Search: function() {
                 $( this ).dialog( "close" );
                 execute_search();
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_item_lookup').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 600,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Search: function() {
+                $( this ).dialog( "close" );
+                execute_itemLookup();
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

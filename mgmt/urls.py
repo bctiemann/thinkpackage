@@ -76,4 +76,6 @@ urlpatterns = [
     url(r'^action_log/$', mgmt_views.action_log, name='action-log'),
 #    url(r'^action_log/$', mgmt_views.FilteredActionLogListView.as_view(), name='action-log'),
     url(r'^search/$', mgmt_views.search, name='search'),
+
+    url(r'^report/lookup/$', mgmt_views.item_lookup_csv, name='item-lookup-report'),
 ]

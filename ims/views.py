@@ -120,7 +120,7 @@ class PalletPrint(PDFView):
 class ProductPrint(PDFView):
     template_name = 'warehouse/product_label.html'
 
-    def get_bak(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
         try:
             return super(ProductPrint, self).get(*args, **kwargs)
         except Exception, e:

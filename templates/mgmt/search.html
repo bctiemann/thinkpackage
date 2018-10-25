@@ -5,14 +5,6 @@
 
 <div class="content">
 
-<CFIF IsDefined("URL.search_itemnum") AND URL.search_itemnum IS NOT "">
-    <CFOUTPUT>
-    <script type="text/javascript">
-    globals['search_itemnum'] = #REReplace(URL.search_itemnum, "[^0-9a-zA-Z]", "", "all")#;
-    </script>
-    </CFOUTPUT>
-</CFIF>
-
 <h1>Search Results</h1>
 
 <table class="infotable alternating editable search">

@@ -1429,11 +1429,12 @@ $(document).ready(function() {
         autoOpen: false,
         resizable: false,
         modal: true,
+        width: 400,
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
                 $( this ).dialog( "close" );
-                var url = 'gen_inventory_list.cfm?customerid=' + globals['customerid'] + '&last_months=' + $('#last_months').val();
+                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
                 window.open(url);
             },
             Cancel: function() {

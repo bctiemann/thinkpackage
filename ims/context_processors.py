@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 
 def settings_constants(request):
@@ -9,6 +11,8 @@ def settings_constants(request):
         'delivery_email': settings.DELIVERY_EMAIL,
         'company_phone_number': settings.COMPANY_PHONE_NUMBER,
         'selected_client': request.selected_client,
+        'one_year_ago': timezone.now() - timedelta(days=365),
+        'one_month_from_now': timezone.now() + timedelta(days=31),
     }
     return context
 

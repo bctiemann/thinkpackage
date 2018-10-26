@@ -20,14 +20,16 @@
 <li><a class="tnav" href="#" onClick="setupSearch();">Search</a></li>
 <li><a class="tnav" href="#" onClick="setupItemLookup();">Global Item Lookup</a></li>
 
+{% if client %}
 <cfif IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
 <cfoutput>
-<li><a class="tnav" href="#" onClick="setupInventoryList(#URL.customerid#);">Inventory List</a></li>
-<li><a class="tnav" href="#" onClick="setupDeliveryList(#URL.customerid#);">Delivery List</a></li>
-<li><a class="tnav" href="#" onClick="setupIncomingList(#URL.customerid#);">Incoming List</a></li>
-<li><a class="tnav" href="#" onClick="setupInventoryAnalysis(#URL.customerid#);">Inventory Analysis</a></li>
+<li><a class="tnav" href="#" onClick="setupInventoryList({{ client.id }});">Inventory List</a></li>
+<li><a class="tnav" href="#" onClick="setupDeliveryList({{ client.id }});">Delivery List</a></li>
+<li><a class="tnav" href="#" onClick="setupIncomingList({{ client.id }});">Incoming List</a></li>
+<li><a class="tnav" href="#" onClick="setupInventoryAnalysis({{ client.id }});">Inventory Analysis</a></li>
 </cfoutput>
 </cfif>
+{% endif %}
 </ul>
 </div>
 
@@ -36,16 +38,13 @@
 <div class="dialog" id="dialog_inventory_list" title="Inventory List">
     <p>Fetch a report of all inventory items and quantities over time.</p>
 
-    <cfset fromdate = DateFormat(DateAdd("yyyy",-1,Now()),"mm/dd/yyyy")>
-    <cfset todate = DateFormat(DateAdd("m",1,Now()),"mm/dd/yyyy")>
-
     <span class="ui-helper-hidden-accessible"><input type="text"/></span>
     <cfoutput>
     <p>
     Show from
-    <input type="text" id="inventory_list_fromdate" value="#fromdate#" style="width: 100px;" />
+    <input type="text" id="inventory_list_fromdate" value="{{ one_year_ago|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     to
-    <input type="text" id="inventory_list_todate" value="#todate#" style="width: 100px;" />
+    <input type="text" id="inventory_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
     </cfoutput>

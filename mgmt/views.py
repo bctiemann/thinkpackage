@@ -426,7 +426,8 @@ def inventory_list_csv(request):
 
 #    response = HttpResponse(content_type='text/plain')
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="InventoryList-{0}.csv"'.format(client.company_name)
+#    response['Content-Disposition'] = 'attachment; filename="InventoryList-{0}.csv"'.format(client.company_name)
+    response['Content-Disposition'] = 'inline; filename="InventoryList-{0}.csv"'.format(client.company_name)
     writer = csv.writer(response)
 
     date_to = timezone.now() + timedelta(days=30)
@@ -438,8 +439,9 @@ def inventory_list_csv(request):
         pass
 
     products = Product.objects.filter(client=client).order_by('item_number')
-    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
-    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
+#    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
+#    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
+    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
 
 #    transactions = Transaction.objects.filter(date_created__gt=date_from, date_created__lte=date_to)
 #    transactions = transactions.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
@@ -448,39 +450,54 @@ def inventory_list_csv(request):
 
     product_counts = {}
     columns = []
-    for shipment in shipments:
-        column_id = 'DL#{0} {1}'.format(shipment.id, shipment.date_shipped.strftime('%m/%d/%Y'))
-        product_counts[column_id] = {}
-        for transaction in shipment.transaction_set.all():
-            product_counts[column_id][transaction.product.id] = {'in': 0, 'out': transaction.cases}
-        columns.append({
-            'id': column_id,
-            'shipment_id': shipment.id,
-            'transaction_id': None,
-            'date': shipment.date_shipped,
-        })
+#    column_ids = {}
+#    for shipment in shipments:
+#        column_id = 'DL#{0} {1}'.format(shipment.id, shipment.date_shipped.strftime('%m/%d/%Y'))
+#        product_counts[column_id] = {}
+#        for transaction in shipment.transaction_set.all():
+#            product_counts[column_id][transaction.product.id] = {'in': 0, 'out': transaction.cases}
+#        columns.append({
+#            'id': column_id,
+#            'shipment_id': shipment.id,
+#            'transaction_id': None,
+#            'date': shipment.date_shipped,
+#        })
 
-    for transaction in non_shipment_transactions:
-        if transaction.is_transfer:
+#    for transaction in non_shipment_transactions:
+    for transaction in transactions:
+        logger.info(transaction)
+        if transaction.shipment:
+            column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y'))
+            if not column_id in product_counts:
+                product_counts[column_id] = {}
+            product_counts[column_id][transaction.product.id] = {
+                'in': 0,
+                'out': transaction.cases,
+            }
+        elif transaction.is_transfer:
             column_id = 'T#{0} {1}'.format(transaction.id, transaction.date_created.strftime('%m/%d/%Y'))
-            product_counts[column_id] = {}
+            if not column_id in product_counts:
+                product_counts[column_id] = {}
             product_counts[column_id][transaction.product.id] = {
                 'in': transaction.cases if not transaction.is_outbound else 0,
                 'out': transaction.cases if transaction.is_outbound else 0,
             }
         else:
             column_id = 'SO: {0} {1}'.format(transaction.shipment_order, transaction.date_created.strftime('%m/%d/%Y'))
-            product_counts[column_id] = {}
+            if not column_id in product_counts:
+                product_counts[column_id] = {}
             product_counts[column_id][transaction.product.id] = {
                 'in': transaction.cases,
                 'out': 0,
             }
-        columns.append({
-            'id': column_id,
-            'shipment_id': None,
-            'transaction_id': transaction.id,
-            'date': transaction.date_created,
-        })
+        if not column_id in [column['id'] for column in columns]:
+#        if not column_id in column_ids:
+            columns.append({
+                'id': column_id,
+                'date': transaction.date_created,
+            })
+#            column_ids[column_id] = True
+    logger.info('done')
 
     columns = sorted(columns, key=lambda column_data: column_data['date'], reverse=True)
 
@@ -499,6 +516,7 @@ def inventory_list_csv(request):
             if product_counts[column['id']][product.id]['out']:
                 product_balance[product.id] += product_counts[column['id']][product.id]['out']
 #            product_counts[column['id']][product.id]['balance'] = product_balance[product.id]
+#        logger.info(product_counts[column['id']][2310])
 
 #    response.write(product_counts)
 #    response.write(columns)
@@ -511,19 +529,19 @@ def inventory_list_csv(request):
     for product in products:
         writer.writerow([
             product.item_number,
-            product.name,
+            product.name.encode('utf8'),
             product.packing,
             'IN',
         ] + [product_counts[column['id']][product.id]['in'] for column in columns])
         writer.writerow([
             product.item_number,
-            product.name,
+            product.name.encode('utf8'),
             product.packing,
             'OUT',
         ] + [product_counts[column['id']][product.id]['out'] for column in columns])
         writer.writerow([
             product.item_number,
-            product.name,
+            product.name.encode('utf8'),
             product.packing,
             'BAL',
         ] + [product_counts[column['id']][product.id]['balance'] for column in columns])

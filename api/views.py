@@ -7,10 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import mixins
 
-from ims.models import Client, Product
+from ims.models import Client, Product, AsyncTask
 from ims import utils
-from api.serializers import ClientSerializer, ProductSerializer
+from api.serializers import ClientSerializer, ProductSerializer, AsyncTaskSerializer
 
 import logging
 logger = logging.getLogger(__name__)
@@ -45,3 +46,11 @@ class GetClientProducts(ListAPIView):
             source_product = get_object_or_404(Product, pk=source_product_id)
             queryset = queryset.filter(item_number=source_product.item_number, packing=source_product.packing)
         return queryset
+
+
+class AsyncTaskStatus(APIView):
+
+    def get(self, request, task_id):
+        async_task = get_object_or_404(AsyncTask, pk=task_id)
+        serializer = AsyncTaskSerializer(async_task)
+        return Response(serializer.data)

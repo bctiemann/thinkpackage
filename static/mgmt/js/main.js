@@ -1024,6 +1024,26 @@ function setupInventoryList(customerid) {
     $('#dialog_inventory_list').dialog('open');
 }
 
+function execute_inventoryList(customerid, fromdate, todate) {
+    var url = cgiroot + 'report/inventory_list/';
+    var params = {
+        client: customerid,
+        fromdate: fromdate,
+        todate: todate,
+    };
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                });
+            }, 1000);
+        }
+    });
+}
+
 function setupInventoryAnalysis(customerid) {
     globals['customerid'] = customerid;
     $('#dialog_inventory_analysis').dialog('open');
@@ -1433,9 +1453,10 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
-                $( this ).dialog( "close" );
-                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
-                window.open(url);
+//                $( this ).dialog( "close" );
+//                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
+//                window.open(url);
+                execute_inventoryList(globals['customerid'], $('#inventory_list_fromdate').val(), $('#inventory_list_todate').val());
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

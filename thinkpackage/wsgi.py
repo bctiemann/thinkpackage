@@ -17,6 +17,7 @@ env_variables_to_pass = [
     'TWILIO_AUTH_TOKEN',
     'DJANGO_SETTINGS_MODULE',
     'WKHTMLTOPDF_BIN',
+    'CELERY_BROKER_URL',
 ]
 
 def application(environ, start_response):

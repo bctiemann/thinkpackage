@@ -7,6 +7,7 @@ from django.db.models import Func, F, Count
 from django.db.models.functions import Coalesce, Trunc
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 from django.utils import timezone
@@ -26,12 +27,13 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct, AsyncTask
 from ims import models
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims.views import LoginView
 from mgmt import forms
 from ims import utils
+from ims import tasks
 
 import math
 import os
@@ -420,9 +422,41 @@ def item_lookup_csv(request):
     return response
 
 
+class InventoryList(APIView):
+#    model = Client
+
+#    def get_object(self):
+#        logger.info(request.data)
+#        return get_object_or_404(Client, pk=request.data['client'])
+
+    def post(self, *args, **kwargs):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name))
+
+        tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+@require_POST
 def inventory_list_csv(request):
 
-    client = get_object_or_404(Client, pk=request.GET.get('customerid', None))
+    logger.info(request.data)
+    client = get_object_or_404(Client, pk=request.data['client'])
+
+    async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name))
+
+    tasks.generate_inventory_list.delay(async_task.id, client.id, request.data['fromdate'], request.data['todate'])
+
+    result = {
+        'success': True,
+        'task_id': async_task.id,
+    }
+    return JsonResponse(result)
 
 #    response = HttpResponse(content_type='text/plain')
     response = HttpResponse(content_type='text/csv')

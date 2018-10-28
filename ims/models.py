@@ -908,3 +908,10 @@ class BulkOrderItem(models.Model):
 
     class Meta:
         db_table = 'BulkOrderItems'
+
+
+class AsyncTask(models.Model):
+    name = models.CharField(max_length=255, blank=True, default='')
+    is_complete = models.BooleanField(default=False)
+    has_failed = models.BooleanField(default=False)
+    percent_complete = models.FloatField(default=0)

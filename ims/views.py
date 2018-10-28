@@ -22,7 +22,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, Pallet
+from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, Pallet, AsyncTask
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims import utils
 
@@ -46,6 +46,26 @@ def shipment_doc(request, doc_id=None):
     if not (request.user.is_admin or request.user.is_authorized_for_client(shipment_doc.shipment.client)):
         raise PermissionDenied
 
+    if not shipment_doc.file:
+        raise Http404
+
+    filename = os.path.join(settings.MEDIA_ROOT, shipment_doc.file.name)
+    if not os.path.isfile(filename):
+        raise Http404
+
+    with open(filename, 'r') as file:
+        response = HttpResponse(file.read(), content_type=shipment_doc.content_type)
+        response['Content-Disposition'] = 'inline;filename=\'{0}.{1}\''.format(shipment_doc.basename, shipment_doc.ext)
+    return response
+
+
+def async_task_result(request, async_task_id=None):
+    async_task = get_object_or_404(AsyncTask, pk=async_task_id)
+
+    if not (request.user.is_admin or request.user.is_authorized_for_client(shipment_doc.shipment.client)):
+        raise PermissionDenied
+
+    # Pick up here -- add a FileField to AsyncTask instead of url
     if not shipment_doc.file:
         raise Http404
 

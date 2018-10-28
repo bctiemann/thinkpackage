@@ -17,4 +17,4 @@ class ProductSerializer(serializers.ModelSerializer):
 class AsyncTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = AsyncTask
-        fields = ['id', 'name', 'is_complete', 'has_failed', 'percent_complete']
+        fields = ['id', 'name', 'is_complete', 'has_failed', 'percent_complete', 'result_url']

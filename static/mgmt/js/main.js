@@ -1038,6 +1038,14 @@ console.log(data);
                 var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
                 $.getJSON(statusUrl, function(statusData) {
 console.log(statusData);
+                    if (statusData.is_complete) {
+                        clearInterval(globals['asyncTaskInterval']);
+                        var resultLink = $('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_url,
+                        });
+                        $('#inventory_list_result_url').append(resultLink);
+                    }
                 });
             }, 1000);
         }

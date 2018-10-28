@@ -911,7 +911,9 @@ class BulkOrderItem(models.Model):
 
 
 class AsyncTask(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=255, blank=True, default='')
     is_complete = models.BooleanField(default=False)
     has_failed = models.BooleanField(default=False)
     percent_complete = models.FloatField(default=0)
+    result_url = models.CharField(max_length=255, blank=True, default='')

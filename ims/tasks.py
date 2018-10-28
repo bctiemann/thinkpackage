@@ -8,6 +8,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from datetime import datetime, timedelta
+import csv
 
 from ims.models import AsyncTask, Client, Product, Shipment, Transaction
 
@@ -64,8 +65,14 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #        })
 
 #    for transaction in non_shipment_transactions:
-    for transaction in transactions:
-        logger.info(transaction)
+    status_update_interval = transactions.count() / 20
+    for i, transaction in enumerate(transactions):
+        if i % status_update_interval == 0:
+            async_task.percent_complete = i / float(transactions.count()) * 100
+            async_task.save()
+            logger.info(i)
+            logger.info(async_task.percent_complete)
+
         if transaction.shipment:
             column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y'))
             if not column_id in product_counts:
@@ -97,10 +104,8 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 'date': transaction.date_created,
             })
 #            column_ids[column_id] = True
-    async_task.is_complete = True
-    async_task.save()
 
-    logger.info('done')
+    logger.info('done with transactions')
 
     columns = sorted(columns, key=lambda column_data: column_data['date'], reverse=True)
 
@@ -111,7 +116,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     for column in columns:
         for product in products:
             if not product.id in product_counts[column['id']]:
-                 product_counts[column['id']][product.id] = {'in': 0, 'out': 0}
+                product_counts[column['id']][product.id] = {'in': 0, 'out': 0}
 
             product_counts[column['id']][product.id]['balance'] = product_balance[product.id]
             if product_counts[column['id']][product.id]['in']:
@@ -121,33 +126,42 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #            product_counts[column['id']][product.id]['balance'] = product_balance[product.id]
 #        logger.info(product_counts[column['id']][2310])
 
-#    response.write(product_counts)
-#    response.write(columns)
-#    response.write('{0}\n'.format(history_item.id))
+#        response.write(product_counts)
+#        response.write(columns)
+#        response.write('{0}\n'.format(history_item.id))
 
-    columns = sorted(columns, key=lambda column_data: column_data['date'])
+    filename = 'InventoryList - {1} - {2}.csv'.format(settings.MEDIA_ROOT, client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M'))
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+#    with open('{0}/reports/InventoryList.csv'.format(settings.MEDIA_ROOT), mode='w') as csvfile:
+        writer = csv.writer(csvfile)
 
-    writer.writerow(['Item #', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
+        columns = sorted(columns, key=lambda column_data: column_data['date'])
 
-    for product in products:
-        writer.writerow([
-            product.item_number,
-            product.name.encode('utf8'),
-            product.packing,
-            'IN',
-        ] + [product_counts[column['id']][product.id]['in'] for column in columns])
-        writer.writerow([
-            product.item_number,
-            product.name.encode('utf8'),
-            product.packing,
-            'OUT',
-        ] + [product_counts[column['id']][product.id]['out'] for column in columns])
-        writer.writerow([
-            product.item_number,
-            product.name.encode('utf8'),
-            product.packing,
-            'BAL',
-        ] + [product_counts[column['id']][product.id]['balance'] for column in columns])
+        writer.writerow(['Item #', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
 
+        for product in products:
+            writer.writerow([
+                product.item_number,
+                product.name.encode('utf8'),
+                product.packing,
+                'IN',
+            ] + [product_counts[column['id']][product.id]['in'] for column in columns])
+            writer.writerow([
+                product.item_number,
+                product.name.encode('utf8'),
+                product.packing,
+                'OUT',
+            ] + [product_counts[column['id']][product.id]['out'] for column in columns])
+            writer.writerow([
+                product.item_number,
+                product.name.encode('utf8'),
+                product.packing,
+                'BAL',
+            ] + [product_counts[column['id']][product.id]['balance'] for column in columns])
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.result_url = '{0}reports/{1}'.format(settings.MEDIA_URL, filename)
+    async_task.save()
     return 'done'
     return response

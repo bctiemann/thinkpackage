@@ -16,6 +16,7 @@ from localflavor.us.us_states import STATE_CHOICES
 
 from ims import utils
 
+import os
 import uuid
 import random
 import qrcode
@@ -23,6 +24,10 @@ import qrcode.image.svg
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def get_report_path(instance, filename):
+    return 'reports/{0}'.format(filename)
 
 
 class SoftDeleteManager(models.Manager):
@@ -917,3 +922,24 @@ class AsyncTask(models.Model):
     has_failed = models.BooleanField(default=False)
     percent_complete = models.FloatField(default=0)
     result_url = models.CharField(max_length=255, blank=True, default='')
+    result_file = models.FileField(max_length=255, upload_to=get_report_path, null=True, blank=True)
+    result_content_type = models.CharField(max_length=255, blank=True, default='')
+
+    @property
+    def result_filename(self):
+        if not self.result_file:
+            return ''
+        return os.path.basename(self.result_file.name)
+
+    @property
+    def result_basename(self):
+        if not self.result_file:
+            return ''
+        return '.'.join(self.result_filename.split('.')[:-1])
+
+    @property
+    def result_extension(self):
+        if not self.result_file:
+            return ''
+        return self.result_filename.split('.')[-1].lower()
+

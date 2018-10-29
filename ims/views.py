@@ -66,16 +66,16 @@ def async_task_result(request, async_task_id=None):
         raise PermissionDenied
 
     # Pick up here -- add a FileField to AsyncTask instead of url
-    if not shipment_doc.file:
+    if not async_task.result_file:
         raise Http404
 
-    filename = os.path.join(settings.MEDIA_ROOT, shipment_doc.file.name)
+    filename = os.path.join(settings.MEDIA_ROOT, async_task.result_file.name)
     if not os.path.isfile(filename):
         raise Http404
 
     with open(filename, 'r') as file:
-        response = HttpResponse(file.read(), content_type=shipment_doc.content_type)
-        response['Content-Disposition'] = 'inline;filename=\'{0}.{1}\''.format(shipment_doc.basename, shipment_doc.ext)
+        response = HttpResponse(file.read(), content_type=async_task.result_content_type)
+        response['Content-Disposition'] = 'attachment;filename={0}.{1}'.format(async_task.result_basename, async_task.result_extension)
     return response
 
 

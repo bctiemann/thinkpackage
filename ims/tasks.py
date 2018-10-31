@@ -104,9 +104,19 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
             }
         if not column_id in [column['id'] for column in columns]:
 #        if not column_id in column_ids:
+            column_date = transaction.date_created
+            shipment_id = None
+            if transaction.shipment:
+                shipment_id = transaction.shipment.id
+                column_date = transaction.shipment.date_shipped
+            try:
+                column_date = column_date.date()
+            except AttributeError:
+                column_date = timezone.now().date()
             columns.append({
                 'id': column_id,
-                'date': transaction.date_created,
+                'date': column_date,
+                'shipment_id': shipment_id,
             })
 #            column_ids[column_id] = True
 
@@ -114,7 +124,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     async_task.save()
     logger.info('done with transactions')
 
-    columns = sorted(columns, key=lambda column_data: column_data['date'], reverse=True)
+    columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']), reverse=True)
 
     product_balance = {}
     for product in products:
@@ -142,7 +152,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #    with open('{0}/reports/InventoryList.csv'.format(settings.MEDIA_ROOT), mode='w') as csvfile:
         writer = csv.writer(csvfile)
 
-        columns = sorted(columns, key=lambda column_data: column_data['date'])
+        columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']))
 
         writer.writerow(['Item #', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
 

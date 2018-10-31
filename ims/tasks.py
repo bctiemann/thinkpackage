@@ -69,14 +69,17 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #    for transaction in non_shipment_transactions:
     status_update_interval = transactions.count() / 20
     for i, transaction in enumerate(transactions):
-        if i % status_update_interval == 0:
+        if transactions.count() > 1000 and i % status_update_interval == 0:
             async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
             async_task.save()
             logger.info(i)
             logger.info(async_task.percent_complete)
 
         if transaction.shipment:
-            column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y'))
+            if transaction.shipment.date_shipped:
+                column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y'))
+            else:
+                column_id = 'DL#{0}'.format(transaction.shipment.id)
             if not column_id in product_counts:
                 product_counts[column_id] = {}
             product_counts[column_id][transaction.product.id] = {

@@ -10,6 +10,7 @@ from celery.utils.log import get_task_logger
 
 from datetime import datetime, timedelta
 import csv
+import math
 
 from ims.models import AsyncTask, Client, Product, Shipment, Transaction
 
@@ -69,7 +70,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     status_update_interval = transactions.count() / 20
     for i, transaction in enumerate(transactions):
         if i % status_update_interval == 0:
-            async_task.percent_complete = i / float(transactions.count()) * 100
+            async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
             async_task.save()
             logger.info(i)
             logger.info(async_task.percent_complete)
@@ -106,6 +107,8 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
             })
 #            column_ids[column_id] = True
 
+    async_task.percent_complete = 100
+    async_task.save()
     logger.info('done with transactions')
 
     columns = sorted(columns, key=lambda column_data: column_data['date'], reverse=True)

@@ -1071,6 +1071,17 @@ span.low_qty {
 	width: 100px;
 }
 
+.spinner {
+	width: 24px;
+	height: 24px;
+	background-image: url('../images/spinner.gif');
+	background-size: cover;
+	display: inline-block;
+	opacity: 0;
+}
+.spinner.active {
+	opacity: 1;
+}
 .loading {
 	display: block;
 	margin: 120px auto;

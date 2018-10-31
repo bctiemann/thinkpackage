@@ -114,3 +114,9 @@ div#menu_tools {
         width: 220px;
 }
 
+#inventory_list_progress_percent {
+	line-height: 24px;
+	vertical-align: text-bottom;
+	display: inline-block;
+	margin-left: 5px;
+}

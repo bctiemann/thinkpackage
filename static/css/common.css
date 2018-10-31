@@ -1160,3 +1160,10 @@ table.pageheader {
         font-size: 10pt;
 }
 
+.document-icon {
+	width: 24px;
+	height: 24px;
+	background-image: url('../images/icon_document.png');
+	background-size: cover;
+	display: inline-block;
+}

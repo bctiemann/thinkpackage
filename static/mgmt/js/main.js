@@ -1051,9 +1051,13 @@ console.log(statusData);
                         $('.spinner').removeClass('active');
                         $('#inventory_list_progress_percent').html('');
                         clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
                         var resultLink = $('<a>', {
                             href: statusData.result_url,
-                            html: statusData.result_url,
+//                            html: statusData.result_url,
+                            html: resultIconSpan,
                         });
                         $('#inventory_list_result_url').empty().append(resultLink);
                     }

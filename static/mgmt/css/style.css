@@ -114,9 +114,10 @@ div#menu_tools {
         width: 220px;
 }
 
-#inventory_list_progress_percent,
-#inventory_list_result_url {
+#inventory_list_task_status span,
+#inventory_list_task_status a {
 	line-height: 24px;
+	height: 24px;
 	vertical-align: text-bottom;
 	display: inline-block;
 	margin-left: 5px;

@@ -12,5 +12,5 @@ from api import views as api_views
 urlpatterns = [
     url(r'^clients/$', api_views.GetClients.as_view(), name='clients'),
     url(r'^(?P<client_id>\d+)/products/$', api_views.GetClientProducts.as_view(), name='client-products'),
-    url(r'^async_task/(?P<task_id>\d+)/status/$', api_views.AsyncTaskStatus.as_view(), name='async-task-status'),
+    url(r'^async_task/(?P<task_id>[0-9a-f-]+)/status/$', api_views.AsyncTaskStatus.as_view(), name='async-task-status'),
 ]

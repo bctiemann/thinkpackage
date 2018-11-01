@@ -916,14 +916,19 @@ class BulkOrderItem(models.Model):
 
 
 class AsyncTask(models.Model):
+    id = models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=255, blank=True, default='')
     is_complete = models.BooleanField(default=False)
     has_failed = models.BooleanField(default=False)
     percent_complete = models.FloatField(default=0)
-    result_url = models.CharField(max_length=255, blank=True, default='')
+#    result_url = models.CharField(max_length=255, blank=True, default='')
     result_file = models.FileField(max_length=255, upload_to=get_report_path, null=True, blank=True)
     result_content_type = models.CharField(max_length=255, blank=True, default='')
+
+    @property
+    def result_url(self):
+        return reverse('mgmt:async-task-result', kwargs={'async_task_id': self.id})
 
     @property
     def result_filename(self):

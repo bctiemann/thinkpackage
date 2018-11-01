@@ -181,7 +181,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #    async_task.result_url = '{0}reports/{1}'.format(settings.MEDIA_URL, filename)
     async_task.result_file = 'reports/{0}'.format(filename)
     async_task.result_content_type = 'text/csv'
-    async_task.result_url = reverse('mgmt:async-task-result', kwargs={'async_task_id': async_task.id})
+#    async_task.result_url = reverse('mgmt:async-task-result', kwargs={'async_task_id': async_task.id})
     async_task.save()
     return 'done'
     return response

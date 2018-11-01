@@ -1034,8 +1034,14 @@ function execute_inventoryList(customerid, fromdate, todate) {
         fromdate: fromdate,
         todate: todate,
     };
-    $('.spinner').addClass('active');
-    $('#inventory_list_result_url').empty();
+    $('#inventory_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'inventory_list_progress_percent',
+    }));
+
+//    $('.spinner').addClass('active');
+//    $('#inventory_list_result_url').empty();
     $.post(url, params, function(data) {
 console.log(data);
         if (data.success) {
@@ -1048,18 +1054,19 @@ console.log(data);
 console.log(statusData);
                     $('#inventory_list_progress_percent').html(statusData.percent_complete + '%');
                     if (statusData.is_complete) {
-                        $('.spinner').removeClass('active');
+//                        $('.spinner').removeClass('active');
                         $('#inventory_list_progress_percent').html('');
                         clearInterval(globals['asyncTaskInterval']);
                         var resultIconSpan = $('<span>', {
                             class: 'document-icon',
                         });
-                        var resultLink = $('<a>', {
+                        $('#inventory_list_task_status').empty().append($('<a>', {
                             href: statusData.result_url,
-//                            html: statusData.result_url,
                             html: resultIconSpan,
-                        });
-                        $('#inventory_list_result_url').empty().append(resultLink);
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
                     }
                 });
             }, 1000);
@@ -1472,7 +1479,7 @@ $(document).ready(function() {
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: 400,
+        width: 500,
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {

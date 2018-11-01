@@ -62,7 +62,7 @@ urlpatterns = [
     url(r'^pallet/(?P<pallet_id>\d+)/print/$', ims_views.PalletPrint.as_view(), name='pallet-print'),
     url(r'^product/(?P<product_id>\d+)/print/$', ims_views.ProductPrint.as_view(), name='product-print'),
 
-    url(r'^report/(?P<async_task_id>\d+)/$', ims_views.async_task_result, name='async-task-result'),
+    url(r'^report/(?P<async_task_id>[0-9a-f-]+)/$', ims_views.async_task_result, name='async-task-result'),
 
     url(r'^(?P<client_id>\d+)/$', mgmt_views.redirect, name='redirect'),
 #    url(r'^(?P<client_id>\d+)/profile/$', ims_views.mgmt_profile, name='profile'),

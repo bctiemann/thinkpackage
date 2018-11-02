@@ -114,8 +114,8 @@ div#menu_tools {
         width: 220px;
 }
 
-#inventory_list_task_status span,
-#inventory_list_task_status a {
+.task_status span,
+.task_status a {
 	line-height: 24px;
 	height: 24px;
 	vertical-align: text-bottom;

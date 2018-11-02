@@ -79,7 +79,7 @@ urlpatterns = [
 #    url(r'^action_log/$', mgmt_views.FilteredActionLogListView.as_view(), name='action-log'),
     url(r'^search/$', mgmt_views.search, name='search'),
 
-    url(r'^report/lookup/$', mgmt_views.item_lookup_csv, name='item-lookup-report'),
+    url(r'^report/lookup/$', mgmt_views.ItemLookup.as_view(), name='item-lookup-report'),
 #    url(r'^report/inventory_list/$', mgmt_views.inventory_list_csv, name='inventory-list-report'),
     url(r'^report/inventory_list/$', mgmt_views.InventoryList.as_view(), name='inventory-list-report'),
 ]

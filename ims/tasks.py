@@ -19,19 +19,59 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
+def generate_item_lookup(async_task_id, item_number):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+    products = Product.objects.filter(item_number=item_number)
+
+    now = timezone.now()
+
+    filename = 'ItemLookup - {0} - {1}.csv'.format(item_number, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+
+#    response = HttpResponse(content_type='text/csv')
+#    response['Content-Disposition'] = 'attachment; filename="ItemLookup-{0}.csv"'.format(item_number)
+
+#    writer = csv.writer(response)
+        writer.writerow([
+            'CURRENT Date',
+            'Item Number',
+            'Client Name',
+            'Item Description',
+            'Packing per Case',
+            'Current Case Count',
+            'Current Quantity',
+            'Status',
+        ])
+        for product in products:
+            writer.writerow([
+                now.strftime('%m/%d/%Y'),
+                product.item_number,
+                product.client.company_name,
+                product.name,
+                product.packing,
+                product.cases_inventory,
+                product.units_inventory,
+                'Active' if product.is_active else 'Inactive',
+            ])
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'
+
+
+@shared_task
 def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
-
-#    async_task.is_complete = True
-#    async_task.save()
-
-#    response = HttpResponse(content_type='text/plain')
-#    response = HttpResponse(content_type='text/csv')
-#    response['Content-Disposition'] = 'attachment; filename="InventoryList-{0}.csv"'.format(client.company_name)
-#    response['Content-Disposition'] = 'inline; filename="InventoryList-{0}.csv"'.format(client.company_name)
-#    writer = csv.writer(response)
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -53,20 +93,6 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     product_counts = {}
     columns = []
-#    column_ids = {}
-#    for shipment in shipments:
-#        column_id = 'DL#{0} {1}'.format(shipment.id, shipment.date_shipped.strftime('%m/%d/%Y'))
-#        product_counts[column_id] = {}
-#        for transaction in shipment.transaction_set.all():
-#            product_counts[column_id][transaction.product.id] = {'in': 0, 'out': transaction.cases}
-#        columns.append({
-#            'id': column_id,
-#            'shipment_id': shipment.id,
-#            'transaction_id': None,
-#            'date': shipment.date_shipped,
-#        })
-
-#    for transaction in non_shipment_transactions:
     status_update_interval = transactions.count() / 20
     for i, transaction in enumerate(transactions):
         if transactions.count() > 1000 and i % status_update_interval == 0:
@@ -147,7 +173,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #        response.write(columns)
 #        response.write('{0}\n'.format(history_item.id))
 
-    filename = 'InventoryList - {1} - {2}.csv'.format(settings.MEDIA_ROOT, client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M'))
+    filename = 'InventoryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 #    with open('{0}/reports/InventoryList.csv'.format(settings.MEDIA_ROOT), mode='w') as csvfile:
         writer = csv.writer(csvfile)

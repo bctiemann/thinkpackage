@@ -317,6 +317,8 @@ def location_form(request):
     return render(request, 'mgmt/location_form.html', context)
 
 
+# Tools
+
 class ActionLogTable(tables.Table):
     class Meta:
         model = ActionLog
@@ -386,48 +388,22 @@ def search(request):
     return render(request, 'mgmt/search.html', context)
 
 
-def item_lookup_csv(request):
+class ItemLookup(APIView):
 
-    item_number = request.GET.get('itemnum', None)
-    products = Product.objects.filter(item_number=item_number)
+    def post(self, *args, **kwargs):
+        item_number = self.request.data['itemnum']
+        async_task = AsyncTask.objects.create(name='ItemLookup-{0}'.format(item_number))
 
-    now = timezone.now()
+        tasks.generate_item_lookup.delay(async_task.id, item_number)
 
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="ItemLookup-{0}.csv"'.format(item_number)
-
-    writer = csv.writer(response)
-    writer.writerow([
-        'CURRENT Date',
-        'Item Number',
-        'Client Name',
-        'Item Description',
-        'Packing per Case',
-        'Current Case Count',
-        'Current Quantity',
-        'Status',
-    ])
-    for product in products:
-        writer.writerow([
-            now.strftime('%m/%d/%Y'),
-            product.item_number,
-            product.client.company_name,
-            product.name,
-            product.packing,
-            product.cases_inventory,
-            product.units_inventory,
-            'Active' if product.is_active else 'Inactive',
-        ])
-
-    return response
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
 
 
 class InventoryList(APIView):
-#    model = Client
-
-#    def get_object(self):
-#        logger.info(request.data)
-#        return get_object_or_404(Client, pk=request.data['client'])
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
@@ -440,147 +416,6 @@ class InventoryList(APIView):
             'task_id': async_task.id,
         }
         return JsonResponse(result)
-
-
-@require_POST
-def inventory_list_csv(request):
-
-    logger.info(request.data)
-    client = get_object_or_404(Client, pk=request.data['client'])
-
-    async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name))
-
-    tasks.generate_inventory_list.delay(async_task.id, client.id, request.data['fromdate'], request.data['todate'])
-
-    result = {
-        'success': True,
-        'task_id': async_task.id,
-    }
-    return JsonResponse(result)
-
-#    response = HttpResponse(content_type='text/plain')
-    response = HttpResponse(content_type='text/csv')
-#    response['Content-Disposition'] = 'attachment; filename="InventoryList-{0}.csv"'.format(client.company_name)
-    response['Content-Disposition'] = 'inline; filename="InventoryList-{0}.csv"'.format(client.company_name)
-    writer = csv.writer(response)
-
-    date_to = timezone.now() + timedelta(days=30)
-    date_from = timezone.now() - timedelta(days=365)
-    try:
-        date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y')
-        date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y')
-    except:
-        pass
-
-    products = Product.objects.filter(client=client).order_by('item_number')
-#    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
-#    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
-    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
-
-#    transactions = Transaction.objects.filter(date_created__gt=date_from, date_created__lte=date_to)
-#    transactions = transactions.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
-#    transactions = transactions.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
-#    transactions = transactions.order_by('-date_in_out', '-shipment__id')
-
-    product_counts = {}
-    columns = []
-#    column_ids = {}
-#    for shipment in shipments:
-#        column_id = 'DL#{0} {1}'.format(shipment.id, shipment.date_shipped.strftime('%m/%d/%Y'))
-#        product_counts[column_id] = {}
-#        for transaction in shipment.transaction_set.all():
-#            product_counts[column_id][transaction.product.id] = {'in': 0, 'out': transaction.cases}
-#        columns.append({
-#            'id': column_id,
-#            'shipment_id': shipment.id,
-#            'transaction_id': None,
-#            'date': shipment.date_shipped,
-#        })
-
-#    for transaction in non_shipment_transactions:
-    for transaction in transactions:
-        logger.info(transaction)
-        if transaction.shipment:
-            column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y'))
-            if not column_id in product_counts:
-                product_counts[column_id] = {}
-            product_counts[column_id][transaction.product.id] = {
-                'in': 0,
-                'out': transaction.cases,
-            }
-        elif transaction.is_transfer:
-            column_id = 'T#{0} {1}'.format(transaction.id, transaction.date_created.strftime('%m/%d/%Y'))
-            if not column_id in product_counts:
-                product_counts[column_id] = {}
-            product_counts[column_id][transaction.product.id] = {
-                'in': transaction.cases if not transaction.is_outbound else 0,
-                'out': transaction.cases if transaction.is_outbound else 0,
-            }
-        else:
-            column_id = 'SO: {0} {1}'.format(transaction.shipment_order, transaction.date_created.strftime('%m/%d/%Y'))
-            if not column_id in product_counts:
-                product_counts[column_id] = {}
-            product_counts[column_id][transaction.product.id] = {
-                'in': transaction.cases,
-                'out': 0,
-            }
-        if not column_id in [column['id'] for column in columns]:
-#        if not column_id in column_ids:
-            columns.append({
-                'id': column_id,
-                'date': transaction.date_created,
-            })
-#            column_ids[column_id] = True
-    logger.info('done')
-
-    columns = sorted(columns, key=lambda column_data: column_data['date'], reverse=True)
-
-    product_balance = {}
-    for product in products:
-        product_balance[product.id] = product.cases_inventory
-
-    for column in columns:
-        for product in products:
-            if not product.id in product_counts[column['id']]:
-                 product_counts[column['id']][product.id] = {'in': 0, 'out': 0}
-
-            product_counts[column['id']][product.id]['balance'] = product_balance[product.id]
-            if product_counts[column['id']][product.id]['in']:
-                product_balance[product.id] -= product_counts[column['id']][product.id]['in']
-            if product_counts[column['id']][product.id]['out']:
-                product_balance[product.id] += product_counts[column['id']][product.id]['out']
-#            product_counts[column['id']][product.id]['balance'] = product_balance[product.id]
-#        logger.info(product_counts[column['id']][2310])
-
-#    response.write(product_counts)
-#    response.write(columns)
-#    response.write('{0}\n'.format(history_item.id))
-
-    columns = sorted(columns, key=lambda column_data: column_data['date'])
-
-    writer.writerow(['Item #', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
-
-    for product in products:
-        writer.writerow([
-            product.item_number,
-            product.name.encode('utf8'),
-            product.packing,
-            'IN',
-        ] + [product_counts[column['id']][product.id]['in'] for column in columns])
-        writer.writerow([
-            product.item_number,
-            product.name.encode('utf8'),
-            product.packing,
-            'OUT',
-        ] + [product_counts[column['id']][product.id]['out'] for column in columns])
-        writer.writerow([
-            product.item_number,
-            product.name.encode('utf8'),
-            product.packing,
-            'BAL',
-        ] + [product_counts[column['id']][product.id]['balance'] for column in columns])
-
-    return response
 
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):

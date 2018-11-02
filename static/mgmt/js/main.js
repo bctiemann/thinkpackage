@@ -1021,9 +1021,7 @@ function generateReport(productid) {
 
 function setupInventoryList(customerid) {
     globals['customerid'] = customerid;
-    $('.spinner').removeClass('active');
-    $('#inventory_list_progress_percent').empty();
-    $('#inventory_list_result_url').empty();
+    $('#inventory_list_task_status').empty();
     $('#dialog_inventory_list').dialog('open');
 }
 
@@ -1198,13 +1196,50 @@ function execute_search() {
 
 function setupItemLookup() {
     $('#dialog_item_lookup .clear').val('');
+    $('#item_lookup_task_status').empty();
     $('#dialog_item_lookup').dialog('open');
 }
 
 function execute_itemLookup() {
-//    var url = 'gen_item_lookup.cfm?itemnum=' + $('#item_lookup_itemnum').val();
-    var url = cgiroot + 'report/lookup/?itemnum=' + $('#item_lookup_itemnum').val();
-    window.open(url);
+    var url = cgiroot + 'report/lookup/';
+    var params = {
+        itemnum: $('#item_lookup_itemnum').val(),
+    };
+    $('#item_lookup_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'item_lookup_progress_percent',
+    }));
+
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#item_lookup_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+                        $('#item_lookup_progress_percent').html('');
+                        clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#item_lookup_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
+                    }
+                });
+            }, 1000);
+        }
+    });
 }
 
 /*
@@ -1567,7 +1602,7 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Search: function() {
-                $( this ).dialog( "close" );
+//                $( this ).dialog( "close" );
                 execute_itemLookup();
             },
             Cancel: function() {

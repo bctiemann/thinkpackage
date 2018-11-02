@@ -211,3 +211,61 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     async_task.save()
     return 'done'
     return response
+
+
+@shared_task
+def generate_delivery_list(async_task_id, client_id, fromdate, todate):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+    client = Client.objects.get(pk=client_id)
+
+    date_to = timezone.now() + timedelta(days=30)
+    date_from = timezone.now() - timedelta(days=365)
+    try:
+        date_from = datetime.strptime(fromdate, '%m/%d/%Y')
+        date_to = datetime.strptime(todate, '%m/%d/%Y')
+    except:
+        pass
+
+    filename = 'DeliveryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'
+
+
+@shared_task
+def generate_incoming_list(async_task_id, client_id, fromdate, todate):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+    client = Client.objects.get(pk=client_id)
+
+    date_to = timezone.now() + timedelta(days=30)
+    date_from = timezone.now() - timedelta(days=365)
+    try:
+        date_from = datetime.strptime(fromdate, '%m/%d/%Y')
+        date_to = datetime.strptime(todate, '%m/%d/%Y')
+    except:
+        pass
+
+    filename = 'IncomingList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'

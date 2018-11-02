@@ -61,12 +61,13 @@
     <cfoutput>
     <p>
     Show from
-    <input type="text" id="delivery_list_fromdate" value="#fromdate#" style="width: 100px;" />
+    <input type="text" id="delivery_list_fromdate" value="{{ one_year_ago|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     to
-    <input type="text" id="delivery_list_todate" value="#todate#" style="width: 100px;" />
+    <input type="text" id="delivery_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
     </cfoutput>
+    <div class="task_status" id="delivery_list_task_status"></div>
 </div>
 
 <div class="dialog" id="dialog_incoming_list" title="Incoming List">
@@ -79,12 +80,13 @@
     <cfoutput>
     <p>
     Show from
-    <input type="text" id="incoming_list_fromdate" value="#fromdate#" style="width: 100px;" />
+    <input type="text" id="incoming_list_fromdate" value="{{ one_year_ago|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     to
-    <input type="text" id="incoming_list_todate" value="#todate#" style="width: 100px;" />
+    <input type="text" id="incoming_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
     </cfoutput>
+    <div class="task_status" id="incoming_list_task_status"></div>
 </div>
 
 <div class="dialog" id="dialog_inventory_analysis" title="Inventory Analysis">

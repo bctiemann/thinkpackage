@@ -1072,6 +1072,107 @@ console.log(statusData);
     });
 }
 
+function setupDeliveryList(customerid) {
+    globals['customerid'] = customerid;
+    $('#delivery_list_task_status').empty();
+    $('#dialog_delivery_list').dialog('open');
+}
+
+function execute_deliveryList(customerid, fromdate, todate) {
+    var url = cgiroot + 'report/delivery_list/';
+    var params = {
+        client: customerid,
+        fromdate: fromdate,
+        todate: todate,
+    };
+    $('#delivery_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'delivery_list_progress_percent',
+    }));
+
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#delivery_list_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+//                        $('.spinner').removeClass('active');
+                        $('#delivery_list_progress_percent').html('');
+                        clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#delivery_list_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
+                    }
+                });
+            }, 1000);
+        }
+    });
+}
+
+function setupIncomingList(customerid) {
+    globals['customerid'] = customerid;
+    $('#dialog_incoming_list').dialog('open');
+}
+
+function execute_incomingList(customerid, fromdate, todate) {
+    var url = cgiroot + 'report/incoming_list/';
+    var params = {
+        client: customerid,
+        fromdate: fromdate,
+        todate: todate,
+    };
+    $('#incoming_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'incoming_list_progress_percent',
+    }));
+
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#incoming_list_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+//                        $('.spinner').removeClass('active');
+                        $('#incoming_list_progress_percent').html('');
+                        clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#incoming_list_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
+                    }
+                });
+            }, 1000);
+        }
+    });
+}
+
 function setupInventoryAnalysis(customerid) {
     globals['customerid'] = customerid;
     $('#dialog_inventory_analysis').dialog('open');
@@ -1522,6 +1623,44 @@ $(document).ready(function() {
 //                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
 //                window.open(url);
                 execute_inventoryList(globals['customerid'], $('#inventory_list_fromdate').val(), $('#inventory_list_todate').val());
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_delivery_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 400,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+//                $( this ).dialog( "close" );
+//                var url = 'gen_delivery_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#delivery_list_fromdate').val() + '&todate=' + $('#delivery_list_todate').val();;
+//                window.open(url);
+                execute_deliveryList(globals['customerid'], $('#delivery_list_fromdate').val(), $('#delivery_list_todate').val());
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_incoming_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 400,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+//                $( this ).dialog( "close" );
+//                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
+//                window.open(url);
+                execute_incomingList(globals['customerid'], $('#incoming_list_fromdate').val(), $('#incoming_list_todate').val());
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

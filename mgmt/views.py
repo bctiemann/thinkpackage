@@ -317,107 +317,6 @@ def location_form(request):
     return render(request, 'mgmt/location_form.html', context)
 
 
-# Tools
-
-class ActionLogTable(tables.Table):
-    class Meta:
-        model = ActionLog
-        template_name = 'django_tables2/infotable.html'
-
-
-#class ActionLogFilter(FilterSet):
-#    class Meta:
-#        model = ActionLog
-#        fields = ['product',]
-
-
-#class FilteredActionLogListView(SingleTableMixin, FilterView):
-#    table_class = ActionLogTable
-#    model = ActionLog
-#    template_name = 'mgmt/action_log.html'
-
-#    filterset_class = ActionLogFilter
-
-
-def action_log(request):
-    logs = ActionLog.objects.all()
-
-    product_id = request.GET.get('product_id', None)
-    if product_id:
-        product = get_object_or_404(Product, pk=product_id)
-        logs = logs.filter(product=product)
-
-    client_id = request.GET.get('client_id', None)
-    if client_id:
-        client = get_object_or_404(Client, pk=client_id)
-        logs = logs.filter(client=client)
-
-    logs_table = ActionLogTable(logs)
-    tables.RequestConfig(request).configure(logs_table)
-
-    context = {
-        'logs_table': logs_table,
-    }
-    return render(request, 'mgmt/action_log.html', context)
-
-
-def search(request):
-
-    transactions = Transaction.objects.filter(is_outbound=True).order_by('-shipment__date_created')
-    if request.GET.get('search_itemnum'):
-        transactions = transactions.filter(product__item_number=request.GET.get('search_itemnum'))
-    if request.GET.get('search_shipmentid'):
-        transactions = transactions.filter(shipment__id=request.GET.get('search_shipmentid'))
-    if request.GET.get('search_shippedon'):
-        date_filter = datetime.strptime(request.GET.get('search_shippedon', ''), '%m/%d/%Y')
-        transactions = transactions.annotate(date_shipped_day = Trunc('shipment__date_shipped', 'day')).filter(date_shipped_day=date_filter)
-    if request.GET.get('search_client'):
-        transactions = transactions.filter(client__company_name__icontains=request.GET.get('search_client'))
-    if request.GET.get('search_so'):
-        transactions = transactions.filter(shipment_order=request.GET.get('search_so'))
-    if request.GET.get('search_po'):
-        transactions = transactions.filter(shipment__purchase_order=request.GET.get('search_po'))
-    if request.GET.get('search_carrier'):
-        transactions = transactions.filter(shipment__carrier__icontains=request.GET.get('search_carrier'))
-    if request.GET.get('search_location'):
-        transactions = transactions.filter(shipment__location__name__icontains=request.GET.get('search_location'))
-
-    context = {
-        'transactions': transactions[0:50],
-    }
-    return render(request, 'mgmt/search.html', context)
-
-
-class ItemLookup(APIView):
-
-    def post(self, *args, **kwargs):
-        item_number = self.request.data['itemnum']
-        async_task = AsyncTask.objects.create(name='ItemLookup-{0}'.format(item_number))
-
-        tasks.generate_item_lookup.delay(async_task.id, item_number)
-
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
-
-
-class InventoryList(APIView):
-
-    def post(self, *args, **kwargs):
-        client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name))
-
-        tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
-
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
-
-
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
     form_class = forms.ClientForm
@@ -961,3 +860,133 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
         super(ShipmentDocDelete, self).post(*args, **kwargs)
         return JsonResponse({'success': True, 'shipment_id': self.object.shipment_id})
 
+
+# Tools
+
+class ActionLogTable(tables.Table):
+    class Meta:
+        model = ActionLog
+        template_name = 'django_tables2/infotable.html'
+
+
+#class ActionLogFilter(FilterSet):
+#    class Meta:
+#        model = ActionLog
+#        fields = ['product',]
+
+
+#class FilteredActionLogListView(SingleTableMixin, FilterView):
+#    table_class = ActionLogTable
+#    model = ActionLog
+#    template_name = 'mgmt/action_log.html'
+
+#    filterset_class = ActionLogFilter
+
+
+def action_log(request):
+    logs = ActionLog.objects.all()
+
+    product_id = request.GET.get('product_id', None)
+    if product_id:
+        product = get_object_or_404(Product, pk=product_id)
+        logs = logs.filter(product=product)
+
+    client_id = request.GET.get('client_id', None)
+    if client_id:
+        client = get_object_or_404(Client, pk=client_id)
+        logs = logs.filter(client=client)
+
+    logs_table = ActionLogTable(logs)
+    tables.RequestConfig(request).configure(logs_table)
+
+    context = {
+        'logs_table': logs_table,
+    }
+    return render(request, 'mgmt/action_log.html', context)
+
+
+def search(request):
+
+    transactions = Transaction.objects.filter(is_outbound=True).order_by('-shipment__date_created')
+    if request.GET.get('search_itemnum'):
+        transactions = transactions.filter(product__item_number=request.GET.get('search_itemnum'))
+    if request.GET.get('search_shipmentid'):
+        transactions = transactions.filter(shipment__id=request.GET.get('search_shipmentid'))
+    if request.GET.get('search_shippedon'):
+        date_filter = datetime.strptime(request.GET.get('search_shippedon', ''), '%m/%d/%Y')
+        transactions = transactions.annotate(date_shipped_day = Trunc('shipment__date_shipped', 'day')).filter(date_shipped_day=date_filter)
+    if request.GET.get('search_client'):
+        transactions = transactions.filter(client__company_name__icontains=request.GET.get('search_client'))
+    if request.GET.get('search_so'):
+        transactions = transactions.filter(shipment_order=request.GET.get('search_so'))
+    if request.GET.get('search_po'):
+        transactions = transactions.filter(shipment__purchase_order=request.GET.get('search_po'))
+    if request.GET.get('search_carrier'):
+        transactions = transactions.filter(shipment__carrier__icontains=request.GET.get('search_carrier'))
+    if request.GET.get('search_location'):
+        transactions = transactions.filter(shipment__location__name__icontains=request.GET.get('search_location'))
+
+    context = {
+        'transactions': transactions[0:50],
+    }
+    return render(request, 'mgmt/search.html', context)
+
+
+class ItemLookup(APIView):
+
+    def post(self, *args, **kwargs):
+        item_number = self.request.data['itemnum']
+        async_task = AsyncTask.objects.create(name='ItemLookup-{0}'.format(item_number))
+
+        tasks.generate_item_lookup.delay(async_task.id, item_number)
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+class InventoryList(APIView):
+
+    def post(self, *args, **kwargs):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name))
+
+        tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+class DeliveryList(APIView):
+
+    def post(self, *args, **kwargs):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        async_task = AsyncTask.objects.create(name='DeliveryList-{0}'.format(client.company_name))
+
+        tasks.generate_delivery_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+class IncomingList(APIView):
+
+    def post(self, *args, **kwargs):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        async_task = AsyncTask.objects.create(name='IncomingList-{0}'.format(client.company_name))
+
+        tasks.generate_incoming_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)

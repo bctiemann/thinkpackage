@@ -227,10 +227,84 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
+    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
+
+    rows = []
+    status_update_interval = transactions.count() / 20
+    for i, transaction in enumerate(transactions):
+        if transactions.count() > 100 and i % status_update_interval == 0:
+            async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
+            async_task.save()
+            logger.info(i)
+            logger.info(async_task.percent_complete)
+        if transaction.is_return:
+            rows.append({
+                'date': transaction.receivable.returned_product.date_returned.date(),
+                'shipment_id': 'RETURN',
+                'location': transaction.receivable.returned_product.location.name,
+                'item_number': transaction.product.item_number,
+                'product_name': transaction.product.name,
+                'month': transaction.receivable.returned_product.date_returned.month,
+                'year': transaction.receivable.returned_product.date_returned.year,
+                'cases': transaction.receivable.returned_product.cases_undamaged,
+                'packing': transaction.product.packing,
+                'units': transaction.total_quantity,
+            })
+        elif transaction.shipment:
+            rows.append({
+                'date': transaction.shipment.date_shipped.date(),
+                'shipment_id': transaction.shipment.id,
+                'location': transaction.shipment.location.name,
+                'item_number': transaction.product.item_number,
+                'product_name': transaction.product.name,
+                'month': transaction.shipment.date_shipped.month,
+                'year': transaction.shipment.date_shipped.year,
+                'cases': transaction.cases * -1,
+                'packing': transaction.product.packing,
+                'units': transaction.total_quantity * -1,
+            })
+
+#    <cfset ArrayAppend(deliveryRow, DateFormat(shippedon, "M/D/Y"))>
+#    <cfset ArrayAppend(deliveryRow, is_return ? "RETURN" : shipmentid)>
+#    <cfset ArrayAppend(deliveryRow, Replace(name, ",", ""))>
+#    <cfset ArrayAppend(deliveryRow, itemnum)>
+#    <cfset ArrayAppend(deliveryRow, Replace(pname, ",", ""))>
+#    <cfset ArrayAppend(deliveryRow, DateFormat(shippedon, "M"))>
+#    <cfset ArrayAppend(deliveryRow, DateFormat(shippedon, "YYYY"))>
+#    <cfset ArrayAppend(deliveryRow, cases_value)>
+#    <cfset ArrayAppend(deliveryRow, packing)>
+#    <cfset ArrayAppend(deliveryRow, packing * cases_value)>
+
+
     filename = 'DeliveryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
+        writer.writerow([
+            'Date',
+            'DL #',
+            'Store',
+            'SKU #',
+            'SKU Desc',
+            'Month',
+            'Year',
+            'Cases Out Total',
+            'PACKING per case by DL history',
+            'QTY Pcs',
+        ])
+        for row in sorted(rows, key=lambda row_data: (row_data['date'], row_data['shipment_id'])):
+            writer.writerow([
+                row['date'].strftime('%m/%d/%Y'),
+                row['shipment_id'],
+                row['location'],
+                row['item_number'],
+                row['product_name'],
+                row['month'],
+                row['year'],
+                row['cases'],
+                row['packing'],
+                row['units'],
+            ])
 
     logger.info('Done writing CSV')
     async_task.is_complete = True

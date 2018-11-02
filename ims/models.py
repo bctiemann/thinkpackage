@@ -716,6 +716,10 @@ class Transaction(models.Model):
         return self.transfer_client != None
 
     @property
+    def is_return(self):
+        return self.receivable and self.receivable.returned_product
+
+    @property
     def is_shipped(self):
         if not self.shipment:
             return False

@@ -1634,7 +1634,7 @@ $(document).ready(function() {
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: 400,
+        width: 500,
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
@@ -1653,7 +1653,7 @@ $(document).ready(function() {
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: 400,
+        width: 500,
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {

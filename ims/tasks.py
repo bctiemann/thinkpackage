@@ -26,7 +26,7 @@ def generate_item_lookup(async_task_id, item_number):
 
     now = timezone.now()
 
-    filename = 'ItemLookup - {0} - {1}.csv'.format(item_number, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    filename = 'ItemLookup - {0} - {1}.csv'.format(item_number, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -173,7 +173,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #        response.write(columns)
 #        response.write('{0}\n'.format(history_item.id))
 
-    filename = 'InventoryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    filename = 'InventoryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 #    with open('{0}/reports/InventoryList.csv'.format(settings.MEDIA_ROOT), mode='w') as csvfile:
         writer = csv.writer(csvfile)
@@ -264,19 +264,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'units': transaction.total_quantity * -1,
             })
 
-#    <cfset ArrayAppend(deliveryRow, DateFormat(shippedon, "M/D/Y"))>
-#    <cfset ArrayAppend(deliveryRow, is_return ? "RETURN" : shipmentid)>
-#    <cfset ArrayAppend(deliveryRow, Replace(name, ",", ""))>
-#    <cfset ArrayAppend(deliveryRow, itemnum)>
-#    <cfset ArrayAppend(deliveryRow, Replace(pname, ",", ""))>
-#    <cfset ArrayAppend(deliveryRow, DateFormat(shippedon, "M"))>
-#    <cfset ArrayAppend(deliveryRow, DateFormat(shippedon, "YYYY"))>
-#    <cfset ArrayAppend(deliveryRow, cases_value)>
-#    <cfset ArrayAppend(deliveryRow, packing)>
-#    <cfset ArrayAppend(deliveryRow, packing * cases_value)>
-
-
-    filename = 'DeliveryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    filename = 'DeliveryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -298,7 +286,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 row['shipment_id'],
                 row['location'],
                 row['item_number'],
-                row['product_name'],
+                row['product_name'].encode('utf8'),
                 row['month'],
                 row['year'],
                 row['cases'],
@@ -330,10 +318,72 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    filename = 'IncomingList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H:%M:%S'))
+    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
+
+    rows = []
+    status_update_interval = transactions.count() / 20
+    for i, transaction in enumerate(transactions):
+        if transactions.count() > 100 and i % status_update_interval == 0:
+            async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
+            async_task.save()
+            logger.info(i)
+            logger.info(async_task.percent_complete)
+
+        if transaction.receivable or transaction.is_transfer:
+            cases = transaction.cases
+            units = transaction.total_quantity
+            if transaction.is_transfer:
+                if transaction.is_outbound:
+                    purchase_order = 'TRANSFER OUT'
+                    cases *= -1
+                    units *= -1
+                else:
+                    purchase_order = 'TRANSFER IN'
+            elif transaction.receivable:
+                purchase_order = transaction.receivable.purchase_order
+
+            rows.append({
+                'date': transaction.date_created.date(),
+                'month': transaction.date_created.month,
+                'year': transaction.date_created.year,
+                'purchase_order': purchase_order,
+                'shipment_order': transaction.shipment_order,
+                'item_number': transaction.product.item_number,
+                'product_name': transaction.product.name,
+                'cases': cases,
+                'packing': transaction.product.packing,
+                'units': units,
+            })
+
+    filename = 'IncomingList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
+        writer.writerow([
+            'Date',
+            'Month',
+            'Year',
+            'PO #',
+            'SO #',
+            'Item #',
+            'Description',
+            'Cases In',
+            'PACKING per case',
+            'QTY Pcs',
+        ])
+        for row in sorted(rows, key=lambda row_data: row_data['date']):
+            writer.writerow([
+                row['date'].strftime('%m/%d/%Y'),
+                row['month'],
+                row['year'],
+                row['purchase_order'],
+                row['shipment_order'],
+                row['item_number'],
+                row['product_name'].encode('utf8'),
+                row['cases'],
+                row['packing'],
+                row['units'],
+            ])
 
     logger.info('Done writing CSV')
     async_task.is_complete = True

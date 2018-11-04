@@ -439,7 +439,6 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
 
         client_user, is_created = ClientUser.objects.get_or_create(user=self.object.user, client=form.cleaned_data['client'])
         client_user.title = form.cleaned_data['title']
-        client_user.is_primary = form.cleaned_data['is_primary']
         client_user.save()
 
         return response

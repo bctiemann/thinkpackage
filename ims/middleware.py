@@ -96,3 +96,5 @@ class PermissionsMiddleware:
                 return HttpResponseRedirect(reverse_lazy('client:login'))
             if request.user.is_authenticated() and path.startswith('warehouse/') and not request.user.is_warehouse:
                 raise PermissionDenied
+            if request.user.is_authenticated() and path.startswith('accounting/') and not request.user.is_accounting:
+                raise PermissionDenied

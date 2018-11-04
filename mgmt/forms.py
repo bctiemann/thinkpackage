@@ -47,7 +47,7 @@ class ClientForm(forms.ModelForm):
             choice_string = mark_safe('{0}{1}'.format(parent_client['indent'], parent_client['obj'].company_name))
             all_clients.append((parent_client['obj'].id, choice_string))
         self.fields['parent'].choices = all_clients
-        all_contacts = CustContact.objects.filter(client=self.instance)
+        all_contacts = CustContact.objects.filter(client=self.instance, is_active=True)
         self.fields['primary_contact'].queryset = all_contacts
         self.fields['primary_contact'].initial = all_contacts.filter(is_primary=True).first()
 

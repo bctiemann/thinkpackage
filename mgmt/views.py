@@ -326,9 +326,11 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Client, pk=self.kwargs['client_id'])
 
     def form_valid(self, form):
+        logger.info(form.cleaned_data)
         self.object.custcontact_set.update(is_primary=False)
         if form.cleaned_data['primary_contact']:
-            CustContact.objects.filter(pk=form.cleaned_data['primary_contact']).update(is_primary=True)
+            form.cleaned_data['primary_contact'].is_primary = True
+            form.cleaned_data['primary_contact'].save()
         return super(ClientUpdate, self).form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
@@ -377,8 +379,21 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
     def form_valid(self, form):
-        response = super(CustContactCreate, self).form_valid(form)
         logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
+        response = super(CustContactCreate, self).form_valid(form)
+
+        try:
+            self.object.user = User.objects.get(email=self.object.email)
+        except User.DoesNotExist:
+            self.object.user = User.objects.create_user(
+                email = self.object.email,
+                password = self.object.password,
+            )
+        client_user = ClientUser.objects.create(
+            client = form.cleaned_data['client'],
+            user = self.object.user,
+        )
+
         return response
 
     def get_context_data(self, *args, **kwargs):
@@ -399,6 +414,7 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
+        logger.info(form.cleaned_data)
         response = super(CustContactUpdate, self).form_valid(form)
 
         if self.object.user == None and self.object.email:
@@ -410,16 +426,22 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
                     password = self.object.password,
                 )
 
-        if form.data['password'] == '********':
+        if form.cleaned_data['password'] == '********':
             logger.info('Password unchanged')
             self.object.password = form.initial['password']
             self.object.user.set_password(self.object.password)
         else:
             logger.info('Password changed')
-            self.object.user.set_password(form.data['password'])
+            self.object.user.set_password(form.cleaned_data['password'])
             self.object.password = self.object.user.password
         self.object.user.save()
         self.object.save()
+
+        client_user, is_created = ClientUser.objects.get_or_create(user=self.object.user, client=form.cleaned_data['client'])
+        client_user.title = form.cleaned_data['title']
+        client_user.is_primary = form.cleaned_data['is_primary']
+        client_user.save()
+
         return response
 
     def get_context_data(self, *args, **kwargs):

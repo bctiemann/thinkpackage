@@ -429,7 +429,19 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
         user_form = self.user_form_class(self.request.POST, instance=self.object.user)
         if form.is_valid() and user_form.is_valid():
             client_user = form.save()
-            client_user.user = user_form.save()
+            client_user.user = user_form.save(commit=False)
+
+            if user_form.cleaned_data['password'] == '********':
+                logger.info('Password unchanged')
+                logger.info(user_form.initial['password'])
+                client_user.user.password = user_form.initial['password']
+#                client_user.user.set_password(client_user.user.password)
+            else:
+                logger.info('Password changed')
+                client_user.user.set_password(user_form.cleaned_data['password'])
+                client_user.user.password = client_user.user.password
+            client_user.user.save()
+
             return super(CustContactUpdate, self).form_valid(form)
         elif not form.is_valid():
             return super(CustContactUpdate, self).form_invalid(form)

@@ -483,12 +483,35 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
         return context
 
 
-class CustContactDelete(AjaxableResponseMixin, UpdateView):
-    model = CustContact
-    fields = ['is_active']
+#class CustContactDelete(AjaxableResponseMixin, UpdateView):
+#    model = CustContact
+#    fields = ['is_active']
+
+#    def get_object(self):
+#        return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
+
+
+class CustContactDelete(AjaxableResponseMixin, DeleteView):
+    model = ClientUser
+#    fields = ['is_active']
 
     def get_object(self):
-        return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
+        return get_object_or_404(ClientUser, pk=self.kwargs['custcontact_id'])
+
+    def delete(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        data = {
+            'success': True,
+            'pk': self.object.pk,
+        }
+        return JsonResponse(data)
+
+#        return super(CustContactDelete, self).form_valid(*args, **kwargs)
+#        return super(CustContactDelete, self).delete(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('mgmt:profile', kwargs={'client_id': self.object.client.id})
 
 
 class ProductCreate(AjaxableResponseMixin, CreateView):

@@ -433,9 +433,7 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
 
             if user_form.cleaned_data['password'] == '********':
                 logger.info('Password unchanged')
-                logger.info(user_form.initial['password'])
                 client_user.user.password = user_form.initial['password']
-#                client_user.user.set_password(client_user.user.password)
             else:
                 logger.info('Password changed')
                 client_user.user.set_password(user_form.cleaned_data['password'])
@@ -447,12 +445,6 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
             return super(CustContactUpdate, self).form_invalid(form)
         elif not user_form.is_valid():
             return super(CustContactUpdate, self).form_invalid(user_form)
-
-
-
-#    def form_valid(self, form):
-#        response = super(CustContactUpdate, self).form_valid(form)
-#        return response
 
     def form_valid_bak(self, form):
         logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))

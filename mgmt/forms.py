@@ -2,11 +2,12 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
+from django.forms.models import inlineformset_factory
 
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
+from ims.models import User, Client, CustContact, ClientUser, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
 from ims import utils
 
 import logging
@@ -77,6 +78,11 @@ class CustContactForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CustContactForm, self).__init__(*args, **kwargs)
+#        if self.instance:
+#            self.fields['first_name'].widget.attrs['value'] = self.instance.user.first_name
+#            self.fields['last_name'].widget.attrs['value'] = self.instance.user.last_name
+#            self.fields['email'].widget.attrs['value'] = self.instance.user.email
+
         if self.instance.id == None:
             self.fields['password'].widget.attrs['value'] = ''
             for field in self.fields:
@@ -95,8 +101,48 @@ class CustContactForm(forms.ModelForm):
 #        return self.initial["password"]
 
     class Meta:
-        model = CustContact
-        fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+#        model = CustContact
+        model = ClientUser
+#        fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+        fields = ['client', 'title']
+
+#ClientUserFormSet = inlineformset_factory(User, ClientUser, extra=0, fields=('title',))
+
+
+class UserForm(forms.ModelForm):
+    first_name = forms.CharField(label='First name', widget=forms.TextInput(attrs={'placeholder': 'First'}))
+    last_name = forms.CharField(label='Last name', widget=forms.TextInput(attrs={'placeholder': 'Last'}))
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'value': '********'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    phone_number = forms.CharField(label='Phone number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Phone'}))
+    phone_extension = forms.CharField(label='Phone extension', required=False, max_length=5, widget=forms.TextInput(attrs={'placeholder': 'Ext'}))
+    mobile_number = forms.CharField(label='Mobile number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Mobile'}))
+    fax_number = forms.CharField(label='Fax number', required=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Fax'}))
+    notes = forms.CharField(label='Notes', required=False, widget=forms.Textarea(attrs={'placeholder': 'Notes', 'class': 'smalltext', 'id': 'id_contact_notes'}))
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        logger.info(self.instance)
+#        self.fields['email'].widget.attrs['value'] = self.instance.email
+        if self.instance.id == None:
+            self.fields['password'].widget.attrs['value'] = ''
+            for field in self.fields:
+                try:
+                    self.fields[field].widget.attrs['class'] += ' new'
+                except KeyError:
+                    self.fields[field].widget.attrs['class'] = 'new'
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'password', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+
+class ClientUserForm(forms.ModelForm):
+    title = forms.CharField(label='Title', required=False, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
+
+    class Meta:
+        model = ClientUser
+        fields = ['client', 'user', 'title']
 
 
 class LocationForm(forms.ModelForm):

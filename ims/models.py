@@ -90,6 +90,9 @@ class User(AbstractBaseUser):
     is_accounting = models.BooleanField(default=False)
     is_warehouse = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=30, blank=True)
+    phone_extension = models.CharField(max_length=5, blank=True)
+    fax_number = models.CharField(max_length=30, blank=True)
+    mobile_number = models.CharField(max_length=30, blank=True)
     notes = models.TextField(blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     date_deleted = models.DateTimeField(null=True, blank=True)
@@ -237,6 +240,9 @@ class ClientUser(models.Model):
 
     def __unicode__(self):
         return ('{0} {1}'.format(self.user.first_name, self.user.last_name))
+
+    def get_absolute_url(self):
+        return reverse('mgmt:profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
 
 
 class CustContact(models.Model):

@@ -373,8 +373,11 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
 
 
 class CustContactCreate(AjaxableResponseMixin, CreateView):
-    model = CustContact
-    form_class = forms.CustContactForm
+#    model = CustContact
+    model = ClientUser
+#    form_class = forms.CustContactForm
+    form_class = forms.ClientUserForm
+    user_form_class = forms.UserForm
     template_name = 'mgmt/contact_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
@@ -397,22 +400,49 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
         return response
 
     def get_context_data(self, *args, **kwargs):
-        logger.warning(self.kwargs)
         context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
         if 'client_id' in self.kwargs:
             context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+        try:
+            context['user_form'] = self.user_form_class(instance=self.object.user)
+        except AttributeError:
+            context['user_form'] = self.user_form_class()
         return context
 
 
 class CustContactUpdate(AjaxableResponseMixin, UpdateView):
-    model = CustContact
-    form_class = forms.CustContactForm
+#    model = CustContact
+    model = ClientUser
+#    model = User
+#    form_class = forms.CustContactForm
+    form_class = forms.ClientUserForm
+    user_form_class = forms.UserForm
     template_name = 'mgmt/contact_form.html'
 
     def get_object(self):
-        return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
+        return get_object_or_404(ClientUser, pk=self.kwargs['custcontact_id'])
 
-    def form_valid(self, form):
+    def post(self, *args, **kwargs):
+        logger.info(self.request.POST)
+        self.object = self.get_object()
+        form = self.form_class(self.request.POST, instance=self.object)
+        user_form = self.user_form_class(self.request.POST, instance=self.object.user)
+        if form.is_valid() and user_form.is_valid():
+            client_user = form.save()
+            client_user.user = user_form.save()
+            return super(CustContactUpdate, self).form_valid(form)
+        elif not form.is_valid():
+            return super(CustContactUpdate, self).form_invalid(form)
+        elif not user_form.is_valid():
+            return super(CustContactUpdate, self).form_invalid(user_form)
+
+
+
+#    def form_valid(self, form):
+#        response = super(CustContactUpdate, self).form_valid(form)
+#        return response
+
+    def form_valid_bak(self, form):
         logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
         logger.info(form.cleaned_data)
         response = super(CustContactUpdate, self).form_valid(form)
@@ -446,6 +476,10 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(CustContactUpdate, self).get_context_data(*args, **kwargs)
         context['client'] = self.object.client
+#        data = {'form-TOTAL_FORMS': u'1','form-INITIAL_FORMS': u'0','form-MAX_NUM_FORMS': u''}
+#        context['clientuser_formset'] = forms.ClientUserFormSet(self.request.POST or None, instance=self.get_object().user)
+        context['user_form'] = self.user_form_class(instance=self.object.user)
+
         return context
 
 

@@ -1,9 +1,9 @@
     <form name="custcontact_{{ custcontact.id }}" onSubmit="return false;">   
-        
+
     <div class="form_header">
 
         <span class="title">
-        {% if custcontact %}Edit existing contact{% else %}Add new contact{% endif %}
+        {% if clientuser %}Edit existing contact{% else %}Add new contact{% endif %}
         </span>
 
     </div>
@@ -12,13 +12,13 @@
         <table>
             <tr>
                 <td>
-                    {{ form.first_name }}
-                    {{ form.last_name }}
+                    {{ user_form.first_name }}
+                    {{ user_form.last_name }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ form.password }}
+                    {{ user_form.password }}
                 </td>
             </tr>
             <tr>
@@ -28,28 +28,28 @@
             </tr>
             <tr>
                 <td>
-                    {{ form.email }}
+                    {{ user_form.email }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ form.phone_number }}
-                    {{ form.phone_extension }}
+                    {{ user_form.phone_number }}
+                    {{ user_form.phone_extension }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ form.mobile_number }}
+                    {{ user_form.mobile_number }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ form.fax_number }}
+                    {{ user_form.fax_number }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ form.notes }}
+                    {{ user_form.notes }}
                 </td>
             </tr>
         </table>
@@ -57,18 +57,19 @@
     </div>
     <div class="form_header">
     
-        <button class="actionbtn floatright" id="contact_submit" onClick="updateCustContact({% if custcontact %}{{ custcontact.id }}{% else %}null{% endif %})">
-        {% if custcontact %}Update contact{% else %}Add contact{% endif %}
+        <button class="actionbtn floatright" id="contact_submit" onClick="updateCustContact({% if clientuser %}{{ clientuser.id }}{% else %}null{% endif %})">
+        {% if clientuser %}Update contact{% else %}Add contact{% endif %}
         </button>
         
-        {% if custcontact %}
-        <button class="actionbtn red floatleft" id="contact_delete" onClick="deleteCustContact({{ client.id }}, {{ custcontact.id }})">Delete contact</button>
+        {% if clientuser %}
+        <button class="actionbtn red floatleft" id="contact_delete" onClick="deleteCustContact({{ client.id }}, {{ clientuser.id }})">Delete contact</button>
         {% endif %}
     
     </div>      
     
-    <input type="hidden" id="isprimary" value="{{ custcontact.is_primary }}" />
+    <input type="hidden" id="isprimary" value="{{ clientuser.is_primary }}" />
     <input type="hidden" id="id_client" value="{{ client.id }}" />
+    <input type="hidden" id="id_user" value="{{ clientuser.user.id }}" />
     
     </form>
 

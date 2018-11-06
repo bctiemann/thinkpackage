@@ -287,7 +287,7 @@ function updateCustContact(custcontactid) {
     var customerid = $('#id_client').val();
     var custcontact = {
         client:           customerid,
-        custcontact:      custcontactid,
+        user:             $('#id_user').val(),
         first_name:       $('#id_first_name').val(),
         last_name:        $('#id_last_name').val(),
         title:            $('#id_title').val(),

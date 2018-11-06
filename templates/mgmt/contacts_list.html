@@ -1,8 +1,9 @@
-{% for contact in client.custcontact_set.all %}
-    {% if contact.is_active %}
+{#{% for contact in client.custcontact_set.all %}#}
+{% for contact in client.clientuser_set.all %}
+    {% if contact.user.is_active %}
     <a href="javascript:nop()"><li class="{% if contact.is_primary %}primary{% endif %}" id="custcontact_{{ contact.id }}" onClick="loadCustContact({{ contact.id }}, {{ client.id }})">
         <div class="items-list-content">
-        {{ contact.first_name }} {{contact.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %} - {{ contact.email }}
+        {{ contact.user.first_name }} {{contact.user.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %} - {{ contact.user.email }}
         </div>
     </li></a>
     {% endif %}

@@ -59,6 +59,7 @@ div.logoutlink {
 div.homelink {
 	width: 247px;
 	height: 40px;
+	display: inline-block;
 }
 
 div.content {

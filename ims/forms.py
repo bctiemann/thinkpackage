@@ -44,7 +44,6 @@ class AjaxableResponseMixin(object):
             return response
 
     def form_valid(self, form):
-        logger.info('in mixin')
         # We make sure to call the parent's form_valid() method because
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).

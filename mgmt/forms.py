@@ -123,7 +123,7 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         logger.info(self.instance)
-#        self.fields['email'].widget.attrs['value'] = self.instance.email
+        self.fields['email'].widget.attrs['value'] = self.instance.email
         if self.instance.id == None:
             self.fields['password'].widget.attrs['value'] = ''
             for field in self.fields:
@@ -134,7 +134,15 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'password', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+#        fields = ['first_name', 'last_name', 'password', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+        fields = ['first_name', 'last_name', 'password', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
+
+
+class UserCreateForm(UserForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'password', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
 
 class ClientUserForm(forms.ModelForm):
@@ -142,7 +150,7 @@ class ClientUserForm(forms.ModelForm):
 
     class Meta:
         model = ClientUser
-        fields = ['client', 'user', 'title']
+        fields = ['client', 'title']
 
 
 class LocationForm(forms.ModelForm):

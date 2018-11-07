@@ -381,9 +381,43 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
     template_name = 'mgmt/contact_form.html'
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
-    def form_valid(self, form):
-        logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
+    def get_object(self):
+        return get_object_or_404(Client, pk=self.kwargs['client_id'])
+
+    def post(self, *args, **kwargs):
+        logger.info(self.request.POST)
+        self.object = self.get_object()
+        form = self.form_class(self.request.POST)
+#        user_form = self.user_form_class(self.request.POST)
+        user, user_created = User.objects.get_or_create(email=self.request.POST.get('email'))
+        user_form = self.user_form_class(self.request.POST, instance=user)
+
+        if form.is_valid() and user_form.is_valid():
+            logger.info(form.cleaned_data)
+            logger.info(user_form.cleaned_data)
+
+            client_user = form.save(commit=False)
+            client_user.user = user_form.save()
+
+#            if form.cleaned_data['user']:
+#                client_user.user = form.cleaned_data['user']
+#            else:
+#                client_user.user = user_form.save()
+#            client_user.user.save()
+            client_user.save()
+
+            return super(CustContactCreate, self).form_valid(form)
+        elif not form.is_valid():
+            return super(CustContactCreate, self).form_invalid(form)
+        elif not user_form.is_valid():
+            return super(CustContactCreate, self).form_invalid(user_form)
+
+    def form_valid_bak(self, form):
+        client_user = form.save(commit=False)
+        client_user.user = user_form
+
         response = super(CustContactCreate, self).form_valid(form)
+        logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
 
         try:
             self.object.user = User.objects.get(email=self.object.email)
@@ -426,10 +460,18 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
         logger.info(self.request.POST)
         self.object = self.get_object()
         form = self.form_class(self.request.POST, instance=self.object)
-        user_form = self.user_form_class(self.request.POST, instance=self.object.user)
+
+        # Pull user from email instead of user in post
+        user, user_created = User.objects.get_or_create(email=self.request.POST.get('email'))
+
+#        user_form = self.user_form_class(self.request.POST, instance=self.object.user)
+        user_form = self.user_form_class(self.request.POST, instance=user)
         if form.is_valid() and user_form.is_valid():
-            client_user = form.save()
+            client_user = form.save(commit=False)
             client_user.user = user_form.save(commit=False)
+            client_user.save()
+
+#            client_user.user, user_created = User.objects.get_or_create(email=user_form.cleaned_data['email'])
 
             if user_form.cleaned_data['password'] == '********':
                 logger.info('Password unchanged')

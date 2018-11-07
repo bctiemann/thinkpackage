@@ -408,6 +408,8 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
         elif not form.is_valid():
             return super(CustContactCreate, self).form_invalid(form)
         elif not user_form.is_valid():
+            if user_created:
+                user.delete()
             return super(CustContactCreate, self).form_invalid(user_form)
 
     def form_valid_bak(self, form):
@@ -480,6 +482,8 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
         elif not form.is_valid():
             return super(CustContactUpdate, self).form_invalid(form)
         elif not user_form.is_valid():
+            if user_created:
+                user.delete()
             return super(CustContactUpdate, self).form_invalid(user_form)
 
     def form_valid_bak(self, form):

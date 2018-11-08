@@ -430,6 +430,12 @@ button.actionbtn,
 	cursor: pointer;
 	text-decoration: none;
 }
+button.actionbtn.back,
+.btn.back {
+	padding: 0px 40px 0px 60px;
+	background-image: url('../images/icon_leftarrow_white.png');
+	background-position: 20px 4px;
+}
 button.actionbtn:hover,
 .btn:hover {
 	background-color: #3D9AD9;
@@ -440,7 +446,7 @@ button.actionbtn:disabled,
 .btn:disabled {
 	background-color: #6DA0C2;
 	color: #eee;
-	background-image: none;
+/*	background-image: none;*/
 } 
 button.minibtn,
 .btn-xs {
@@ -460,6 +466,11 @@ button.red,
 button.red:hover,
 .btn-warning:hover {
 	background-color: #CC731F;
+}
+button.cancel,
+.btn.cancel {
+	background-image: none;
+	padding: 0px 50px 0px 50px;
 }
 
 div.list_title {

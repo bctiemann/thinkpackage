@@ -9,6 +9,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from datetime import datetime, timedelta
+from dateutil import rrule
 import csv
 import math
 
@@ -131,7 +132,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
         if not column_id in [column['id'] for column in columns]:
 #        if not column_id in column_ids:
             column_date = transaction.date_created
-            shipment_id = None
+            shipment_id = transaction.id
             if transaction.shipment:
                 shipment_id = transaction.shipment.id
                 column_date = transaction.shipment.date_shipped
@@ -143,12 +144,29 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 'id': column_id,
                 'date': column_date,
                 'shipment_id': shipment_id,
+                'is_month_end': False,
             })
+#            logger.info('{0} {1}'.format(shipment_id, column_id))
 #            column_ids[column_id] = True
 
     async_task.percent_complete = 100
     async_task.save()
     logger.info('done with transactions')
+
+    # Do end-of-month columns
+    month_begin = date_from.replace(day=1)
+    month_end = date_to.replace(day=1)
+    for dt in rrule.rrule(rrule.MONTHLY, dtstart=month_begin, until=month_end):
+        if dt > date_from and dt <= date_to:
+            previous_day = dt - timedelta(days=1)
+            column_id = 'End {0}'.format(previous_day.strftime('%b %Y'))
+            columns.append({
+                'id': column_id,
+                'date': dt.date(),
+                'shipment_id': 0,
+                'is_month_end': True,
+            })
+            product_counts[column_id] = {}
 
     columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']), reverse=True)
 
@@ -157,7 +175,10 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
         product_balance[product.id] = product.cases_inventory
 
     for column in columns:
+#        logger.info('{0} {1} {2}'.format(column['shipment_id'], column['date'], column['id']))
         for product in products:
+#            if column['is_month_end']:
+#                product_counts[column['id'][product.id] = {'in': 0, 'out': 0}
             if not product.id in product_counts[column['id']]:
                 product_counts[column['id']][product.id] = {'in': 0, 'out': 0}
 

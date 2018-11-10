@@ -154,7 +154,7 @@ img.logo {
     <table class="blurb">
     <tr>
         <td class="label">SIZE:</td>
-        <td class="data"><CFOUTPUT>{{ product.length }} &times; {{ product.width }} &times; {{ product.height }}</CFOUTPUT> (cm)</td>
+        <td class="data"><CFOUTPUT>{{ product.length|default_if_none:"____" }} &times; {{ product.width|default_if_none:"____" }} &times; {{ product.height|default_if_none:"____" }}</CFOUTPUT> (cm)</td>
     </tr>
     <tr>
         <td class="label">NW:</td>
@@ -162,7 +162,7 @@ img.logo {
     </tr>
     <tr>
         <td class="label">GW:</td>
-        <td class="data"><CFOUTPUT>{{ product.gross_weight }}</CFOUTPUT></td>
+        <td class="data"><CFOUTPUT>{{ product.gross_weight|default_if_none:"" }}</CFOUTPUT></td>
     </tr>
     <tr>
         <td class="label">PO #:</td>

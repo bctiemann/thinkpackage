@@ -122,3 +122,7 @@ div#menu_tools {
 	display: inline-block;
 	margin-left: 5px;
 }
+
+table.infotable tr {
+	vertical-align: inherit;
+}

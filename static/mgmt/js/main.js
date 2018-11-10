@@ -608,22 +608,25 @@ console.log(data);
 };
 
 function execute_addCustomer() {
-    var url = cgiroot+'ajax_coname_action.cfm';
+//    var url = cgiroot+'ajax_coname_action.cfm';
+    var url = cgiroot + 'client/create/';
     var customer = {
         fnc: 'add',
-        coname: $('#customer_name_new').val()
+        company_name: $('#customer_name_new').val()
     };
     $.post(url,customer,function(data) {
 console.log(data);
-        if (data.STATUS == 'success') {
-            var url_cust = cgiroot+'ajax_customers_list.cfm';
+//        if (data.STATUS == 'success') {
+        if (data.success) {
+//            var url_cust = cgiroot+'ajax_customers_list.cfm';
+            var url_cust = cgiroot + 'customers_list/';
             $('#customers_list_wrap').load(url_cust,function() {
-                var rowpos = $('li#customer_'+data.CUSTOMERID).position().top - $('#customers_list').position().top;
+                var rowpos = $('li#customer_'+data.pk).position().top - $('#customers_list').position().top;
 //console.log(rowpos);
                 $('#customers_list_wrap').animate({scrollTop: rowpos});
             });
         } else {
-            alert(data.MESSAGE);
+            displayErrorDialog(data);
         }
         resetAddCustomerButton();
     },'json');

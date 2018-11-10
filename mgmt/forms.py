@@ -30,6 +30,13 @@ DOMESTIC_CHOICES = (
 )
 
 
+class ClientCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Client
+        fields = ['company_name',]
+
+
 class ClientForm(forms.ModelForm):
     company_name = forms.CharField(label='Customer name', widget=forms.TextInput(attrs={'placeholder': 'Customer name'}))
     primary_contact = forms.ModelChoiceField(required=False, queryset=None, empty_label='(Select primary contact)')

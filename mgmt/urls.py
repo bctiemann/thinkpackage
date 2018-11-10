@@ -66,6 +66,7 @@ urlpatterns = [
 
     url(r'^(?P<client_id>\d+)/$', mgmt_views.redirect, name='redirect'),
 #    url(r'^(?P<client_id>\d+)/profile/$', ims_views.mgmt_profile, name='profile'),
+    url(r'^client/create/$', mgmt_views.ClientCreate.as_view(), name='client-create'),
     url(r'^(?P<client_id>\d+)/profile/$', mgmt_views.ClientUpdate.as_view(), name='profile'),
     url(r'^(?P<client_id>\d+)/profile/location=(?P<location_id>\d+)/$', mgmt_views.profile, name='profile'),
     url(r'^(?P<client_id>\d+)/profile/contact=(?P<custcontact_id>\d+)/$', mgmt_views.profile, name='profile'),

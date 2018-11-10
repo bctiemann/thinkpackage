@@ -5,6 +5,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.db import models
 from django.db.models import F, FloatField, Sum
+from django.db.models.functions import Lower
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -207,6 +208,10 @@ class Client(models.Model):
         # Get list of clients at or below the selected client in the hierarchy
         return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self)
 
+    @property
+    def company_name_lower(self):
+        return self.company_name.lower()
+
     def __unicode__(self):
         return (self.company_name)
 
@@ -223,11 +228,14 @@ class Client(models.Model):
     def save(self, *args, **kwargs):
         if not self.created_on:
             self.created_on = timezone.now()
-        self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
         super(Client, self).save(*args, **kwargs)
+        if self.id:
+            self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
+            super(Client, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'Customers'
+        ordering = (Lower('company_name'),)
 
 
 # Future model to map client contacts (formerly CustContacts) to clients, in a many-to-many relationship.

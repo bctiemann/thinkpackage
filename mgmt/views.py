@@ -254,7 +254,7 @@ def product_history(request, product_id):
 def customers_list(request):
     filter = request.GET.get('filter', None)
 
-    clients = Client.objects.all().order_by('company_name')
+    clients = Client.objects.all()
 
     if filter == 'warehousing':
         clients = clients.filter(has_warehousing=True, is_active=True)
@@ -266,7 +266,7 @@ def customers_list(request):
         clients = clients.filter(is_active=True)
 
     context = {
-        'clients': utils.tree_to_list(clients, sort_by='company_name'),
+        'clients': utils.tree_to_list(clients, sort_by='company_name_lower'),
     }
     return render(request, 'mgmt/customers_list.html', context)
 
@@ -315,6 +315,12 @@ def location_form(request):
         'location': location,
     }
     return render(request, 'mgmt/location_form.html', context)
+
+
+class ClientCreate(AjaxableResponseMixin, CreateView):
+    model = Client
+    form_class = forms.ClientCreateForm
+    template_name = 'mgmt/profile.html'
 
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):

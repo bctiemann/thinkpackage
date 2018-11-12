@@ -22,37 +22,27 @@
 
 
 {% for shipment in shipments %}
-<CFLOOP QUERY="Shipments">
 
-    <CFOUTPUT>
     <div class="pallet" id="pallet_{{ shipment.id }}">
-    </CFOUTPUT>
 
-    <CFOUTPUT>
     <p class="floatright">{{ shipment.location.name }}<br />{{ shipment.location.city }} {{ shipment.location.state }} {{ shipment.location.zip }}</p>
     <p class="pallet_title">{{ shipment.client.company_name }}</p>
     <p>{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</p>
-    </CFOUTPUT>
     <table class="pallet_contents infotable" id="pallet_contents_{{ shipment.id }}">
         {% for transaction in shipment.transaction_set.all %}
-        <CFOUTPUT QUERY="ProdCheck">
         <tr PRID="{{ transaction.product.product_id }}" productid="{{ transaction.product.id }}">
             <td class="product_name">{{ transaction.product.name }}</td>
             <td class="cases_required" id="cases_req_{{ shipment.id }}_{{ transaction.product.product_id }}">{{ transaction.cases }}</td>
             <td class="cases_incomplete" id="cases_{{ shipment.id }}_{{ transaction.product.product_id }}">0</td>
         </tr>
-        </CFOUTPUT>
         {% endfor %}
     </table>
 
-    <CFOUTPUT>
     <button class="actionbtn buildpallet" id="build_pallet_{{ shipment.id }}" onClick="selectPallet({{ shipment.id }})">Build Pallet</button>
     <button class="actionbtn completepallet" id="complete_pallet_{{ shipment.id }}" disabled onClick="completePallet({{ shipment.id }},false)">Complete Pallet</button>
-    </CFOUTPUT>
 
     </div>
 
-</CFLOOP>
 {% endfor %}
 
 </div>

@@ -4,26 +4,6 @@
 <a href="javascript:nop()" onClick="showStatus(2)"><li {% if status_filter == 2 %}class="selected"{% endif %}>submitted</li></a>
 </ul>
 
-{% comment %}
-<CFQUERY NAME="Shipments" DATASOURCE="#DSN#">
-SELECT *,Shipments.createdon as shipment_create_date,count(ShipmentDocs.shipmentid) AS document_count FROM Shipments
-INNER JOIN Customers ON Customers.customerid=Shipments.customerid
-INNER JOIN Locations ON Shipments.locationid=Locations.locationid
-INNER JOIN Transactions ON Transactions.shipmentid=Shipments.shipmentid
-INNER JOIN Products ON Transactions.productid=Products.productid
-LEFT JOIN ShipmentDocs ON ShipmentDocs.shipmentid=Shipments.shipmentid
-WHERE status=2
-AND (Products.account=1 OR deliverycharge > 0)
-AND Shipments.acctstatus=<CFQUERYPARAM value="#status_filter#" CFSQLType="CF_SQL_NUMERIC">
-<CFIF status_filter IS 2>
-AND Shipments.shippedon > DATE_SUB(NOW(), INTERVAL 90 DAY)
-</CFIF>
-GROUP BY Shipments.shipmentid
-ORDER BY DATE(Shipments.createdon) DESC, invoice DESC
-LIMIT 100
-</CFQUERY>
-{% endcomment %}
-
 <table class="infotable alternating shipments editable scrollable">
     <thead>
         <tr>
@@ -39,22 +19,6 @@ LIMIT 100
     </thead>
     <tbody style="max-height: 400px">
     {% for shipment in shipments %}
-    <CFOUTPUT QUERY="Shipments">
-
-{% comment %}
-        <CFQUERY NAME="Pallets" DATASOURCE="#DSN#">
-        SELECT * FROM Pallets
-        WHERE shipmentid=#Shipments.shipmentid#
-        </CFQUERY>
-
-        <CFQUERY NAME="ShipProducts" DATASOURCE="#DSN#">
-        SELECT *,SUM(cases) AS total_cases FROM Shipments,Transactions,Products
-        WHERE Shipments.shipmentid=<CFQUERYPARAM value="#shipmentid#" CFSQLType="CF_SQL_NUMERIC">
-        AND Transactions.shipmentid=Shipments.shipmentid
-        AND Transactions.productid=Products.productid
-        GROUP BY Shipments.shipmentid
-        </CFQUERY>
-{% endcomment %}
 
         <tr class="shipment" id="shipment_{{ shipment.id }}">
             <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
@@ -78,7 +42,7 @@ LIMIT 100
                 {% endif %}
             </td>
         </tr>
-    </CFOUTPUT>
+
     {% endfor %}
     </tbody>
 </table>

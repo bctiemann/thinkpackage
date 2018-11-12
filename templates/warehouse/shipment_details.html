@@ -27,16 +27,6 @@
 <span class="shipmentid">{{ shipment.id }}</span>
 <span class="title">Shipment details for {{ shipment.client.company_name }} ({{ shipment.location.name }})</span>
 
-{% if shipment.status != 1 and False %}
-<CFIF status IS NOT 1 AND False>
-<div style="display: inline-block; margin-left: 20px;">
-<input type="text" id="carrier_#shipmentid#" value="#Replace(carrier,'"',"&quot;")#" shipmentid="#shipmentid#" style="width: 100px;" maxlength="100" placeholder="Carrier" />
-<input type="text" id="tracking_#shipmentid#" value="#Replace(tracking,'"',"&quot;")#" shipmentid="#shipmentid#" style="width: 100px;" maxlength="100" placeholder="Tracking ##" />
-<input type="text" id="shipdate_#shipmentid#" value="#DateFormat(shippedon,"MM/DD/YYYY")#" shipmentid="#shipmentid#" style="width: 100px;" maxlength="10" placeholder="Ship date" />
-</div>
-</CFIF>
-{% endif %}
-
 </div>
 
 <table class="infotable alternating editable">

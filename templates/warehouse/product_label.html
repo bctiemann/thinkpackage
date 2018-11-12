@@ -139,22 +139,22 @@ img.logo {
 <body>
 
 <div class="box">
-    <img class="barcode" asrc="./codes/bar<CFOUTPUT>#BProd.productid#</CFOUTPUT>.png" src="{{ site_url }}{% url "product-code" product_id=product.product_id %}"/>
+    <img class="barcode" src="{{ site_url }}{% url "product-code" product_id=product.product_id %}"/>
     <div class="header">
-        <CFOUTPUT>{{ product.name|truncatechars:255 }}</CFOUTPUT>
+        {{ product.name|truncatechars:255 }}
     </div>
     <div class="header">
-        <CFOUTPUT>{{ product.client.company_name|truncatechars:18 }}</CFOUTPUT>
+        {{ product.client.company_name|truncatechars:18 }}
     </div>
 
     <div class="piececount">
-        <CFOUTPUT>{{ product.packing }} PCS</CFOUTPUT>
+        {{ product.packing }} PCS
     </div>
 
     <table class="blurb">
     <tr>
         <td class="label">SIZE:</td>
-        <td class="data"><CFOUTPUT>{{ product.length|default_if_none:"____" }} &times; {{ product.width|default_if_none:"____" }} &times; {{ product.height|default_if_none:"____" }}</CFOUTPUT> (cm)</td>
+        <td class="data">{{ product.length|default_if_none:"____" }} &times; {{ product.width|default_if_none:"____" }} &times; {{ product.height|default_if_none:"____" }} (cm)</td>
     </tr>
     <tr>
         <td class="label">NW:</td>
@@ -162,11 +162,11 @@ img.logo {
     </tr>
     <tr>
         <td class="label">GW:</td>
-        <td class="data"><CFOUTPUT>{{ product.gross_weight|default_if_none:"" }}</CFOUTPUT></td>
+        <td class="data">{{ product.gross_weight|default_if_none:"" }}</td>
     </tr>
     <tr>
         <td class="label">PO #:</td>
-        <td class="data"><CFOUTPUT><CFIF IsDefined("BRecv")>{{ last_received.purchase_order }}</CFIF></CFOUTPUT></td>
+        <td class="data">{{ last_received.purchase_order }}</td>
     </tr>
     </table>
 </div>
@@ -174,7 +174,7 @@ img.logo {
 <img src="{% static "images/tp_logo_barcode.png" %}" class="logo" />
 
 <div class="item_num">
-    <CFOUTPUT>{{ product.item_number }}</CFOUTPUT>
+    {{ product.item_number }}
     <img src="{% static "images/item_label.png" %}" class="item_num_label" />
 </div>
 

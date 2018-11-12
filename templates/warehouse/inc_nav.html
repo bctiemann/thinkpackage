@@ -1,8 +1,5 @@
-<CFOUTPUT>
 <ul class="nav">
     <a href="{% url "warehouse:shipments" %}"><li id="li_shipments" {% if page_selected == "shipments" %}class="selected"{% endif %}>Delivery Requests</li></a>
     <a href="{% url "warehouse:receivables" %}"><li id="li_receivables" {% if page_selected == "receivables" %}class="selected"{% endif %}>Incoming</li></a>
     <a href="{% url "warehouse:pallets" %}"><li id="li_pallets" {% if page_selected == "pallets" %}class="selected"{% endif %}>Storage</li></a>
 </ul>
-</CFOUTPUT>
-

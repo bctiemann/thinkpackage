@@ -1,26 +1,7 @@
-<CFSET completed_filter = (IsDefined("URL.completed_filter") AND IsNumeric(URL.completed_filter) ? URL.completed_filter : 0)>
-                
 <ul class="mode_toggle">
 <a href="javascript:nop()" onClick="showCompleted(false)"><li {% if completed_filter == 0 %}class="selected"{% endif %}>incomplete</li></a>
 <a href="javascript:nop()" onClick="showCompleted(true)"><li {% if completed_filter == 1 %}class="selected"{% endif %}>complete</li></a>
 </ul>
-
-{% comment %}                    
-<CFQUERY NAME="Reconciliation" DATASOURCE="#DSN#">
-SELECT *,Returns.stamp AS return_date FROM Returns
-INNER JOIN Receivables ON Receivables.returnid=Returns.returnid
-INNER JOIN Transactions ON Transactions.receivableid=Receivables.receivableid
-INNER JOIN Products ON Products.productid=Returns.productid
-INNER JOIN Customers ON Customers.customerid=Products.customerid
-<!---WHERE Products.account = 1--->
-<CFIF completed_filter IS 1>
-    AND reconciled IS NOT NULL
-<CFELSE>
-    AND reconciled IS NULL
-</CFIF>
-ORDER BY Returns.stamp DESC
-</CFQUERY>
-{% endcomment %}
 
 <table class="infotable alternating receivables editable">
     <thead>
@@ -34,18 +15,14 @@ ORDER BY Returns.stamp DESC
             <th class="numeric">Cases Damaged</th>
             <th class="numeric">Cases Undamaged</th>
             {% if completed_filter == 0 %}
-            <CFIF completed_filter IS 0>
                 <th class="glyph"></th>
             {% else %}
-            <cfelse>
                 <th class="text">Reconciled</th>
-            </cfif>
             {% endif %}
         </tr>
     </thead>
     <tbody>
     {% for returned_product in returned_products %}
-    <CFOUTPUT QUERY="Reconciliation">
 
         <tr class="shipment" id="returned_prdoduct_{{ returned_product.id }}">
             <td class="id returnid="{{ returned_product.id }}">{{ returned_product.id }}</td>
@@ -57,19 +34,16 @@ ORDER BY Returns.stamp DESC
             <td class="numeric" returnid="{{ returned_product.id }}">{{ returned_product.cases_damaged }}</td>
             <td class="numeric" returnid="{{ returned_product.id }}">{{ returned_product.cases_undamaged }}</td>
             {% if completed_filter == 0 %}
-            <CFIF completed_filter IS 0>
                 <td class="glyph" returnid="{{ returned_product.id }}">
                     <a href="javascript:nop()" onClick="completeReconciliation({{ returned_product.id }})" class="ui-icon ui-icon-circle-arrow-e" title="Complete"></a>
                 </td>
             {% else %}
-            <cfelse>
                 <td class="text" returnid="{{ returned_product.id }}">
                     {{ returned_product.date_reconciled|date:"SHORT_DATE_FORMAT" }}
                 </td>
-            </cfif>
             {% endif %}
         </tr>
-    </CFOUTPUT>
+
     {% endfor %}
     </tbody>
 </table>

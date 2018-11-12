@@ -32,13 +32,11 @@
     <div class="pagetitle">{{ selected_client.company_name }}</div>
 
     {% if user.child_clients|length > 1 %}
-    <cfif ArrayLen(childCustomers) GT 1>
     <select class="client-picker">
         {% for child in user.child_clients %}
             <option value="{{ child.obj.id }}" {% if selected_client == child.obj %}selected{% endif %}>{{ child.indent_rendered|safe }}{{ child.obj.company_name }}</option>
         {% endfor %}
     </select>
-    </cfif>
     {% endif %}
 
     <a href="{% url "client:home" %}"><div class="homelink"></div></a>

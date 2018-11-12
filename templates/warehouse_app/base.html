@@ -19,7 +19,7 @@
 </head>
 <body>
 
-<div id="modal_overlay"><div class="loading_spinner"><p><a href="index.cfm"><img src="{% static "warehouse_app/images/spinner.gif" %}" /></a></p></div></div>
+<div id="modal_overlay"><div class="loading_spinner"><p><a href="{% url "warehouse_app:home" %}"><img src="{% static "warehouse_app/images/spinner.gif" %}" /></a></p></div></div>
 
 <CFINCLUDE TEMPLATE="inc_lib.cfm">
 

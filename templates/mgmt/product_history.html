@@ -39,19 +39,6 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
 
     {% for transaction in history %}
 
-{% comment %}
-    <CFQUERY NAME="SplitReceivables" DATASOURCE="#DSN#">
-    SELECT * FROM Transactions,Receivables
-    WHERE Receivables.productid=#URL.productid#
-    AND Transactions.receivableid=Receivables.receivableid
-    AND Receivables.PO=<CFQUERYPARAM value="#PO#" CFSQLType="CF_SQL_VARCHAR">
-    AND Receivables.SO=<CFQUERYPARAM value="#SO#" CFSQLType="CF_SQL_VARCHAR">
-    AND Transactions.cases IS NULL  
-    </CFQUERY>
-
-    <cfset transferlink = '<i><a href="inventory.cfm?customerid=' & transfercustomerid & '&productid=' & transferproductid & '">(Transfer #direction IS 1 ? "to" : "from"# #transfercustomer_name#)</a></i>'>
-{% endcomment %}
-
     <tr class="detail {% if transaction.shipment.is_pending %}shipment-pending{% endif %}">
         <td class="date">
             {% if transaction.shipment == None and transaction.receivable == None %}

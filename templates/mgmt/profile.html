@@ -14,7 +14,7 @@
                         
 <div class="profile_list">
 <div class="list_header">
-<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustomer()">edit</a></CFOUTPUT>
+<a class="floatright" href="javascript:nop()" onClick="loadCustomer()">edit</a>
 Client
 </div>              
 <div class="list_wrap" id="contacts_list_wrap">
@@ -30,24 +30,22 @@ Client
 
 <div class="profile_list">
 <div class="list_header">
-<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadCustContact(null, {{ client.id }})">add new</a></CFOUTPUT>
+<a class="floatright" href="javascript:nop()" onClick="loadCustContact(null, {{ client.id }})">add new</a>
 Contacts
 </div>
 <div class="list_wrap" id="contacts_list_wrap">
 <ul class="items_list" id="contacts_list">
-<CFINCLUDE TEMPLATE="ajax_contacts_list.cfm">
 </ul>
 </div>
 </div>
 
 <div class="profile_list">
 <div class="list_header">
-<CFOUTPUT><a class="floatright" href="javascript:nop()" onClick="loadLocation(null, {{ client.id }})">add new</a></CFOUTPUT>
+<a class="floatright" href="javascript:nop()" onClick="loadLocation(null, {{ client.id }})">add new</a>
 Locations
 </div>
 <div class="list_wrap" id="locations_list_wrap">
 <ul class="items_list" id="locations_list">
-<CFINCLUDE TEMPLATE="ajax_locations_list.cfm">
 </ul>
 </div>
 </div>
@@ -57,10 +55,8 @@ Locations
                 
     <div class="form_body">
                 
-        <CFOUTPUT>
         <button class="actionbtn floatright" id="coname_submit" onClick="updateClient({{ client.id }})">Update</button>
         {{ form.company_name }}
-        </CFOUTPUT>
 
         <table>
             <tr>
@@ -105,11 +101,9 @@ Locations
 </div>
                         
 <div class="objectform" id="locationform">
-<CFINCLUDE TEMPLATE="ajax_location_form.cfm">
 </div>                          
                             
 <div class="objectform" id="contactform">
-<CFINCLUDE TEMPLATE="ajax_contact_form.cfm">
 </div>                      
                         
 <div class="dialog" id="custcontact_delete_confirm" title="Delete customer contact">

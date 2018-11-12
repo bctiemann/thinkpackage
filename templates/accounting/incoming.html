@@ -1,32 +1,26 @@
 {% extends "accounting/base.html" %}
 
 {% block content %}
-<CFINCLUDE TEMPLATE="inc_header.cfm">
 
 <div class="content">
 
 {% with page_selected="incoming" %}
 {% include "accounting/inc_nav.html" %}
 {% endwith %}
-<CFINCLUDE TEMPLATE="inc_nav.cfm">
 
 {% if True %}
-<cfif True>
 
     <div class="under-construction">
     Temporarily Under Construction
     </div>
 
 {% else %}
-<cfelse>
 
 
 <div class="" id="list_receivables">
-<CFINCLUDE TEMPLATE="ajax_receivables_list.cfm">
 </div>
 
 {% endif %}
-</cfif>
 
 <div id="receivable_details"></div>
 

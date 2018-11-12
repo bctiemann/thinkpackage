@@ -5,10 +5,10 @@
 <ul class="navmenu">
 
 <li><a class="tnav {% if page_selected == 'accounts' %}selected{% endif %}" href="{% url "admin:ims_user_changelist" %}">Accounts</a></li>
-<CFIF YourID.acclev IS 1>
+{% comment %}
 <li><a class="tnav {% if page_selected == 'waccounts' %}selected{% endif %}" href="waccounts.cfm">Operational Users</a></li>
-</CFIF>
 <li><a class="tnav {% if page_selected == 'securitylogs' %}selected{% endif %}" href="securitylogs.cfm">Security Logs</a></li>
+{% endcomment %}
 <li><a class="tnav {% if page_selected == 'actionlogs' %}selected{% endif %}" href="{% url "mgmt:action-log" %}">Action Logs</a></li>
 </ul>
 </div>
@@ -21,14 +21,10 @@
 <li><a class="tnav" href="#" onClick="setupItemLookup();">Global Item Lookup</a></li>
 
 {% if client %}
-<cfif IsDefined("URL.customerid") AND IsNumeric(URL.customerid)>
-<cfoutput>
 <li><a class="tnav" href="#" onClick="setupInventoryList({{ client.id }});">Inventory List</a></li>
 <li><a class="tnav" href="#" onClick="setupDeliveryList({{ client.id }});">Delivery List</a></li>
 <li><a class="tnav" href="#" onClick="setupIncomingList({{ client.id }});">Incoming List</a></li>
 <li><a class="tnav" href="#" onClick="setupInventoryAnalysis({{ client.id }});">Inventory Analysis</a></li>
-</cfoutput>
-</cfif>
 {% endif %}
 </ul>
 </div>
@@ -39,7 +35,6 @@
     <p>Fetch a report of all inventory items and quantities over time.</p>
 
     <span class="ui-helper-hidden-accessible"><input type="text"/></span>
-    <cfoutput>
     <p>
     Show from
     <input type="text" id="inventory_list_fromdate" value="{{ one_year_ago|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
@@ -47,18 +42,13 @@
     <input type="text" id="inventory_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
-    </cfoutput>
     <div class="task_status" id="inventory_list_task_status"></div>
 </div>
 
 <div class="dialog" id="dialog_delivery_list" title="Delivery List">
     <p>Fetch a chronological report of all deliveries over time.</p>
 
-    <cfset fromdate = DateFormat(DateAdd("yyyy",-1,Now()),"mm/dd/yyyy")>
-    <cfset todate = DateFormat(DateAdd("m",1,Now()),"mm/dd/yyyy")>
-
     <span class="ui-helper-hidden-accessible"><input type="text"/></span>
-    <cfoutput>
     <p>
     Show from
     <input type="text" id="delivery_list_fromdate" value="{{ one_year_ago|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
@@ -66,18 +56,13 @@
     <input type="text" id="delivery_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
-    </cfoutput>
     <div class="task_status" id="delivery_list_task_status"></div>
 </div>
 
 <div class="dialog" id="dialog_incoming_list" title="Incoming List">
     <p>Fetch a chronological report of all receivables over time.</p>
 
-    <cfset fromdate = DateFormat(DateAdd("yyyy",-1,Now()),"mm/dd/yyyy")>
-    <cfset todate = DateFormat(DateAdd("m",1,Now()),"mm/dd/yyyy")>
-
     <span class="ui-helper-hidden-accessible"><input type="text"/></span>
-    <cfoutput>
     <p>
     Show from
     <input type="text" id="incoming_list_fromdate" value="{{ one_year_ago|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
@@ -85,7 +70,6 @@
     <input type="text" id="incoming_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
-    </cfoutput>
     <div class="task_status" id="incoming_list_task_status"></div>
 </div>
 

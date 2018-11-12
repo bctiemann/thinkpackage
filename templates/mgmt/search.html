@@ -1,5 +1,4 @@
 {% extends "mgmt/base.html" %}
-<CFINCLUDE TEMPLATE="inc_header.cfm">
 
 {% block content %}
 
@@ -25,7 +24,6 @@
     </thead>
     <tbody>
     {% for transaction in transactions %}
-    <cfoutput query="Search">
     <tr customerid="{{ transaction.client.id }}" shipmentid="{{ transaction.shipment.id }}" productid="{{ transaction.product.id }}">
         <td class="numeric">{{ transaction.product.item_number }}</td>
         <td class="numeric">{{ transaction.shipment.id }}</td>
@@ -39,13 +37,10 @@
         <td class="numeric">{{ transaction.total_quantity }}</th>
         <td class="text" style="width: 66px;">
             {% if transaction.shipment.shipmentdoc_set.count > 0 %}
-            <cfif document_count GT 0>
             <button class="show-shipment-docs" onClick="showShipmentDocs({{ transaction.shipment.id }});">{{ transaction.shipment.shipmentdoc_set.count }}</button>
-            </cfif>
             {% endif %}
         </td>
     </tr>
-    </cfoutput>
     {% endfor %}
     </tbody>
 </table>

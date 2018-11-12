@@ -11,7 +11,7 @@ to
 </span>
 
 <span class="title">
-<a target="_blank" href="gen_barcode_prod.cfm?productid=#productid#"><img src="{% static "mgmt/images/barcode.gif" %}" /></a>
+<a target="_blank" href="{% url "mgmt:product-print" product_id=product.id %}?inline"><img src="{% static "mgmt/images/barcode.gif" %}" /></a>
 History for Item {{ product.item_number }}: {{ product.name }}</span>
 <span class="logs-link"><a target="_blank" href="{% url "mgmt:action-log" %}?product_id={{ product.id }}">Logs</a></span>
 </div>
@@ -135,7 +135,7 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
 {% endcomment %}
             {{ transaction.cases_remaining_differential }}
         </td>
-        <td class="numeric"><a href="shipments.cfm?customerid=#customerid#&shipmentid=#shipmentid#">{{ transaction.shipment.id }}</a></td>
+        <td class="numeric">{% if transaction.shipment %}<a href="{% url "mgmt:shipments" client_id=transaction.shipment.client.id shipment_id=transaction.shipment.id %}">{{ transaction.shipment.id }}</a>{% endif %}</td>
         <td class="action" style="width: 60px;">
             {% if transaction.shipment.shipmentdoc_set.count %}
                 <button class="show-shipment-docs" onClick="showShipmentDocs({{ transaction.shipment.id }});">{{ transaction.shipment.shipmentdoc_set.count }}</button>

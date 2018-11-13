@@ -1,0 +1,72 @@
+{% extends "client/base.html" %}
+{% load humanize %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawBackgroundColor);
+
+function drawBackgroundColor() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Time');
+      data.addColumn('number', 'Cases');
+
+      data.addRows([
+      {% for transaction in history %}
+          [new Date('{{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}'), {{ transaction.cases_remaining_differential }}],
+      {% endfor %}
+      ]);
+
+      var options = {
+        hAxis: {
+          title: 'Time'
+        },
+        vAxis: {
+          title: 'Inventory'
+        },
+        backgroundColor: '#f1f8e9'
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div id="chart_div"></div>
+
+<table class="infotable alternating" cellspacing="0">
+    <thead>
+        <tr>
+            <th class="text">Order date</th>
+            <th class="text">SO #</th>
+            <th class="numeric">Packing (pcs/cs)</th>
+            <th class="numeric">Quantity (pcs)</th>
+            <th class="numeric">Cases in</th>
+            <th class="numeric">Cases out</th>
+            <th class="numeric">Total inventory (cs)</th>
+            <th class="numeric">Total inventory (pcs)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in history %}
+        <CFOUTPUT QUERY="Transactions">
+        <tr>
+            <td class="text">{{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+            <td class="text">{{ transaction.shipment_order }}</td>
+            <td class="numeric">{{ transaction.product.packing|intcomma }}</td>
+            <td class="numeric">{{ transaction.total_quantity|intcomma }}</td>
+            <td class="numeric">{% if not transaction.is_outbound %}{{ transaction.cases }}{% endif %}</td>
+            <td class="numeric">{% if transaction.is_outbound %}{{ transaction.cases }}{% endif %}</td>
+            <td class="numeric">{{ transaction.cases_remaining_differential|intcomma }}</td>
+            <td class="numeric">{{ transaction.units_remaining_differential|intcomma }}</td>
+        </tr>
+        </CFOUTPUT>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

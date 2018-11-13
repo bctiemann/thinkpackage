@@ -346,7 +346,8 @@ console.log(data);
 function generateReport(productid) {
     fromdate = $('#fromdate').val();
     todate = $('#todate').val();
-    var url = cgiroot+'gen_report.cfm?productid='+productid+'&fromdate='+fromdate+'&todate='+todate;
+//    var url = cgiroot+'gen_report.cfm?productid='+productid+'&fromdate='+fromdate+'&todate='+todate;
+    var url = cgiroot + 'product/' + productid + '/report/?fromdate=' + fromdate + '&todate=' + todate;
     window.open(url);
 }
 

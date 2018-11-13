@@ -36,5 +36,6 @@ urlpatterns = [
     url(r'^select/(?P<client_id>\d+)/$', client_views.select_client, name='select'),
 
     url(r'^product/(?P<product_id>\d+)/history/$', client_views.product_history, name='product-history'),
+    url(r'^product/(?P<product_id>\d+)/report/$', client_views.product_report, name='product-report'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', client_views.shipment_docs, name='shipment-docs'),
 ]

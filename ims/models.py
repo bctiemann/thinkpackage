@@ -173,6 +173,10 @@ class User(AbstractBaseUser):
                     child_clients.append(child)
         return child_clients
 
+    @property
+    def authorized_clients(self):
+        return [client_user.client for client_user in ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')]
+
     def is_authorized_for_client(self, client):
         # Takes the current request and returns whether the user is authorized to access the selected client defined in the session
 #        client = self.get_selected_client(request)

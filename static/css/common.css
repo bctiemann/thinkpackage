@@ -738,8 +738,8 @@ div.form_body textarea {
 div.form_body input:focus {
 	border: 1px solid #666;
 }
-div.form_body.new-user input,
-div.form_body.new-user textarea,
+div.form_body.new-item input,
+div.form_body.new-item textarea,
 div.form_body input.new,
 div.form_body textarea.new {
 	border: 1px solid #aaa;

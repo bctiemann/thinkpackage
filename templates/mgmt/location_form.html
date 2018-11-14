@@ -7,7 +7,7 @@
         </span>
 
     </div>
-    <div class="form_body">
+    <div class="form_body {% if not location %}new-item{% endif %}">
 
         <table>
             <tr>
@@ -42,28 +42,28 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="address" value="{{ location.address }}" placeholder="Delivery Address line 1" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" />
+                    <input type="text" id="address" value="{{ location.address }}" placeholder="Delivery Address line 1" style="width: 469px;" maxlength="45" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="address_2" value="{{ location.address_2 }}" placeholder="Delivery Address line 2" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="45" />
+                    <input type="text" id="address_2" value="{{ location.address_2 }}" placeholder="Delivery Address line 2" style="width: 469px;" maxlength="45" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="city" value="{{ location.city }}" placeholder="City" {% if not location %}class="new"{% endif %} style="width: 239px;" maxlength="24" />
+                    <input type="text" id="city" value="{{ location.city }}" placeholder="City" style="width: 239px;" maxlength="24" />
                     {{ form.state }}
                     {{ form.zip }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="receiving_hours" value="{{ location.receiving_hours }}" placeholder="Receiving Hours" {% if not location %}class="new"{% endif %} style="width: 469px;" maxlength="100" />
+                    <input type="text" id="receiving_hours" value="{{ location.receiving_hours }}" placeholder="Receiving Hours" style="width: 469px;" maxlength="100" />
                 </td>
             </tr>
             <tr>
-                <td><textarea id="notes" placeholder="Notes" class="smalltext {% if not location %}new{% endif %}" style="width: 469px;">{{ location.notes }}</textarea></td>
+                <td><textarea id="notes" placeholder="Notes" class="smalltext" style="width: 469px;">{{ location.notes }}</textarea></td>
             </tr>
 
         </table>

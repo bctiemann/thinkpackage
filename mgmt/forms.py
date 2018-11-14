@@ -168,14 +168,14 @@ class LocationForm(forms.ModelForm):
     state = USStateField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
     zip = USZipCodeField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
 
-    def __init__(self, *args, **kwargs):
-        super(LocationForm, self).__init__(*args, **kwargs)
-        if self.instance.id == None:
-            for field in self.fields:
-                try:
-                    self.fields[field].widget.attrs['class'] += ' new'
-                except KeyError:
-                    self.fields[field].widget.attrs['class'] = 'new'
+#    def __init__(self, *args, **kwargs):
+#        super(LocationForm, self).__init__(*args, **kwargs)
+#        if self.instance.id == None:
+#            for field in self.fields:
+#                try:
+#                    self.fields[field].widget.attrs['class'] += ' new'
+#                except KeyError:
+#                    self.fields[field].widget.attrs['class'] = 'new'
 
     class Meta:
         model = Location

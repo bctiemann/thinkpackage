@@ -139,3 +139,6 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
 	margin: 20px;
 }
 
+#chart_div {
+	margin-bottom: 20px;
+}

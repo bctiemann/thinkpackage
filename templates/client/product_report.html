@@ -25,7 +25,8 @@ function drawBackgroundColor() {
         vAxis: {
           title: 'Inventory'
         },
-        backgroundColor: '#f1f8e9'
+        backgroundColor: '#f1f8e9',
+        height: 600,
       };
 
       var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -35,6 +36,8 @@ function drawBackgroundColor() {
 {% endblock %}
 
 {% block content %}
+
+<div class="content">
 
 <div id="chart_div"></div>
 
@@ -68,5 +71,7 @@ function drawBackgroundColor() {
         {% endfor %}
     </tbody>
 </table>
+
+</div>
 
 {% endblock %}

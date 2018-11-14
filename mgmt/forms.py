@@ -92,11 +92,11 @@ class CustContactForm(forms.ModelForm):
 
         if self.instance.id == None:
             self.fields['password'].widget.attrs['value'] = ''
-            for field in self.fields:
-                try:
-                    self.fields[field].widget.attrs['class'] += ' new'
-                except KeyError:
-                    self.fields[field].widget.attrs['class'] = 'new'
+#            for field in self.fields:
+#                try:
+#                    self.fields[field].widget.attrs['class'] += ' new'
+#                except KeyError:
+#                    self.fields[field].widget.attrs['class'] = 'new'
 
 #    def clean_password(self):
 #        logger.warning(self.initial)
@@ -133,11 +133,11 @@ class UserForm(forms.ModelForm):
         self.fields['email'].widget.attrs['value'] = self.instance.email
         if self.instance.id == None:
             self.fields['password'].widget.attrs['value'] = ''
-            for field in self.fields:
-                try:
-                    self.fields[field].widget.attrs['class'] += ' new'
-                except KeyError:
-                    self.fields[field].widget.attrs['class'] = 'new'
+#            for field in self.fields:
+#                try:
+#                    self.fields[field].widget.attrs['class'] += ' new'
+#                except KeyError:
+#                    self.fields[field].widget.attrs['class'] = 'new'
 
     class Meta:
         model = User

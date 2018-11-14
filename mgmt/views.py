@@ -350,10 +350,10 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
     form_class = forms.LocationForm
     template_name = 'mgmt/location_form.html'
 
-#    def get_context_data(self, *args, **kwargs):
-#        context = super(LocationCreate, self).get_context_data(*args, **kwargs)
-#        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
-#        return context
+    def get_context_data(self, *args, **kwargs):
+        context = super(LocationCreate, self).get_context_data(*args, **kwargs)
+        context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
+        return context
 
 
 class LocationUpdate(AjaxableResponseMixin, UpdateView):

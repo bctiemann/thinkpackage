@@ -25,7 +25,11 @@ function drawBackgroundColor() {
         vAxis: {
           title: 'Inventory'
         },
-        backgroundColor: '#f1f8e9',
+        backgroundColor: {
+            fill: '#f3f3f4',
+            stroke: '#d9dadc',
+            strokeWidth: 2,
+        },
         height: 600,
       };
 
@@ -56,7 +60,6 @@ function drawBackgroundColor() {
     </thead>
     <tbody>
         {% for transaction in history %}
-        <CFOUTPUT QUERY="Transactions">
         <tr>
             <td class="text">{{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}</td>
             <td class="text">{{ transaction.shipment_order }}</td>
@@ -67,7 +70,6 @@ function drawBackgroundColor() {
             <td class="numeric">{{ transaction.cases_remaining_differential|intcomma }}</td>
             <td class="numeric">{{ transaction.units_remaining_differential|intcomma }}</td>
         </tr>
-        </CFOUTPUT>
         {% endfor %}
     </tbody>
 </table>

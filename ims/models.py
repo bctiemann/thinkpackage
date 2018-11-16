@@ -195,6 +195,12 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 
+class ClientManager(models.Manager):
+
+    def get_queryset(self):
+        return super(ClientManager, self).get_queryset().order_by(Lower('company_name'))
+
+
 class Client(models.Model):
     id = models.AutoField(primary_key=True, db_column='customerid')
     email = models.EmailField(max_length=192, blank=True)
@@ -206,6 +212,8 @@ class Client(models.Model):
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
     parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent')
     ancestors = JSONField(null=True, blank=True)
+
+    objects = ClientManager()
 
     @property
     def children(self):
@@ -239,7 +247,8 @@ class Client(models.Model):
 
     class Meta:
         db_table = 'Customers'
-        ordering = (Lower('company_name'),)
+#        ordering = (Lower('company_name'),)
+        ordering = ('company_name',)
 
 
 # Future model to map client contacts (formerly CustContacts) to clients, in a many-to-many relationship.
@@ -365,6 +374,7 @@ class Location(models.Model):
     country = models.CharField(max_length=2, blank=True)
     non_us_state = models.CharField(max_length=150, blank=True, db_column='ostate')
     customer_contact = models.ForeignKey('CustContact', null=True, blank=True, db_column='custcontactid')
+    contact_user = models.ForeignKey('ClientUser', null=True, blank=True)
     notes = models.TextField(blank=True)
     receiving_hours = models.CharField(max_length=100, blank=True, db_column='recvhours')
     is_active = models.BooleanField(default=True)

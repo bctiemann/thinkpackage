@@ -250,7 +250,7 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
 function updateLocation(customerid, locationid) {
     var location = {
         client:           customerid,
-        customer_contact: $('#customer_contact').val() || 0,
+        contact_user:     $('#contact_user').val() || 0,
         name:             $('#id_name').val(),
         address:          $('#address').val(),
         address_2:        $('#address_2').val(),

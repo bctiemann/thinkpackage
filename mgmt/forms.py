@@ -179,7 +179,7 @@ class LocationForm(forms.ModelForm):
 
     class Meta:
         model = Location
-        fields = ['client', 'name', 'customer_contact', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+        fields = ['client', 'name', 'contact_user', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
 
 
 class ProductForm(forms.ModelForm):

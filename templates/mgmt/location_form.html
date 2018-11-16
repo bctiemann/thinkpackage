@@ -18,14 +18,14 @@
 
             <tr>
                 <td>
-                    <select id="customer_contact">
-                        {% if not location.customer_contact %}
+                    <select id="contact_user">
+                        {% if not location.contact_user %}
                         <option value="0">(Select contact)</option>>
                         {% endif %}
 
-                        {% for custcontact in client.custcontact_set.all %}
-                        {% if custcontact.is_active %}
-                        <option value="{{ custcontact.id }}" {% if location.customer_contact == custcontact or custcontact.is_primary %}selected{% endif %}>{{ custcontact.first_name }} {{ custcontact.last_name }}{% if custcontact.title %} [{{ custcontact.title }}]{% endif %}</option>
+                        {% for client_user in client.clientuser_set.all %}
+                        {% if client_user.user.is_active %}
+                        <option value="{{ client_user.id }}" {% if location.contact_user == client_user or client_user.is_primary %}selected{% endif %}>{{ client_user.user.first_name }} {{ client_user.user.last_name }}{% if client_user.title %} [{{ client_user.title }}]{% endif %}</option>
                         {% endif %}
                         {% endfor %}
                     </select>
@@ -35,8 +35,8 @@
             <tr>
                 <td>
                     <div class="non-input">
-                        <span id="email_primary"><a href="mailto:{{ location.customer_contact.email }}">{{ location.customer_contact.email }}</a></span>
-                        <span id="tel_primary">{{ location.customer_contact.phone_number }} {{ location.customer_contact.phone_extension }}</span>
+                        <span id="email_primary"><a href="mailto:{{ location.contact_user.user.email }}">{{ location.contact_user.user.email }}</a></span>
+                        <span id="tel_primary">{{ location.contact_user.user.phone_number }} {{ location.contact_user.user.phone_extension }}</span>
                     </div>
                 </td>
             </tr>

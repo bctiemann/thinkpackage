@@ -244,6 +244,7 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
 //            loadContactsList(customerid,custcontactid);
             loadContactsList(customerid,null);
         }
+        setupAutocompleteUsers();
     });
 }
 
@@ -1344,6 +1345,47 @@ console.log(statusData);
             }, 1000);
         }
     });
+}
+
+function setupAutocompleteUsers() {
+  $('input#id_email').autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: apiroot + '/users-ac/' + request.term + '/',
+        dataType: "json",
+        data: {
+//          term: request.term
+        },
+        success: function(data) {
+console.log(data);
+          response($.map(data.users, function(item) {
+            return {
+                value: item.id,
+                label: item.email,
+//              value: he.decode(item.first_name) + " ("+he.decode(item.email)+")",
+//              userId: item.id,
+//              name: he.decode(item.first_name),
+            }
+          }))
+        }
+      })
+    },
+    minLength: 3,
+    select: function(e,ui) {
+      $('#id_email').val(ui.item.label);
+console.log(ui);
+      var url = apiroot + '/user/' + ui.item.value + '/';
+      $.getJSON(url, function(data) {
+console.log(data);
+        $('#id_email').val(data.email);
+        $('#id_first_name').val(data.first_name);
+        $('#id_last_name').val(data.last_name);
+        $('#id_phone_number').val(data.phone_number);
+        $('#id_phone_extension').val(data.phone_extension);
+        $('#id_fax_number').val(data.fax_number);
+      });
+    }
+  });
 }
 
 /*

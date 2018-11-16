@@ -13,4 +13,7 @@ urlpatterns = [
     url(r'^clients/$', api_views.GetClients.as_view(), name='clients'),
     url(r'^(?P<client_id>\d+)/products/$', api_views.GetClientProducts.as_view(), name='client-products'),
     url(r'^async_task/(?P<task_id>[0-9a-f-]+)/status/$', api_views.AsyncTaskStatus.as_view(), name='async-task-status'),
+
+    url(r'^users-ac/(?P<term>.+)/$', api_views.AutocompleteUsers.as_view(), name='autocomplete-users'),
+    url(r'^user/(?P<user_id>\d+)/$', api_views.UserAPIView.as_view(), name='user'),
 ]

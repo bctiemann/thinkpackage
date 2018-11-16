@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from ims.models import Product, AsyncTask
+from ims.models import User, Product, AsyncTask
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'full_name', 'first_name', 'last_name', 'phone_number', 'phone_extension', 'fax_number']
 
 
 class ClientSerializer(serializers.Serializer):

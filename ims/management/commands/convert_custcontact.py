@@ -7,7 +7,7 @@ import unicodedata, re
 import logging
 logger = logging.getLogger(__name__)
 
-from ims.models import User, CustContact, ClientUser
+from ims.models import User, CustContact, ClientUser, Location
 from ims.cipher import AESCipher
 
 
@@ -50,6 +50,7 @@ class Command(BaseCommand):
             user.is_active = custcontact.is_active
             user.save()
 
+            print user, custcontact.client
             client_user, created = ClientUser.objects.get_or_create(
                 user = user,
                 client = custcontact.client,
@@ -58,3 +59,8 @@ class Command(BaseCommand):
                     'is_primary': custcontact.is_primary,
                 }
             )
+
+            for location in Location.objects.filter(customer_contact=custcontact):
+                print location
+                location.contact_user = client_user
+                location.save()

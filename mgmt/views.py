@@ -403,6 +403,16 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
             logger.info(form.cleaned_data)
             logger.info(user_form.cleaned_data)
 
+            if not user_created:
+                try:
+                    client_user = ClientUser.objects.get(user=user, client=form.cleaned_data['client'])
+                    response = {
+                        'email': [{'message': 'This user is already a contact for this client.'}],
+                    }
+                    return JsonResponse(response)
+                except ClientUser.DoesNotExist:
+                    pass
+
             client_user = form.save(commit=False)
             client_user.user = user_form.save(commit=False)
             client_user.save()

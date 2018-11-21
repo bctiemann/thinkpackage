@@ -797,6 +797,13 @@ div.non-input span {
 	background-color: #fffec4;
 }
 
+.objectform .field-message {
+	height: 12px;
+	font-size: 12px;
+	color: #ff6a5e;
+}
+
+
 .infotable input,
 .form_header input {
 	margin: 0px;
@@ -1187,3 +1194,4 @@ table.pageheader {
 	background-size: cover;
 	display: inline-block;
 }
+

@@ -321,6 +321,7 @@ console.log(data);
             for (var field in data) {
                 var error = data[field][0];
                 $('#id_' + field).addClass('error').attr('error-text', error.message);
+                $('#field_message_' + field).html(error.message);
                 console.log(field);
             }
         }
@@ -1358,6 +1359,8 @@ function setupAutocompleteUsers() {
         },
         success: function(data) {
 console.log(data);
+          $('.field-message').html('');
+          $('.objectform input, .objectform textarea').not('#id_email').not('[type=hidden]').val('');
           response($.map(data.users, function(item) {
             return {
                 value: item.id,
@@ -1380,6 +1383,7 @@ console.log(data);
         $('#id_email').val(data.email);
         $('#id_first_name').val(data.first_name);
         $('#id_last_name').val(data.last_name);
+        $('#id_password').val('********');
         $('#id_phone_number').val(data.phone_number);
         $('#id_phone_extension').val(data.phone_extension);
         $('#id_fax_number').val(data.fax_number);

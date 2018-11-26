@@ -85,7 +85,8 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     products = Product.objects.filter(client=client).order_by('item_number')
 #    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
 #    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
-    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
+#    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
+    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from)
 
 #    transactions = Transaction.objects.filter(date_created__gt=date_from, date_created__lte=date_to)
 #    transactions = transactions.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
@@ -172,7 +173,8 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     product_balance = {}
     for product in products:
-        product_balance[product.id] = product.cases_inventory
+#        product_balance[product.id] = product.cases_inventory
+        product_balance[product.id] = product.cases_available
 
     for column in columns:
 #        logger.info('{0} {1} {2}'.format(column['shipment_id'], column['date'], column['id']))
@@ -200,6 +202,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
         writer = csv.writer(csvfile)
 
         columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']))
+        columns = [column for column in columns if column['date'] < date_to.date()]
 
         writer.writerow(['Item #', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
 

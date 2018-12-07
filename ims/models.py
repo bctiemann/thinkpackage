@@ -238,10 +238,11 @@ class Client(models.Model):
         return new_ancestors
 
     def save(self, *args, **kwargs):
+        started_with_id = self.id
         if not self.created_on:
             self.created_on = timezone.now()
         super(Client, self).save(*args, **kwargs)
-        if self.id:
+        if started_with_id:
             self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
             super(Client, self).save(*args, **kwargs)
 

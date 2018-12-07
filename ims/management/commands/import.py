@@ -15,7 +15,7 @@ from ims import models as ims_models
 class Command(BaseCommand):
 
     enabled = {
-#        'do_clients': True,
+        'do_clients': True,
 #        'do_custcontacts': True,
 #        'do_adminusers': True,
 #        'do_warehouseusers': True,
@@ -27,7 +27,7 @@ class Command(BaseCommand):
 #        'do_pallets': True,
 #        'do_palletcontents': True,
 #        'do_shipmentdocs': True,
-        'do_actionlogs': True,
+#        'do_actionlogs': True,
     }
 
     def add_arguments(self, parser):
@@ -43,7 +43,6 @@ class Command(BaseCommand):
             for old in c.fetchall():
                 print old['coname']
                 new = ims_models.Client.objects.create(
-                    id = old['customerid'],
                     email = old['email'] or '',
                     is_preferred = old['preferred'],
                     is_active = old['enabled'],
@@ -52,7 +51,9 @@ class Command(BaseCommand):
                     has_warehousing = old['warehousing'],
                 )
                 new.created_on = old['createdon']
+                new.id = old['customerid']
                 new.save()
+            print ims_models.Client.objects.filter(ancestors__isnull=True).delete()
             c.execute("""SELECT * FROM customers WHERE parent IS NOT NULL""")
             for old in c.fetchall():
                 new = ims_models.Client.objects.get(id=old['customerid'])

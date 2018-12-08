@@ -24,10 +24,11 @@ class Command(BaseCommand):
 #        'do_shipments': True,
 #        'do_receivables': True,
 #        'do_transactions': True,
+        'do_returns': True,
 #        'do_pallets': True,
 #        'do_palletcontents': True,
 #        'do_shipmentdocs': True,
-        'do_actionlogs': True,
+#        'do_actionlogs': True,
     }
 
     def add_arguments(self, parser):
@@ -199,7 +200,6 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_shipments' in self.enabled:
-#            c.execute("""SELECT * FROM shipments where shipmentid=9436""")
             c.execute("""SELECT * FROM shipments""")
             for old in c.fetchall():
                 print old['shipmentid']
@@ -316,6 +316,34 @@ class Command(BaseCommand):
                 )
                 new.date_created = old['stamp']
                 new.save()
+
+        if 'do_returns' in self.enabled:
+            c.execute("""SELECT * FROM returns""")
+            for old in c.fetchall():
+                print old['returnid']
+                try:
+                    client = ims_models.Client.objects.get(pk=old['customerid'])
+                except ims_models.Client.DoesNotExist:
+                    client = None
+                try:
+                    location = ims_models.Location.objects.get(pk=old['locationid'])
+                except ims_models.Location.DoesNotExist:
+                    location = None
+                try:
+                    product = ims_models.Product.objects.get(pk=old['productid'])
+                except ims_models.Product.DoesNotExist:
+                    print 'Product does not exist; skipping.'
+                    continue
+                new  = ims_models.ReturnedProduct.objects.create(
+                    id = old['returnid'],
+                    date_returned = old['stamp'],
+                    client = client,
+                    product = product,
+                    location = location,
+                    cases_damaged = old['cases_damaged'],
+                    cases_undamaged = old['cases_undamaged'],
+                    date_reconciled = old['reconciled'],
+                )
 
         if 'do_pallets' in self.enabled:
             c.execute("""SELECT * FROM pallets""")

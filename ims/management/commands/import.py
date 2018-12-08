@@ -15,7 +15,7 @@ from ims import models as ims_models
 class Command(BaseCommand):
 
     enabled = {
-        'do_clients': True,
+#        'do_clients': True,
 #        'do_custcontacts': True,
 #        'do_adminusers': True,
 #        'do_warehouseusers': True,
@@ -27,7 +27,7 @@ class Command(BaseCommand):
 #        'do_pallets': True,
 #        'do_palletcontents': True,
 #        'do_shipmentdocs': True,
-#        'do_actionlogs': True,
+        'do_actionlogs': True,
     }
 
     def add_arguments(self, parser):
@@ -199,6 +199,7 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_shipments' in self.enabled:
+#            c.execute("""SELECT * FROM shipments where shipmentid=9436""")
             c.execute("""SELECT * FROM shipments""")
             for old in c.fetchall():
                 print old['shipmentid']
@@ -275,6 +276,8 @@ class Command(BaseCommand):
                     product = ims_models.Product.objects.get(pk=old['productid'])
                 except ims_models.Product.DoesNotExist:
                     product = None
+                    print('Product {0} not found.'.format(old['productid']))
+                    continue
                 try:
                     shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
                 except ims_models.Shipment.DoesNotExist:
@@ -298,9 +301,9 @@ class Command(BaseCommand):
                 new  = ims_models.Transaction.objects.create(
                     id = old['transactionid'],
                     product = product,
-                    quantity = old['qty'],
+#                    quantity = old['qty'],
 #                    quantity_remaining = old['qtyremain'],
-                    cases_remaining = old['qtyremain'] / product.packing if product.packing else 0,
+                    cases_remaining = old['qtyremain'] / product.packing if old['qtyremain'] and product and product.packing and old['qtyremain'] else 0,
                     is_outbound = old['direction'],
                     shipment = shipment,
                     client = client,
@@ -342,11 +345,13 @@ class Command(BaseCommand):
                 try:
                     pallet = ims_models.Pallet.objects.get(pk=old['palletid'])
                 except ims_models.Pallet.DoesNotExist:
-                    pallet = None
+                    print 'Pallet does not exist; skipping.'
+                    continue
                 try:
                     product = ims_models.Product.objects.get(pk=old['productid'])
                 except ims_models.Product.DoesNotExist:
-                    product = None
+                    print 'Product does not exist; skipping.'
+                    continue
                 new  = ims_models.PalletContents.objects.create(
                     id = old['onpalletid'],
                     pallet = pallet,

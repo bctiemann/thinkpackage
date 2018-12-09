@@ -176,7 +176,8 @@ def shipments(request, client_id=None, shipment_id=None):
 
     context = {
         'client': client,
-        'shipmentid': request.GET.get('shipmentid', 'null'),
+#        'shipmentid': request.GET.get('shipmentid', 'null'),
+        'shipmentid': shipment_id,
     }
     return render(request, 'mgmt/shipments.html', context)
 

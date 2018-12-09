@@ -1288,7 +1288,7 @@ function execute_transferProduct(from_productid, to_productid, to_customerid) {
 }
 
 function setupSearch() {
-    $('#search_client').val($('.customerheader').html());
+//    $('#search_client').val($('.customerheader').html());
     $('#dialog_search .clear').val('');
     $('#dialog_search').dialog('open');
 }

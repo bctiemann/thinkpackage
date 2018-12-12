@@ -227,7 +227,7 @@ def product_history(request, product_id):
     except:
         pass
 
-    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to)
+    history = Transaction.objects.filter(product=product, date_created__gt=date_from)
     history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
     history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
     history = history.order_by('-date_in_out', '-shipment__id')

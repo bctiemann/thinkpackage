@@ -41,22 +41,10 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
 
     <tr class="detail {% if transaction.shipment.is_pending %}shipment-pending{% endif %}">
         <td class="date">
-            {% if transaction.shipment == None and transaction.receivable == None %}
-                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
-            {% elif not transaction.is_outbound %}
-                {{ transaction.receivable.date_created|date:"SHORT_DATE_FORMAT" }}
-            {% else %}
-                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
-            {% endif %}
+            {{ transaction.request_date|date:"SHORT_DATE_FORMAT" }}
         </td>
         <td class="date">
-            {% if transaction.shipment == None and transaction.receivable == None %}
-                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
-            {% elif not transaction.is_outbound %}
-                {{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}
-            {% else %}
-                {{ transaction.shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
-            {% endif %}
+            {{ transaction.in_out_date|date:"SHORT_DATE_FORMAT" }}
         </td>
         <td class="text" style="max-width: 94px; overflow: hidden; text-overflow: ellipsis;">
             {% if transaction.receivable.returned_product %}

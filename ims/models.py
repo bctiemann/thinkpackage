@@ -685,6 +685,22 @@ class Transaction(models.Model):
 #        return int(float(self.quantity_remaining) / float(self.product.packing))
 
     @property
+    def request_date(self):
+        if not self.shipment and not self.receivable:
+            return self.date_created
+        elif not self.is_outbound:
+            return self.receivable.date_created
+        return self.date_created
+
+    @property
+    def in_out_date(self):
+        if not self.shipment and not self.receivable:
+            return self.date_created
+        elif not self.is_outbound:
+            return self.date_created
+        return self.shipment.date_shipped
+
+    @property
     def quantity_remaining(self):
         return self.units_remaining
 

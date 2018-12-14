@@ -1,6 +1,101 @@
 {% extends "login.html" %}
+{% load static %}
 
-{% block login_page_title %}Client Login{% endblock %}
+{% block extra_css %}
+    <link rel=stylesheet href="{% static "css/site-full.css" %}" type="text/css">
+    <link rel=stylesheet href="{% static "css/additional.css" %}" type="text/css">
+    <link rel=stylesheet href="{% static "client/css/style.css" %}" type="text/css">
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static "client/js/main.js" %}"></script>
+{% endblock %}
 
 {% block next %}<input type="hidden" name="next" value="{% url "client:home" %}" />{% endblock %}
 
+{% block top_banner %}
+    <div class="Site" data-nc-base="header" data-controller="AncillaryLayout">
+        <div class="sqs-announcement-bar-dropzone"></div>
+
+          <header class="Header-inner--bottom" style="padding-top: 26px;">
+          <div class="Header-inner Header-inner--bottom" data-nc-group="bottom1">
+            <div data-nc-container="bottom-left">
+              <a href="#onSite#" class="Header-branding" data-nc-element="branding" data-content-field="site-title">
+                    <img src="{% static "accounts/images/tp_white.png" %}" asrc="#onSite#images/logo.png" alt="Think Package" class="Header-branding-logo" />
+              </a>
+            </div>
+            <div data-nc-container="bottom-center">
+            </div>
+
+            <div data-nc-container="bottom-right">
+              <nav class="Header-nav Header-nav--primary" data-nc-element="primary-nav" data-content-field="navigation">
+
+                    <div class="Header-nav-inner">
+
+{% comment %}
+                        <div>
+                            <a href="#onSite#" class="Header-nav-item Header-nav-item--active internal-link" data-test="template-nav" data-target="about">About</a>
+                        </div>
+                        <div>
+                            <a href="#onSite#services/" class="Header-nav-item internal-link" data-test="template-nav" data-target="services">Services</a>
+                        </div>
+                        <div>
+                            <a href="#onSite#work/" class="Header-nav-item internal-link" data-test="template-nav" data-target="work">Work</a>
+                        </div>
+                        <div>
+                            <a href="#onSite#contact/" class="Header-nav-item" data-test="template-nav">Contact</a>
+                        </div>
+                        <div>
+                            <a href="#onSecSite#login/" class="Header-nav-item" data-test="template-nav">Login</a>
+                        </div>
+{% endcomment %}
+
+                    </div>
+
+              </nav>
+
+              <nav class="Header-nav Header-nav--secondary" data-nc-element="secondary-nav" data-content-field="navigation">
+              </nav>
+          
+            </div>
+          </div>
+            
+          </header>
+              
+        </div>
+    </div>
+{% endblock %}
+
+{% block login_content %}
+<div id="content" class="login">
+
+<div class="login-form">
+<h1>LOGIN</h1>
+
+<form method="post" action="index.cfm" class="medium-button-style-outline">
+
+<div class="input">
+    <span class="caption" field="email">User ID</span>
+    <input type="text" name="email" id="email" class="" />
+</div>
+
+<div class="input">
+    <span class="caption" field="pass">Password</span>
+    <input type="password" name="pass" id="pass" class="" />
+</div>
+<a class="assist-text" href="<CFOUTPUT>#OnSecSite#</CFOUTPUT>forgot.cfm">Forgot login/password?</a>
+
+<div class="sqs-block button-block sqs-block-button" data-block-type="53" id="block-yui_3_17_2_1_1533232878200_47040">
+    <div class="sqs-block-content">
+        <div class="sqs-block-button-container--center" data-alignment="center" data-button-size="medium">
+            <button type="submit" class="sqs-block-button-element--medium sqs-block-button-element">SUBMIT</button>
+        </div>
+    </div>
+</div>
+    
+</form>
+
+</div>
+
+</div>
+{% endblock %}

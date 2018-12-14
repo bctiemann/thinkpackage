@@ -10,6 +10,7 @@
     <script type="text/javascript" src="{% static "accounts/js/jquery-1.11.1.min.js" %}"></script>
     <script type="text/javascript" src="{% static "accounts/js/jquery-ui.js" %}"></script>
     <script type="text/javascript" src="{% static "accounts/js/main.js" %}"></script>
+    {% block extra_js %}{% endblock %}
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 
@@ -38,8 +39,10 @@ globals['customerid_current'] = {{ client_id }};
 
 <body id="content" class="login">
 
+    {% block top_banner %}
     <img src="{% static "accounts/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
     <p>{% block login_page_title %}{% endblock %}</p>
+    {% endblock %}
 
     {% block login_content %}{% endblock %}
 

@@ -1,3 +1,8 @@
+body.login {
+        background-color: rgb(144, 145, 142);
+        color: #fff;
+}
+
 div.logoutlink {
     float: right;
     margin-right: 20px;
@@ -142,3 +147,58 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
 #chart_div {
 	margin-bottom: 20px;
 }
+
+.login-form {
+        position: absolute;
+        width: 30%;
+        height: 300px;
+        top: 50%;
+        left: 50%;
+        margin-top: -150px;
+        margin-left: -15%;
+        color: #fff;
+}
+.login-form h1 {
+        color: #fff;
+}
+
+.login-form .input {
+        margin-top: 30px;
+        border-color: #fff;
+}
+
+.login-form input[type=text],
+.login-form input[type=password] {
+        margin-left: 0px;
+}
+
+.login-form .caption {
+        color: #fff;
+        position: absolute;
+}
+
+.medium-button-style-outline .sqs-block-button .sqs-block-button-element--medium {
+        color: #fff;
+        border-color: #fff;
+        border-width: 1px;
+}
+.medium-button-style-outline .sqs-block-button .sqs-block-button-element--medium:hover {
+        background-color: #fff;
+        color: #222;
+}
+
+.assist-text {
+        font-family: Baskerville, 'Libre Baskerville';
+        font-style: italic;
+        font-size: 13px;
+        color: #fff;
+        text-decoration: none;
+}
+.assist-text:hover {
+        text-decoration: none;
+}
+
+[data-nc-base="header"] [data-nc-container] {
+	display: block !important;
+}
+

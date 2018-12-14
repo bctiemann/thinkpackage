@@ -1,5 +1,5 @@
 var cgiroot = '/client/';
-var apiroot = '/api/';
+var globals = {};
 var filter_popup_timeout = 2000;
 
 function selectCustomer() {
@@ -389,6 +389,21 @@ function showShipmentDocs(shipmentid) {
 
 
 $(document).ready(function() {
+    $('.caption').click(function() {
+        var field = $(this).attr('field');
+        $('#' + field).focus();
+    });
+    $('.login-form input').focus(function() {
+        if (!$(this).val()) {
+            $(this).parent().find('.caption').hide();
+        }
+    });
+    $('.login-form input').blur(function() {
+        if (!$(this).val()) {
+            $(this).parent().find('.caption').show();
+        }
+    });
+
     $('input.delivery_request').keyup(function(e) {
         updateTotalCases();
     });

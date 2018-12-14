@@ -1,0 +1,255 @@
+.text-block-header {
+	letter-spacing: 2.5px;
+}
+
+.Header--bottom {
+	padding-top: 26px;
+}
+.header-banner-bar {
+	position: absolute;
+	width: 100%;
+	height: 40px;
+	background-color: rgba(242, 242, 242, 0.45);
+	z-index: -1;
+}
+
+.Header-nav-item {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+.Header-nav-inner div {
+	display: inline-block;
+}
+
+.Header-nav-item:before,
+.Header-nav-item:after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  width: 0px;
+  height: 1px;
+  margin: 5px 0 0;
+  transition: all 0.2s ease-in-out;
+  transition-duration: 0.55s;
+  opacity: 0;
+}
+
+.Header-nav-item:hover {
+}
+
+.Header-nav-item:before {
+  left: calc(50%);
+  background-color: rgba(0, 0, 0, .4);
+}
+.Header-nav-item:after {
+  right: calc(50%);
+  background-color: rgba(0, 0, 0, .4);
+}
+
+.Header-nav-inner div:hover .Header-nav-item:before,
+.Header-nav-inner div:hover .Header-nav-item:after {
+  width: 50%;
+  opacity: 1;
+}
+
+
+a.image-slide-anchor {
+	position: relative;
+}
+a.image-slide-anchor.placeholder {
+	background-color: rgb(242, 241, 241);
+}
+.tile-titles {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 80%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	z-index: 1;
+	opacity: 0;
+	transition: .6s;
+	font-size: 18px;
+	letter-spacing: 0.08em;
+	line-height: 1.3em;
+	cursor: pointer;
+}
+a.image-slide-anchor .tile-titles {
+}
+a.image-slide-anchor img {
+	transition: .6s;
+}
+a.image-slide-anchor:hover img {
+	opacity: 0.2 !important;
+}
+a.image-slide-anchor:hover .tile-titles {
+	opacity: 1;
+}
+a.image-slide-anchor.placeholder .tile-titles {
+	opacity: 1;
+	cursor: default;
+}
+.tile-title {
+	font-weight: 600;
+	color: rgb(89, 90, 92);
+}
+.tile-subtitle {
+	font-style: italic;
+	color: rgb(146, 148, 151);
+}
+
+sqs-block.page-header {
+	width: 100%;
+}
+
+h2.client-name {
+	font-size: 26px;
+}
+
+.footer-logo {
+	margin: 16px 0px;
+}
+
+.footer-nav, .footer-address {
+	color: #808080;
+	font-family: Lato;
+	font-size: 13px;
+}
+.footer-nav a {
+	display: block;
+	line-height: 1;
+	margin-bottom: 13px;
+	text-transform: uppercase;
+}
+.footer-address p {
+	line-height: 1.4;
+	font-size: 12px;
+}
+
+
+.services-copy {
+	font-family: Lato;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 15px;
+	letter-spacing: .1em;
+	line-height: 1.5em;
+}
+.caption-block {
+	text-align: right;
+	padding: 0px 17px;
+	margin-bottom: 17px;
+	font-size: 12px;
+}
+
+.shr-icons {
+	padding-left: 0px;
+	margin-bottom: 3px;
+}
+.shr-icons li {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin-right: 20px;
+}
+.shr-icons li img {
+	width: 100%;
+	height: 100%;
+}
+
+.contact-info p {
+	margin-top: 40px;
+	margin-bottom: 40px;
+	line-height: 1.8;
+}
+
+.contact-info hr {
+	width: 30%;
+	margin: 60px auto;
+	border: none;
+	height: 1px;
+	background-color: #7c7c7c;
+}
+
+form .input {
+	position: relative;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	border-color: #dddddd;
+	display: flex;
+	flex-direction: row;
+}
+
+form .caption {
+	color: #606060;
+	white-space: nowrap;
+	padding-top: 10px;
+	font-family: Baskerville, 'Libre Baskerville';
+}
+
+form input[type=text],
+form input[type=password],
+form input[type=phone],
+form input[type=email] {
+	border-width: 0px;
+	background: none;
+	width: 100%;
+	padding: 8px;
+	font-size: 16px;
+	margin-left: 20px;
+}
+
+form label {
+	margin-left: 8px;
+}
+
+.inquire-form [class*=sqs-col] .sqs-block {
+	padding-left: 0px;
+	padding-right: 34px;
+}
+
+hr.h2-underline {
+	width: 70px;
+	border: none;
+	height: 1px;
+	background-color: #b9b9b9;
+}
+
+.error {
+	margin: 40px auto;
+	width: 60%;
+	color: #ff0000;
+}
+
+@media screen and (max-width: 640px) {
+	.sqs-layout [class*=sqs-col] .footer-logo {
+		width: 80% !important;
+		margin: 20px 10%;
+	}
+	.footer-nav {
+		margin-left: 10%;
+	}
+	.footer-address {
+		margin-left: 10%;
+		margin-top: 20px;
+	}
+	.shr-icons {
+		margin-top: 60px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+	}
+	.shr-icons li {
+		width: 10%;
+		height: 10%;
+	}
+
+	.contact-info hr {
+		width: 80%;
+	}
+}
+

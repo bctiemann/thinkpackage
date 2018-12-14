@@ -11,8 +11,6 @@
     <script type="text/javascript" src="{% static "client/js/main.js" %}"></script>
 {% endblock %}
 
-{% block next %}<input type="hidden" name="next" value="{% url "client:home" %}" />{% endblock %}
-
 {% block top_banner %}
     <div class="Site" data-nc-base="header" data-controller="AncillaryLayout">
         <div class="sqs-announcement-bar-dropzone"></div>
@@ -72,16 +70,19 @@
 <div class="login-form">
 <h1>LOGIN</h1>
 
-<form method="post" action="index.cfm" class="medium-button-style-outline">
+<form method="post" class="medium-button-style-outline">
+{% csrf_token %}
+
+<input type="hidden" name="login_view-current_step" value="auth" id="id_login_view-current_step" />
 
 <div class="input">
-    <span class="caption" field="email">User ID</span>
-    <input type="text" name="email" id="email" class="" />
+    <span class="caption" field="id_auth-username">User ID</span>
+    <input type="text" name="auth-username" id="id_auth-username" class="" />
 </div>
 
 <div class="input">
-    <span class="caption" field="pass">Password</span>
-    <input type="password" name="pass" id="pass" class="" />
+    <span class="caption" field="id_auth-password">Password</span>
+    <input type="password" name="auth-password" id="id_auth-password" class="" />
 </div>
 <a class="assist-text" href="<CFOUTPUT>#OnSecSite#</CFOUTPUT>forgot.cfm">Forgot login/password?</a>
 
@@ -92,7 +93,11 @@
         </div>
     </div>
 </div>
+
+    <div style="margin-left: -9999px"><input type="submit" value=""/></div>
     
+{% block next %}<input type="hidden" name="next" value="{% url "client:home" %}" />{% endblock %}
+
 </form>
 
 </div>

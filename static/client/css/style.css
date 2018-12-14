@@ -177,6 +177,14 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
         position: absolute;
 }
 
+.login-form .input .errorlist {
+	position: absolute;
+	left: 100%;
+	list-style-type: none;
+	white-space: nowrap;
+	padding-left: 10px;
+}
+
 .medium-button-style-outline .sqs-block-button .sqs-block-button-element--medium {
         color: #fff;
         border-color: #fff;

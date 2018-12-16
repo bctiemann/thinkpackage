@@ -1195,3 +1195,18 @@ table.pageheader {
 	display: inline-block;
 }
 
+.centered-logo-parent {
+  position: relative;
+}
+
+.centered-logo {
+  width: 363px;
+  height: 47px;
+  padding: 20px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  margin: -70px 0 0 -170px;
+}

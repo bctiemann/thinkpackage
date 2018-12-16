@@ -1,1 +1,29 @@
-foo bar
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <title>THINKPACKAGE</title>
+    <link rel="stylesheet" href="{% static "css/common.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "css/pagination.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "mgmt/css/style.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "css/jquery-ui.css" %}" type="text/css">
+    <script type="text/javascript" src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/common.js" %}"></script>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+
+    <script type="text/javascript">
+    </script>
+</head>
+
+<body>
+
+<div class="centered-parent">
+
+<img src="{% static "accounts/images/tp.png" %}" alt="Think Package"  class="centered-logo" />
+
+</div>
+
+</body>
+</html>

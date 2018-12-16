@@ -5,6 +5,11 @@
 <ul class="navmenu">
 
 <li><a class="tnav {% if page_selected == 'accounts' %}selected{% endif %}" href="{% url "admin:ims_user_changelist" %}">Accounts</a></li>
+{% if user.is_verified %}
+<li><a class="tnav {% if page_selected == 'accounts' %}selected{% endif %}" href="{% url "two_factor:profile" %}">2-Factor Settings</a></li>
+{% else %}
+<li><a class="tnav {% if page_selected == 'accounts' %}selected{% endif %}" href="{% url "two_factor:setup" %}">Set Up 2-Factor</a></li>
+{% endif %}
 {% comment %}
 <li><a class="tnav {% if page_selected == 'waccounts' %}selected{% endif %}" href="waccounts.cfm">Operational Users</a></li>
 <li><a class="tnav {% if page_selected == 'securitylogs' %}selected{% endif %}" href="securitylogs.cfm">Security Logs</a></li>

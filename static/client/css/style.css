@@ -196,8 +196,7 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
 }
 
 .assist-text {
-        font-family: Baskerville, 'Libre Baskerville';
-        font-style: italic;
+        font-family: BaskervilleURW-RegIta, 'Libre Baskerville';
         font-size: 13px;
         color: #fff;
         text-decoration: none;

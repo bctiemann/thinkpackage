@@ -78,6 +78,7 @@ MIDDLEWARE_CLASSES = [
     'ims.middleware.PermissionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'two_factor.middleware.threadlocals.ThreadLocals',
 ]
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

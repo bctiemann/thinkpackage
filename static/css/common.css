@@ -725,7 +725,8 @@ div.form_body td.disclaimer {
 }
 div.form_body input,
 div.form_body div.non-input,
-div.form_body textarea {
+div.form_body textarea,
+div.form_body select {
 	width: 100%;
 	margin: 0px;
 	padding: 5px;
@@ -740,16 +741,19 @@ div.form_body input:focus {
 }
 div.form_body.new-item input,
 div.form_body.new-item textarea,
+div.form_body.new-item select,
 div.form_body input.new,
-div.form_body textarea.new {
+div.form_body textarea.new,
+div.form_body select.new {
 	border: 1px solid #aaa;
 }
 div.form_body div.natural_height {
 	height: auto;
 }
 div.form_body select {
-	font-size: 16px;
+	font-size: 12px;
 	width: 100%;
+	vertical-align: middle;
 }
 div.form_body textarea.smalltext {
 	font-size: 11px;

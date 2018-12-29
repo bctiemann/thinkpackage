@@ -251,15 +251,15 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
 function updateLocation(customerid, locationid) {
     var location = {
         client:           customerid,
-        contact_user:     $('#contact_user').val() || 0,
+        contact_user:     $('#id_contact_user').val() || 0,
         name:             $('#id_name').val(),
-        address:          $('#address').val(),
-        address_2:        $('#address_2').val(),
-        city:             $('#city').val(),
+        address:          $('#id_address').val(),
+        address_2:        $('#id_address_2').val(),
+        city:             $('#id_city').val(),
         state:            $('#id_state').val(),
         zip:              $('#id_zip').val(),
-        receiving_hours:  $('#receiving_hours').val(),
-        notes:            $('#notes').val(),
+        receiving_hours:  $('#id_receiving_hours').val(),
+        notes:            $('#id_notes').val(),
     };
 console.log(location);
     var url = cgiroot + 'location/';
@@ -280,6 +280,7 @@ console.log(data);
                 $('#id_' + field).addClass('error').attr('error-text', error.message);
                 console.log(field);
             }
+            displayErrorDialog(data);
         }
     },'json');
 }

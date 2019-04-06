@@ -1,5 +1,5 @@
 *.pyc
-venv
+venv*
 static_root
 logs
 media
@@ -8,3 +8,4 @@ fieldkeys
 DEPLOYMENT.txt
 thinkpackage/wsgi.py
 geoip/db
+*.bak

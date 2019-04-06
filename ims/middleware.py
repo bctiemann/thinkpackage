@@ -73,7 +73,7 @@ class SelectedClientMiddleware:
                 if client:
                     request.session['selected_client_id'] = client.id
             return client
-        except Exception, e:
+        except Exception as e:
             logger.info(e)
             return None
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -109,7 +109,7 @@ class PalletPrint(PDFView):
     def get(self, *args, **kwargs):
         try:
             return super(PalletPrint, self).get(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             logger.warning(e)
             logger.warning('PDF generation failed; retrying')
             return self.get(*args, **kwargs)
@@ -121,7 +121,7 @@ class PalletPrint(PDFView):
         context['pallet'] = pallet
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
-        context['copies'] = range(2)
+        context['copies'] = list(range(2))
         return context
 
     def get_pdfkit_options(self):
@@ -143,7 +143,7 @@ class ProductPrint(PDFView):
     def get(self, *args, **kwargs):
         try:
             return super(ProductPrint, self).get(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             logger.warning(e)
             logger.warning('PDF generation failed; retrying')
             return self.get(*args, **kwargs)

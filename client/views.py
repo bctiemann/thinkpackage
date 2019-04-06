@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -89,7 +89,7 @@ def select_client(request, client_id):
     try:
         if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
             return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
-    except Exception, e:
+    except Exception as e:
         logger.warning('Failed to select client {0}: {1}'.format(client, e))
         return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
     request.session['selected_client_id'] = client.id
@@ -191,7 +191,7 @@ def inventory_request_delivery(request):
         return JsonResponse({'success': False, 'message': 'Malformed request.'})
     try:
         delivery_data = json.loads(request.POST['json'])
-    except Exception, e:
+    except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
     # Check all requested products for validity and availability

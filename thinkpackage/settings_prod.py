@@ -1,5 +1,5 @@
 try:
-    from settings_common import *
+    from thinkpackage.settings_common import *
 except ImportError:
     pass
 

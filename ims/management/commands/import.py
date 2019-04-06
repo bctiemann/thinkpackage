@@ -42,7 +42,7 @@ class Command(BaseCommand):
         if 'do_clients' in self.enabled:
             c.execute("""SELECT * FROM customers""")
             for old in c.fetchall():
-                print old['coname']
+                print(old['coname'])
                 new = ims_models.Client.objects.create(
                     email = old['email'] or '',
                     is_preferred = old['preferred'],
@@ -54,7 +54,7 @@ class Command(BaseCommand):
                 new.created_on = old['createdon']
                 new.id = old['customerid']
                 new.save()
-            print ims_models.Client.objects.filter(ancestors__isnull=True).delete()
+            print(ims_models.Client.objects.filter(ancestors__isnull=True).delete())
             c.execute("""SELECT * FROM customers WHERE parent IS NOT NULL""")
             for old in c.fetchall():
                 new = ims_models.Client.objects.get(id=old['customerid'])
@@ -64,7 +64,7 @@ class Command(BaseCommand):
         if 'do_custcontacts' in self.enabled:
             c.execute("""SELECT * FROM custcontacts""")
             for old in c.fetchall():
-                print old['email']
+                print(old['email'])
                 new = ims_models.CustContact.objects.create(
                     id = old['custcontactid'],
                     client_id = old['customerid'],
@@ -86,7 +86,7 @@ class Command(BaseCommand):
         if 'do_adminusers' in self.enabled:
             c.execute("""SELECT * FROM admin""")
             for old in c.fetchall():
-                print old['fullname'].encode('utf8')
+                print(old['fullname'].encode('utf8'))
                 new = ims_models.AdminUser.objects.create(
                     id = old['adminid'],
                     username = old['user'],
@@ -118,7 +118,7 @@ class Command(BaseCommand):
         if 'do_warehouseusers' in self.enabled:
             c.execute("""SELECT * FROM wuser""")
             for old in c.fetchall():
-                print old['fullname'].encode('utf8')
+                print(old['fullname'].encode('utf8'))
                 new = ims_models.WarehouseUser.objects.create(
                     id = old['wuserid'],
                     username = old['user'],
@@ -146,7 +146,7 @@ class Command(BaseCommand):
         if 'do_locations' in self.enabled:
             c.execute("""SELECT * FROM locations""")
             for old in c.fetchall():
-                print old['name'].encode('utf8')
+                print(old['name'].encode('utf8'))
                 new = ims_models.Location.objects.create(
                     id = old['locationid'],
                     client_id = old['customerid'],
@@ -169,7 +169,7 @@ class Command(BaseCommand):
         if 'do_products' in self.enabled:
             c.execute("""SELECT * FROM products""")
             for old in c.fetchall():
-                print old['pname'].encode('utf8')
+                print(old['pname'].encode('utf8'))
                 try:
                     location = ims_models.Location.objects.get(pk=old['locationid'])
                 except ims_models.Location.DoesNotExist:
@@ -202,7 +202,7 @@ class Command(BaseCommand):
         if 'do_shipments' in self.enabled:
             c.execute("""SELECT * FROM shipments""")
             for old in c.fetchall():
-                print old['shipmentid']
+                print(old['shipmentid'])
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -248,7 +248,7 @@ class Command(BaseCommand):
         if 'do_receivables' in self.enabled:
             c.execute("""SELECT * FROM receivables""")
             for old in c.fetchall():
-                print old['receivableid']
+                print(old['receivableid'])
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -271,12 +271,12 @@ class Command(BaseCommand):
         if 'do_transactions' in self.enabled:
             c.execute("""SELECT * FROM transactions""")
             for old in c.fetchall():
-                print old['transactionid']
+                print(old['transactionid'])
                 try:
                     product = ims_models.Product.objects.get(pk=old['productid'])
                 except ims_models.Product.DoesNotExist:
                     product = None
-                    print('Product {0} not found.'.format(old['productid']))
+                    print(('Product {0} not found.'.format(old['productid'])))
                     continue
                 try:
                     shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
@@ -320,7 +320,7 @@ class Command(BaseCommand):
         if 'do_returns' in self.enabled:
             c.execute("""SELECT * FROM returns""")
             for old in c.fetchall():
-                print old['returnid']
+                print(old['returnid'])
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -332,7 +332,7 @@ class Command(BaseCommand):
                 try:
                     product = ims_models.Product.objects.get(pk=old['productid'])
                 except ims_models.Product.DoesNotExist:
-                    print 'Product does not exist; skipping.'
+                    print('Product does not exist; skipping.')
                     continue
                 new  = ims_models.ReturnedProduct.objects.create(
                     id = old['returnid'],
@@ -348,7 +348,7 @@ class Command(BaseCommand):
         if 'do_pallets' in self.enabled:
             c.execute("""SELECT * FROM pallets""")
             for old in c.fetchall():
-                print old['palletid']
+                print(old['palletid'])
                 try:
                     shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
                 except ims_models.Shipment.DoesNotExist:
@@ -369,16 +369,16 @@ class Command(BaseCommand):
         if 'do_palletcontents' in self.enabled:
             c.execute("""SELECT * FROM onpallet""")
             for old in c.fetchall():
-                print old['palletid'], old['productid']
+                print(old['palletid'], old['productid'])
                 try:
                     pallet = ims_models.Pallet.objects.get(pk=old['palletid'])
                 except ims_models.Pallet.DoesNotExist:
-                    print 'Pallet does not exist; skipping.'
+                    print('Pallet does not exist; skipping.')
                     continue
                 try:
                     product = ims_models.Product.objects.get(pk=old['productid'])
                 except ims_models.Product.DoesNotExist:
-                    print 'Product does not exist; skipping.'
+                    print('Product does not exist; skipping.')
                     continue
                 new  = ims_models.PalletContents.objects.create(
                     id = old['onpalletid'],
@@ -390,7 +390,7 @@ class Command(BaseCommand):
         if 'do_shipmentdocs' in self.enabled:
             c.execute("""SELECT * FROM shipmentdocs""")
             for old in c.fetchall():
-                print old['docid']
+                print(old['docid'])
                 try:
                     shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
                 except ims_models.Shipment.DoesNotExist:
@@ -411,7 +411,7 @@ class Command(BaseCommand):
         if 'do_actionlogs' in self.enabled:
             c.execute("""SELECT * FROM actionlogs""")
             for old in c.fetchall():
-                print old['log_message']
+                print(old['log_message'])
                 app = ''
                 try:
                     admin_user = ims_models.AdminUser.objects.get(pk=old['adminid'])

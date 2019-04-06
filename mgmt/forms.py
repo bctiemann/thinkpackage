@@ -49,7 +49,7 @@ class ClientForm(forms.ModelForm):
         super(ClientForm, self).__init__(*args, **kwargs)
         all_clients = [(None, 'Subsidiary of...'), (None, '(None)')]
         for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
-            indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in xrange(parent_client['depth'])])
+            indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in range(parent_client['depth'])])
             parent_client['indent'] = indent
 #            all_clients.append(parent_client)
             choice_string = mark_safe('{0}{1}'.format(parent_client['indent'], parent_client['obj'].company_name))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -258,9 +258,9 @@ class BillOfLadingView(PDFView):
         shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
         context['shipment'] = shipment
         context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
-        context['pages'] = range(context['total_pages'])
+        context['pages'] = list(range(context['total_pages']))
         context['max_products_per_page'] = self.max_products_per_page
-        context['remainder_rows'] = range(self.max_products_per_page - (shipment.transaction_set.count() % self.max_products_per_page))
+        context['remainder_rows'] = list(range(self.max_products_per_page - (shipment.transaction_set.count() % self.max_products_per_page)))
         return context
 
     def get_pdfkit_options(self):

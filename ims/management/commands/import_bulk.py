@@ -30,9 +30,9 @@ class Command(BaseCommand):
                 try:
                     client = Client.objects.get(id=customer_dir)
                 except Client.DoesNotExist:
-                    print('{0}: No customer found; skipping'.format(customer_dir,))
+                    print(('{0}: No customer found; skipping'.format(customer_dir,)))
                     continue
-                print('{0}: {1}'.format(customer_dir, client))
+                print(('{0}: {1}'.format(customer_dir, client)))
 
                 for filename in os.listdir(customer_dir_absolute):
                     if filename.endswith('.txt'):
@@ -53,9 +53,9 @@ class Command(BaseCommand):
                                     try:
                                         location = Location.objects.get(client=client, name=row[5])
                                     except Location.DoesNotExist:
-                                        print('Location {0} not found.'.format(row[5]))
+                                        print(('Location {0} not found.'.format(row[5])))
                                         continue
-                                    print location
+                                    print(location)
 
                                     delivery_date = datetime.datetime.strptime(row[3], '%Y%m%d')
 
@@ -74,7 +74,7 @@ class Command(BaseCommand):
                                         client = client,
                                         location = location,
                                     )
-                                    print bulk_order
+                                    print(bulk_order)
 
                                 elif row[0] == 'D':
 
@@ -87,9 +87,9 @@ class Command(BaseCommand):
                                         product_name = row[7],
                                         bid_price = row[8],
                                     )
-                                    print bulk_order_item
+                                    print(bulk_order_item)
 
-                        print('Imported file {0}'.format(filename))
+                        print(('Imported file {0}'.format(filename)))
 #                        os.rename(filename_absolute, os.path.join(ftp_path, 'archive', customer_dir, filename))
 
                         shipment = Shipment.objects.create(
@@ -109,7 +109,7 @@ class Command(BaseCommand):
                             try:
                                 product = Product.objects.get(client=client, item_number=bulk_order_item.item_number, is_active=True)
                             except Product.DoesNotExist:
-                                print('Product matching itemnum {0} not found.'.format(bulk_order_item.item_number))
+                                print(('Product matching itemnum {0} not found.'.format(bulk_order_item.item_number)))
                                 continue
 
                             transaction = Transaction.objects.create(
@@ -120,4 +120,4 @@ class Command(BaseCommand):
                                 client = client,
                             )
 
-                        print('Created shipment {0}'.format(shipment.id))
+                        print(('Created shipment {0}'.format(shipment.id)))

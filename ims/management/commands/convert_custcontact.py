@@ -13,8 +13,8 @@ from ims.cipher import AESCipher
 
 class Command(BaseCommand):
 
-    all_chars = (unichr(i) for i in xrange(0x110000))
-    control_chars = ''.join(map(unichr, range(0,32) + range(127,160)))
+    all_chars = (chr(i) for i in range(0x110000))
+    control_chars = ''.join(map(chr, list(range(0,32)) + list(range(127,160))))
     control_char_re = re.compile('[%s]' % re.escape(control_chars))
 
     def add_arguments(self, parser):
@@ -37,7 +37,7 @@ class Command(BaseCommand):
             try:
                 user = User.objects.get(email=custcontact.email)
             except User.DoesNotExist:
-                print('Creating {0} ({1})'.format(custcontact.email, password))
+                print(('Creating {0} ({1})'.format(custcontact.email, password)))
                 user = User.objects.create_user(
                     email = custcontact.email,
                     password = password,
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             user.is_active = custcontact.is_active
             user.save()
 
-            print user, custcontact.client
+            print(user, custcontact.client)
             client_user, created = ClientUser.objects.get_or_create(
                 user = user,
                 client = custcontact.client,
@@ -61,6 +61,6 @@ class Command(BaseCommand):
             )
 
             for location in Location.objects.filter(customer_contact=custcontact):
-                print location
+                print(location)
                 location.contact_user = client_user
                 location.save()

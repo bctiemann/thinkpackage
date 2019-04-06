@@ -21,22 +21,22 @@ class Command(BaseCommand):
                 product.is_active = 0
                 product.is_deleted = 1
             try:
-                print product.location
+                print(product.location)
             except Location.DoesNotExist:
                 product.location = None
             product.save()
 
     def clean_transactions(self):
         for transaction in Transaction.objects.all():
-            print transaction
+            print(transaction)
             try:
-                print 'Shipment: {0}'.format(transaction.shipment)
+                print('Shipment: {0}'.format(transaction.shipment))
             except Shipment.DoesNotExist:
-                print 'Nulling shipment'
+                print('Nulling shipment')
                 transaction.shipment = None
             try:
-                print 'Receivable: {0}'.format(transaction.receivable)
+                print('Receivable: {0}'.format(transaction.receivable))
             except Receivable.DoesNotExist:
-                print 'Nulling receivable'
+                print('Nulling receivable')
                 transaction.receivable = None
             transaction.save()

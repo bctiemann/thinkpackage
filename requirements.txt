@@ -17,3 +17,4 @@ Pillow==4.2.1
 celery==4.2.1
 redis==2.10.6
 twilio==6.22.0
+python-dateutil==2.8.0

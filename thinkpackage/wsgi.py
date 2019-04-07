@@ -14,6 +14,7 @@ env_variables_to_pass = [
     'BASE_PATH',
     'SECRET_KEY',
     'DB_PASS',
+    'DB_PASS_LEGACY',
     'TWILIO_AUTH_TOKEN',
     'DJANGO_SETTINGS_MODULE',
     'WKHTMLTOPDF_BIN',

@@ -117,7 +117,7 @@ class User(AbstractBaseUser):
         # The user is identified by their email address
         return self.email
 
-    def __unicode__(self):
+    def __str__(self):
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -228,7 +228,7 @@ class Client(models.Model):
     def company_name_lower(self):
         return self.company_name.lower()
 
-    def __unicode__(self):
+    def __str__(self):
         return (self.company_name)
 
     def get_absolute_url(self):
@@ -264,7 +264,7 @@ class ClientUser(models.Model):
     last_login_client = models.DateTimeField(null=True, blank=True)
     is_primary = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0} {1}'.format(self.user.first_name, self.user.last_name))
 
     def get_absolute_url(self):
@@ -289,7 +289,7 @@ class CustContact(models.Model):
     last_login = models.DateTimeField(null=True, blank=True, db_column='lastlogin')
     notes = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
     def get_absolute_url(self):
@@ -331,7 +331,7 @@ class AdminUser(models.Model):
     two_factor_type = models.IntegerField(choices=TWO_FACTOR_CHOICES, db_column='twofac')
     is_active = models.BooleanField(default=True, db_column='enable')
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.username))
 
     class Meta:
@@ -357,7 +357,7 @@ class WarehouseUser(models.Model):
     is_active = models.BooleanField(default=True, db_column='enable')
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.username))
 
     class Meta:
@@ -384,7 +384,7 @@ class Location(models.Model):
     receiving_hours = models.CharField(max_length=100, blank=True, db_column='recvhours')
     is_active = models.BooleanField(default=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return (self.name)
 
     def get_absolute_url(self):
@@ -501,7 +501,7 @@ class Product(models.Model):
     def last_receivable(self):
         return self.receivable_set.order_by('-date_created').first()
 
-    def __unicode__(self):
+    def __str__(self):
         return (self.name)
 
     def create_qrcode(self):
@@ -545,7 +545,7 @@ class ShipperAddress(models.Model):
     name = models.CharField(max_length=100, blank=True)
     address = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return (self.name)
 
 
@@ -631,7 +631,7 @@ class Shipment(models.Model):
             total_weight_imperial += transaction.total_weight_imperial
         return total_weight_imperial
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.id))
 
     def get_absolute_url(self):
@@ -656,7 +656,7 @@ class Receivable(models.Model):
     def transaction(self):
         return self.transaction_set.first()
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.id))
 
     def get_absolute_url(self):
@@ -777,7 +777,7 @@ class Transaction(models.Model):
     def get_absolute_url(self):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client.id, 'product_id': self.product.id})
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.id))
 
     class Meta:
@@ -852,7 +852,7 @@ class Pallet(models.Model):
     def gross_weight_imperial(self):
         return self.gross_weight * 2.20462
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.id))
 
     def save(self, *args, **kwargs):
@@ -875,7 +875,7 @@ class PalletContents(models.Model):
     def gross_weight(self):
         return self.product.gross_weight * self.cases
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}'.format(self.id))
 
     class Meta:
@@ -906,7 +906,7 @@ class ShipmentDoc(models.Model):
     def get_absolute_url(self):
         return reverse('mgmt:shipment-docs', kwargs={'shipment_id': self.shipment_id})
 
-    def __unicode__(self):
+    def __str__(self):
         return ('{0}.{1}'.format(self.basename, self.ext))
 
     class Meta:

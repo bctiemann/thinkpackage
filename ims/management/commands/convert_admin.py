@@ -36,6 +36,8 @@ class Command(BaseCommand):
                 password = self.remove_control_chars(aes.decrypt(admin.password))
             except TypeError:
                 password = admin.password
+            except ValueError:
+                continue
             name_parts = admin.full_name.split(' ')
             first_name, last_name = name_parts[0], ''
             if len(name_parts) > 1:

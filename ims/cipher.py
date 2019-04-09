@@ -4,28 +4,23 @@ import base64
 import hashlib
 
 class AESCipher(object):
-
     def __init__(self, key):
-        self.bs = 32
-        self.key = base64.b64decode(key)
+        self.bs = 16
+        self.cipher = AES.new(base64.b64decode(key), AES.MODE_ECB)
 
     def encrypt(self, raw):
         raw = self._pad(raw)
-        iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(raw))
+        encrypted = self.cipher.encrypt(raw)
+        encoded = base64.b64encode(encrypted)
+        return str(encoded, 'utf-8')
 
-    def decrypt(self, enc):
-        enc = enc.decode('hex')
-        iv = AES.block_size * '\x00'
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        decrypted = cipher.decrypt(enc[0:AES.block_size])
-#        return self._unpad(cipher.decrypt(enc[0:AES.block_size:])).decode('utf-8')
-        return decrypted
+    def decrypt(self, raw):
+        decoded = bytes.fromhex(raw)
+        decrypted = self.cipher.decrypt(decoded)
+        return str(self._unpad(decrypted), 'utf-8')
 
     def _pad(self, s):
         return s + (self.bs - len(s) % self.bs) * chr(self.bs - len(s) % self.bs)
 
-    @staticmethod
-    def _unpad(s):
+    def _unpad(self, s):
         return s[:-ord(s[len(s)-1:])]

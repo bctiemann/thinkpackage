@@ -15,19 +15,19 @@ from ims import models as ims_models
 class Command(BaseCommand):
 
     enabled = {
-#        'do_clients': True,
-#        'do_custcontacts': True,
-#        'do_adminusers': True,
-#        'do_warehouseusers': True,
-#        'do_locations': True,
-#        'do_products': True,
-#        'do_shipments': True,
-#        'do_receivables': True,
-#        'do_transactions': True,
-#        'do_returns': True,
-#        'do_pallets': True,
-#        'do_palletcontents': True,
-#        'do_shipmentdocs': True,
+        'do_clients': True,
+        'do_custcontacts': True,
+        'do_adminusers': True,
+        'do_warehouseusers': True,
+        'do_locations': True,
+        'do_products': True,
+        'do_shipments': True,
+        'do_receivables': True,
+        'do_transactions': True,
+        'do_returns': True,
+        'do_pallets': True,
+        'do_palletcontents': True,
+        'do_shipmentdocs': True,
         'do_actionlogs': True,
     }
 

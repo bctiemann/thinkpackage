@@ -40,6 +40,7 @@ def tree_to_list(items, sort_by=None, omit=[], reverse=False):
             children = sorted(root['children'], key=lambda k: getattr(k['obj'], sort_by), reverse=True)
             for child in children:
                 child['depth'] = root['depth'] + 1
+                child['indent_rendered'] = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in range(child['depth'] + 1)])
                 roots.insert(0, child)
 
     return items_sorted

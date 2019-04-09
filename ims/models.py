@@ -162,6 +162,9 @@ class User(AbstractBaseUser):
 
     @property
     def child_clients(self):
+        if self.email == settings.CLIENTACCESS_EMAIL:
+            return utils.tree_to_list(Client.objects.all(), sort_by='company_name_lower')
+
         # List of clients this user is associated with, along with depth for rendering with indents in a select menu
         child_clients = []
         client_users = ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')
@@ -228,6 +231,10 @@ class Client(models.Model):
     def company_name_lower(self):
         return self.company_name.lower()
 
+    @property
+    def contacts(self):
+        return self.clientuser_set.exclude(user__email=settings.CLIENTACCESS_EMAIL)
+
     def __str__(self):
         return (self.company_name)
 
@@ -246,6 +253,10 @@ class Client(models.Model):
         if not self.created_on:
             self.created_on = timezone.now()
         super(Client, self).save(*args, **kwargs)
+
+        clientaccess_user = User.objects.get(email=settings.CLIENTACCESS_EMAIL)
+        client_user, created = ClientUser.objects.get_or_create(user=clientaccess_user, client=self)
+
         if started_with_id:
             self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
             super(Client, self).save(*args, **kwargs)

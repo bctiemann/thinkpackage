@@ -24,22 +24,27 @@ class Command(BaseCommand):
 #        'do_shipments': True,
 #        'do_receivables': True,
 #        'do_transactions': True,
-        'do_returns': True,
+#        'do_returns': True,
 #        'do_pallets': True,
 #        'do_palletcontents': True,
 #        'do_shipmentdocs': True,
-#        'do_actionlogs': True,
+        'do_actionlogs': True,
     }
 
     def add_arguments(self, parser):
         parser.add_argument('--key', dest='key',)
+        parser.add_argument('--clear_existing', dest='clear_existing', default=False, action='store_true',)
 
     def handle(self, *args, **options):
         legacy_db = settings.DATABASES['legacy']
         db = MySQLdb.connect(passwd=legacy_db['PASSWORD'], db=legacy_db['NAME'], host=legacy_db['HOST'], user=legacy_db['USER'], charset=legacy_db['OPTIONS']['charset'])
         c = db.cursor(MySQLdb.cursors.DictCursor)
 
+        clear_existing = options.get('clear_existing')
+
         if 'do_clients' in self.enabled:
+            if clear_existing:
+                ims_models.Client.objects.all().delete()
             c.execute("""SELECT * FROM customers""")
             for old in c.fetchall():
                 print(old['coname'])
@@ -62,6 +67,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_custcontacts' in self.enabled:
+            if clear_existing:
+                ims_models.CustContact.objects.all().delete()
             c.execute("""SELECT * FROM custcontacts""")
             for old in c.fetchall():
                 print(old['email'])
@@ -84,6 +91,8 @@ class Command(BaseCommand):
                 )
 
         if 'do_adminusers' in self.enabled:
+            if clear_existing:
+                ims_models.AdminUser.objects.all().delete()
             c.execute("""SELECT * FROM admin""")
             for old in c.fetchall():
                 print(old['fullname'].encode('utf8'))
@@ -116,6 +125,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_warehouseusers' in self.enabled:
+            if clear_existing:
+                ims_models.WarehouseUser.objects.all().delete()
             c.execute("""SELECT * FROM wuser""")
             for old in c.fetchall():
                 print(old['fullname'].encode('utf8'))
@@ -144,6 +155,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_locations' in self.enabled:
+            if clear_existing:
+                ims_models.Location.objects.all().delete()
             c.execute("""SELECT * FROM locations""")
             for old in c.fetchall():
                 print(old['name'].encode('utf8'))
@@ -167,6 +180,8 @@ class Command(BaseCommand):
                 )
 
         if 'do_products' in self.enabled:
+            if clear_existing:
+                ims_models.Product.objects.all().delete()
             c.execute("""SELECT * FROM products""")
             for old in c.fetchall():
                 print(old['pname'].encode('utf8'))
@@ -200,6 +215,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_shipments' in self.enabled:
+            if clear_existing:
+                ims_models.Shipment.objects.all().delete()
             c.execute("""SELECT * FROM shipments""")
             for old in c.fetchall():
                 print(old['shipmentid'])
@@ -246,6 +263,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_receivables' in self.enabled:
+            if clear_existing:
+                ims_models.Receivable.objects.all().delete()
             c.execute("""SELECT * FROM receivables""")
             for old in c.fetchall():
                 print(old['receivableid'])
@@ -269,6 +288,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_transactions' in self.enabled:
+            if clear_existing:
+                ims_models.Transaction.objects.all().delete()
             c.execute("""SELECT * FROM transactions""")
             for old in c.fetchall():
                 print(old['transactionid'])
@@ -318,6 +339,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_returns' in self.enabled:
+            if clear_existing:
+                ims_models.ReturnedProduct.objects.all().delete()
             c.execute("""SELECT * FROM returns""")
             for old in c.fetchall():
                 print(old['returnid'])
@@ -346,6 +369,8 @@ class Command(BaseCommand):
                 )
 
         if 'do_pallets' in self.enabled:
+            if clear_existing:
+                ims_models.Pallet.objects.all().delete()
             c.execute("""SELECT * FROM pallets""")
             for old in c.fetchall():
                 print(old['palletid'])
@@ -367,6 +392,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_palletcontents' in self.enabled:
+            if clear_existing:
+                ims_models.PalletContents.objects.all().delete()
             c.execute("""SELECT * FROM onpallet""")
             for old in c.fetchall():
                 print(old['palletid'], old['productid'])
@@ -388,6 +415,8 @@ class Command(BaseCommand):
                 )
 
         if 'do_shipmentdocs' in self.enabled:
+            if clear_existing:
+                ims_models.ShipmentDoc.objects.all().delete()
             c.execute("""SELECT * FROM shipmentdocs""")
             for old in c.fetchall():
                 print(old['docid'])
@@ -409,6 +438,8 @@ class Command(BaseCommand):
                 new.save()
 
         if 'do_actionlogs' in self.enabled:
+            if clear_existing:
+                ims_models.ActionLog.objects.all().delete()
             c.execute("""SELECT * FROM actionlogs""")
             for old in c.fetchall():
                 print(old['log_message'])

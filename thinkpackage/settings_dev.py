@@ -10,38 +10,44 @@ SERVER_HOST = 'thinkpackage.lionking.org'
 SERVER_URL_PREFIX = 'http://'
 SERVER_BASE_URL = '{0}{1}'.format(SERVER_URL_PREFIX, SERVER_HOST)
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'think',
-        'USER': 'think',
-        'PASSWORD': os.environ['DB_PASS'],
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': 'SET character_set_connection=utf8mb4, collation_connection=utf8mb4_unicode_ci',
-            'charset': 'utf8mb4',
-        },
-    },
-    'legacy': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tp',
-        'USER': 'btman',
-        'PASSWORD': os.environ['DB_PASS_LEGACY'],
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': 'SET character_set_connection=utf8mb4, collation_connection=utf8mb4_unicode_ci',
-            'charset': 'utf8mb4',
-        },
-    },
-}
+ALLOWED_HOSTS = [
+    'localhost',
+]
 
-STATIC_ROOT = '/usr/local/www/thinkpackage-dj/static_root'
-MEDIA_ROOT = '/usr/local/www/thinkpackage-dj/media'
-MEDIA_URL = '/media/'
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'think',
+#         'USER': 'think',
+#         'PASSWORD': os.environ['DB_PASS'],
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': 'SET character_set_connection=utf8mb4, collation_connection=utf8mb4_unicode_ci',
+#             'charset': 'utf8mb4',
+#         },
+#     },
+#     'legacy': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tp',
+#         'USER': 'btman',
+#         'PASSWORD': os.environ['DB_PASS_LEGACY'],
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': 'SET character_set_connection=utf8mb4, collation_connection=utf8mb4_unicode_ci',
+#             'charset': 'utf8mb4',
+#         },
+#     },
+# }
 
-LOG_DIR = '/usr/local/www/thinkpackage-dj/logs'
+STATIC_ROOT = '/Users/brian.tiemann/Development/thinkpackage-dj/static_root'
+
+# STATIC_ROOT = '/usr/local/www/thinkpackage-dj/static_root'
+# MEDIA_ROOT = '/usr/local/www/thinkpackage-dj/media'
+# MEDIA_URL = '/media/'
+
+LOG_DIR = '/Users/brian.tiemann/Development/thinkpackage-dj/logs'
 LOGGING['handlers']['logfile']['filename'] = LOG_DIR + '/django.log'
 
 #TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'

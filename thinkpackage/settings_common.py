@@ -181,9 +181,9 @@ USE_TZ = False
 
 STATICFILES_DIRS = ['static',]
 STATIC_URL = '/static/'
-STATIC_ROOT = '/usr/local/www/django/thinkpackage/static_root'
-MEDIA_ROOT = '/usr/local/www/django/thinkpackage/media'
-MEDIA_URL = '/media/'
+# STATIC_ROOT = '/usr/local/www/django/thinkpackage/static_root'
+# MEDIA_ROOT = '/usr/local/www/django/thinkpackage/media'
+# MEDIA_URL = '/media/'
 
 LOG_DIR = '/var/log/thinkpackage'
 

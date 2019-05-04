@@ -6,3 +6,5 @@ media
 scratch
 *.bak
 .idea
+*.sqlite3*
+data.json

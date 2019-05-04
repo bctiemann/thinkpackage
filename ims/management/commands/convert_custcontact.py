@@ -61,6 +61,6 @@ class Command(BaseCommand):
             )
 
             for location in Location.objects.filter(customer_contact=custcontact):
-                print(location)
+                print(ascii(location.name))
                 location.contact_user = client_user
                 location.save()

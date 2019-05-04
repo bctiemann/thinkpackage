@@ -4,8 +4,5 @@ static_root
 logs
 media
 scratch
-fieldkeys
-DEPLOYMENT.txt
-thinkpackage/wsgi.py
-geoip/db
 *.bak
+.idea

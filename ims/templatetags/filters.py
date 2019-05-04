@@ -16,3 +16,7 @@ def multiply(value, arg):
 @register.filter
 def add(value, arg):
     return value + arg
+
+@register.filter
+def split_path(value):
+    return value.split('/')

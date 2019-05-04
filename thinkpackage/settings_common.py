@@ -147,14 +147,19 @@ LOGIN_REDIRECT_URL = '/account/two_factor/'
 LOGIN_EXEMPT_URLS = (
     r'^recovery/',
     r'^mgmt/login/$',
+    r'^mgmt/sign_out/$',
     r'^client/$',
     r'^client/login/$',
+    r'^client/sign_out/$',
     r'^warehouse/$',
     r'^warehouse/login/$',
-#    r'^warehouse_app/$',
+    r'^warehouse/sign_out/$',
+    #    r'^warehouse_app/$',
     r'^warehouse_app/login/$',
+    r'^warehouse_app/sign_out/$',
     r'^accounting/$',
     r'^accounting/login/$',
+    r'^accounting/sign_out/$',
 )
 
 #LOGIN_URL = '/sign_in/'

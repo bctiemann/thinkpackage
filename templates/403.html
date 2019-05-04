@@ -1,4 +1,5 @@
 {% load static %}
+{% load filters %}
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -25,9 +26,26 @@
     <p>
         You do not have authorization to access this area.
     </p>
-    <a class="btn" href="{% url "sign-out" %}">
-        Log out
-    </a>
+    {% with request.path|split_path as path %}
+        <a class="btn"
+        {% if path.1 == 'mgmt' %}
+            href="{% url "mgmt:sign-out" %}"
+        {% elif path.1 == 'client' %}
+            href="{% url "client:sign-out" %}"
+        {% elif path.1 == 'warehouse' %}
+            href="{% url "warehouse:sign-out" %}"
+        {% elif path.1 == 'warehouse_app' %}
+            href="{% url "warehouse_app:sign-out" %}"
+        {% elif path.1 == 'accounting' %}
+            href="{% url "accounting:sign-out" %}"
+        {% else %}
+            href="{% url "sign-out" %}"
+        {% endif %}
+        >
+            Log out
+        </a>
+    {% endwith %}
+
 </div>
 
 </body>

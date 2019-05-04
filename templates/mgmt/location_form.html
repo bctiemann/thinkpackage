@@ -23,9 +23,9 @@
                         <option value="0">(Select contact)</option>>
                         {% endif %}
 
-                        {% for client_user in client.clientuser_set.all %}
-                        {% if client_user.user.is_active %}
-                        <option value="{{ client_user.id }}" {% if location.contact_user == client_user or client_user.is_primary %}selected{% endif %}>{{ client_user.user.first_name }} {{ client_user.user.last_name }}{% if client_user.title %} [{{ client_user.title }}]{% endif %}</option>
+                        {% for contact in client.contacts %}
+                        {% if contact.user.is_active %}
+                        <option value="{{ contact.id }}" {% if location.contact_user == contact or contact.is_primary %}selected{% endif %}>{{ contact.user.first_name }} {{ contact.user.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %}</option>
                         {% endif %}
                         {% endfor %}
                     </select>

@@ -120,6 +120,7 @@ admin.site.register(ClientUser, ClientUserAdmin)
 class CustContactAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()
+    search_fields = ('first_name', 'last_name', 'email',)
     formfield_overrides = {
         PhoneNumberField: {'widget': PhoneNumberPrefixWidget(initial='US'), }
     }
@@ -141,6 +142,7 @@ admin.site.register(WarehouseUser, WarehouseUserAdmin)
 class LocationAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()
+    autocomplete_fields = ('client', 'customer_contact', 'contact_user',)
 admin.site.register(Location, LocationAdmin)
 
 

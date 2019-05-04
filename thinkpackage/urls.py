@@ -12,12 +12,12 @@ from ims import views as ims_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    url(r'^sign_out/', auth_views.logout, {'next_page': 'home'}, name='sign-out'),
+    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='home'), name='sign-out'),
 
-    url(r'^recovery/password_reset/$', auth_views.password_reset, {'template_name': 'accounts/password_reset_form.html',}, name='password_reset'),
-    url(r'^recovery/password_reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html',},name='password_reset_done'),
-    url(r'^recovery/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.password_reset_confirm, {'template_name': 'accounts/password_reset_confirm.html',}, name='password_reset_confirm'),
-    url(r'^recovery/reset/done/$', auth_views.password_reset_complete, {'template_name': 'accounts/password_reset_complete.html',}, name='password_reset_complete'),
+    url(r'^recovery/password_reset/$', auth_views.PasswordResetView.as_view(), {'template_name': 'accounts/password_reset_form.html',}, name='password_reset'),
+    url(r'^recovery/password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), {'template_name': 'accounts/password_reset_done.html',},name='password_reset_done'),
+    url(r'^recovery/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(), {'template_name': 'accounts/password_reset_confirm.html',}, name='password_reset_confirm'),
+    url(r'^recovery/reset/done/$', auth_views.PasswordResetCompleteView.as_view(), {'template_name': 'accounts/password_reset_complete.html',}, name='password_reset_complete'),
 
     url(r'^$', ims_views.home, name='home'),
     url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),

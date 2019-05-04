@@ -16,7 +16,7 @@ urlpatterns = [
         name='login',
     ),
     url(r'^$', client_views.home, name='home'),
-    url(r'^sign_out/', auth_views.logout, {'next_page': 'client:login'}, name='sign-out'),
+    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='client:login'), name='sign-out'),
 
     url(r'^change_password/$', client_views.change_password, name='change-password'),
 

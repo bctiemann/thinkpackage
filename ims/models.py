@@ -97,7 +97,7 @@ class User(AbstractBaseUser):
     notes = models.TextField(blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     date_deleted = models.DateTimeField(null=True, blank=True)
-    created_by = models.ForeignKey('User', null=True, blank=True)
+    created_by = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
     last_login = models.DateTimeField(null=True, blank=True)
     login_count = models.IntegerField(null=True, blank=True)
 
@@ -217,7 +217,7 @@ class Client(models.Model):
     notes = models.TextField(blank=True)
     company_name = models.CharField(max_length=150, blank=True, db_column='coname')
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
-    parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent')
+    parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent', on_delete=models.SET_NULL)
     ancestors = JSONField(null=True, blank=True)
 
     objects = ClientManager()
@@ -269,8 +269,8 @@ class Client(models.Model):
 
 # Future model to map client contacts (formerly CustContacts) to clients, in a many-to-many relationship.
 class ClientUser(models.Model):
-    client = models.ForeignKey('Client', null=True)
-    user = models.ForeignKey('User')
+    client = models.ForeignKey('Client', null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     title = models.CharField(max_length=100, blank=True)
     last_login_client = models.DateTimeField(null=True, blank=True)
     is_primary = models.BooleanField(default=False)
@@ -284,8 +284,8 @@ class ClientUser(models.Model):
 
 class CustContact(models.Model):
     id = models.AutoField(primary_key=True, db_column='custcontactid')
-    client = models.ForeignKey('Client', db_column='customerid')
-    user = models.ForeignKey('User', null=True, blank=True)
+    client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
+    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.CASCADE)
     email = models.EmailField(max_length=192, blank=True)
     password = models.CharField(max_length=255, blank=True, db_column='pass')
     first_name = models.CharField(max_length=150, blank=True, db_column='fname')
@@ -328,7 +328,7 @@ class AdminUser(models.Model):
     id = models.AutoField(primary_key=True, db_column='adminid')
     username = models.CharField(max_length=100, blank=True, db_column='user')
     password = models.CharField(max_length=255, blank=True, db_column='pass')
-    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid')
+    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid', on_delete=models.SET_NULL)
     is_authority = models.BooleanField(default=False, db_column='authority')
     is_founder = models.BooleanField(default=False, db_column='founder')
     full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
@@ -358,7 +358,7 @@ class WarehouseUser(models.Model):
     id = models.AutoField(primary_key=True, db_column='wuserid')
     username = models.CharField(max_length=100, blank=True, db_column='user')
     password = models.CharField(max_length=255, blank=True, db_column='pass')
-    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid')
+    created_by = models.ForeignKey('AdminUser', null=True, blank=True, db_column='createdbyadminid', on_delete=models.SET_NULL)
     full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
     email = models.EmailField(max_length=192, blank=True)
     about = models.TextField(blank=True)
@@ -377,7 +377,7 @@ class WarehouseUser(models.Model):
 
 class Location(models.Model):
     id = models.AutoField(primary_key=True, db_column='locationid')
-    client = models.ForeignKey('Client', db_column='customerid')
+    client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=30, blank=True, db_column='tel')
     phone_extension = models.CharField(max_length=5, blank=True, db_column='telext')
@@ -389,8 +389,8 @@ class Location(models.Model):
     zip = models.CharField(max_length=10, blank=True)
     country = models.CharField(max_length=2, blank=True)
     non_us_state = models.CharField(max_length=150, blank=True, db_column='ostate')
-    customer_contact = models.ForeignKey('CustContact', null=True, blank=True, db_column='custcontactid')
-    contact_user = models.ForeignKey('ClientUser', null=True, blank=True)
+    customer_contact = models.ForeignKey('CustContact', null=True, blank=True, db_column='custcontactid', on_delete=models.SET_NULL)
+    contact_user = models.ForeignKey('ClientUser', null=True, blank=True, on_delete=models.SET_NULL)
     notes = models.TextField(blank=True)
     receiving_hours = models.CharField(max_length=100, blank=True, db_column='recvhours')
     is_active = models.BooleanField(default=True)
@@ -413,7 +413,7 @@ class Product(models.Model):
     )
 
     id = models.AutoField(primary_key=True, db_column='productid')
-    client = models.ForeignKey('Client', db_column='customerid')
+    client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     product_id = models.CharField(max_length=10, db_column='PRID', db_index=True)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     packing = models.IntegerField(null=True, blank=True)
@@ -431,7 +431,7 @@ class Product(models.Model):
     width = models.FloatField(max_length=10, null=True, blank=True)
     height = models.FloatField(max_length=10, null=True, blank=True)
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
-    location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
+    location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid', on_delete=models.SET_NULL)
     account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, null=True, blank=True, db_column='account')
 
     @property
@@ -574,8 +574,8 @@ class Shipment(models.Model):
     )
 
     id = models.AutoField(primary_key=True, db_column='shipmentid')
-    client = models.ForeignKey('Client', db_column='customerid')
-    user = models.ForeignKey('User', null=True, blank=True)
+    client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
+    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     date_shipped = models.DateTimeField(null=True, blank=True, db_column='shippedon')
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
@@ -584,7 +584,7 @@ class Shipment(models.Model):
     ship_by = models.IntegerField(null=True, blank=True, db_column='shipby')
     purchase_order = models.CharField(max_length=50, blank=True, default='', db_column='PO')
     shipment_order = models.CharField(max_length=50, blank=True, default='', db_column='SO')
-    location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid')
+    location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid', on_delete=models.SET_NULL)
     third_party = models.CharField(max_length=50, blank=True, default='', db_column='3rdparty')
     third_party_address = models.TextField(null=True, blank=True, db_column='3rdpartyaddress')
     third_party_phone_number = models.CharField(max_length=30, blank=True, default='', db_column='3rdpartyphone')
@@ -595,7 +595,7 @@ class Shipment(models.Model):
     purchase_order_number = models.CharField(max_length=50, blank=True, default='', db_column='loadnum')
     shipper_instructions = models.TextField(null=True, blank=True, db_column='shipperinstructions')
     consignee_instructions = models.TextField(null=True, blank=True, default='', db_column='consigneeinstructions')
-    shipper_address = models.ForeignKey('ShipperAddress', null=True, blank=True, db_column='shipperaddress')
+    shipper_address = models.ForeignKey('ShipperAddress', null=True, blank=True, db_column='shipperaddress', on_delete=models.SET_NULL)
     inside_delivery = models.BooleanField(default=False, db_column='insidedelivery')
     liftgate_required = models.BooleanField(default=False, db_column='liftgate')
     appointment_required = models.BooleanField(default=False, db_column='appointment')
@@ -654,14 +654,14 @@ class Shipment(models.Model):
 
 class Receivable(models.Model):
     id = models.AutoField(primary_key=True, db_column='receivableid')
-    client = models.ForeignKey('Client', db_column='customerid')
+    client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     date_received = models.DateTimeField(null=True, blank=True)
     purchase_order = models.CharField(max_length=50, blank=True, db_column='PO')
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
-    product = models.ForeignKey('Product', null=True, db_column='productid')
+    product = models.ForeignKey('Product', null=True, db_column='productid', on_delete=models.SET_NULL)
     cases = models.IntegerField(validators=[MinValueValidator(1)])
-    returned_product = models.ForeignKey('ReturnedProduct', null=True, blank=True, db_column='returnid')
+    returned_product = models.ForeignKey('ReturnedProduct', null=True, blank=True, db_column='returnid', on_delete=models.SET_NULL)
 
     @property
     def transaction(self):
@@ -681,18 +681,18 @@ class Transaction(models.Model):
     id = models.AutoField(primary_key=True, db_column='transactionid')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
     date_completed = models.DateTimeField(null=True, blank=True)
-    product = models.ForeignKey('Product', db_column='productid')
+    product = models.ForeignKey('Product', db_column='productid', on_delete=models.CASCADE)
 #    quantity = models.IntegerField(null=True, blank=True, db_column='qty')
 #    quantity_remaining = models.BigIntegerField(null=True, blank=True, db_column='qtyremain')
     cases_remaining = models.BigIntegerField(null=True, blank=True)
     is_outbound = models.BooleanField(default=False, db_column='direction')
-    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid')
-    client = models.ForeignKey('Client', db_column='customerid')
+    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid', on_delete=models.SET_NULL)
+    client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     cases = models.IntegerField(null=True, blank=True)
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
-    receivable = models.ForeignKey('Receivable', null=True, blank=True, db_column='receivableid')
-    transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers')
-    transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers')
+    receivable = models.ForeignKey('Receivable', null=True, blank=True, db_column='receivableid', on_delete=models.SET_NULL)
+    transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers', on_delete=models.SET_NULL)
+    transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers', on_delete=models.SET_NULL)
     is_scanned_to_pallet = models.BooleanField(default=False)
 
 #    @property
@@ -799,9 +799,9 @@ class Transaction(models.Model):
 class ReturnedProduct(models.Model):
     id = models.AutoField(primary_key=True, db_column='returnid')
     date_returned = models.DateTimeField(null=True, db_column='stamp')
-    client = models.ForeignKey('Client', db_column='customerid', null=True)
-    product = models.ForeignKey('Product', db_column='productid', null=True)
-    location = models.ForeignKey('Location', db_column='locationid', null=True)
+    client = models.ForeignKey('Client', db_column='customerid', null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey('Product', db_column='productid', null=True, on_delete=models.SET_NULL)
+    location = models.ForeignKey('Location', db_column='locationid', null=True, on_delete=models.SET_NULL)
     cases_damaged = models.IntegerField(null=True, blank=True, default=0)
     cases_undamaged = models.IntegerField(null=True, blank=True, default=0)
     date_reconciled = models.DateTimeField(null=True, blank=True, db_column='reconciled')
@@ -816,8 +816,8 @@ class ReturnedProduct(models.Model):
 class Pallet(models.Model):
     id = models.AutoField(primary_key=True, db_column='palletid')
     pallet_id = models.CharField(max_length=10, db_column='PID', db_index=True)
-    shipment = models.ForeignKey('Shipment', db_column='shipmentid', null=True, blank=True)
-    client = models.ForeignKey('Client', db_column='customerid', null=True, blank=True)
+    shipment = models.ForeignKey('Shipment', db_column='shipmentid', null=True, blank=True, on_delete=models.SET_NULL)
+    client = models.ForeignKey('Client', db_column='customerid', null=True, blank=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
 
     def create_qrcode(self):
@@ -878,8 +878,8 @@ class Pallet(models.Model):
 
 class PalletContents(models.Model):
     id = models.AutoField(primary_key=True, db_column='onpalletid')
-    pallet = models.ForeignKey('Pallet', db_column='palletid')
-    product = models.ForeignKey('Product', db_column='productid')
+    pallet = models.ForeignKey('Pallet', db_column='palletid', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', db_column='productid', on_delete=models.CASCADE)
     cases = models.IntegerField(db_column='qty')
 
     @property
@@ -899,7 +899,7 @@ def get_image_path(instance, filename):
 
 class ShipmentDoc(models.Model):
     id = models.AutoField(primary_key=True, db_column='docid')
-    shipment = models.ForeignKey('Shipment', null=True, db_column='shipmentid')
+    shipment = models.ForeignKey('Shipment', null=True, db_column='shipmentid', on_delete=models.SET_NULL)
     uuid = models.CharField(max_length=36, blank=True)
     file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)
@@ -926,11 +926,11 @@ class ShipmentDoc(models.Model):
 
 class ActionLog(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
-    user = models.ForeignKey('User', null=True, blank=True)
-    admin_user = models.ForeignKey('AdminUser', null=True, blank=True, db_column='adminid')
-    warehouse_user = models.ForeignKey('WarehouseUser', null=True, blank=True, db_column='wuserid')
-    client = models.ForeignKey('Client', null=True, blank=True, db_column='customerid')
-    product = models.ForeignKey('Product', null=True, blank=True, db_column='productid')
+    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
+    admin_user = models.ForeignKey('AdminUser', null=True, blank=True, db_column='adminid', on_delete=models.SET_NULL)
+    warehouse_user = models.ForeignKey('WarehouseUser', null=True, blank=True, db_column='wuserid', on_delete=models.SET_NULL)
+    client = models.ForeignKey('Client', null=True, blank=True, db_column='customerid', on_delete=models.SET_NULL)
+    product = models.ForeignKey('Product', null=True, blank=True, db_column='productid', on_delete=models.SET_NULL)
     log_message = models.TextField(null=True, blank=True)
     app = models.CharField(max_length=20, blank=True, default='')
 
@@ -940,11 +940,11 @@ class ActionLog(models.Model):
 
 class BulkOrder(models.Model):
     id = models.AutoField(primary_key=True, db_column='bulkorderid')
-    client = models.ForeignKey('Client', null=True, db_column='customerid')
+    client = models.ForeignKey('Client', null=True, db_column='customerid', on_delete=models.SET_NULL)
     filename = models.CharField(max_length=50, blank=True, default='')
     date_ordered = models.DateTimeField(null=True, blank=True, db_column='stamp')
     date_imported = models.DateTimeField(auto_now_add=True, db_column='imported')
-    location = models.ForeignKey('Location', null=True, db_column='locationid')
+    location = models.ForeignKey('Location', null=True, db_column='locationid', on_delete=models.SET_NULL)
     purchase_order = models.CharField(max_length=40, blank=True, default='', db_column='PO')
     date_delivery = models.DateTimeField(null=True, blank=True, db_column='deliverydate')
     account_number = models.CharField(max_length=32, blank=True, default='', db_column='accountnum')
@@ -954,7 +954,7 @@ class BulkOrder(models.Model):
     location_city = models.CharField(max_length=160, blank=True, default='', db_column='loccity')
     location_state = models.CharField(max_length=12, blank=True, default='', db_column='locstate')
     location_zip = models.CharField(max_length=40, blank=True, default='', db_column='loczip')
-    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid')
+    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid', on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'BulkOrders'
@@ -967,7 +967,7 @@ class BulkOrderItem(models.Model):
     )
 
     id = models.AutoField(primary_key=True, db_column='bulkorderitemid')
-    bulk_order = models.ForeignKey('BulkOrder', null=True, db_column='bulkorderid')
+    bulk_order = models.ForeignKey('BulkOrder', null=True, db_column='bulkorderid', on_delete=models.SET_NULL)
     item_number = models.CharField(max_length=40, blank=True, default='', db_column='itemnum')
     quantity = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, db_column='quantity')
     package_type = models.CharField(max_length=20, blank=True, default='', db_column='pkgtype')

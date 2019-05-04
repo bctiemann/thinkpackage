@@ -30,6 +30,6 @@ urlpatterns = [
     url(r'^barcode/lookup/check_pallet_contents/$', warehouse_app_views.barcode_lookup_pallet_contents, name='barcode-lookup-pallet-contents'),
     url(r'^barcode/lookup/pallet/$', warehouse_app_views.barcode_pallet, name='barcode-pallet'),
 
-    url(r'^sign_out/', auth_views.logout, {'next_page': 'warehouse_app:login'}, name='sign-out'),
+    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='warehouse_app:login'), name='sign-out'),
 ]
 

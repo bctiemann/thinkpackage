@@ -173,6 +173,8 @@ class ProductPrint(PDFView):
 
 
 class LoginView(LoginView):
+
+    home_url = reverse_lazy('home')
     template_name = 'login.html'
     form_list = (
         ('auth', UserLoginForm),

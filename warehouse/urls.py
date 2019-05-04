@@ -17,7 +17,7 @@ urlpatterns = [
     ),
 
     url(r'^$', warehouse_views.home, name='home'),
-    url(r'^sign_out/', auth_views.logout, {'next_page': 'warehouse:login'}, name='sign-out'),
+    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='warehouse:login'), name='sign-out'),
 
     url(r'^shipments/$', warehouse_views.shipments, name='shipments'),
     url(r'^shipments/list/$', warehouse_views.shipments_list, name='shipments-list'),

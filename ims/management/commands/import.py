@@ -159,7 +159,7 @@ class Command(BaseCommand):
                 ims_models.Location.objects.all().delete()
             c.execute("""SELECT * FROM locations""")
             for old in c.fetchall():
-                print(old['name'].encode('utf8'))
+                print('Location: {0}'.format(old['name'].encode('utf8')))
                 new = ims_models.Location.objects.create(
                     id = old['locationid'],
                     client_id = old['customerid'],
@@ -184,7 +184,7 @@ class Command(BaseCommand):
                 ims_models.Product.objects.all().delete()
             c.execute("""SELECT * FROM products""")
             for old in c.fetchall():
-                print(old['pname'].encode('utf8'))
+                print('Product: {0}'.format(old['pname'].encode('utf8')))
                 try:
                     location = ims_models.Location.objects.get(pk=old['locationid'])
                 except ims_models.Location.DoesNotExist:
@@ -219,7 +219,7 @@ class Command(BaseCommand):
                 ims_models.Shipment.objects.all().delete()
             c.execute("""SELECT * FROM shipments""")
             for old in c.fetchall():
-                print(old['shipmentid'])
+                print('Shipment: {0}'.format(old['shipmentid']))
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -267,7 +267,7 @@ class Command(BaseCommand):
                 ims_models.Receivable.objects.all().delete()
             c.execute("""SELECT * FROM receivables""")
             for old in c.fetchall():
-                print(old['receivableid'])
+                print('Receivable: {0}'.format(old['receivableid']))
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -292,7 +292,7 @@ class Command(BaseCommand):
                 ims_models.Transaction.objects.all().delete()
             c.execute("""SELECT * FROM transactions""")
             for old in c.fetchall():
-                print(old['transactionid'])
+                print('Transaction: {0}'.format(old['transactionid']))
                 try:
                     product = ims_models.Product.objects.get(pk=old['productid'])
                 except ims_models.Product.DoesNotExist:
@@ -343,7 +343,7 @@ class Command(BaseCommand):
                 ims_models.ReturnedProduct.objects.all().delete()
             c.execute("""SELECT * FROM returns""")
             for old in c.fetchall():
-                print(old['returnid'])
+                print('Return: {0}'.format(old['returnid']))
                 try:
                     client = ims_models.Client.objects.get(pk=old['customerid'])
                 except ims_models.Client.DoesNotExist:
@@ -373,7 +373,7 @@ class Command(BaseCommand):
                 ims_models.Pallet.objects.all().delete()
             c.execute("""SELECT * FROM pallets""")
             for old in c.fetchall():
-                print(old['palletid'])
+                print('Pallet: {0} {1}'.format(old['palletid'], old['PID']))
                 try:
                     shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
                 except ims_models.Shipment.DoesNotExist:
@@ -396,7 +396,7 @@ class Command(BaseCommand):
                 ims_models.PalletContents.objects.all().delete()
             c.execute("""SELECT * FROM onpallet""")
             for old in c.fetchall():
-                print(old['palletid'], old['productid'])
+                print('Pallet content: {0} {1}'.format(old['palletid'], old['productid']))
                 try:
                     pallet = ims_models.Pallet.objects.get(pk=old['palletid'])
                 except ims_models.Pallet.DoesNotExist:
@@ -419,7 +419,7 @@ class Command(BaseCommand):
                 ims_models.ShipmentDoc.objects.all().delete()
             c.execute("""SELECT * FROM shipmentdocs""")
             for old in c.fetchall():
-                print(old['docid'])
+                print('Document: {0}'.format(old['docid']))
                 try:
                     shipment = ims_models.Shipment.objects.get(pk=old['shipmentid'])
                 except ims_models.Shipment.DoesNotExist:
@@ -442,7 +442,7 @@ class Command(BaseCommand):
                 ims_models.ActionLog.objects.all().delete()
             c.execute("""SELECT * FROM actionlogs""")
             for old in c.fetchall():
-                print(old['log_message'])
+                print('Log message: {0}'.format(old['log_message']))
                 app = ''
                 try:
                     admin_user = ims_models.AdminUser.objects.get(pk=old['adminid'])

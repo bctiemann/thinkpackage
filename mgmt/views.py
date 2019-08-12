@@ -727,8 +727,8 @@ class ProductTransfer(APIView):
 
         ActionLog.objects.create(
             user = self.request.user,
-            client = self.object.client,
-            product = self.object,
+            client = from_product.client,
+            product = from_product,
             log_message = 'Transferred {0} to {1}'.format(cases, to_product.id),
             app = self.request.resolver_match.app_name,
         )
@@ -748,8 +748,8 @@ class ProductTransfer(APIView):
 
         ActionLog.objects.create(
             user = self.request.user,
-            client = self.object.client,
-            product = self.object,
+            client = to_product.client,
+            product = to_product,
             log_message = 'Transferred {0} from {1}'.format(cases, from_product.id),
             app = self.request.resolver_match.app_name,
         )

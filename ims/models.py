@@ -274,6 +274,7 @@ class ClientUser(models.Model):
     title = models.CharField(max_length=100, blank=True)
     last_login_client = models.DateTimeField(null=True, blank=True)
     is_primary = models.BooleanField(default=False)
+    view_order_history = models.BooleanField(default=True)
 
     def __str__(self):
         return ('{0} {1}'.format(self.user.first_name, self.user.last_name))

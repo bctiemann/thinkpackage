@@ -24,6 +24,11 @@ WAREHOUSING_CHOICES = (
     (False, 'No warehousing required'),
 )
 
+VIEW_ORDER_HISTORY_CHOICES = (
+    (True, 'Can view order history'),
+    (False, 'Cannot view order history'),
+)
+
 DOMESTIC_CHOICES = (
     (False, 'Import (12-14 wks)'),
     (True, 'Domestic (6-8 wks)'),
@@ -154,10 +159,11 @@ class UserCreateForm(UserForm):
 
 class ClientUserForm(forms.ModelForm):
     title = forms.CharField(label='Title', required=False, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
+    view_order_history = forms.ChoiceField(choices=VIEW_ORDER_HISTORY_CHOICES)
 
     class Meta:
         model = ClientUser
-        fields = ['client', 'title']
+        fields = ['client', 'title', 'view_order_history']
 
 
 class LocationForm(forms.ModelForm):

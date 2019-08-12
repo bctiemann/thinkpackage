@@ -288,18 +288,19 @@ console.log(data);
 function updateCustContact(custcontactid) {
     var customerid = $('#id_client').val();
     var custcontact = {
-        client:           customerid,
-        user:             $('#id_user').val(),
-        first_name:       $('#id_first_name').val(),
-        last_name:        $('#id_last_name').val(),
-        title:            $('#id_title').val(),
-        email:            $('#id_email').val(),
-        password:         $('#id_password').val(),
-        phone_number:     $('#id_phone_number').val(),
-        phone_extension:  $('#id_phone_extension').val(),
-        mobile_number:    $('#id_mobile_number').val(),
-        fax_number:       $('#id_fax_number').val(),
-        notes:            $('#id_contact_notes').val()
+        client:             customerid,
+        user:               $('#id_user').val(),
+        first_name:         $('#id_first_name').val(),
+        last_name:          $('#id_last_name').val(),
+        title:              $('#id_title').val(),
+        email:              $('#id_email').val(),
+        password:           $('#id_password').val(),
+        phone_number:       $('#id_phone_number').val(),
+        phone_extension:    $('#id_phone_extension').val(),
+        mobile_number:      $('#id_mobile_number').val(),
+        fax_number:         $('#id_fax_number').val(),
+        view_order_history: $('#id_view_order_history').val(),
+        notes:              $('#id_contact_notes').val()
     };
 console.log(custcontact);
     var url = cgiroot + 'contact/';

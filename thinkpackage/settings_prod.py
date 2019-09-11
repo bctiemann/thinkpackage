@@ -4,7 +4,7 @@ except ImportError:
     pass
 
 
-#DEBUG = False
+DEBUG = False
 
 SERVER_HOST = 'thinkpackage.grotto11.com'
 SERVER_URL_PREFIX = 'http://'

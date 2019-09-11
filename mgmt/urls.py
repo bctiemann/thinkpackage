@@ -19,10 +19,10 @@ urlpatterns = [
     url(r'^$', mgmt_views.home, name='home'),
 
     url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='mgmt:login'), name='sign-out'),
-    url(r'^password_reset/$', auth_views.PasswordResetView.as_view(), {'template_name': 'accounts/password_reset_form.html',}, name='password-reset'),
-    url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), {'template_name': 'accounts/password_reset_done.html',},name='password-reset-done'),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(), {'template_name': 'accounts/password_reset_confirm.html',}, name='password-reset-confirm'),
-    url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), {'template_name': 'accounts/password_reset_complete.html',}, name='password-reset-complete'),
+    # url(r'^password_reset/$', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset_form.html'), name='password-reset'),
+    # url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password-reset-done'),
+    # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'), name='password-reset-confirm'),
+    # url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), name='password-reset-complete'),
 
     url(r'^customers_list/$', mgmt_views.customers_list, name='customers-list'),
     url(r'^contacts_list/(?P<client_id>\d+)/$', mgmt_views.contacts_list, name='contacts-list'),

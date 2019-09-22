@@ -23,4 +23,6 @@ class AESCipher(object):
         return s + (self.bs - len(s) % self.bs) * chr(self.bs - len(s) % self.bs)
 
     def _unpad(self, s):
+        if ord(s[len(s)-1:]) > 16:
+            return s
         return s[:-ord(s[len(s)-1:])]

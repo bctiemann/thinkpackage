@@ -82,7 +82,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    products = Product.objects.filter(client=client).order_by('item_number')
+    products = Product.objects.filter(client=client, is_deleted=False).order_by('item_number')
 #    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
 #    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
 #    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)

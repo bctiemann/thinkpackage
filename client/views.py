@@ -264,6 +264,7 @@ def inventory_request_delivery(request):
         'Delivery Order #{0} - {1}'.format(shipment.id, selected_client.company_name),
         'email/delivery_request.txt',
         'email/delivery_request.html',
+        cc=[request.user.email],
     )
 
     return JsonResponse({'success': True})

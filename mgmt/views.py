@@ -418,7 +418,12 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
             client_user.user = user_form.save(commit=False)
             client_user.save()
 
-            client_user.user.set_password(user_form.cleaned_data['password'])
+            if user_form.cleaned_data['password'] == '********':
+                logger.info('Password unchanged')
+                client_user.user.password = user_form.initial['password']
+            else:
+                logger.info('Password changed')
+                client_user.user.set_password(user_form.cleaned_data['password'])
             client_user.user.save()
 
             return super(CustContactCreate, self).form_valid(form)

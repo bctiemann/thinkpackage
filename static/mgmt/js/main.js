@@ -1237,7 +1237,7 @@ console.log(data);
         }, 'json');
         $('#dialog_transfer_selectproduct').dialog('open');
     } else {
-        var url = apiroot + '/clients/';
+        var url = apiroot + 'clients/';
         $.get(url, {'method': 'getCustomers'}, function(data) {
             for (c in data) {
                 var li = $('<li>', {
@@ -1354,7 +1354,7 @@ function setupAutocompleteUsers() {
   $('input#id_email').autocomplete({
     source: function(request, response) {
       $.ajax({
-        url: apiroot + '/users-ac/' + request.term + '/',
+        url: apiroot + 'users-ac/' + request.term + '/',
         dataType: "json",
         data: {
 //          term: request.term
@@ -1379,7 +1379,7 @@ console.log(data);
     select: function(e,ui) {
       $('#id_email').val(ui.item.label);
 console.log(ui);
-      var url = apiroot + '/user/' + ui.item.value + '/';
+      var url = apiroot + 'user/' + ui.item.value + '/';
       $.getJSON(url, function(data) {
 console.log(data);
         $('#id_email').val(data.email);

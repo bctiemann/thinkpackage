@@ -67,6 +67,8 @@ def send_templated_email(recipients,
                          text_template=None,
                          html_template=None,
                          attachments=None,
+                         cc=None,
+                         bcc=None,
                         ):
 
     plaintext_template = get_template(text_template)
@@ -76,7 +78,7 @@ def send_templated_email(recipients,
     for recipient in recipients:
         text_content = plaintext_template.render(context)
         html_content = html_template.render(context)
-        msg = mail.EmailMultiAlternatives(subject, text_content, settings.SITE_EMAIL, [recipient])
+        msg = mail.EmailMultiAlternatives(subject, text_content, settings.SITE_EMAIL, [recipient], cc=cc, bcc=bcc)
         msg.attach_alternative(html_content, "text/html")
         if attachments:
             for attachment in attachments:

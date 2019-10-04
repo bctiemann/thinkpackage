@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 from ims.models import User, CustContact, ClientUser, Location
 from ims.cipher import AESCipher
 
+DEBUG = False
+
 
 class Command(BaseCommand):
 
@@ -42,6 +44,8 @@ class Command(BaseCommand):
                     email = custcontact.email,
                     password = password,
                 )
+            if DEBUG:
+                print('{0}\t{1}'.format(custcontact.email, password))
             user.first_name = custcontact.first_name
             user.last_name = custcontact.last_name
             user.phone_number = custcontact.phone_number

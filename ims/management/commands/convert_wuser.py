@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 from ims.models import WarehouseUser, User
 from ims.cipher import AESCipher
 
+DEBUG = False
+
 
 class Command(BaseCommand):
 
@@ -34,6 +36,8 @@ class Command(BaseCommand):
         for wuser in WarehouseUser.objects.all():
             password = self.remove_control_chars(aes.decrypt(wuser.password))
             name_parts = wuser.full_name.split(' ')
+            if DEBUG:
+                print(wuser.full_name, password)
             first_name, last_name = name_parts[0], ''
             if len(name_parts) > 1:
                 first_name = name_parts[0]

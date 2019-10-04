@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 from ims.models import AdminUser, User
 from ims.cipher import AESCipher
 
+DEBUG = False
+
 
 class Command(BaseCommand):
 
@@ -38,6 +40,8 @@ class Command(BaseCommand):
                 password = admin.password
             except ValueError:
                 continue
+            if DEBUG:
+                print(admin, password)
             name_parts = admin.full_name.split(' ')
             first_name, last_name = name_parts[0], ''
             if len(name_parts) > 1:

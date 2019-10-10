@@ -39,6 +39,7 @@ DATABASES = {
 
 STATIC_ROOT = '/usr/local/www/thinkpackage-dj/static_root'
 MEDIA_ROOT = '/usr/local/www/thinkpackage-dj/media'
+MEDIA_ROOT_LEGACY = '/usr/local/www/tp-data'
 MEDIA_URL = '/media/'
 
 LOG_DIR = '/usr/local/www/thinkpackage-dj/logs'

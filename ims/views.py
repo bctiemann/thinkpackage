@@ -49,13 +49,18 @@ def shipment_doc(request, doc_id=None):
     if not shipment_doc.file:
         raise Http404
 
-    filename = os.path.join(settings.MEDIA_ROOT, shipment_doc.file.name)
-    if not os.path.isfile(filename):
+    filename = None
+    for media_path in [settings.MEDIA_ROOT, settings.MEDIA_ROOT_LEGACY]:
+        test_filename = os.path.join(media_path, shipment_doc.file.name)
+        if os.path.isfile(test_filename):
+            filename = test_filename
+    if not filename:
         raise Http404
 
-    with open(filename, 'r') as file:
+    logger.info('User {0} downloaded {1}, {2}.{3}'.format(request.user, shipment_doc.id, shipment_doc.basename, shipment_doc.ext))
+    with open(filename, 'rb') as file:
         response = HttpResponse(file.read(), content_type=shipment_doc.content_type)
-        response['Content-Disposition'] = 'inline;filename=\'{0}.{1}\''.format(shipment_doc.basename, shipment_doc.ext)
+        response['Content-Disposition'] = 'inline;filename={0}.{1}'.format(shipment_doc.basename, shipment_doc.ext)
     return response
 
 
@@ -70,7 +75,7 @@ def async_task_result(request, async_task_id=None):
     if not os.path.isfile(filename):
         raise Http404
 
-    with open(filename, 'r') as file:
+    with open(filename, 'rb') as file:
         response = HttpResponse(file.read(), content_type=async_task.result_content_type)
         response['Content-Disposition'] = 'attachment;filename={0}.{1}'.format(async_task.result_basename, async_task.result_extension)
     return response

@@ -209,19 +209,19 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
         for product in products:
             writer.writerow([
                 product.item_number,
-                product.name.encode('utf8'),
+                product.name,
                 product.packing,
                 'IN',
             ] + [product_counts[column['id']][product.id]['in'] for column in columns])
             writer.writerow([
                 product.item_number,
-                product.name.encode('utf8'),
+                product.name,
                 product.packing,
                 'OUT',
             ] + [product_counts[column['id']][product.id]['out'] for column in columns])
             writer.writerow([
                 product.item_number,
-                product.name.encode('utf8'),
+                product.name,
                 product.packing,
                 'BAL',
             ] + [product_counts[column['id']][product.id]['balance'] for column in columns])
@@ -310,7 +310,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 row['shipment_id'],
                 row['location'],
                 row['item_number'],
-                row['product_name'].encode('utf8'),
+                row['product_name'],
                 row['month'],
                 row['year'],
                 row['cases'],
@@ -403,7 +403,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 row['purchase_order'],
                 row['shipment_order'],
                 row['item_number'],
-                row['product_name'].encode('utf8'),
+                row['product_name'],
                 row['cases'],
                 row['packing'],
                 row['units'],

@@ -62,7 +62,7 @@ class Command(BaseCommand):
             user.notes = admin.about
             user.phone_number = admin.mobile_number
             user.is_admin = True
-            user.is_active = user.is_active
+            user.is_active = admin.is_active
             user.save()
 
         for admin in AdminUser.objects.all():

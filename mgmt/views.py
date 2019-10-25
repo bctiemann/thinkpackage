@@ -74,6 +74,7 @@ class LoginView(LoginView):
 
 def home(request):
 
+    logger.info(f'{request.user} viewed mgmt home page')
     delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')
 
     ready_to_ship = Shipment.objects.filter(status=1).order_by('-date_created')

@@ -27,12 +27,14 @@
             <th>Cases</th>
         </tr>
         {% for product in requested_products %}
-        <tr>
-            <td>{{ product.obj.item_number }}</td>
-            <td>{{ product.obj.name }}</td>
-            <td>{{ product.obj.packing|intcomma }}</td>
-            <td>{{ product.cases }}</td>
-        </tr>
+            {% if product.cases > 0 %}
+                <tr>
+                    <td>{{ product.obj.item_number }}</td>
+                    <td>{{ product.obj.name }}</td>
+                    <td>{{ product.obj.packing|intcomma }}</td>
+                    <td>{{ product.cases }}</td>
+                </tr>
+            {% endif %}
         {% endfor %}
     </table>
     </div>

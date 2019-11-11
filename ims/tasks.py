@@ -427,3 +427,89 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     async_task.save()
 
     return 'done'
+
+
+@shared_task
+def generate_location_list(async_task_id, client_id):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+    client = Client.objects.get(pk=client_id)
+
+    filename = 'LocationList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            'Name',
+            'Address',
+            'Address 2',
+            'City',
+            'State',
+            'ZIP',
+            'Contact',
+            'Email',
+            'Phone',
+        ])
+        for location in client.location_set.filter(is_active=True):
+            writer.writerow([
+                location.name,
+                location.address,
+                location.address_2,
+                location.city,
+                location.state,
+                location.zip,
+                location.contact_user.user.full_name,
+                location.contact_user.user.email,
+                location.contact_user.user.phone_number,
+            ])
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'
+
+
+@shared_task
+def generate_contact_list(async_task_id, client_id):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+    client = Client.objects.get(pk=client_id)
+
+    filename = 'ContactList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            'Email',
+            'First Name',
+            'Last Name',
+            'Title',
+            'Phone',
+            'Ext',
+            'Fax',
+            'Mobile',
+        ])
+        for client_user in client.clientuser_set.all():
+            writer.writerow([
+                client_user.user.email,
+                client_user.user.first_name,
+                client_user.user.last_name,
+                client_user.title,
+                client_user.user.phone_number,
+                client_user.user.phone_extension,
+                client_user.user.fax_number,
+                client_user.user.mobile_number,
+            ])
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'

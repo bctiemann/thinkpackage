@@ -1185,6 +1185,26 @@ function setupInventoryAnalysis(customerid) {
     $('#dialog_inventory_analysis').dialog('open');
 }
 
+function executeLocationList(customerid) {
+    var url = cgiroot + 'report/location_list/';
+    var params = {
+        client: customerid,
+    };
+    $.post(url, params, function(data) {
+        console.log(data);
+    });
+}
+
+function executeContactList(customerid) {
+    var url = cgiroot + 'report/contact_list/';
+    var params = {
+        client: customerid,
+    };
+    $.post(url, params, function(data) {
+        console.log(data);
+    });
+}
+
 function setupProductTransfer(productid, customerid) {
     $('#transfer_remain_selected').html($('#remain_'+productid).val());
     $('#transfer_cases').val('');

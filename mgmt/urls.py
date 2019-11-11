@@ -80,9 +80,11 @@ urlpatterns = [
 #    url(r'^action_log/$', mgmt_views.FilteredActionLogListView.as_view(), name='action-log'),
     url(r'^search/$', mgmt_views.search, name='search'),
 
-    url(r'^report/lookup/$', mgmt_views.ItemLookup.as_view(), name='item-lookup-report'),
+    url(r'^report/lookup/$', mgmt_views.ItemLookupReport.as_view(), name='item-lookup-report'),
 #    url(r'^report/inventory_list/$', mgmt_views.inventory_list_csv, name='inventory-list-report'),
-    url(r'^report/inventory_list/$', mgmt_views.InventoryList.as_view(), name='inventory-list-report'),
-    url(r'^report/delivery_list/$', mgmt_views.DeliveryList.as_view(), name='delivery-list-report'),
-    url(r'^report/incoming_list/$', mgmt_views.IncomingList.as_view(), name='incoming-list-report'),
+    url(r'^report/inventory_list/$', mgmt_views.InventoryListReport.as_view(), name='inventory-list-report'),
+    url(r'^report/delivery_list/$', mgmt_views.DeliveryListReport.as_view(), name='delivery-list-report'),
+    url(r'^report/incoming_list/$', mgmt_views.IncomingListReport.as_view(), name='incoming-list-report'),
+    url(r'^report/location_list/$', mgmt_views.LocationListReport.as_view(), name='location-list-report'),
+    url(r'^report/contact_list/$', mgmt_views.ContactListReport.as_view(), name='contact-list-report'),
 ]

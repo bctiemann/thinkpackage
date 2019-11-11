@@ -1077,7 +1077,7 @@ def search(request):
     return render(request, 'mgmt/search.html', context)
 
 
-class ItemLookup(APIView):
+class ItemLookupReport(APIView):
 
     def post(self, *args, **kwargs):
         item_number = self.request.data['itemnum']
@@ -1092,7 +1092,7 @@ class ItemLookup(APIView):
         return JsonResponse(result)
 
 
-class InventoryList(APIView):
+class InventoryListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
@@ -1107,7 +1107,7 @@ class InventoryList(APIView):
         return JsonResponse(result)
 
 
-class DeliveryList(APIView):
+class DeliveryListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
@@ -1122,13 +1122,43 @@ class DeliveryList(APIView):
         return JsonResponse(result)
 
 
-class IncomingList(APIView):
+class IncomingListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
         async_task = AsyncTask.objects.create(name='IncomingList-{0}'.format(client.company_name))
 
         tasks.generate_incoming_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+class LocationListReport(APIView):
+
+    def post(self, *args, **kwargs):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name))
+
+        tasks.generate_location_list.delay(async_task.id, client.id)
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+class ContactListReport(APIView):
+
+    def post(self, *args, **kwargs):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name))
+
+        tasks.generate_contact_list.delay(async_task.id, client.id)
 
         result = {
             'success': True,

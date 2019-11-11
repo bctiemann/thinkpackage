@@ -493,7 +493,7 @@ def generate_contact_list(async_task_id, client_id):
             'Fax',
             'Mobile',
         ])
-        for client_user in client.clientuser_set.all():
+        for client_user in client.contacts.all():
             writer.writerow([
                 client_user.user.email,
                 client_user.user.first_name,

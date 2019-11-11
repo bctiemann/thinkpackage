@@ -1185,11 +1185,22 @@ function setupInventoryAnalysis(customerid) {
     $('#dialog_inventory_analysis').dialog('open');
 }
 
-function executeLocationList(customerid) {
+function setupLocationList(customerid) {
+    globals['customerid'] = customerid;
+    $('#dialog_location_list').dialog('open');
+}
+
+function execute_locationList(customerid) {
     var url = cgiroot + 'report/location_list/';
     var params = {
         client: customerid,
     };
+    $('#location_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'location_list_progress_percent',
+    }));
+
     $.post(url, params, function(data) {
         console.log(data);
         if (data.success) {
@@ -1200,10 +1211,21 @@ function executeLocationList(customerid) {
                 var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
                 $.getJSON(statusUrl, function(statusData) {
 console.log(statusData);
-                    $('#incoming_list_progress_percent').html(statusData.percent_complete + '%');
+                    $('#location_list_progress_percent').html(statusData.percent_complete + '%');
                     if (statusData.is_complete) {
-                        window.open(statusData.result_url);
+//                        $('.spinner').removeClass('active');
+                        $('#location_list_progress_percent').html('');
                         clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#location_list_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
                     }
                 });
             }, 1000);
@@ -1211,11 +1233,22 @@ console.log(statusData);
     });
 }
 
-function executeContactList(customerid) {
+function setupContactList(customerid) {
+    globals['customerid'] = customerid;
+    $('#dialog_contact_list').dialog('open');
+}
+
+function execute_contactList(customerid) {
     var url = cgiroot + 'report/contact_list/';
     var params = {
         client: customerid,
     };
+    $('#contact_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'contact_list_progress_percent',
+    }));
+
     $.post(url, params, function(data) {
         console.log(data);
         if (data.success) {
@@ -1226,10 +1259,21 @@ function executeContactList(customerid) {
                 var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
                 $.getJSON(statusUrl, function(statusData) {
 console.log(statusData);
-                    $('#incoming_list_progress_percent').html(statusData.percent_complete + '%');
+                    $('#contact_list_progress_percent').html(statusData.percent_complete + '%');
                     if (statusData.is_complete) {
-                        window.open(statusData.result_url);
+//                        $('.spinner').removeClass('active');
+                        $('#contact_list_progress_percent').html('');
                         clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#contact_list_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
                     }
                 });
             }, 1000);
@@ -1781,6 +1825,44 @@ $(document).ready(function() {
                 $( this ).dialog( "close" );
                 var url = 'gen_inventory_analysis.cfm?customerid=' + globals['customerid'];
 //                window.open(url);
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_location_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 500,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+//                $( this ).dialog( "close" );
+//                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
+//                window.open(url);
+                execute_locationList(globals['customerid']);
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_contact_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 500,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+//                $( this ).dialog( "close" );
+//                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
+//                window.open(url);
+                execute_contactList(globals['customerid']);
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

@@ -1192,6 +1192,22 @@ function executeLocationList(customerid) {
     };
     $.post(url, params, function(data) {
         console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#incoming_list_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+                        window.open(statusData.result_url);
+                        clearInterval(globals['asyncTaskInterval']);
+                    }
+                });
+            }, 1000);
+        }
     });
 }
 
@@ -1202,6 +1218,22 @@ function executeContactList(customerid) {
     };
     $.post(url, params, function(data) {
         console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#incoming_list_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+                        window.open(statusData.result_url);
+                        clearInterval(globals['asyncTaskInterval']);
+                    }
+                });
+            }, 1000);
+        }
     });
 }
 

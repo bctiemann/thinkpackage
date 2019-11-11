@@ -204,23 +204,26 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
         columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']))
         columns = [column for column in columns if column['date'] < date_to.date()]
 
-        writer.writerow(['Item #', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
+        writer.writerow(['Item #', 'Client ID', 'Description', 'Packing/cs', 'Recvd/Deliv'] + [column['id'] for column in columns])
 
         for product in products:
             writer.writerow([
                 product.item_number,
+                product.client_tag,
                 product.name,
                 product.packing,
                 'IN',
             ] + [product_counts[column['id']][product.id]['in'] for column in columns])
             writer.writerow([
                 product.item_number,
+                product.client_tag,
                 product.name,
                 product.packing,
                 'OUT',
             ] + [product_counts[column['id']][product.id]['out'] for column in columns])
             writer.writerow([
                 product.item_number,
+                product.client_tag,
                 product.name,
                 product.packing,
                 'BAL',
@@ -267,6 +270,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'shipment_id': 'RETURN',
                 'location': transaction.receivable.returned_product.location.name,
                 'item_number': transaction.product.item_number,
+                'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'month': transaction.receivable.returned_product.date_returned.month,
                 'year': transaction.receivable.returned_product.date_returned.year,
@@ -280,6 +284,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'shipment_id': transaction.shipment.id,
                 'location': transaction.shipment.location.name,
                 'item_number': transaction.product.item_number,
+                'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'month': transaction.shipment.date_shipped.month,
                 'year': transaction.shipment.date_shipped.year,
@@ -297,6 +302,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
             'DL #',
             'Store',
             'SKU #',
+            'Client ID',
             'SKU Desc',
             'Month',
             'Year',
@@ -310,6 +316,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 row['shipment_id'],
                 row['location'],
                 row['item_number'],
+                row['client_tag'],
                 row['product_name'],
                 row['month'],
                 row['year'],
@@ -373,6 +380,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 'purchase_order': purchase_order,
                 'shipment_order': transaction.shipment_order,
                 'item_number': transaction.product.item_number,
+                'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'cases': cases,
                 'packing': transaction.product.packing,
@@ -390,6 +398,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
             'PO #',
             'SO #',
             'Item #',
+            'Client ID',
             'Description',
             'Cases In',
             'PACKING per case',
@@ -403,6 +412,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 row['purchase_order'],
                 row['shipment_order'],
                 row['item_number'],
+                row['client_tag'],
                 row['product_name'],
                 row['cases'],
                 row['packing'],

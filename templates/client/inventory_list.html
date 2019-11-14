@@ -33,7 +33,7 @@
         <tr class="product" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
             <td class="text" id="itemnum_{{ product.id }}">{{ product.item_number }}</td>
             <td class="numeric editable" id="request_{{ product.id }}"><input type="number" class="delivery_request" id="cases_{{ product.id }}" remain="{{ product.cases_available }}" value="{{ shipment_cases }}" productid="{{ product.id }}" style="width: 100px;" /></td>
-            <td class="text">{{ product.client_tag }}</td>
+            <td class="text">{% if product.client_tag == 'STK' %}{{ selected_client.company_name }}{% else %}{{ product.client_tag }}{% endif %}</td>
             <td class="text location" location_id="{{ product.location.id }}">{{ product.location.name }}</td>
             <td class="text pname" id="pname_{{ product.id }}">{{ product.name }}</td>
             <td class="numeric italic" id="packing_{{ product.id }}">{{ product.packing|intcomma }}</td>

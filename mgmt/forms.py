@@ -194,10 +194,6 @@ class ProductForm(forms.ModelForm):
         self.fields['contracted_quantity'].required = False
         if self.instance.contracted_quantity_units:
             self.initial['contracted_quantity'] = self.instance.contracted_quantity_units
-        if self.instance.unit_price:
-            self.initial['unit_price'] = '{:0.4f}'.format(self.instance.unit_price)
-        if self.instance.gross_weight:
-            self.initial['gross_weight'] = '{:0.1f}'.format(self.instance.gross_weight)
 
     def clean_contracted_quantity(self):
         if not self.cleaned_data.get('packing') or not self.cleaned_data.get('contracted_quantity'):
@@ -230,7 +226,7 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
             'contracted_quantity': forms.NumberInput(attrs={'style': 'width: 100px;'}),
-            'unit_price': forms.NumberInput(attrs={'style': 'width: 65px;', 'min': 0, 'step': '0.0001', 'onchange': 'this.value = parseFloat(this.value).toFixed(5);'}),
+            'unit_price': forms.NumberInput(attrs={'style': 'width: 65px;', 'min': 0, 'step': '0.00001', 'onchange': 'this.value = parseFloat(this.value).toFixed(5);'}),
             'gross_weight': forms.NumberInput(attrs={'style': 'width: 50px;'}),
             'length': forms.NumberInput(attrs={'style': 'width: 50px;'}),
             'width': forms.NumberInput(attrs={'style': 'width: 50px;'}),

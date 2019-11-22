@@ -420,7 +420,7 @@ class Product(models.Model):
     packing = models.IntegerField(null=True, blank=True)
     cases_inventory = models.IntegerField(null=True, blank=True, db_column='remain')
     units_inventory_old = models.IntegerField(null=True, blank=True, db_column='totalq')
-    unit_price = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True, db_column='unitprice')
+    unit_price = models.DecimalField(max_digits=9, decimal_places=5, null=True, blank=True, db_column='unitprice')
     gross_weight = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, db_column='GW')
     is_domestic = models.BooleanField(default=False, db_column='prodtype')
     name = models.CharField(max_length=255, blank=True, db_column='pname')

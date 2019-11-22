@@ -230,7 +230,7 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
             'contracted_quantity': forms.NumberInput(attrs={'style': 'width: 100px;'}),
-            'unit_price': forms.NumberInput(attrs={'style': 'width: 65px;', 'min': 0, 'step': '0.0001', 'onchange': 'this.value = parseFloat(this.value).toFixed(4);'}),
+            'unit_price': forms.NumberInput(attrs={'style': 'width: 65px;', 'min': 0, 'step': '0.0001', 'onchange': 'this.value = parseFloat(this.value).toFixed(5);'}),
             'gross_weight': forms.NumberInput(attrs={'style': 'width: 50px;'}),
             'length': forms.NumberInput(attrs={'style': 'width: 50px;'}),
             'width': forms.NumberInput(attrs={'style': 'width: 50px;'}),

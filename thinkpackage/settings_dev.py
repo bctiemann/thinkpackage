@@ -58,12 +58,14 @@ TWILIO_AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
 TWILIO_CALLER_ID = '404-800-7627'
 
 #EMAIL_HOST = 'mail.lionking.org'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = 25
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SUPPORT_EMAIL = 'btman@mac.com'
 SITE_EMAIL = 'btman@mac.com'
 DELIVERY_EMAIL = 'btman@mac.com'
+PO_EMAIL = 'btman@mac.com'
 COMPANY_PHONE_NUMBER = '(866) 111-2222'
 
 CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']

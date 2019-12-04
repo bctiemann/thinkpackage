@@ -59,6 +59,7 @@ EMAIL_PORT = 25
 SUPPORT_EMAIL = 'btman@mac.com'
 SITE_EMAIL = 'btman@mac.com'
 DELIVERY_EMAIL = 'btman@mac.com'
+PO_EMAIL = 'btman@mac.com'
 COMPANY_PHONE_NUMBER = '(866) 111-2222'
 
 CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']

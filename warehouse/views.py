@@ -20,6 +20,7 @@ from django_pdfkit import PDFView
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims.views import LoginView
+from ims.tasks import email_purchase_order
 from warehouse import forms
 from ims import utils
 
@@ -274,3 +275,45 @@ class BillOfLadingView(PDFView):
             'no-outline': None,
         }
         return options
+
+
+class PurchaseOrderView(PDFView):
+    template_name = 'warehouse/purchase_order.html'
+    max_products_per_page = 20
+
+    def get_context_data(self, **kwargs):
+        context = super(PurchaseOrderView, self).get_context_data(**kwargs)
+        shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+        context['shipment'] = shipment
+        context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
+        context['pages'] = list(range(context['total_pages']))
+        context['max_products_per_page'] = self.max_products_per_page
+        context['remainder_rows'] = list(range(self.max_products_per_page - (shipment.transaction_set.count() % self.max_products_per_page)))
+        return context
+
+    def get_pdfkit_options(self):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.52in',
+            'margin-right': '0.25in',
+            'margin-bottom': '0.0in',
+            'margin-left': '0.25in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+        }
+        return options
+
+
+def purchase_order_test(request, shipment_id):
+
+    context = {
+    }
+
+    request_dict= {
+        'scheme': request.scheme,
+        'host': request.get_host(),
+    }
+
+    email_purchase_order(request=request_dict, shipment_id=shipment_id)
+
+    return render(request, 'warehouse/shipments.html', context)

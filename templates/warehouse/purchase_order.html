@@ -1,0 +1,624 @@
+{% load static %}
+{% load humanize %}
+{% load filters %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Think Package Purchase Order</title>
+    <style type="text/css">
+/* Reset CSS. http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css  */
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,
+pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,
+cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}
+caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}
+sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,
+select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,
+select{*font-size:100%;}legend{color:#000;}
+
+/* Your Base Foundation */
+html,body { font-family: sans-serif; font-size:12px; }
+h1 { font-size:18px; }
+h2 { font-size:16px; }
+h3 { font-size:14px; }
+h4 { font-size:12px; }
+strong { font-weight:900 !important; }
+hr     { border:0; margin:0; padding:0; height:1px; color:#000; background-color:#000; }
+
+/* Page Breaks */
+.pb_before { page-break-before:always !important; }
+.pb_after  { page-break-after:always !important; }
+.pbi_avoid { page-break-inside:avoid !important; }
+
+body {
+        font-size: 10px;
+        font-family: sans-serif;
+}
+
+
+#box {
+        width: 8.5 in;
+        height: 5.5 in;
+        border: 1px dashed #888888;
+        margin: 1em;
+        padding: 0.5em;
+        height: 6em;
+        position: relative;
+        background: url('../images/tp.png') no-repeat;
+}
+
+div.box {
+        border: 1px solid #000;
+        padding: 5px;
+}
+
+#blurb {
+        width: 15em;
+}
+
+#img_barcode {
+        position: absolute;
+        left: 16.5em;
+        //top: 0.5em;
+        width: 200px;
+        height: 200px;
+        z-index: 2;
+}
+
+h3 {
+        font-size: 18px;
+        font-family: sans-serif;
+        font-weight: normal;
+}
+
+h4 {
+        font-size: 16px;
+        font-family: sans-serif;
+        font-weight: normal;
+}
+
+small {
+        font-size: 12px;
+        font-family: sans-serif;
+}
+
+img.logo {
+        width: 240px;
+}
+
+.floatright {
+        float: right;
+}
+
+.topwarning {
+        font-size: 15px;
+        font-weight: normal;
+}
+
+.mediumfine {
+        font-size: 7px;
+}
+.fine {
+        font-size: 5px;
+}
+
+p.mediumfine {
+        margin: 0px;
+}
+
+.logo_address {
+        margin-left: 7px;
+}
+
+div.textblock {
+        position: absolute;
+}
+
+#shipper {
+        left: 15px;
+        top: 73px;
+}
+
+#consignee {
+        left: 490px;
+        top: 73px;
+}
+
+#ship_date {
+        left: 260px;
+        top: 73px;
+}
+
+#shipper_address {
+        left: 45px;
+        top: 85px;
+}
+
+#consignee_address {
+        left: 445px;
+        top: 85px;
+        font-size: 16px;
+}
+
+#carrier {
+        left: 95px;
+        top: 173px;
+}
+
+#requirements {
+        margin-top: 10px;
+}
+#requirements p {
+        font-size: 8px;
+        margin-left: 10px;
+}
+
+div.pagecount {
+        float: right;
+        font-size: 8px;
+        width: 60px;
+        padding: 3px;
+}
+
+table.shipping_info {
+        width: 100%;
+        font-size: 10px;
+        border-spacing: 0px;
+}
+table.shipping_info td {
+        padding: 3px;
+        vertical-align: top;
+        border-style: solid;
+        border-color: #000;
+        border-width: 1px 0px 0px 1px;
+}
+table.shipping_info td.bottom_row {
+        border-bottom: 1px solid #000;
+}
+table.shipping_info td.right_col {
+        border-right: 1px solid #000;
+}
+td.shipper_side {
+        width: 60%;
+}
+td.consignee_side {
+        width: 40%;
+        border-left: 1px solid #aaa;
+}
+td.address_box {
+        height: 80px;
+}
+td.refnum_box {
+        height: 22px;
+        border-top: 1px solid #aaa;
+        font-size: 9px;
+}
+td.left_label {
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        width: 10%;
+        font-size: 9px;
+}
+td.left_space {
+        width: 50%;
+        border-bottom: 1px solid #aaa;
+}
+td.bill_to {
+        border-left: 1px solid #aaa;
+        font-size: 9px;
+}
+
+table.shipping_info th {
+        font-size: 9px;
+        font-weight: normal;
+        padding: 3px;
+        border-bottom: 1px solid;
+        text-align: center;
+}
+table.shipping_info td.line_no {
+        width: 40px;
+        text-align: right;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.line_no {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.client_id {
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.client_id {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.no_cases {
+        width: 60px;
+        text-align: right;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.no_cases {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.item_no {
+        width: 60px;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.item_no {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.item_descr {
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.item_descr {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.packing {
+        width: 60px;
+        text-align: right;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.packing {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.unit_price {
+        width: 70px;
+        text-align: right;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.unit_price {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.case_price {
+        width: 70px;
+        text-align: right;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.case_price {
+        border-top: 1px solid #000;
+}
+table.shipping_info td.net_amount {
+        width: 70px;
+        text-align: right;
+        border-right: none;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.net_amount {
+        border-top: 1px solid #000;
+}
+table.shipping_info .total_pcs {
+        width: 70px;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info tr.totals td.total_pcs {
+        border-top: 1px solid #000;
+}
+table.shipping_info .weight {
+        width: 70px;
+        border-bottom: 1px solid #aaa;
+        border-top: none;
+        border-left: none;
+}
+table.shipping_info td.weight {
+        border-right: 1px solid #000;
+}
+table.shipping_info .charges {
+        width: 70px;
+        border-bottom: 1px solid #aaa;
+}
+td.signature {
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        height: 30px;
+        font-size: 9px;
+}
+td.date {
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        height: 30px;
+        font-size: 9px;
+}
+td.extra {
+        border-bottom: 1px solid #aaa;
+        height: 30px;
+        font-size: 9px;
+}
+
+div.special_instructions {
+        width: 100%;
+        height: 50px;
+        font-size: 10px;
+        font-weight: bold;
+}
+div.special_instructions_header {
+        font-size: 9px;
+        margin-top: 5px;
+}
+
+.recvhours {
+        margin-left: 20px;
+        margin-top: 0px;
+        margin-bottom: 10px;
+}
+
+div.footer_info {
+        margin-top: 5px;
+        font-size: 8px;
+}
+div.footer_info p {
+        margin: 0px;
+}
+
+td.label {
+        text-align: right;
+        width: 40px;
+}
+
+p.box_inner_heading {
+        font-size: 8px;
+}
+
+table.shipping_info p {
+        margin: 0px;
+}
+
+span.underline {
+        text-decoration: underline;
+        font-family: monospace;
+}
+
+table.signatures {
+        width: 100%;
+}
+table.signatures td {
+        border: none;
+}
+
+p.total {
+        width: 180px;
+        float: left;
+}
+
+.total.cases {
+        width: 130px;
+}
+.total.pallets {
+        width: 130px;
+}
+.total.class {
+        width: 250px;
+}
+.total.pieces {
+        width: 110px;
+}
+.total.weight {
+        width: 110px;
+}
+
+td.label {
+        width: 30%;
+}
+
+.requirements {
+        font-weight: bold;
+}
+    </style>
+</head>
+
+<body>
+
+{% for page in pages %}
+
+<div class="floatright ship-date">
+Ship Date:  {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
+</div>
+
+<div class="pagecount">
+Page {{ forloop.counter }} of {{ total_pages }}
+</div>
+
+
+<div class="topwarning">
+STRAIGHT BILL OF LADING - ORIGINAL NOT NEGOTIABLE
+</div>
+<div class="mediumfine">
+This form contains only the information necessary for the motor carrier to deliver, rate, and invoice the shipment described below.
+</div>
+
+
+<div class="floatright">
+<table class="shipping-info" style="width: 400px;">
+    <tr>
+        <td class="label">Carrier</td>
+        <td class="right_col">{{ shipment.carrier }}</td>
+    </tr>
+    <tr>
+        <td class="label">Pro #</td>
+        <td class="right_col">{{ shipment.pro_number }}</td>
+    </tr>
+    <tr>
+        <td class="label">PO #</td>
+        <td class="right_col">{{ shipment.purchase_order_number }}</td>
+    </tr>
+    <tr>
+        <td class="label">Ship ID #</td>
+        <td class="right_col">{{ shipment.id }}</td>
+    </tr>
+</table>
+
+<br />
+<div class="box style="width: 287px;">
+<p class="box_inner_heading">All Freight Charges PPD/3rd Party Bill To:</p>
+{{ shipment.third_party }}<br />
+{{ shipment.third_party_address|format_newlines|safe }}
+</div>
+</div>
+
+<br />
+Shipper:
+<div class="box" style="width: 400px;">
+{{ shipment.shipper_address.address|format_newlines|safe }}
+</div>
+
+<br />
+Consignee:
+<div class="box" style="width: 400px;">
+{{ shipment.client.company_name }}<br />
+{{ shipment.location.address }} {{ shipment.location.address_2 }}<br />
+{{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.lcoation.zip }}<br />
+{{ shipment.location.customer_contact.phone_number }}<br />
+ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.customer_contact.last_name }}
+</div>
+
+<br />
+
+
+<table class="items-table" style="margin-top: 30px; border: 1px solid ##000;">
+<tr>
+    <th class="no_cases"># CASES</th>
+    <th class="item_id">ITEM #</th>
+    <th class="item_descr">DESCRIPTION</th>
+    <th class="packing">PACKING PER CASE</th>
+    <th class="total_pcs">TOTAL # OF PCS</th>
+    <th class="weight">WEIGHT (LBS)</th>
+</tr>
+
+{% with page=forloop.counter pagestart=forloop.counter0|multiply:max_products_per_page pageend=forloop.counter|multiply:max_products_per_page %}
+{% for transaction in shipment.transaction_set.all %}
+    {% if forloop.counter0 >= pagestart and forloop.counter0 < pageend %}
+
+    <tr>
+        <td class="no_cases">{{ transaction.cases|intcomma }}</td>
+        <td class="item_id">{{ transaction.product.item_number }}</td>
+        <td class="item_descr">{{ transaction.product.name|truncatechars:72 }}
+            <span class="account-label">{% if transaction.product.account_prepay_type == 1 %}[INVQ]{% elif transaction.product.account_prepay_type == 2 %}[Prepaid]{% endif %}</span>
+        </td>
+        <td class="packing">{{ transaction.product.packing|intcomma }}</td>
+        <td class="total_pcs">{{ transaction.total_quantity|intcomma }}</td>
+        <td class="weight">{{ transaction.total_weight_imperial|floatformat:1 }}</td>
+    </tr>
+
+    {% endif %}
+{% endfor %}
+{% endwith %}
+
+{% if forloop.counter == total_pages %}
+{% for blank_row in remainder_rows %}
+    <tr>
+        <td class="no_cases">&nbsp;</td>
+        <td class="item_id">&nbsp;</td>
+        <td class="item_descr">&nbsp;</td>
+        <td class="packing">&nbsp;</td>
+        <td class="total_pcs">&nbsp;</td>
+        <td class="weight">&nbsp;</td>
+    </tr>
+{% endfor %}
+{% endif %}
+
+</table>
+
+<div class="totals">
+<p class="total total-cases">CASES: <b>{{ shipment.total_cases|intcomma }}</b></p>
+<p class="total total-pallets">PALLETS: <b>{{ shipment.total_pallets|intcomma }}</b></p>
+<p class="total total-class">CLASS: <b>{{ shipment.shipment_class }}</b></p>
+<p class="total total-pieces">PIECES: <b>{{ shipment.total_pieces|intcomma }}</b></p>
+<p class="total total-weight">WEIGHT: <b>{{ shipment.total_weight_imperial|floatformat:1 }} lbs</b></p>
+</div>
+
+<div id="requirements" class="floatright requirements">
+REQUIREMENTS:
+<p><span class="checkbox {% if shipment.inside_delivery %}checked{% endif %}"></span> INSIDE DELIVERY</p>
+<p><span class="checkbox {% if shipment.liftgate_required %}checked{% endif %}"></span> LIFTGATE</p>
+<p><span class="checkbox {% if shipment.appointment_required %}checked{% endif %}"></span> APPOINTMENT</p>
+<p><span class="checkbox {% if shipment.sort_segregation %}checked{% endif %}"></span> SORT & SEGREGATION</p>
+</div>
+
+<div class="special_instructions_header">
+SHIPPER SPECIAL INSTRUCTIONS:
+</div>
+<div class="recvhours">{% if shipment.location.receiving_hours %}Receiving hours: {{ shipment.location.receiving_hours }}{% endif %}</div>
+<div class="special_instructions">
+{{ shipment.shipper_instructions|format_newlines|safe }}
+</div>
+
+<div class="special_instructions_header">
+CONSIGNEE SPECIAL INSTRUCTIONS:
+</div>
+<div class="special_instructions">
+{{ shipment.consignee_instructions|format_newlines|safe }}
+</div>
+
+<div class="special_instructions_header">
+COMMENTS:
+</div>
+<div class="special_instructions">
+<p class="mediumfine">Delivery Requirements: The shipment will be refused if any of the below requirements are not met.</p>
+<p class="mediumfine">All pallets must be loaded properly. Sideways pallets are not authorized.</p>
+<p class="mediumfine">There is a height requirement of no more than 82" including the pallet.</p>
+<p class="mediumfine">If pallets are loaded sideways (pin-wheeled) it will be the responsibility of the carrier to have the pallets re-worked at the carrier's expense.</p>
+<p class="mediumfine" style="font-size: 8px; margin-top: 1px;">The Shipper certifies that the above named materials are properly classified, described, marked, labeled, and packaged, and are in proper condition for transportation, according to the applicable regulations of the Department of Transportation.</p>
+</div>
+
+
+<table class="signatures" cellspacing="0">
+<tr>
+    <td class="signature">SHIPPER SIGNATURE:</td>
+    <td class="signature-input">X<input class="signature" /></td>
+    <td class="date">DATE:</td>
+    <td class="date-input"><input class="signature" /></td>
+    <td class="extra">TRAILER #:</td>
+    <td class="extra-input"><input class="signature" /></td>
+</tr>
+<tr>
+    <td class="signature">CONSIGNEE SIGNATURE:</td>
+    <td class="signature-input">X<input class="signature" /></td>
+    <td class="date">DATE:</td>
+    <td class="date-input"><input class="signature" /></td>
+    <td class="extra">SEAL #:</td>
+    <td class="extra-input"><input class="signature" /></td>
+</tr>
+<tr>
+    <td class="signature">DRIVER SIGNATURE:</td>
+    <td class="signature-input">X<input class="signature" /></td>
+    <td class="date">DATE:</td>
+    <td class="date-input"><input class="signature" /></td>
+    <td class="extra">SEAL #:</td>
+    <td class="extra-input"><input class="signature" /></td>
+</tr>
+</table>
+
+{% if forloop.counter < total_pages %}
+<p class="pb_after"></p>
+{% endif %}
+{% endfor %}
+
+
+</body>
+</html>

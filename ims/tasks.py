@@ -4,16 +4,23 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils import timezone
 from django.urls import reverse
+from django.test import override_settings
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
+
+from django_pdfkit import PDFView
 
 from datetime import datetime, timedelta
 from dateutil import rrule
 import csv
 import math
+import os
+import pdfkit
 
 from ims.models import AsyncTask, Client, Product, Shipment, Transaction
+# from warehouse.views import PurchaseOrderView
+from ims import utils
 
 import logging
 logger = logging.getLogger(__name__)
@@ -511,5 +518,63 @@ def generate_contact_list(async_task_id, client_id):
     async_task.result_file = 'reports/{0}'.format(filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
+
+    return 'done'
+
+
+@shared_task
+def email_purchase_order(request, shipment_id):
+
+    template_name = 'warehouse/purchase_order.html'
+    max_products_per_page = 20
+
+    try:
+        shipment = Shipment.objects.get(pk=shipment_id)
+    except Shipment.DoesNotExist:
+        return None
+
+    static_url = '%s://%s%s' % (request['scheme'], request['host'], settings.STATIC_URL)
+    media_url = '%s://%s%s' % (request['scheme'], request['host'], settings.MEDIA_URL)
+
+    with override_settings(STATIC_URL=static_url, MEDIA_URL=media_url):
+        template = get_template(template_name)
+        context = {
+            'shipment': shipment,
+            'total_pages': int(math.ceil(float(shipment.transaction_set.count()) / float(max_products_per_page))),
+            'max_products_per_page': max_products_per_page,
+            'remainder_rows': list(range(max_products_per_page - (shipment.transaction_set.count() % max_products_per_page))),
+        }
+        context['pages'] = list(range(context['total_pages']))
+
+        html = template.render(context)
+
+    options = {
+        'page-size': 'Letter',
+        'margin-top': '0.52in',
+        'margin-right': '0.25in',
+        'margin-bottom': '0.0in',
+        'margin-left': '0.25in',
+        'encoding': "UTF-8",
+        'no-outline': None,
+    }
+
+    kwargs = {}
+    wkhtmltopdf_bin = os.environ.get('WKHTMLTOPDF_BIN')
+    if wkhtmltopdf_bin:
+        kwargs['configuration'] = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_bin)
+
+    pdf = pdfkit.from_string(html, False, options, **kwargs)
+
+    attachments = []
+    attachments.append({'filename': f'po-{shipment.id}', 'content': pdf, 'mimetype': 'application/pdf'})
+
+    utils.send_templated_email(
+        [settings.PO_EMAIL],
+        context,
+        'Delivery Order #{0} - {1}'.format(shipment.id, shipment.client.company_name),
+        'email/delivery_request.txt',
+        'email/delivery_request.html',
+        attachments=attachments,
+    )
 
     return 'done'

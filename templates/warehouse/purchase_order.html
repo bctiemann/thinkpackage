@@ -36,478 +36,423 @@ body {
         font-family: sans-serif;
 }
 
-
 #box {
-        width: 8.5 in;
-        height: 5.5 in;
-        border: 1px dashed #888888;
-        margin: 1em;
-        padding: 0.5em;
-        height: 6em;
-        position: relative;
-        background: url('../images/tp.png') no-repeat;
+	width: 8.5 in;
+	height: 5.5 in;
+	border: 1px dashed #888888;
+	margin: 1em;
+	padding: 0.5em;
+	height: 6em;
+	position: relative;
+	background: url('../images/tp.png') no-repeat;
 }
 
 div.box {
-        border: 1px solid #000;
-        padding: 5px;
+	border: 1px solid #000;
+	padding: 5px;
 }
 
 #blurb {
-        width: 15em;
+	width: 15em;
 }
 
 #img_barcode {
-        position: absolute;
-        left: 16.5em;
-        //top: 0.5em;
-        width: 200px;
-        height: 200px;
-        z-index: 2;
+	position: absolute;
+	left: 16.5em;
+	//top: 0.5em;
+	width: 200px;
+	height: 200px;
+	z-index: 2;
 }
 
 h3 {
-        font-size: 18px;
-        font-family: sans-serif;
-        font-weight: normal;
+	font-size: 18px;
+	font-family: 'Helvetica', 'Arial', sans-serif;
+	font-weight: normal;
 }
 
 h4 {
-        font-size: 16px;
-        font-family: sans-serif;
-        font-weight: normal;
+	font-size: 16px;
+	font-family: 'Helvetica', 'Arial', sans-serif;
+	font-weight: normal;
 }
 
 small {
-        font-size: 12px;
-        font-family: sans-serif;
+	font-size: 12px;
+	font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
 img.logo {
-        width: 240px;
+	width: 240px;
 }
 
 .floatright {
-        float: right;
+	float: right;
+}
+.ship-date {
+	white-space: nowrap;
 }
 
 .topwarning {
-        font-size: 15px;
-        font-weight: normal;
+	font-size: 20px;
+	font-weight: normal;
 }
 
 .mediumfine {
-        font-size: 7px;
+	font-size: 7px;
 }
 .fine {
-        font-size: 5px;
+	font-size: 5px;
 }
 
 p.mediumfine {
-        margin: 0px;
+	margin: 0px;
 }
 
 .logo_address {
-        margin-left: 7px;
+	margin-left: 7px;
 }
 
 div.textblock {
-        position: absolute;
+	position: absolute;
 }
 
 #shipper {
-        left: 15px;
-        top: 73px;
+	left: 15px;
+	top: 73px;
 }
 
 #consignee {
-        left: 490px;
-        top: 73px;
+	left: 490px;
+	top: 73px;
 }
 
 #ship_date {
-        left: 260px;
-        top: 73px;
+	left: 260px;
+	top: 73px;
 }
 
 #shipper_address {
-        left: 45px;
-        top: 85px;
+	left: 45px;
+	top: 85px;
 }
 
 #consignee_address {
-        left: 445px;
-        top: 85px;
-        font-size: 16px;
+	left: 445px;
+	top: 85px;
+	font-size: 16px;
 }
 
 #carrier {
-        left: 95px;
-        top: 173px;
+	left: 95px;
+	top: 173px;
 }
 
 #requirements {
-        margin-top: 10px;
+	margin-top: 10px;
+	width: 200px;
 }
 #requirements p {
-        font-size: 8px;
-        margin-left: 10px;
+	font-size: 10px;
+	margin: 20px;
+	line-height: 18px;
 }
 
 div.pagecount {
-        float: right;
-        font-size: 8px;
-        width: 60px;
-        padding: 3px;
+	float: right;
+	font-size: 8px;
+	width: 60px;
+	padding: 3px;
 }
 
-table.shipping_info {
-        width: 100%;
-        font-size: 10px;
-        border-spacing: 0px;
+table.shipping-info {
+	width: 100%;
+	font-size: 14px;
+	border-spacing: 0px;
 }
-table.shipping_info td {
-        padding: 3px;
-        vertical-align: top;
-        border-style: solid;
-        border-color: #000;
-        border-width: 1px 0px 0px 1px;
-}
-table.shipping_info td.bottom_row {
-        border-bottom: 1px solid #000;
-}
-table.shipping_info td.right_col {
-        border-right: 1px solid #000;
-}
-td.shipper_side {
-        width: 60%;
-}
-td.consignee_side {
-        width: 40%;
-        border-left: 1px solid #aaa;
-}
-td.address_box {
-        height: 80px;
-}
-td.refnum_box {
-        height: 22px;
-        border-top: 1px solid #aaa;
-        font-size: 9px;
-}
-td.left_label {
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        width: 10%;
-        font-size: 9px;
-}
-td.left_space {
-        width: 50%;
-        border-bottom: 1px solid #aaa;
-}
-td.bill_to {
-        border-left: 1px solid #aaa;
-        font-size: 9px;
+table.shipping-info td {
+	padding: 3px;
+	vertical-align: top;
+	border-style: solid;
+	border-color: #000;
+	border-width: 1px;
 }
 
-table.shipping_info th {
-        font-size: 9px;
-        font-weight: normal;
-        padding: 3px;
-        border-bottom: 1px solid;
-        text-align: center;
+.items-table {
+	width: 100%;
+	font-size: 14px;
+	border-spacing: 0px;
+	border: 1px solid #000;
 }
-table.shipping_info td.line_no {
-        width: 40px;
-        text-align: right;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table td {
+	padding: 3px;
 }
-table.shipping_info tr.totals td.line_no {
-        border-top: 1px solid #000;
+table.items-table th {
+	font-size: 10px;
+	font-weight: normal;
+	padding: 3px;
+	border-bottom: 1px solid #000;
+	text-align: center;
 }
-table.shipping_info td.client_id {
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table td,
+.items-table th {
+	border: 1px solid #aaa;
 }
-table.shipping_info tr.totals td.client_id {
-        border-top: 1px solid #000;
+.items-table th {
+	border-top: 1px solid #000;
 }
-table.shipping_info td.no_cases {
-        width: 60px;
-        text-align: right;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table td:first-child,
+.items-table th:first-child {
+	border-left: 1px solid #000;
 }
-table.shipping_info tr.totals td.no_cases {
-        border-top: 1px solid #000;
+.items-table td:last-child,
+.items-table th:last-child {
+	border-right: 1px solid #000;
 }
-table.shipping_info td.item_no {
-        width: 60px;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table tr:last-child td {
+	border-bottom: 1px solid #000;
 }
-table.shipping_info tr.totals td.item_no {
-        border-top: 1px solid #000;
+.items-table .line_no {
+    width: 40px;
+    text-align: right;
 }
-table.shipping_info td.item_descr {
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table .client_id {
 }
-table.shipping_info tr.totals td.item_descr {
-        border-top: 1px solid #000;
+.items-table .item_no {
+    width: 60px;
 }
-table.shipping_info td.packing {
-        width: 60px;
-        text-align: right;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table .item_descr {
 }
-table.shipping_info tr.totals td.packing {
-        border-top: 1px solid #000;
+.items-table .packing {
+	width: 100px;
+	text-align: right;
 }
-table.shipping_info td.unit_price {
-        width: 70px;
-        text-align: right;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table .no_cases {
+	width: 60px;
+	text-align: right;
 }
-table.shipping_info tr.totals td.unit_price {
-        border-top: 1px solid #000;
+.items-table .unit_price {
+    text-align: right;
 }
-table.shipping_info td.case_price {
-        width: 70px;
-        text-align: right;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
+.items-table .case_price {
+    text-align: right;
 }
-table.shipping_info tr.totals td.case_price {
-        border-top: 1px solid #000;
-}
-table.shipping_info td.net_amount {
-        width: 70px;
-        text-align: right;
-        border-right: none;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
-}
-table.shipping_info tr.totals td.net_amount {
-        border-top: 1px solid #000;
-}
-table.shipping_info .total_pcs {
-        width: 70px;
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
-}
-table.shipping_info tr.totals td.total_pcs {
-        border-top: 1px solid #000;
-}
-table.shipping_info .weight {
-        width: 70px;
-        border-bottom: 1px solid #aaa;
-        border-top: none;
-        border-left: none;
-}
-table.shipping_info td.weight {
-        border-right: 1px solid #000;
-}
-table.shipping_info .charges {
-        width: 70px;
-        border-bottom: 1px solid #aaa;
-}
-td.signature {
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        height: 30px;
-        font-size: 9px;
-}
-td.date {
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        height: 30px;
-        font-size: 9px;
-}
-td.extra {
-        border-bottom: 1px solid #aaa;
-        height: 30px;
-        font-size: 9px;
+.items-table .net_amount {
+    width: 70px;
+    text-align: right;
 }
 
 div.special_instructions {
-        width: 100%;
-        height: 50px;
-        font-size: 10px;
-        font-weight: bold;
+	width: 100%;
+	height: 70px;
+	font-size: 10px;
+	font-weight: bold;
 }
 div.special_instructions_header {
-        font-size: 9px;
-        margin-top: 5px;
+	font-size: 12px;
+	margin-top: 5px;
 }
 
 .recvhours {
-        margin-left: 20px;
-        margin-top: 0px;
-        margin-bottom: 10px;
-}
-
-div.footer_info {
-        margin-top: 5px;
-        font-size: 8px;
-}
-div.footer_info p {
-        margin: 0px;
+	margin-left: 20px;
+	margin-top: 0px;
+	margin-bottom: 10px;
 }
 
 td.label {
-        text-align: right;
-        width: 40px;
+	text-align: right;
+	width: 30px;
 }
 
 p.box_inner_heading {
-        font-size: 8px;
-}
-
-table.shipping_info p {
-        margin: 0px;
+	font-size: 8px;
 }
 
 span.underline {
-        text-decoration: underline;
-        font-family: monospace;
+	text-decoration: underline;
+	font-family: monospace;
 }
 
 table.signatures {
-        width: 100%;
+	width: 100%;
 }
 table.signatures td {
-        border: none;
+	border: none;
+	height: 30px;
+	font-size: 12px;
+}
+table.signatures input {
+	border-color: #000;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	width: 90%;
+}
+.signature-input {
+	width: 350px;
 }
 
 p.total {
-        width: 180px;
-        float: left;
+	width: 180px;
+	float: left;
 }
 
-.total.cases {
-        width: 130px;
+.totals {
+	margin: 5px 0px 40px 0px;
 }
-.total.pallets {
-        width: 130px;
+.total.total-cases {
+	width: 130px;
 }
-.total.class {
-        width: 250px;
+.total.total-pallets {
+	width: 170px;
 }
-.total.pieces {
-        width: 110px;
+.total.total-class {
+	width: 350px;
 }
-.total.weight {
-        width: 110px;
+.total.total-pieces {
+	width: 150px;
+}
+.total.total-weight {
+	width: 150px;
 }
 
 td.label {
-        width: 30%;
+	width: 30%;
 }
 
 .requirements {
-        font-weight: bold;
+	font-weight: bold;
+}
+.requirements p {
+	line-height: 15px;
+}
+.requirements .checkbox {
+	font-size: 28px;
+	vertical-align: middle;
+	background-image: url('{% static "images/checkbox_unchecked.png" %}');
+	background-size: cover;
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+}
+.requirements .checkbox.checked {
+	background-image: url('{% static "images/checkbox_checked.png" %}');
 }
     </style>
 </head>
 
 <body>
 
+{% if invq_transactions.count == 0 %}
+Cannot produce purchase order; no INVQ products in this shipment.
+{% endif %}
+
 {% for page in pages %}
 
-<div class="floatright ship-date">
-Ship Date:  {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}
+<div class="floatright">
+    <div class="topwarning">
+        PURCHASE ORDER
+    </div>
+
+    Expected Delivery Date: ASAP
 </div>
 
 <div class="pagecount">
 Page {{ forloop.counter }} of {{ total_pages }}
 </div>
 
-
-<div class="topwarning">
-STRAIGHT BILL OF LADING - ORIGINAL NOT NEGOTIABLE
-</div>
-<div class="mediumfine">
-This form contains only the information necessary for the motor carrier to deliver, rate, and invoice the shipment described below.
-</div>
-
+<br clear="right">
 
 <div class="floatright">
-<table class="shipping-info" style="width: 400px;">
+    <table class="shipping-info" style="width: 400px; margin-top: 20px;">
     <tr>
-        <td class="label">Carrier</td>
-        <td class="right_col">{{ shipment.carrier }}</td>
+        <td class="label">Vendor</td>
+        <td class="right_col">THINKPACKAGE</td>
     </tr>
     <tr>
-        <td class="label">Pro #</td>
-        <td class="right_col">{{ shipment.pro_number }}</td>
+        <td class="label">Phone</td>
+        <td class="right_col">212-229-0700</td>
     </tr>
     <tr>
-        <td class="label">PO #</td>
-        <td class="right_col">{{ shipment.purchase_order_number }}</td>
+        <td class="label">Fax</td>
+        <td class="right_col">212-229-0703</td>
     </tr>
     <tr>
-        <td class="label">Ship ID #</td>
-        <td class="right_col">{{ shipment.id }}</td>
+        <td class="label">Email</td>
+        <td class="right_col">delivery@thinkpackage.com</td>
+    </tr>
+    <tr>
+        <td class="label bottom_row">Corporate Office</td>
+        <td class="right_col bottom_row">
+            20 W 22nd Street<br />
+            Suite 615<br />
+            New York, NY 10010<br />
+        </td>
     </tr>
 </table>
 
-<br />
-<div class="box style="width: 287px;">
-<p class="box_inner_heading">All Freight Charges PPD/3rd Party Bill To:</p>
-{{ shipment.third_party }}<br />
-{{ shipment.third_party_address|format_newlines|safe }}
-</div>
 </div>
 
 <br />
-Shipper:
-<div class="box" style="width: 400px;">
-{{ shipment.shipper_address.address|format_newlines|safe }}
-</div>
+<table class="shipping-info" cellspacing="0" style="width: 400px;">
+    <tr>
+        <td class="label">PO #</td>
+        <td class="right_col">PO-{{ shipment.id }}</td>
+    </tr>
+    <tr>
+        <td class="label">PO Date</td>
+        <td class="right_col">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+    </tr>
+    <tr>
+        <td class="label">PO Ship Date</td>
+        <td class="right_col">{{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}</td>
+    </tr>
+    <tr>
+        <td class="label bottom_row">DL #</td>
+        <td class="right_col bottom_row">{{ shipment.id }}</td>
+    </tr>
+</table>
+
+<table class="shipping-info" cellspacing="0" style="width: 400px; margin-top: 20px;">
+    <tr>
+        <td class="label">Client</td>
+        <td class="right_col">{{ shipment.client.company_name }}</td>
+    </tr>
+    <tr>
+        <td class="label">Contact</td>
+        <td class="right_col">{{ shipment.location.customer_contact }}</td>
+    </tr>
+    <tr>
+        <td class="label">Phone</td>
+        <td class="right_col">{{ shipment.location.customer_contact.phone_number }}</td>
+    </tr>
+    <tr>
+        <td class="label">Email</td>
+        <td class="right_col">{{ shipment.location.customer_contact.email }}</td>
+    </tr>
+    <tr>
+        <td class="label bottom_row">Ship To Location</td>
+        <td class="right_col bottom_row">
+            {{ shipment.location.address }}<br />
+            {% if shipment.location.address_2 %}{{ shipment.location.address_2 }}<br />{% endif %}
+            {{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.location.zip }}<br />
+        </td>
+    </tr>
+</table>
+
 
 <br />
-Consignee:
-<div class="box" style="width: 400px;">
-{{ shipment.client.company_name }}<br />
-{{ shipment.location.address }} {{ shipment.location.address_2 }}<br />
-{{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.lcoation.zip }}<br />
-{{ shipment.location.customer_contact.phone_number }}<br />
-ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.customer_contact.last_name }}
-</div>
-
-<br />
-
 
 <table class="items-table" style="margin-top: 30px; border: 1px solid ##000;">
 <tr>
-    <th class="no_cases"># CASES</th>
-    <th class="item_id">ITEM #</th>
-    <th class="item_descr">DESCRIPTION</th>
-    <th class="packing">PACKING PER CASE</th>
-    <th class="total_pcs">TOTAL # OF PCS</th>
-    <th class="weight">WEIGHT (LBS)</th>
+    <th class="line_no">Line #</th>
+    <th class="client_id">Client ID</th>
+    <th class="item_no">Item #</th>
+    <th class="item_descr">Description</th>
+    <th class="packing">Packing/cs</th>
+    <th class="no_cases">Quantity (cs)</th>
+    <th class="unit_price">Unit Price</th>
+    <th class="case_price">Case Price</th>
+    <th class="net_amount">Amount (Net)</th>
 </tr>
 
 {% with page=forloop.counter pagestart=forloop.counter0|multiply:max_products_per_page pageend=forloop.counter|multiply:max_products_per_page %}
@@ -515,14 +460,17 @@ ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.c
     {% if forloop.counter0 >= pagestart and forloop.counter0 < pageend %}
 
     <tr>
-        <td class="no_cases">{{ transaction.cases|intcomma }}</td>
-        <td class="item_id">{{ transaction.product.item_number }}</td>
+        <td class="line_no">{{ forloop.counter }}</td>
+        <td class="client_id">{{ shipment.client.company_name }}</td>
+        <td class="item_no">{{ transaction.product.item_number }}</td>
         <td class="item_descr">{{ transaction.product.name|truncatechars:72 }}
             <span class="account-label">{% if transaction.product.account_prepay_type == 1 %}[INVQ]{% elif transaction.product.account_prepay_type == 2 %}[Prepaid]{% endif %}</span>
         </td>
         <td class="packing">{{ transaction.product.packing|intcomma }}</td>
-        <td class="total_pcs">{{ transaction.total_quantity|intcomma }}</td>
-        <td class="weight">{{ transaction.total_weight_imperial|floatformat:1 }}</td>
+        <td class="no_cases">{{ transaction.cases|intcomma }}</td>
+        <td class="unit_price">${{ transaction.product.unit_price }}</td>
+        <td class="case_price">${{ transaction.product.case_price|floatformat:2 }}</td>
+        <td class="net_amount">${{ transaction.total_price|floatformat:2 }}</td>
     </tr>
 
     {% endif %}
@@ -532,86 +480,55 @@ ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.c
 {% if forloop.counter == total_pages %}
 {% for blank_row in remainder_rows %}
     <tr>
-        <td class="no_cases">&nbsp;</td>
-        <td class="item_id">&nbsp;</td>
+        <td class="line_no">&nbsp;</td>
+        <td class="client_id">&nbsp;</td>
+        <td class="item_no">&nbsp;</td>
         <td class="item_descr">&nbsp;</td>
         <td class="packing">&nbsp;</td>
-        <td class="total_pcs">&nbsp;</td>
-        <td class="weight">&nbsp;</td>
+        <td class="no_cases">&nbsp;</td>
+        <td class="unit_price">&nbsp;</td>
+        <td class="case_price">&nbsp;</td>
+        <td class="net_amount">&nbsp;</td>
     </tr>
 {% endfor %}
 {% endif %}
 
+        <tr class="totals">
+        <td class="line_no">&nbsp;</td>
+        <td class="client_id">&nbsp;</td>
+        <td class="item_no">&nbsp;</td>
+        <td class="item_descr">&nbsp;</td>
+        <td class="packing">Total Cases:</td>
+        <td class="no_cases">{{ shipment.total_cases }}</td>
+        <td class="unit_price">&nbsp;</td>
+        <td class="case_price">Order Total:</td>
+        <td class="net_amount">${{ shipment.total_price|floatformat:2 }}</td>
+    </tr>
+
 </table>
 
-<div class="totals">
-<p class="total total-cases">CASES: <b>{{ shipment.total_cases|intcomma }}</b></p>
-<p class="total total-pallets">PALLETS: <b>{{ shipment.total_pallets|intcomma }}</b></p>
-<p class="total total-class">CLASS: <b>{{ shipment.shipment_class }}</b></p>
-<p class="total total-pieces">PIECES: <b>{{ shipment.total_pieces|intcomma }}</b></p>
-<p class="total total-weight">WEIGHT: <b>{{ shipment.total_weight_imperial|floatformat:1 }} lbs</b></p>
-</div>
-
-<div id="requirements" class="floatright requirements">
-REQUIREMENTS:
-<p><span class="checkbox {% if shipment.inside_delivery %}checked{% endif %}"></span> INSIDE DELIVERY</p>
-<p><span class="checkbox {% if shipment.liftgate_required %}checked{% endif %}"></span> LIFTGATE</p>
-<p><span class="checkbox {% if shipment.appointment_required %}checked{% endif %}"></span> APPOINTMENT</p>
-<p><span class="checkbox {% if shipment.sort_segregation %}checked{% endif %}"></span> SORT & SEGREGATION</p>
-</div>
-
-<div class="special_instructions_header">
-SHIPPER SPECIAL INSTRUCTIONS:
-</div>
-<div class="recvhours">{% if shipment.location.receiving_hours %}Receiving hours: {{ shipment.location.receiving_hours }}{% endif %}</div>
-<div class="special_instructions">
-{{ shipment.shipper_instructions|format_newlines|safe }}
-</div>
-
-<div class="special_instructions_header">
-CONSIGNEE SPECIAL INSTRUCTIONS:
-</div>
-<div class="special_instructions">
-{{ shipment.consignee_instructions|format_newlines|safe }}
-</div>
-
-<div class="special_instructions_header">
-COMMENTS:
-</div>
-<div class="special_instructions">
-<p class="mediumfine">Delivery Requirements: The shipment will be refused if any of the below requirements are not met.</p>
-<p class="mediumfine">All pallets must be loaded properly. Sideways pallets are not authorized.</p>
-<p class="mediumfine">There is a height requirement of no more than 82" including the pallet.</p>
-<p class="mediumfine">If pallets are loaded sideways (pin-wheeled) it will be the responsibility of the carrier to have the pallets re-worked at the carrier's expense.</p>
-<p class="mediumfine" style="font-size: 8px; margin-top: 1px;">The Shipper certifies that the above named materials are properly classified, described, marked, labeled, and packaged, and are in proper condition for transportation, according to the applicable regulations of the Department of Transportation.</p>
-</div>
-
-
-<table class="signatures" cellspacing="0">
-<tr>
-    <td class="signature">SHIPPER SIGNATURE:</td>
-    <td class="signature-input">X<input class="signature" /></td>
-    <td class="date">DATE:</td>
-    <td class="date-input"><input class="signature" /></td>
-    <td class="extra">TRAILER #:</td>
-    <td class="extra-input"><input class="signature" /></td>
-</tr>
-<tr>
-    <td class="signature">CONSIGNEE SIGNATURE:</td>
-    <td class="signature-input">X<input class="signature" /></td>
-    <td class="date">DATE:</td>
-    <td class="date-input"><input class="signature" /></td>
-    <td class="extra">SEAL #:</td>
-    <td class="extra-input"><input class="signature" /></td>
-</tr>
-<tr>
-    <td class="signature">DRIVER SIGNATURE:</td>
-    <td class="signature-input">X<input class="signature" /></td>
-    <td class="date">DATE:</td>
-    <td class="date-input"><input class="signature" /></td>
-    <td class="extra">SEAL #:</td>
-    <td class="extra-input"><input class="signature" /></td>
-</tr>
+<div class="floatright">
+<table class="floatright1 shipping-info" cellspacing="0" style="width: 420px; margin-top: 30px;">
+    <tr>
+        <td class="label">Client PO</td>
+        <td class="right_col">{{ shipment.carrier }}</td>
+    </tr>
+    <tr>
+        <td class="label">Total Weight</td>
+        <td class="right_col">{{ shipment.total_weight_imperial|floatformat:1 }} lbs</td>
+    </tr>
+    <tr>
+        <td class="label">Total Pallets</td>
+        <td class="right_col">{{ shipment.total_pallets }}</td>
+    </tr>
+    <tr>
+        <td class="label">PRO / Tracking #</td>
+        <td class="right_col">{{ shipment.pro_number }}</td>
+    </tr>
+    <tr>
+        <td class="label bottom_row">Delivery Charge</td>
+        <td class="right_col bottom_row">{% if shipment.delivery_charge %}${{ shipment.delivery_charge|floatformat:2 }}{% endif %}</td>
+    </tr>
 </table>
 
 {% if forloop.counter < total_pages %}

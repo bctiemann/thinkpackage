@@ -540,6 +540,7 @@ def email_purchase_order(request, shipment_id):
         template = get_template(template_name)
         context = {
             'shipment': shipment,
+            'invq_transactions': shipment.transaction_set.filter(product__account_prepay_type=Product.INVQ),
             'total_pages': int(math.ceil(float(shipment.transaction_set.count()) / float(max_products_per_page))),
             'max_products_per_page': max_products_per_page,
             'remainder_rows': list(range(max_products_per_page - (shipment.transaction_set.count() % max_products_per_page))),

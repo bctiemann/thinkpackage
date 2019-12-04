@@ -408,9 +408,12 @@ class Location(models.Model):
 
 
 class Product(models.Model):
+    INVQ = 1
+    PREPAID = 2
+
     PREPAY_CHOICES = (
-        (1, 'INVQ'),
-        (2, 'Prepaid'),
+        (INVQ, 'INVQ'),
+        (PREPAID, 'Prepaid'),
     )
 
     id = models.AutoField(primary_key=True, db_column='productid')
@@ -466,6 +469,10 @@ class Product(models.Model):
         if not self.contracted_quantity or not self.packing:
             return None
         return self.contracted_quantity * self.packing
+
+    @property
+    def case_price(self):
+        return self.unit_price * self.packing
 
     @property
     def total_price(self):
@@ -630,6 +637,13 @@ class Shipment(models.Model):
         return total_pieces
 
     @property
+    def total_price(self):
+        total_price = 0
+        for transaction in self.transaction_set.all():
+            total_price += transaction.total_price
+        return total_price
+
+    @property
     def total_weight(self):
         total_weight = 0
         for transaction in self.transaction_set.all():
@@ -739,6 +753,10 @@ class Transaction(models.Model):
         if not self.product.packing:
             return 0
         return self.cases * self.product.packing
+
+    @property
+    def total_price(self):
+        return self.product.unit_price * self.product.packing * self.cases
 
     @property
     def total_weight(self):

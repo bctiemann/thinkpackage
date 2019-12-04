@@ -180,6 +180,13 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 #            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
             transaction.product.save()
 
+        if self.object.transaction_set.filter(product__account_prepay_type=Product.INVQ).exists():
+            request_dict = {
+                'scheme': self.request.scheme,
+                'host': self.request.get_host(),
+            }
+            email_purchase_order(request=request_dict, shipment_id=self.object.id)
+
         return response
 
     def get_object(self):
@@ -285,6 +292,7 @@ class PurchaseOrderView(PDFView):
         context = super(PurchaseOrderView, self).get_context_data(**kwargs)
         shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
         context['shipment'] = shipment
+        context['invq_transactions'] = shipment.transaction_set.filter(product__account_prepay_type=Product.INVQ)
         context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
         context['pages'] = list(range(context['total_pages']))
         context['max_products_per_page'] = self.max_products_per_page

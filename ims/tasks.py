@@ -569,12 +569,16 @@ def email_purchase_order(request, shipment_id):
     attachments = []
     attachments.append({'filename': f'po-{shipment.id}', 'content': pdf, 'mimetype': 'application/pdf'})
 
+    email_context = {
+        'shipment': shipment,
+    }
+
     utils.send_templated_email(
         [settings.PO_EMAIL],
-        context,
-        'Delivery Order #{0} - {1}'.format(shipment.id, shipment.client.company_name),
-        'email/delivery_request.txt',
-        'email/delivery_request.html',
+        email_context,
+        'Purchase Order for {0} - DL {1}'.format(shipment.client.company_name, shipment.id),
+        'email/purchase_order.txt',
+        'email/purchase_order.html',
         attachments=attachments,
     )
 

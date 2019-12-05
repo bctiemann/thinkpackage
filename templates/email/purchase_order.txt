@@ -1,0 +1,5 @@
+{% load humanize %}
+
+Please see the attached purchase order PO-{{ shipment.id }} for {{ shipment.client.company_name }}, DL {{ shipment.id }}.
+            
+This email was automatically sent.

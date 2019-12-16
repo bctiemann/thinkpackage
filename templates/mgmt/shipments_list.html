@@ -14,7 +14,7 @@
             <th style="width: 344px;" class="text">Location</th>
             <th style="width: 120px;" class="spacer20"></th>
             <th style="width: 120px;" class="text">Status</th>
-            <th style="width: 319px;" class="text">Pallets</th>
+            <th style="width: 199px;" class="text">Pallets</th>
             <th style="width: 65px;" class="text">Docs</th>
             <th style="width: 110px;" class="action"></th>
         </tr>
@@ -29,7 +29,7 @@
             <td style="width: 339px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>
             <td style="width: 106px;" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
             <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.get_status_display }}</td>
-            <td style="width: 314px;" class="text monospace clickable" shipmentid="{{ shipment.id }}">
+            <td style="width: 199px;" class="text monospace clickable" shipmentid="{{ shipment.id }}">
             {% for pallet in shipment.pallet_set.all %}
                 <p class="pallet">
                     <a target="_blank" href="{% url "mgmt:pallet-print" pallet_id=pallet.id %}?inline">{{ pallet.pallet_id }}</a>

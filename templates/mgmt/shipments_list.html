@@ -9,6 +9,7 @@
     <thead>
         <tr>
             <th style="width: 120px;" class="text">Requested Date</th>
+            <th style="width: 120px;" class="text">In/Out Date</th>
             <th style="width: 120px;" class="text">DL #</th>
             <th style="width: 344px;" class="text">Location</th>
             <th style="width: 120px;" class="spacer20"></th>
@@ -23,6 +24,7 @@
 
         <tr class="shipment" id="shipment_{{ shipment.id }}">
             <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+            <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}</td>
             <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.id }}</td>
             <td style="width: 339px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>
             <td style="width: 106px;" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>

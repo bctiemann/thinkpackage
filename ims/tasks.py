@@ -80,6 +80,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
+    client_tree = client.children()
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -89,11 +90,11 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    products = Product.objects.filter(client=client, is_deleted=False).order_by('item_number')
+    products = Product.objects.filter(client__in=client_tree, is_deleted=False).order_by('item_number')
 #    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
 #    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
 #    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
-    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from)
+    transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from)
 
 #    transactions = Transaction.objects.filter(date_created__gt=date_from, date_created__lte=date_to)
 #    transactions = transactions.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
@@ -252,6 +253,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
+    client_tree = client.children()
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -261,7 +263,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
+    transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from, date_created__lte=date_to)
 
     rows = []
     status_update_interval = transactions.count() / 20
@@ -347,6 +349,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
+    client_tree = client.children()
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -356,7 +359,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
+    transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from, date_created__lte=date_to)
 
     rows = []
     status_update_interval = transactions.count() / 20

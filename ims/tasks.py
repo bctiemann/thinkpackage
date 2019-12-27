@@ -80,7 +80,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
-    client_tree = client.children()
+    client_tree = [c['obj'] for c in client.children]
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -253,7 +253,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
-    client_tree = client.children()
+    client_tree = [c['obj'] for c in client.children]
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -349,7 +349,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
-    client_tree = client.children()
+    client_tree = [c['obj'] for c in client.children]
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)

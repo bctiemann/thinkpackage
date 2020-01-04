@@ -77,7 +77,7 @@ def home(request):
     logger.info(f'{request.user} viewed mgmt home page')
     delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')
 
-    ready_to_ship = Shipment.objects.filter(status=1).order_by('-date_created')
+    ready_to_ship = Shipment.objects.filter(status=1).order_by(F('date_shipped').asc(nulls_last=True))
 
     inbound_receivables = []
     for receivable in Transaction.objects.filter(is_outbound=False, cases__isnull=True).order_by('-date_created'):

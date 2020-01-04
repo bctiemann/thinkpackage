@@ -18,7 +18,7 @@
 </div>
 </div>
 
-{% if status < 2 %}<button class="actionbtn floatright" id="edit_shipment" onClick="showShippingInfo({{ shipment.id }})">Edit</button>{% endif %}
+{% if shipment.status < 2 %}<button class="actionbtn floatright" id="edit_shipment" onClick="showShippingInfo({{ shipment.id }})">Edit</button>{% endif %}
 
 <div class="bol-icon">
     <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>

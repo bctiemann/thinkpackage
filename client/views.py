@@ -226,12 +226,13 @@ def inventory_request_delivery(request):
         shipment_updated = True
     else:
         shipment = Shipment(
-            client = request.selected_client,
-            user = request.user,
-            status = 0,
+            client=request.selected_client,
+            user=request.user,
+            status=0,
         )
 
     shipment.location = location
+    shipment.purchase_order_number = delivery_data.get('client_po')
     shipment.save()
 
     # Create new transactions for each requested product
@@ -261,7 +262,7 @@ def inventory_request_delivery(request):
     utils.send_templated_email(
         [settings.DELIVERY_EMAIL],
         context,
-        'Delivery Order #{0} - {1}'.format(shipment.id, selected_client.company_name),
+        'Delivery Order #{0} - {1}'.format(shipment.id, request.selected_client.company_name),
         'email/delivery_request.txt',
         'email/delivery_request.html',
         cc=[request.user.email],

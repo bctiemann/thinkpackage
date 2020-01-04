@@ -248,6 +248,7 @@ function execute_requestDelivery() {
         locationid: globals['locationid'],
         customerid: $('#customerid').val(),
         shipmentid: 'shipmentid' in globals ? globals['shipmentid'] : 0,
+        client_po: $('#client_po').val(),
     };
 console.log(requestdelivery);
 //    var url = cgiroot+'ajax_request_delivery.cfm';

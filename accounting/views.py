@@ -63,7 +63,7 @@ def shipments_list(request):
         status=2,
         accounting_status=status_filter
     )
-    shipments = shipments.distinct().order_by('-date_created', '-invoice_number')
+    shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
 
     three_months_ago = timezone.now() - timedelta(days=90)
 

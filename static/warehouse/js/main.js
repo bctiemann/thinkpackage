@@ -191,6 +191,22 @@ console.log(data);
     }
 };
 
+var resendPOEmail = function(e, shipmentid) {
+    e.stopPropagation();
+
+    if (confirm('PO email for this shipment will be resent. Continue?')) {
+
+        var url = `${cgiroot}shipment/${shipmentid}/send_purchase_order/`;
+        var params = {
+            // shipment_id: shipmentid,
+        };
+        $.post(url, params, function(data) {
+            if (data.success) {
+            }
+        });
+    }
+};
+
 function showShippingInfo(shipmentid) {
     $('#dialog_shipping_info').dialog("open");
     globals['shipmentid'] = shipmentid;

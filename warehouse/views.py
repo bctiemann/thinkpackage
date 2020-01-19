@@ -12,6 +12,9 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from django.db.models import Sum, Count
 from django.contrib.auth import authenticate, login
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 from django_pdfkit import PDFView
 
 #from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
@@ -344,3 +347,17 @@ def purchase_order_test(request, shipment_id):
     email_purchase_order(request=request_dict, shipment_id=shipment_id)
 
     return render(request, 'warehouse/shipments.html', context)
+
+
+class SendPurchaseOrder(APIView):
+
+    def post(self, request, shipment_id):
+        shipment = get_object_or_404(Shipment, pk=shipment_id)
+
+        request_dict = {
+            'scheme': self.request.scheme,
+            'host': self.request.get_host(),
+        }
+        email_purchase_order(request=request_dict, shipment_id=shipment.id)
+
+        return Response({'success': True})

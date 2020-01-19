@@ -9,7 +9,12 @@
         <td style="width: 194px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>
         <td style="width: 90px" class="numeric clickable" shipmentid="{{ shipment.id }}">{{ shipment.total_cases }}</td>
         <td style="width: 120px" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
-        <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.get_status_display }}</td>
+        <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">
+            {{ shipment.get_status_display }}
+            {% if shipment.status == 2 %}
+                <a href="#" onclick="resendPOEmail(event, {{ shipment.id }});" class="ui-icon ui-icon-mail-closed" title="Resend PO email"></a>
+            {% endif %}
+        </td>
         <td style="width: 120px" class="text monospace clickable" shipmentid="{{ shipment.id }}">
         {% for pallet in shipment.pallet_set.all %}
             <p class="pallet">

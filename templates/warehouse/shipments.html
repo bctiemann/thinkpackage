@@ -46,8 +46,9 @@ Upload an image of the signed BOL for this shipment.
     </table>
 </div>  
 
-<script type="text/javascript">
-refreshShipments();
-</script>
+{% endblock %}
 
+{% block footer_js %}
+    globals['startFrom'] = 0;
+    refreshShipments();
 {% endblock %}

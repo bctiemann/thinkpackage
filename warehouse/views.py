@@ -80,20 +80,39 @@ def shipments_list(request):
     except:
         shipped_filter = 1
 
+    context = {
+        'shipped_filter': shipped_filter,
+    }
+    return render(request, 'warehouse/shipments_list.html', context)
+
+
+def shipments_fetch(request):
+
+    try:
+        shipped_filter = int(request.GET.get('shipped_filter', 1))
+    except:
+        shipped_filter = 1
+
+    page_size = settings.INFINITE_SCROLL_PAGE_SIZE
+    start = int(request.GET.get('start', 0))
+    end = start + page_size
+
     shipments = Shipment.objects.all().order_by('status', '-date_created')
 
-    three_weeks_ago = timezone.now() - timedelta(days=21)
+    # three_weeks_ago = timezone.now() - timedelta(days=21)
 
     if shipped_filter:
         shipments = shipments.exclude(status=2)
     else:
-        shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
+        # shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
+        shipments = shipments.filter(status=2)[start:end]
+        print(len(shipments))
 
     context = {
         'shipments': shipments,
         'shipped_filter': shipped_filter,
     }
-    return render(request, 'warehouse/shipments_list.html', context)
+    return render(request, 'warehouse/shipments_list_shipments.html', context)
 
 
 def shipment_details(request, shipment_id):

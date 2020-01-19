@@ -15,16 +15,29 @@ function refreshShipments(shipmentid) {
     if (!('shipped_filter' in globals)) {
         globals['shipped_filter'] = 1;
     }
+    globals['startFrom'] = 0;
 //    var url = cgiroot+'ajax_shipments_list.cfm?shipped_filter='+globals['shipped_filter'];
-    var url = cgiroot + 'shipments/list/?shipped_filter=' + globals['shipped_filter'];
+    var url = `${cgiroot}shipments/list/?shipped_filter=${globals['shipped_filter']}`;
     $('#list_shipments').load(url,function(data) {
+        fetchShipments(shipmentid);
+    });
+}
+
+function fetchShipments(shipmentid) {
+    globals['fetching'] = true;
+    var url = `${cgiroot}shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}`;
+    $.get(url, function(html) {
+        globals['fetching'] = false;
+        $('#list_shipments tbody').append(html);
         refreshUI();
         if (shipmentid) {
             selectShipment(shipmentid);
             var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
             $('table.shipments tbody').animate({ scrollTop: rowpos});
         }
-    });
+        globals['startFrom'] = $('tr.shipment').length;
+        console.log(globals);
+    })
 }
 
 function refreshReceivables() {
@@ -300,6 +313,18 @@ function validatePrice(input) {
     if (!input) return false;
     return /^(\d{1,3})?(,?\d{3})*(\.\d{2})?$/.test(input);
 }
+
+var infiniteScrollTable = function(target) {
+    target.scroll(function(ev) {
+        var lastRow = $('#list_shipments tbody tr').last();
+        var elementTop = lastRow.position().top;
+        var elementBottom = elementTop + lastRow.outerHeight();
+        var viewportBottom = $(this).height();
+        if (viewportBottom > elementTop && !globals['fetching']) {
+            fetchShipments();
+        }
+    });
+};
 
 $(document).ready(function() {
     refreshUI();

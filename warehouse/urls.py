@@ -21,6 +21,7 @@ urlpatterns = [
 
     url(r'^shipments/$', warehouse_views.shipments, name='shipments'),
     url(r'^shipments/list/$', warehouse_views.shipments_list, name='shipments-list'),
+    url(r'^shipments/fetch/$', warehouse_views.shipments_fetch, name='shipments-fetch'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', warehouse_views.ShipmentUpdate.as_view(), name='shipment-details'),
     url(r'^shipment/(?P<shipment_id>\d+)/ship/$', warehouse_views.ShipmentShip.as_view(), name='shipment-ship'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', warehouse_views.ShipmentDocCreate.as_view(), name='shipment-docs'),

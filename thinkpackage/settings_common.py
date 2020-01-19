@@ -275,3 +275,4 @@ FRONTSITE_URL = 'http://thinkpackage.com'
 
 CLIENTACCESS_EMAIL = 'clientaccess@thinkpackage.com'
 
+INFINITE_SCROLL_PAGE_SIZE = 30

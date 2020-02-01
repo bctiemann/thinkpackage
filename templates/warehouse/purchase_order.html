@@ -434,7 +434,10 @@ Page {{ forloop.counter }} of {{ total_pages }}
         <td class="right_col bottom_row">
             {{ shipment.location.address }}<br />
             {% if shipment.location.address_2 %}{{ shipment.location.address_2 }}<br />{% endif %}
-            {{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.location.zip }}<br />
+            {{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.location.postal_code }}<br />
+            {% if shipment.location.country and shipment.location.country.code != 'US' %}
+                {{ shipment.location.country.name }}<br />
+            {% endif %}
         </td>
     </tr>
 </table>

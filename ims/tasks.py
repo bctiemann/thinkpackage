@@ -467,7 +467,7 @@ def generate_location_list(async_task_id, client_id):
                 location.address_2,
                 location.city,
                 location.state,
-                location.zip,
+                location.postal_code,
                 location.contact_user.user.full_name,
                 location.contact_user.user.email,
                 location.contact_user.user.phone_number,

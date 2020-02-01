@@ -406,7 +406,10 @@ Consignee:
 <div class="box" style="width: 400px;">
 {{ shipment.client.company_name }}<br />
 {{ shipment.location.address }} {{ shipment.location.address_2 }}<br />
-{{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.lcoation.zip }}<br />
+{{ shipment.location.city }}, {{ shipment.location.state }} {{ shipment.location.postal_code }}<br />
+{% if shipment.location.country and shipment.location.country.code != 'US' %}
+    {{ shipment.location.country.name }}<br />
+{% endif %}
 {{ shipment.location.customer_contact.phone_number }}<br />
 ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.customer_contact.last_name }}
 </div>

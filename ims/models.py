@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from django_countries.fields import CountryField
 from jsonfield import JSONField
 from localflavor.us.us_states import STATE_CHOICES
 
@@ -387,8 +388,9 @@ class Location(models.Model):
     address_2 = models.CharField(max_length=150, blank=True, db_column='addr2')
     city = models.CharField(max_length=150, blank=True)
     state = models.CharField(choices=STATE_CHOICES, max_length=2, blank=True)
-    zip = models.CharField(max_length=10, blank=True)
-    country = models.CharField(max_length=2, blank=True)
+    postal_code = models.CharField(max_length=10, blank=True)
+    # country = models.CharField(max_length=2, blank=True)
+    country = CountryField(blank=True, blank_label='(Select country)')
     non_us_state = models.CharField(max_length=150, blank=True, db_column='ostate')
     customer_contact = models.ForeignKey('CustContact', null=True, blank=True, db_column='custcontactid', on_delete=models.SET_NULL)
     contact_user = models.ForeignKey('ClientUser', null=True, blank=True, on_delete=models.SET_NULL)

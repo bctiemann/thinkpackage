@@ -276,3 +276,5 @@ FRONTSITE_URL = 'http://thinkpackage.com'
 CLIENTACCESS_EMAIL = 'clientaccess@thinkpackage.com'
 
 INFINITE_SCROLL_PAGE_SIZE = 30
+COUNTRIES_FIRST = ['US', 'CA']
+# COUNTRIES_FIRST_BREAK = '(Select country)'

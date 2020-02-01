@@ -37,7 +37,7 @@
             <tr>
                 <td>
                     <div class="non-input" style="width: 469px;">
-                        {{ location.city }} {{ location.state }} {{ location.zip }}
+                        {{ location.city }} {{ location.state }} {{ location.postal_code }}{% if location.country and location.country.code != 'US1' %}, {{ location.country.name }} {% endif %}
                     </div>
                 </td>
             </tr>

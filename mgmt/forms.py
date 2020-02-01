@@ -172,7 +172,7 @@ class LocationForm(forms.ModelForm):
 
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'placeholder': 'Location name'}))
     state = USStateField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
-    zip = USZipCodeField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
+    postal_code = USZipCodeField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
 
 #    def __init__(self, *args, **kwargs):
 #        super(LocationForm, self).__init__(*args, **kwargs)
@@ -185,7 +185,7 @@ class LocationForm(forms.ModelForm):
 
     class Meta:
         model = Location
-        fields = ['client', 'name', 'contact_user', 'address', 'address_2', 'city', 'state', 'zip', 'receiving_hours', 'notes']
+        fields = ['client', 'name', 'contact_user', 'address', 'address_2', 'city', 'state', 'country', 'postal_code', 'receiving_hours', 'notes']
 
 
 class ProductForm(forms.ModelForm):

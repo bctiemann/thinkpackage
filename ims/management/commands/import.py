@@ -171,7 +171,7 @@ class Command(BaseCommand):
                     address_2 = old['addr2'] or '',
                     city = old['city'] or '',
                     state = old['state'] or '',
-                    zip = old['zip'] or '',
+                    postal_code = old['zip'] or '',
                     country = old['country'] or '',
                     non_us_state = old['ostate'] or '',
                     customer_contact_id = old['custcontactid'] or None,

@@ -25,7 +25,7 @@
 
     <div class="pallet" id="pallet_{{ shipment.id }}">
 
-    <p class="floatright">{{ shipment.location.name }}<br />{{ shipment.location.city }} {{ shipment.location.state }} {{ shipment.location.zip }}</p>
+    <p class="floatright">{{ shipment.location.name }}<br />{{ shipment.location.city }} {{ shipment.location.state }} {{ shipment.location.postal_code }}</p>
     <p class="pallet_title">{{ shipment.client.company_name }}</p>
     <p>{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</p>
     <table class="pallet_contents infotable" id="pallet_contents_{{ shipment.id }}">

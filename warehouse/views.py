@@ -189,7 +189,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
             ActionLog.objects.create(
                 user = self.request.user,
                 client = self.object.client,
-                product = self.object,
+                product = transaction.product,
                 log_message = 'Shipment {0} shipped. {1} cases deducted'.format(self.object.id, transaction.cases),
                 app = self.request.resolver_match.app_name,
             )

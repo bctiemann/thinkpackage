@@ -15,16 +15,37 @@ function refreshShipments(shipmentid) {
     if (!('status_filter' in globals)) {
         globals['status_filter'] = 0;
     }
+    globals['startFrom'] = 0;
 //    var url = cgiroot+'ajax_shipments_list.cfm?status_filter='+globals['status_filter'];
     var url = cgiroot + 'shipments/list/?status_filter=' + globals['status_filter'];
     $('#list_shipments').load(url,function(data) {
+        fetchShipments(shipmentid);
+        /*
         refreshUI();
         if (shipmentid && parseInt(globals['status_filter']) == 0) {
             selectShipment(shipmentid);
             var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
             $('table.shipments tbody').animate({ scrollTop: rowpos});
         }
+        */
     });
+}
+
+function fetchShipments(shipmentid) {
+    globals['fetching'] = true;
+    var url = `${cgiroot}shipments/fetch/?status_filter=${globals['status_filter']}&start=${globals['startFrom']}`;
+    $.get(url, function(html) {
+        globals['fetching'] = false;
+        $('#list_shipments tbody').append(html);
+        refreshUI();
+        if (shipmentid) {
+            selectShipment(shipmentid);
+            var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
+            $('table.shipments tbody').animate({ scrollTop: rowpos});
+        }
+        globals['startFrom'] = $('tr.shipment').length;
+        console.log(globals);
+    })
 }
 
 function refreshReconciliation() {

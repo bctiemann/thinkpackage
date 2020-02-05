@@ -20,6 +20,7 @@ urlpatterns = [
 
     url(r'^shipments/$', accounting_views.shipments, name='shipments'),
     url(r'^shipments/list/$', accounting_views.shipments_list, name='shipments-list'),
+    url(r'^shipments/fetch/$', accounting_views.shipments_fetch, name='shipments-fetch'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.ShipmentUpdateInvoice.as_view(), name='shipment-details'),
     url(r'^shipment/(?P<shipment_id>\d+)/submit/$', accounting_views.ShipmentSubmitInvoice.as_view(), name='shipment-submit-invoice'),
     url(r'^shipment/(?P<shipment_id>\d+)/docs/$', accounting_views.ShipmentDocCreate.as_view(), name='shipment-docs'),

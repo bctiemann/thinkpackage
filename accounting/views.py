@@ -57,6 +57,23 @@ def shipments_list(request):
     except:
         status_filter = 1
 
+    context = {
+        'status_filter': status_filter,
+    }
+    return render(request, 'accounting/shipments_list.html', context)
+
+
+def shipments_fetch(request):
+
+    try:
+        status_filter = int(request.GET.get('status_filter', 1))
+    except:
+        status_filter = 1
+
+    page_size = settings.INFINITE_SCROLL_PAGE_SIZE
+    start = int(request.GET.get('start', 0))
+    end = start + page_size
+
     shipments = Shipment.objects.all()
     shipments = shipments.filter(
         Q(transaction__product__account_prepay_type=1) | Q(delivery_charge__gt=0),
@@ -65,18 +82,18 @@ def shipments_list(request):
     )
     shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
 
-    three_months_ago = timezone.now() - timedelta(days=90)
+    # three_months_ago = timezone.now() - timedelta(days=90)
 
-    if status_filter == 2:
-        shipments = shipments.filter(date_shipped__gt=three_months_ago)
+    # if status_filter == 2:
+    #     shipments = shipments.filter(date_shipped__gt=three_months_ago)
 #    else:
 #        shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
 
     context = {
-        'shipments': shipments[0:100],
+        'shipments': shipments[start:end],
         'status_filter': status_filter,
     }
-    return render(request, 'accounting/shipments_list.html', context)
+    return render(request, 'accounting/shipments_list_shipments.html', context)
 
 
 def shipment_details(request, shipment_id):

@@ -26,6 +26,6 @@
 
 <script type="text/javascript">
 if (globals['shipped_filter'] == 0) {
-    infiniteScrollTable($('#list_shipments tbody'));
+    infiniteScrollTable('#list_shipments', fetchShipments);
 }
 </script>

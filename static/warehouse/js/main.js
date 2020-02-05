@@ -330,17 +330,20 @@ function validatePrice(input) {
     return /^(\d{1,3})?(,?\d{3})*(\.\d{2})?$/.test(input);
 }
 
-var infiniteScrollTable = function(target) {
-    target.scroll(function(ev) {
+/*
+var infiniteScrollTable = function(target, callback) {
+    var targetTbody = $(`${target} tbody`);
+    targetTbody.scroll(function(ev) {
         var lastRow = $('#list_shipments tbody tr').last();
         var elementTop = lastRow.position().top;
         var elementBottom = elementTop + lastRow.outerHeight();
         var viewportBottom = $(this).height();
         if (viewportBottom > elementTop && !globals['fetching']) {
-            fetchShipments();
+            callback();
         }
     });
 };
+*/
 
 $(document).ready(function() {
     refreshUI();

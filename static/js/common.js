@@ -56,6 +56,19 @@ function displayErrorDialog(data) {
     $('#dialog_errors').empty().append(errorList).dialog('open');
 };
 
+var infiniteScrollTable = function(target, callback) {
+    var targetTbody = $(`${target} tbody`);
+    targetTbody.scroll(function(ev) {
+        var lastRow = $('#list_shipments tbody tr').last();
+        var elementTop = lastRow.position().top;
+        var elementBottom = elementTop + lastRow.outerHeight();
+        var viewportBottom = $(this).height();
+        if (viewportBottom > elementTop && !globals['fetching']) {
+            callback();
+        }
+    });
+};
+
 $(document).ready(function() {
 
     $('#dialog_errors').dialog({

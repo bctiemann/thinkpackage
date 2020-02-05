@@ -263,7 +263,12 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from, date_created__lte=date_to)
+    transactions = Transaction.objects.filter(
+        client__in=client_tree,
+        date_created__gt=date_from,
+        date_created__lte=date_to,
+        shipment__status=Shipment.STATUS_SHIPPED
+    )
 
     rows = []
     status_update_interval = transactions.count() / 20

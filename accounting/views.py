@@ -76,8 +76,8 @@ def shipments_fetch(request):
 
     shipments = Shipment.objects.all()
     shipments = shipments.filter(
-        Q(transaction__product__account_prepay_type=1) | Q(delivery_charge__gt=0),
-        status=2,
+        Q(transaction__product__account_prepay_type=Product.INVQ) | Q(delivery_charge__gt=0),
+        status=Shipment.STATUS_SHIPPED,
         accounting_status=status_filter
     )
     shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')

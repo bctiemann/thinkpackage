@@ -81,7 +81,7 @@ def receive_form(request, receivable_id):
 def pallet(request):
 
     context = {
-        'shipments': Shipment.objects.filter(status=0).order_by('location__zip', '-date_created')
+        'shipments': Shipment.objects.filter(status=Shipment.STATUS_PENDING).order_by('location__zip', '-date_created')
     }
     return render(request, 'warehouse_app/pallet.html', context)
 
@@ -209,7 +209,7 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
             # Check for any transactions in this shipment with is_scanned_to_pallet = False
             # If none, set shipment status=1
             if not Transaction.objects.filter(shipment=pallet.shipment, is_scanned_to_pallet=False).exists():
-                pallet.shipment.status = 1
+                pallet.shipment.status = Shipment.STATUS_READY
                 pallet.shipment.save()
 
 #        pallet.create_qrcode()

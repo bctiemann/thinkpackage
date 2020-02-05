@@ -105,10 +105,10 @@ def shipments_fetch(request):
     # three_weeks_ago = timezone.now() - timedelta(days=21)
 
     if shipped_filter:
-        shipments = shipments.exclude(status=2)
+        shipments = shipments.exclude(status=Shipment.STATUS_SHIPPED)
     else:
         # shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
-        shipments = shipments.filter(status=2)[start:end]
+        shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)[start:end]
         print(len(shipments))
 
     context = {
@@ -183,7 +183,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
     def form_valid(self, form):
         response = super(ShipmentShip, self).form_valid(form)
         self.object.date_shipped = timezone.now()
-        self.object.status = 2
+        self.object.status = Shipment.STATUS_SHIPPED
         self.object.save()
         for transaction in self.object.transaction_set.all():
             ActionLog.objects.create(
@@ -197,7 +197,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
             transaction.product.cases_inventory_orig = transaction.product.cases_inventory
             transaction.product.cases_inventory -= transaction.cases
             if transaction.product.cases_inventory < 0:
-                logger.warning('Shipment {0}: {1} cases deducted from product {2}, greater than {3} cases in stock'.format(self.object.id, transaction.cases, transaction.product.cases_inventory_orig))
+                logger.warning('Shipment {0}: {1} cases deducted from product {2}, greater than {3} cases in stock'.format(self.object.id, transaction.cases, transaction.product.id, transaction.product.cases_inventory_orig))
                 transaction.product.cases_inventory = 0
 #            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
             transaction.product.save()

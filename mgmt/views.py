@@ -75,9 +75,9 @@ class LoginView(LoginView):
 def home(request):
 
     logger.info(f'{request.user} viewed mgmt home page')
-    delivery_requests = Shipment.objects.exclude(status=2).order_by('-date_created')
+    delivery_requests = Shipment.objects.exclude(status=Shipment.STATUS_SHIPPED).order_by('-date_created')
 
-    ready_to_ship = Shipment.objects.filter(status=1).order_by(F('date_shipped').asc(nulls_last=True))
+    ready_to_ship = Shipment.objects.filter(status=Shipment.STATUS_READY).order_by(F('date_shipped').asc(nulls_last=True))
 
     inbound_receivables = []
     for receivable in Transaction.objects.filter(is_outbound=False, cases__isnull=True).order_by('-date_created'):
@@ -92,7 +92,7 @@ def home(request):
             'is_partial': split_receivables.count() > 0,
         })
 
-    invq = Shipment.objects.filter(status=2, transaction__product__account_prepay_type=1, accounting_status__in=[0, 1]) \
+    invq = Shipment.objects.filter(status=Shipment.STATUS_SHIPPED, transaction__product__account_prepay_type=Product.INVQ, accounting_status__in=[Shipment.ACCOUNTING_INVQ, Shipment.ACCOUNTING_PENDING]) \
         .order_by('-date_created') \
         .annotate(date=Func(F('date_created'), function='DATE')) \
         .values('date', 'id', 'client__company_name', 'location__name', 'client__id') \
@@ -194,9 +194,9 @@ def shipments_list(request, client_id=None):
     shipments = client.shipment_set.all().order_by('status', '-date_created')
 
     if shipped_filter:
-        shipments = shipments.exclude(status=2)
+        shipments = shipments.exclude(status=Shipment.STATUS_SHIPPED)
     else:
-        shipments = shipments.filter(status=2)
+        shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)
 
     context = {
         'client': client,

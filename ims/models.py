@@ -314,17 +314,26 @@ class CustContact(models.Model):
 
 
 class AdminUser(models.Model):
+    ACCESS_LEVEL_ADMIN = 1
+    ACCESS_LEVEL_CUSTOMER_MANAGEMENT = 2
+    ACCESS_LEVEL_PRODUCT_MANAGEMENT = 3
+    ACCESS_LEVEL_MARKETING = 4
+    ACCESS_LEVEL_BBS = 5
+
     ACCESS_LEVEL_CHOICES = (
-        (1, 'Admin'),
-        (2, 'Customer Management'),
-        (3, 'Product Management'),
-        (4, 'Marketing Only'),
-        (5, 'BBS Only'),
+        (ACCESS_LEVEL_ADMIN, 'Admin'),
+        (ACCESS_LEVEL_CUSTOMER_MANAGEMENT, 'Customer Management'),
+        (ACCESS_LEVEL_PRODUCT_MANAGEMENT, 'Product Management'),
+        (ACCESS_LEVEL_MARKETING, 'Marketing Only'),
+        (ACCESS_LEVEL_BBS, 'BBS Only'),
     )
 
+    TWO_FACTOR_OTP = 1
+    TWO_FACTOR_SMS = 2
+
     TWO_FACTOR_CHOICES = (
-        (1, 'OTP auth'),
-        (2, 'SMS auth'),
+        (TWO_FACTOR_OTP, 'OTP auth'),
+        (TWO_FACTOR_SMS, 'SMS auth'),
     )
 
     id = models.AutoField(primary_key=True, db_column='adminid')
@@ -352,9 +361,13 @@ class AdminUser(models.Model):
 
 
 class WarehouseUser(models.Model):
+
+    ROLE_ACCOUNTING = 'accounting'
+    ROLE_WAREHOUSE = 'warehouse'
+
     ROLE_CHOICES = (
-        ('accounting', 'Accounting'),
-        ('warehouse', 'Warehouse'),
+        (ROLE_ACCOUNTING, 'Accounting'),
+        (ROLE_WAREHOUSE, 'Warehouse'),
     )
 
     id = models.AutoField(primary_key=True, db_column='wuserid')
@@ -571,16 +584,24 @@ class ShipperAddress(models.Model):
 
 
 class Shipment(models.Model):
+    STATUS_PENDING = 0
+    STATUS_READY = 1
+    STATUS_SHIPPED = 2
+
     STATUS_CHOICES = (
-        (0, 'Pending'),
-        (1, 'Ready to Ship'),
-        (2, 'Shipped'),
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_READY, 'Ready to Ship'),
+        (STATUS_SHIPPED, 'Shipped'),
     )
 
+    ACCOUNTING_INVQ = 0
+    ACCOUNTING_PENDING = 1
+    ACCOUNTING_SUBMITTED = 2
+
     ACCOUNTING_STATUS_CHOICES = (
-        (0, 'INVQ'),
-        (1, 'Pending'),
-        (2, 'Submitted'),
+        (ACCOUNTING_INVQ, 'INVQ'),
+        (ACCOUNTING_PENDING, 'Pending'),
+        (ACCOUNTING_SUBMITTED, 'Submitted'),
     )
 
     id = models.AutoField(primary_key=True, db_column='shipmentid')

@@ -903,7 +903,7 @@ class Pallet(models.Model):
 
     @property
     def gross_weight_imperial(self):
-        return self.gross_weight * 2.20462
+        return float(self.gross_weight) * 2.20462
 
     def __str__(self):
         return ('{0}'.format(self.id))

@@ -163,7 +163,7 @@ def receivables_fetch(request):
     # three_weeks_ago = timezone.now() - timedelta(days=21)
 
     if received_filter:
-        transactions = transactions.filter(cases__isnull=True)
+        transactions = transactions.filter(cases__isnull=True)[start:end]
     else:
         # transactions = transactions.filter(cases__isnull=False, receivable__date_created__gt=three_weeks_ago)
         transactions = transactions.filter(cases__isnull=False)[start:end]

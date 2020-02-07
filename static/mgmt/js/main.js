@@ -946,6 +946,7 @@ function refreshShipments(shipmentid) {
     if (!('shipped_filter' in globals)) {
         globals['shipped_filter'] = 1;
     }
+    globals['startFrom'] = 0;
 
     $('#list_shipments tbody').empty().append($('<img>', {
         src: '/static/images/loading_bar.gif',
@@ -953,16 +954,30 @@ function refreshShipments(shipmentid) {
     }));
 
 //    var url = cgiroot+'ajax_shipments_list.cfm?customerid='+$('#customerid').val()+'&shipped_filter='+globals['shipped_filter'];
-    var url = cgiroot + $('#customerid').val() + '/shipments/list/?shipped_filter=' + globals['shipped_filter'];
+    // var url = cgiroot + $('#customerid').val() + '/shipments/list/?shipped_filter=' + globals['shipped_filter'];
+    var url = `${cgiroot}${$('#customerid').val()}/shipments/list/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}`;
+
 console.log(url);
     $('#list_shipments').load(url,function(data) {
+        fetchShipments(shipmentid);
+    });
+}
+
+function fetchShipments(shipmentid) {
+    globals['fetching'] = true;
+    var url = `${cgiroot}${$('#customerid').val()}/shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}`;
+    $.get(url, function(html) {
+        globals['fetching'] = false;
+        $('#list_shipments tbody').append(html);
         refreshUI();
         if (shipmentid) {
             selectShipment(shipmentid);
             var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
             $('table.shipments tbody').animate({ scrollTop: rowpos});
         }
-    });
+        globals['startFrom'] = $('tr.shipment').length;
+        console.log(globals);
+    })
 }
 
 function setupAddCustomerButton() {

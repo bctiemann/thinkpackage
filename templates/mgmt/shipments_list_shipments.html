@@ -1,0 +1,30 @@
+{% load static %}
+
+{% for shipment in shipments %}
+    <tr class="shipment" id="shipment_{{ shipment.id }}">
+        <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+        <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}</td>
+        <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.id }}</td>
+        <td style="width: 339px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>
+        <td style="width: 106px;" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
+        <td style="width: 115px;" class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.get_status_display }}</td>
+        <td style="width: 199px;" class="text monospace clickable" shipmentid="{{ shipment.id }}">
+        {% for pallet in shipment.pallet_set.all %}
+            <p class="pallet">
+                <a target="_blank" href="{% url "mgmt:pallet-print" pallet_id=pallet.id %}?inline">{{ pallet.pallet_id }}</a>
+                <span class="glyph">
+                    <a target="_blank" href="{% url "mgmt:pallet-print" pallet_id=pallet.id %}?inline">
+                        <img src="{% static "mgmt/images/barcode.gif" %}" />
+                    </a>
+                </span>
+            </p>
+        {% endfor %}
+        </td>
+        <td style="width: 60px;" class="text" shipmentid="{{ shipment.id }}">
+            {% if shipment.shipmentdoc_set.count %}
+            <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>
+            {% endif %}
+        </td>
+        <td style="width: 96px;" class="action">{% if shipment.status < 2 %}<a href="javascript:nop()" onClick="cancelShipment({{ shipment.id }})">cancel</a>{% endif %}</td>
+    </tr>
+{% endfor %}

@@ -75,6 +75,7 @@ urlpatterns = [
 
     url(r'^(?P<client_id>\d+)/inventory/list/$', mgmt_views.inventory_list, name='inventory-list'),
     url(r'^(?P<client_id>\d+)/shipments/list/$', mgmt_views.shipments_list, name='shipments-list'),
+    url(r'^(?P<client_id>\d+)/shipments/fetch/$', mgmt_views.shipments_fetch, name='shipments-fetch'),
 
     url(r'^action_log/$', mgmt_views.action_log, name='action-log'),
 #    url(r'^action_log/$', mgmt_views.FilteredActionLogListView.as_view(), name='action-log'),

@@ -191,19 +191,38 @@ def shipments_list(request, client_id=None):
     except:
         shipped_filter = 0
 
+    context = {
+        'client': client,
+        'shipped_filter': shipped_filter,
+    }
+    return render(request, 'mgmt/shipments_list.html', context)
+
+
+def shipments_fetch(request, client_id=None):
+    client = get_object_or_404(Client, pk=client_id)
+
+    try:
+        shipped_filter = int(request.GET.get('shipped_filter', 0))
+    except:
+        shipped_filter = 0
+
+    page_size = settings.INFINITE_SCROLL_PAGE_SIZE
+    start = int(request.GET.get('start', 0))
+    end = start + page_size
+
     shipments = client.shipment_set.all().order_by('status', '-date_created')
 
     if shipped_filter:
-        shipments = shipments.exclude(status=Shipment.STATUS_SHIPPED)
+        shipments = shipments.exclude(status=Shipment.STATUS_SHIPPED)[start:end]
     else:
-        shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)
+        shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)[start:end]
 
     context = {
         'client': client,
         'shipments': shipments,
         'shipped_filter': shipped_filter,
     }
-    return render(request, 'mgmt/shipments_list.html', context)
+    return render(request, 'mgmt/shipments_list_shipments.html', context)
 
 
 def shipment_docs(request, shipment_id=None):

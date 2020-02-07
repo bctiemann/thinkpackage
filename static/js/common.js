@@ -59,7 +59,7 @@ function displayErrorDialog(data) {
 var infiniteScrollTable = function(target, callback) {
     var targetTbody = $(`${target} tbody`);
     targetTbody.scroll(function(ev) {
-        var lastRow = $('#list_shipments tbody tr').last();
+        var lastRow = $(`${target} tbody tr`).last();
         var elementTop = lastRow.position().top;
         var elementBottom = elementTop + lastRow.outerHeight();
         var viewportBottom = $(this).height();

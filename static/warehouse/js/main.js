@@ -44,11 +44,26 @@ function refreshReceivables() {
     if (!('received_filter' in globals)) {
         globals['received_filter'] = 1;
     }
+    globals['startFrom'] = 0;
 //    var url = cgiroot+'ajax_receivables_list.cfm?received_filter='+globals['received_filter'];
-    var url = cgiroot + 'receivables/list/?received_filter=' + globals['received_filter'];
+    // var url = cgiroot + 'receivables/list/?received_filter=' + globals['received_filter'];
+    var url = `${cgiroot}receivables/list/?received_filter=${globals['received_filter']}`;
     $('#list_receivables').load(url,function(data) {
-        refreshUI();
+        // refreshUI();
+        fetchReceivables();
     });
+}
+
+function fetchReceivables() {
+    globals['fetching'] = true;
+    var url = `${cgiroot}receivables/fetch/?received_filter=${globals['received_filter']}&start=${globals['startFrom']}`;
+    $.get(url, function(html) {
+        globals['fetching'] = false;
+        $('#list_receivables tbody').append(html);
+        refreshUI();
+        globals['startFrom'] = $('tr.shipment').length;
+        console.log(globals);
+    })
 }
 
 function selectShipment(shipmentid) {

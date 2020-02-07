@@ -34,6 +34,7 @@ urlpatterns = [
 
     url(r'^receivables/$', warehouse_views.receivables, name='receivables'),
     url(r'^receivables/list/$', warehouse_views.receivables_list, name='receivables-list'),
+    url(r'^receivables/fetch/$', warehouse_views.receivables_fetch, name='receivables-fetch'),
 
     url(r'^pallets/$', warehouse_views.pallets, name='pallets'),
     url(r'^pallet/(?P<pallet_id>\d+)/$', warehouse_views.PalletUpdate.as_view(), name='pallet-details'),

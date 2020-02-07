@@ -109,7 +109,6 @@ def shipments_fetch(request):
     else:
         # shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
         shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)[start:end]
-        print(len(shipments))
 
     context = {
         'shipments': shipments,
@@ -142,20 +141,38 @@ def receivables_list(request):
     except:
         received_filter = 1
 
+    context = {
+        'received_filter': received_filter,
+    }
+    return render(request, 'warehouse/receivables_list.html', context)
+
+
+def receivables_fetch(request):
+
+    try:
+        received_filter = int(request.GET.get('received_filter', 1))
+    except:
+        received_filter = 1
+
+    page_size = settings.INFINITE_SCROLL_PAGE_SIZE
+    start = int(request.GET.get('start', 0))
+    end = start + page_size
+
     transactions = Transaction.objects.filter(receivable__isnull=False).annotate(null_count=Count('cases')).order_by('-null_count', '-receivable__date_created')
 
-    three_weeks_ago = timezone.now() - timedelta(days=21)
+    # three_weeks_ago = timezone.now() - timedelta(days=21)
 
     if received_filter:
         transactions = transactions.filter(cases__isnull=True)
     else:
-        transactions = transactions.filter(cases__isnull=False, receivable__date_created__gt=three_weeks_ago)
+        # transactions = transactions.filter(cases__isnull=False, receivable__date_created__gt=three_weeks_ago)
+        transactions = transactions.filter(cases__isnull=False)[start:end]
 
     context = {
         'transactions': transactions,
         'received_filter': received_filter,
     }
-    return render(request, 'warehouse/receivables_list.html', context)
+    return render(request, 'warehouse/receivables_list_receivables.html', context)
 
 
 def pallets(request):

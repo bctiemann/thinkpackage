@@ -5,7 +5,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.db import models
 from django.db.models import F, FloatField, Sum
-from django.db.models.functions import Lower
+from django.db.models.functions import Lower, Coalesce, Trunc
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -561,6 +561,25 @@ class Product(models.Model):
         qr.add_data(code)
         qr.make(fit=True)
         return qr.make_image()
+
+    def get_history(self, date_from):
+        history = self.transaction_set.filter(date_created__gt=date_from)
+        history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
+        history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
+        history = history.order_by('-date_in_out', '-shipment__id')
+
+        cases_balance_differential = self.cases_inventory
+        for transaction in history:
+            if not transaction.cases:
+                continue
+            transaction.cases_remaining_differential = cases_balance_differential
+            if transaction.is_shipped or not transaction.is_outbound or transaction.is_transfer:
+                if transaction.is_outbound:
+                    cases_balance_differential += transaction.cases
+                else:
+                    cases_balance_differential -= transaction.cases
+
+        return history
 
     def get_absolute_url(self):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})

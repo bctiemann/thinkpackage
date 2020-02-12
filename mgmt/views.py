@@ -247,25 +247,9 @@ def product_history(request, product_id):
     except:
         pass
 
-    history = Transaction.objects.filter(product=product, date_created__gt=date_from)
-    history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
-    history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
-    history = history.order_by('-date_in_out', '-shipment__id')
-
-    cases_balance_differential = product.cases_inventory
-    for transaction in history:
-        if not transaction.cases:
-            continue
-        transaction.cases_remaining_differential = cases_balance_differential
-        if transaction.is_shipped or not transaction.is_outbound or transaction.is_transfer:
-            if transaction.is_outbound:
-                cases_balance_differential += transaction.cases
-            else:
-                cases_balance_differential -= transaction.cases
-
     context = {
         'product': product,
-        'history': history,
+        'history': product.get_history(date_from),
         'date_from': date_from,
         'date_to': date_to,
     }

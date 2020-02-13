@@ -149,7 +149,7 @@ def notifications_low_stock(request):
             pass
 
     context = {
-        'low_stock(': low_stock,
+        'low_stock': low_stock,
     }
     return render(request, 'mgmt/notifications_low_stock.html', context)
 

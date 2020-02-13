@@ -18,6 +18,17 @@ urlpatterns = [
 
     url(r'^$', mgmt_views.home, name='home'),
 
+    url(r'^notifications/delivery_requests/$', mgmt_views.notifications_delivery_requests,
+        name='notifications-delivery-requests'),
+    url(r'^notifications/ready_to_ship/$', mgmt_views.notifications_ready_to_ship,
+        name='notifications-ready-to-ship'),
+    url(r'^notifications/inbound_receivables/$', mgmt_views.notifications_inbound_receivables,
+        name='notifications-inbound-receivables'),
+    url(r'^notifications/invq/$', mgmt_views.notifications_invq,
+        name='notifications-invq'),
+    url(r'^notifications/low_stock/$', mgmt_views.notifications_low_stock,
+        name='notifications-low-stock'),
+
     url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='mgmt:login'), name='sign-out'),
     # url(r'^password_reset/$', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset_form.html'), name='password-reset'),
     # url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password-reset-done'),

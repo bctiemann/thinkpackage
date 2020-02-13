@@ -1,121 +1,67 @@
+{% load static %}
+
 <div style="display: inline-block; vertical-align: top;">
 
-<div class="list_header" section="delivery_requests">
-    <span class="disclosure"></span>
-    Delivery requests
-</div>
-<div class="list_wrap minimized two" section="delivery_requests">
-<ul class="items_list" id="delivery_requests_list">
+    <div class="list_header" section="delivery_requests">
+        <span class="disclosure"></span>
+        Delivery requests
+    </div>
+    <div class="list_wrap minimized two" section="delivery_requests">
+        <ul class="items_list" id="delivery_requests_list">
+            <img class="loading" src="{% static "accounting/images/loading_bar.gif" %}" />
+        </ul>
+    </div>
 
-    {% for shipment in delivery_requests %}
-    <a href="{% url "mgmt:shipments" client_id=shipment.client.id shipment_id=shipment.id %}"><li>
-        <div class="date floatright">{{ shipment.date_created | date:"SHORT_DATE_FORMAT" }}</div>
-        <div class="dl">DL # {{ shipment.id }}</div>
-        <div class="items-list-content">
-            <div class="coname">
-                <p>{{ shipment.client.company_name }}</p>
-                <p class="subtitle">{{ shipment.location.name }}</p>
-            </div>
-        </div>
-    </li></a> 
-    {% endfor %}
-    
-</ul>
-</div>
-
-<div class="list_header" section="ready_to_ship">
-    <span class="disclosure"></span>
-    Ready to Ship
-</div>
-<div class="list_wrap minimized two" section="ready_to_ship">
-<ul class="items_list" id="ready_shipments_list">
-
-    {% for shipment in ready_to_ship %}
-    <a href="{% url "mgmt:shipments" client_id=shipment.client.id shipment_id=shipment.id %}"><li>
-        <div class="date floatright">{{ shipment.date_shipped | date:"SHORT_DATE_FORMAT" }}</div>
-        <div class="dl">DL # {{ shipment.id }}</div>
-        <div class="items-list-content">
-            <div class="coname">
-                <p>{{ shipment.client.company_name }}</p>
-                <p class="subtitle">{{ shipment.location.name }}</p>
-            </div>
-        </div>    
-    </li></a>
-    {% endfor %}
-
-</ul>
-</div>
+    <div class="list_header" section="ready_to_ship">
+        <span class="disclosure"></span>
+        Ready to Ship
+    </div>
+    <div class="list_wrap minimized two" section="ready_to_ship">
+        <ul class="items_list" id="ready_to_ship_list">
+            <img class="loading" src="{% static "accounting/images/loading_bar.gif" %}" />
+        </ul>
+    </div>
     
 </div>
 
 <div style="display: inline-block; vertical-align: top;">
     
-<div class="list_header" section="inbound_receivables">
-    <span class="disclosure"></span>
-    Inbound receivables
-</div>
-<div class="list_wrap minimized three" section="inbound_receivables">
-<ul class="items_list" id="inbound_shipments_list">
-                
-    {% for receivable in inbound_receivables %}
-    <a href="{% url "mgmt:inventory" client_id=receivable.obj.client.id %}?history={{ receivable.obj.product.id }}"><li>
-        <div class="date floatright">{{ receivable.obj.date_created | date:"SHORT_DATE_FORMAT" }}</div>
-        <div class="items-list-content">
-            <div class="coname">
-                <p>{{ receivable.obj.client.company_name }}</p>
-                <p class="subtitle">{{ receivable.obj.product.item_number }}: {{ receivable.obj.product.name }} {% if receivable.is_partial %}<span class="partial_receivable">PARTIAL</span>{% endif %}</p>
-            </div>
-        </div>
-    </li></a>
-    {% endfor %}
+    <div class="list_header" section="inbound_receivables">
+        <span class="disclosure"></span>
+        Inbound receivables
+    </div>
+    <div class="list_wrap minimized three" section="inbound_receivables">
+        <ul class="items_list" id="inbound_receivables_list">
+            <img class="loading" src="{% static "accounting/images/loading_bar.gif" %}" />
+        </ul>
+    </div>
+        
+    <div class="list_header" section="outbound_shipments">
+        <span class="disclosure"></span>
+        INVQ
+    </div>
+    <div class="list_wrap minimized three" section="outbound_shipments">
+        <ul class="items_list" id="invq_list">
+            <img class="loading" src="{% static "accounting/images/loading_bar.gif" %}" />
+        </ul>
+    </div>
+
+    <div class="list_header" section="low_stock">
+        <span class="disclosure"></span>
+        Low stock
+    </div>
+    <div class="list_wrap minimized three" section="low_stock">
+        <ul class="items_list" id="low_stock_list">
+            <img class="loading" src="{% static "accounting/images/loading_bar.gif" %}" />
+        </ul>
+    </div>
     
-</ul>
-</div>
-        
-<div class="list_header" section="outbound_shipments">
-    <span class="disclosure"></span>
-    INVQ
-</div>
-<div class="list_wrap minimized three" section="outbound_shipments">
-<ul class="items_list" id="outbound_shipments_list">
-
-    {% for shipment in invq %}
-    <a href="{% url "mgmt:shipments" client_id=shipment.client__id shipment_id=shipment.id %}"><li>
-        <div class="date floatright">{{ shipment.date | date:"SHORT_DATE_FORMAT" }}</div>
-        <div class="dl">DL # {{ shipment.id }}</div>
-        <div class="items-list-content">
-            <div class="coname">
-                <p>{{ shipment.client__company_name }}</p>
-                <p class="subtitle">{{ shipment.location__name }}</p>
-            </div>
-        </div>
-    </li></a>
-    {% endfor %}
-    
-</ul>
-</div>
-        
-<div class="list_header" section="low_stock">
-    <span class="disclosure"></span>
-    Low stock
-</div>
-<div class="list_wrap minimized three" section="low_stock">
-<ul class="items_list" id="low_stock_list">
-
-    {% for product in low_stock %}
-    <a href="{% url "mgmt:inventory" client_id=product.obj.client.id product_id=product.obj.id %}"><li>
-        <div class="dl">DL # {{ product.last_shipment.shipment.id }}</div>
-        <div class="items-list-content">
-            <div class="coname">
-                <p>{{ product.obj.client.company_name }}</p>
-                <p class="subtitle">{{ product.obj.name }}</p>
-            </div>
-        </div>
-    </li></a>
-    {% endfor %}
-        
-</ul>
-</div>
-                
 </div>
 
+<script type="text/javascript">
+    refreshNotifications('delivery_requests');
+    refreshNotifications('ready_to_ship');
+    refreshNotifications('inbound_receivables');
+    refreshNotifications('invq');
+    refreshNotifications('low_stock');
+</script>

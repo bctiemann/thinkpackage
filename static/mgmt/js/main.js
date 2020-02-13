@@ -172,6 +172,12 @@ function toggleInactiveCustomers() {
     refreshCustomers();
 }
 
+function refreshNotifications(notificationType) {
+    var url = `${cgiroot}notifications/${notificationType}/`;
+    $(`#${notificationType}_list`).load(url, function() {
+    })
+}
+
 function loadLocationsList(customerid,locationid) {
 //    var url = cgiroot+'ajax_locations_list.cfm?customerid='+customerid;
     var url = cgiroot + 'locations_list/' + customerid;

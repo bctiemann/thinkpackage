@@ -75,10 +75,35 @@ class LoginView(LoginView):
 def home(request):
 
     logger.info(f'{request.user} viewed mgmt home page')
+
+    context = {
+    }
+    return render(request, 'mgmt/home.html', context)
+
+
+def redirect(request, client_id=None):
+    return redirect('mgmt:inventory', client_id=client_id)
+
+
+def notifications_delivery_requests(request):
     delivery_requests = Shipment.objects.exclude(status=Shipment.STATUS_SHIPPED).order_by('-date_created')
 
+    context = {
+        'delivery_requests': delivery_requests,
+    }
+    return render(request, 'mgmt/notifications_delivery_requests.html', context)
+
+
+def notifications_ready_to_ship(request):
     ready_to_ship = Shipment.objects.filter(status=Shipment.STATUS_READY).order_by(F('date_shipped').asc(nulls_last=True))
 
+    context = {
+        'ready_to_ship': ready_to_ship,
+    }
+    return render(request, 'mgmt/notifications_ready_to_ship.html', context)
+
+
+def notifications_inbound_receivables(request):
     inbound_receivables = []
     for receivable in Transaction.objects.filter(is_outbound=False, cases__isnull=True).order_by('-date_created'):
         split_receivables = Transaction.objects.filter(
@@ -92,12 +117,26 @@ def home(request):
             'is_partial': split_receivables.count() > 0,
         })
 
+    context = {
+        'inbound_receivables': inbound_receivables,
+    }
+    return render(request, 'mgmt/notifications_inbound_receivables.html', context)
+
+
+def notifications_invq(request):
     invq = Shipment.objects.filter(status=Shipment.STATUS_SHIPPED, transaction__product__account_prepay_type=Product.INVQ, accounting_status__in=[Shipment.ACCOUNTING_INVQ, Shipment.ACCOUNTING_PENDING]) \
         .order_by('-date_created') \
         .annotate(date=Func(F('date_created'), function='DATE')) \
         .values('date', 'id', 'client__company_name', 'location__name', 'client__id') \
         .annotate(count=Count('date'))
 
+    context = {
+        'invq': invq,
+    }
+    return render(request, 'mgmt/notifications_invq.html', context)
+
+
+def notifications_low_stock(request):
     low_stock = []
     for product in Product.objects.filter(cases_inventory__lt=F('contracted_quantity') / 2, is_active=True).order_by('name'):
         try:
@@ -110,17 +149,9 @@ def home(request):
             pass
 
     context = {
-        'delivery_requests': delivery_requests,
-        'ready_to_ship': ready_to_ship,
-        'inbound_receivables': inbound_receivables,
-        'invq': invq,
-        'low_stock': low_stock,
+        'low_stock(': low_stock,
     }
-    return render(request, 'mgmt/home.html', context)
-
-
-def redirect(request, client_id=None):
-    return redirect('mgmt:inventory', client_id=client_id)
+    return render(request, 'mgmt/notifications_low_stock.html', context)
 
 
 def profile(request, client_id=None):

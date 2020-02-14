@@ -1,4 +1,4 @@
-var cgiroot = '/wapp';
+var cgiroot = '/wapp/';
 var scanInput = '';
 var scanMode = null;
 //var onPallet = {};
@@ -185,7 +185,7 @@ function submitReceivable(receivableid) {
         cases: $('#cases').val()
     };
 //    var url = cgiroot+'ajax_receivable.cfm'
-    var url = cgiroot + '/receive/' + receivableid + '/confirm/';
+    var url = cgiroot + 'receive/' + receivableid + '/confirm/';
     $.post(url,receivable,function(data) {
 console.log(data);
         if (data.success) {
@@ -265,7 +265,7 @@ function openActionPage(page) {
     pallet_selected = null;
     $('#modal_overlay').show();
 //    var url = cgiroot+page+'.cfm';
-    var url = cgiroot + '/' + page + '/';
+    var url = cgiroot + page + '/';
     $('#content').load(url,function() {
         $('#modal_overlay').hide();
         $('#barcode').focus();

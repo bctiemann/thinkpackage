@@ -44,7 +44,7 @@ class LoginRequiredMiddleware(object):
                     return HttpResponseRedirect(reverse_lazy('client:login'))
                 if path.startswith('warehouse/'):
                     return HttpResponseRedirect(reverse_lazy('warehouse:login'))
-                if path.startswith('warehouse_app/'):
+                if path.startswith('wapp/'):
                     return HttpResponseRedirect(reverse_lazy('warehouse_app:login'))
                 if path.startswith('accounting/'):
                     return HttpResponseRedirect(reverse_lazy('accounting:login'))

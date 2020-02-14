@@ -1,4 +1,4 @@
-var cgiroot = '/warehouse_app/';
+var cgiroot = '/wapp';
 var scanInput = '';
 var scanMode = null;
 //var onPallet = {};

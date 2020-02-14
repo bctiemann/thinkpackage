@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     'thinkpackage.lionking.org',
     'thinkpackage.lionwire.com',
     'thinkpackage.grotto11.com',
+    'secure.thinkpackage.com',
 ]
 
 

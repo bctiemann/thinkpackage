@@ -1017,10 +1017,10 @@ function resetAddCustomerButton() {
     });
 }
 
-function focusDocument() {
-    var frameDoc = top.frames['frame'].contentWindow;
-    $(frameDoc).focus();
-}
+//function focusDocument() {
+//    var frameDoc = top.frames['frame'].contentWindow;
+//    $(frameDoc).focus();
+//}
 
 function clearKeyInput() {
     keyinput = '';
@@ -1568,7 +1568,7 @@ $(document).ready(function() {
 
     refreshUI();
 
-    setTimeout('focusDocument()',100);
+    //setTimeout('focusDocument()',100);
     $('body').keyup(function(e) {
         if (e.keyCode == 27) {
             $('tr.product').removeClass('selected');

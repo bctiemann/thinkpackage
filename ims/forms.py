@@ -59,13 +59,13 @@ class AjaxableResponseMixin(object):
 
 
 class UserLoginForm(AuthenticationForm):
-    username = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Login'}))
+    username = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Login (email)'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
 
-    class Meta:
-        widgets = {
-            'username': forms.EmailInput(attrs={'placeholder': 'Login'}),
-            'password': forms.PasswordInput(attrs={'placeholder': 'Password'}),
-        }
+    # class Meta:
+        # widgets = {
+            # 'username': forms.EmailInput(attrs={'placeholder': 'Login'}),
+            # 'password': forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        # }
 
 

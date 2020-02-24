@@ -40,7 +40,7 @@ function fetchShipments(shipmentid) {
         refreshUI();
         if (shipmentid) {
             selectShipment(shipmentid);
-            if (('tr#shipment_' + shipmentid).length) {
+            if ($('tr#shipment_' + shipmentid).length) {
                 var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
                 $('table.shipments tbody').animate({ scrollTop: rowpos});
             }

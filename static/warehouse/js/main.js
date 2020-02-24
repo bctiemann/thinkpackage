@@ -32,8 +32,10 @@ function fetchShipments(shipmentid) {
         refreshUI();
         if (shipmentid) {
             selectShipment(shipmentid);
-            var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
-            $('table.shipments tbody').animate({ scrollTop: rowpos});
+            if ($('tr#shipment_' + shipmentid).length) {
+                var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
+                $('table.shipments tbody').animate({ scrollTop: rowpos});
+            }
         }
         globals['startFrom'] = $('tr.shipment').length;
         console.log(globals);

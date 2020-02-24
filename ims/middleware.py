@@ -105,15 +105,18 @@ class PermissionsMiddleware(object):
         path = request.path_info.lstrip('/')
         if not any(m.match(path) for m in EXEMPT_URLS):
             if request.user.is_authenticated and path.startswith('mgmt/') and not request.user.is_admin:
+                logger.info(f'{request.user} not authorized for mgmt.')
                 raise PermissionDenied
 #            if request.user.is_authenticated and path.startswith('client/') and not self.is_authorized_for_client(request.user, self.get_selected_client(request)):
             if request.user.is_authenticated and path.startswith('client/') and not self.is_authorized_for_client(request.user, request.selected_client):
-                logger.info('Unauthorized client login; logging out')
+                logger.info(f'Unauthorized client login ({request.user} for {request.selected_client}); logging out')
                 logout(request)
                 return HttpResponseRedirect(reverse_lazy('client:login'))
             if request.user.is_authenticated and path.startswith('warehouse/') and not request.user.is_warehouse:
+                logger.info(f'{request.user} not authorized for warehouse.')
                 raise PermissionDenied
             if request.user.is_authenticated and path.startswith('accounting/') and not request.user.is_accounting:
+                logger.info(f'{request.user} not authorized for accounting.')
                 raise PermissionDenied
 
         return self.get_response(request)

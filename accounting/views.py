@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseBadRequest
 from django.db.models import Sum, Q
 from django.contrib.auth import authenticate, login
 
@@ -175,6 +175,11 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         logger.warning(form.data)
         logger.warning(self.request.FILES)
+        if not 'file' in self.request.FILES:
+            return JsonResponse({
+                'success': False,
+                'message': 'No file was uploaded.',
+            })
         response = super(ShipmentDocCreate, self).form_valid(form)
         uploaded_file = self.request.FILES['file']
         self.object.content_type = uploaded_file.content_type

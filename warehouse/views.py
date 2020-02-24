@@ -263,6 +263,11 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         logger.warning(form.data)
         logger.warning(self.request.FILES)
+        if not 'file' in self.request.FILES:
+            return JsonResponse({
+                'success': False,
+                'message': 'No file was uploaded.',
+            })
         response = super(ShipmentDocCreate, self).form_valid(form)
         uploaded_file = self.request.FILES['file']
         self.object.content_type = uploaded_file.content_type

@@ -237,6 +237,11 @@ LOGGING = {
         },
     },
     'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
         # Log all app logger messages to the central logfile
         '': {
             'handlers': ['logfile'],

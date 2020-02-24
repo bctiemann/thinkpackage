@@ -204,9 +204,9 @@ class Command(BaseCommand):
                     contracted_quantity = old['contqty'],
                     is_active = old['active'] if old['active'] >= 0 else False,
                     is_deleted = True if old['active'] == -1 else False,
-                    length = old['length'],
-                    width = old['width'],
-                    height = old['height'],
+                    length = old['length'] or 0,
+                    width = old['width'] or 0,
+                    height = old['height'] or 0,
                     item_number = old['itemnum'],
                     location = location,
                     account_prepay_type = old['account']

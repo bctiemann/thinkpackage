@@ -52,8 +52,12 @@ TWILIO_ACCOUNT_SID = 'AC1e9dd3090c8ce40529da714a5e93c935'
 TWILIO_AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
 TWILIO_CALLER_ID = '404-800-7627'
 
+ADMINS = (
+    ('Brian Tiemann', 'btman@mac.com'),
+)
+
 #EMAIL_HOST = 'mail.lionking.org'
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = 'blend.lionwire.com'
 EMAIL_PORT = 25
 
 SUPPORT_EMAIL = 'btman@mac.com'

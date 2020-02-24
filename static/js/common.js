@@ -60,11 +60,13 @@ var infiniteScrollTable = function(target, callback) {
     var targetTbody = $(`${target} tbody`);
     targetTbody.scroll(function(ev) {
         var lastRow = $(`${target} tbody tr`).last();
-        var elementTop = lastRow.position().top;
-        var elementBottom = elementTop + lastRow.outerHeight();
-        var viewportBottom = $(this).height();
-        if (viewportBottom > elementTop && !globals['fetching']) {
-            callback();
+        if (lastRow) {
+            var elementTop = lastRow.position().top;
+            var elementBottom = elementTop + lastRow.outerHeight();
+            var viewportBottom = $(this).height();
+            if (viewportBottom > elementTop && !globals['fetching']) {
+                callback();
+            }
         }
     });
 };

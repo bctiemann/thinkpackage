@@ -27,7 +27,7 @@
     <tbody>
     {% for transaction in shipment.transaction_set.all %}
 
-    <tr class="shipment detail" id="productdetail_{{ transaction.product.id }}">
+    <tr class="shipment-detail detail" id="productdetail_{{ transaction.product.id }}">
         <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text" style="width: 300px;">{{ transaction.product.name }}</td>
         <td class="text">{{ transaction.product.get_account_prepay_type_display|default_if_none:"" }}</td>

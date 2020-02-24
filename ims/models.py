@@ -802,11 +802,11 @@ class Transaction(models.Model):
 
     @property
     def total_weight(self):
-        return self.cases * self.product.gross_weight
+        return self.cases * float(self.product.gross_weight)
 
     @property
     def total_weight_imperial(self):
-        return self.cases * self.product.gross_weight_imperial
+        return self.cases * float(self.product.gross_weight_imperial)
 
     # Number of pallets dedicated to this product
     @property

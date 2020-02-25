@@ -79,7 +79,8 @@ def shipments_fetch(request):
         Q(transaction__product__account_prepay_type=Product.INVQ) | Q(delivery_charge__gt=0),
         status=Shipment.STATUS_SHIPPED,
         accounting_status=status_filter
-    )
+    )\
+    .filter(location__isnull=False)
     shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
 
     # three_months_ago = timezone.now() - timedelta(days=90)

@@ -161,6 +161,7 @@ admin.site.register(ShipperAddress, ShipperAddressAdmin)
 class ShipmentAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()
+    search_fields = ('id', 'client__company_name',)
 admin.site.register(Shipment, ShipmentAdmin)
 
 

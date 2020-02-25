@@ -349,7 +349,7 @@ function execute_deleteLocation() {
     };
     var url = cgiroot + 'location/' + globals['locationid'] + '/delete/';
     $.post(url, location, function(data) {
-        window.location = cgiroot + '/' + globals['customerid'] + '/profile';
+        window.location = cgiroot + globals['customerid'] + '/profile';
     },'json');
 }
 

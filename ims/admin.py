@@ -140,9 +140,11 @@ admin.site.register(WarehouseUser, WarehouseUserAdmin)
 
 
 class LocationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'is_active',)
     list_editable = ()
-    list_filter = ()
+    list_filter = ('client',)
     autocomplete_fields = ('client', 'customer_contact', 'contact_user',)
+    search_fields = ('name', 'client__company_name',)
 admin.site.register(Location, LocationAdmin)
 
 

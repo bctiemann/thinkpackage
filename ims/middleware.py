@@ -77,7 +77,7 @@ class SelectedClientMiddleware(object):
                 try:
                     client = ClientUser.objects.filter(user=request.user, client__is_active=True).first().client
                 except AttributeError:
-                    logger.warning('No client for user {0}'.format(request.user))
+                    logger.debug('No client for user {0}'.format(request.user))
                     return None
                 if client:
                     request.session['selected_client_id'] = client.id

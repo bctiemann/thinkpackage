@@ -43,16 +43,15 @@ class Command(BaseCommand):
                 user = User.objects.create_user(
                     email = custcontact.email,
                     password = password,
+                    first_name = custcontact.first_name,
+                    last_name = custcontact.last_name,
+                    phone_number = custcontact.phone_number,
+                    notes = custcontact.notes,
+                    last_login = custcontact.last_login,
+                    is_active = custcontact.is_active,
                 )
             if DEBUG:
                 print('{0}\t{1}'.format(custcontact.email, password))
-            user.first_name = custcontact.first_name
-            user.last_name = custcontact.last_name
-            user.phone_number = custcontact.phone_number
-            user.notes = custcontact.notes
-            user.last_login = custcontact.last_login
-            user.is_active = custcontact.is_active
-            user.save()
 
             print(user, custcontact.client)
             client_user, created = ClientUser.objects.get_or_create(

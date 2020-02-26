@@ -8,7 +8,7 @@ var units = 'metric';
 
 $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
     if (thrownError) {
-        alert(thrownError);
+        alert(`Service returned an error: ${thrownError}`);
     }
     console.log(event);
 });

@@ -194,7 +194,8 @@ form .caption {
 form input[type=text],
 form input[type=password],
 form input[type=phone],
-form input[type=email] {
+form input[type=email],
+form input[type=number] {
 	border-width: 0px;
 	background: none;
 	width: 100%;

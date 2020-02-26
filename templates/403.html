@@ -26,6 +26,9 @@
     <p>
         You do not have authorization to access this area.
     </p>
+    {% if exception %}
+    <p><b>Error:</b> {{ exception }}</p>
+    {% endif %}
     {% with request.path|split_path as path %}
         <a class="btn"
         {% if path.1 == 'mgmt' %}

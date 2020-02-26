@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -77,7 +77,7 @@ class SelectedClientMiddleware(object):
                 try:
                     client = ClientUser.objects.filter(user=request.user, client__is_active=True).first().client
                 except AttributeError:
-                    logger.debug('No client for user {0}'.format(request.user))
+                    logger.warning('No client for user {0}'.format(request.user))
                     return None
                 if client:
                     request.session['selected_client_id'] = client.id
@@ -109,9 +109,8 @@ class PermissionsMiddleware(object):
                 raise PermissionDenied
 #            if request.user.is_authenticated and path.startswith('client/') and not self.is_authorized_for_client(request.user, self.get_selected_client(request)):
             if request.user.is_authenticated and path.startswith('client/') and not self.is_authorized_for_client(request.user, request.selected_client):
-                logger.info(f'Unauthorized client login ({request.user} for {request.selected_client}); logging out')
-                logout(request)
-                return HttpResponseRedirect(reverse_lazy('client:login'))
+                logger.info(f'Unauthorized client login ({request.user} for {request.selected_client}).')
+                raise PermissionDenied(f'No clients assigned to user {request.user}.')
             if request.user.is_authenticated and path.startswith('warehouse/') and not request.user.is_warehouse:
                 logger.info(f'{request.user} not authorized for warehouse.')
                 raise PermissionDenied

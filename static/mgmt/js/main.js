@@ -6,9 +6,11 @@ var filter_popup_timeout = 2000;
 var units = 'metric';
 
 
-$(document).ajaxError(function() {
-    alert('An error occurred executing this function.');
-  $( ".log" ).text( "Triggered ajaxError handler." );
+$(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+    if (thrownError) {
+        alert(thrownError);
+    }
+    console.log(event);
 });
 
 var SchedElements = new Array();

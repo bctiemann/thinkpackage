@@ -115,6 +115,9 @@ class PermissionsMiddleware(object):
             if request.user.is_authenticated and path.startswith('warehouse/') and not request.user.is_warehouse:
                 logger.info(f'{request.user} not authorized for warehouse.')
                 raise PermissionDenied
+            if request.user.is_authenticated and path.startswith('wapp/') and not request.user.is_warehouse:
+                logger.info(f'{request.user} not authorized for warehouse app.')
+                raise PermissionDenied
             if request.user.is_authenticated and path.startswith('accounting/') and not request.user.is_accounting:
                 logger.info(f'{request.user} not authorized for accounting.')
                 raise PermissionDenied

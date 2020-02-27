@@ -8,3 +8,4 @@ scratch
 .idea
 *.sqlite3*
 data.json
+*.csv

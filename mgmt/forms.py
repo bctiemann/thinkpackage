@@ -263,6 +263,7 @@ class ReceivableConfirmForm(forms.ModelForm):
 
     def clean_cases(self):
         if self.cleaned_data['cases'] > self.instance.cases:
+            logger.warning(f"More cases ({self.cleaned_data['cases']}) entered than expected ({self.instance.cases}).")
             raise forms.ValidationError('More cases entered than expected.', code='more_than_expected')
         return self.cleaned_data['cases']
 

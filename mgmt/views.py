@@ -892,6 +892,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         data = {
             'success': True,
         }
+        logger.info(f'Receivable processed by {self.request.user} via {request.resolver_match.app_name}')
         logger.warning(form.data)
         logger.warning(form.cleaned_data)
 #        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
@@ -900,20 +901,22 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         self.object.cases = form.initial['cases']
 
         # If we received more cases than expected, return an error
-        if form.cleaned_data['cases'] > self.object.cases:
-            data = {
-                'success': False,
-                'message': 'More cases entered than expected.',
-            }
-            return JsonResponse(data)
+        # if form.cleaned_data['cases'] > self.object.cases:
+        #     data = {
+        #         'success': False,
+        #         'message': 'More cases entered than expected1.',
+        #     }
+        #     logger.warning(f"More cases ({form.cleaned_data['cases']}) entered than expected ({self.object.cases}).")
+        #     return JsonResponse(data)
 
-        ActionLog.objects.create(
+        action_log = ActionLog.objects.create(
             user = self.request.user,
             client = self.object.client,
             product = self.object.product,
             log_message = 'Receivable {0} updated. {1} cases added'.format(self.object.id, form.cleaned_data['cases']),
             app = self.request.resolver_match.app_name,
         )
+        logger.info(action_log.log_message)
 
         # If we received fewer cases than expected, create a new receivable with the remainder
         if form.cleaned_data['cases'] < self.object.cases:
@@ -938,7 +941,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             )
             transaction.save()
 
-            logger.info('Receivable {0} created, split from {1}.'.format(split_receivable, self.object))
+            logger.info(f'Receivable {split_receivable} created with {split_receivable.cases} cases, split from {self.object} with {self.object.cases} expected.')
 
             data['warning'] = 'Fewer cases entered than expected.'
 

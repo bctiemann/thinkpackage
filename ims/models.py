@@ -182,6 +182,10 @@ class User(AbstractBaseUser):
         return [client_user.client for client_user in ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')]
 
     @property
+    def clients(self):
+        return ', '.join([client.company_name for client in self.authorized_clients])
+
+    @property
     def locations(self):
         return ', '.join(['{0} ({1})'.format(location.client.company_name, location.name) for location in Location.objects.filter(contact_user__user=self)])
 

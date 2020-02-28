@@ -171,6 +171,7 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
 .login-form input[type=password],
 .login-form input[type=number] {
     margin-left: 0px;
+    text-align: left;
 }
 
 .login-form .caption {

@@ -267,7 +267,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
         client__in=client_tree,
         date_created__gt=date_from,
         date_created__lte=date_to,
-        shipment__status=Shipment.STATUS_SHIPPED
+        shipment__status=Shipment.Status.SHIPPED
     )
 
     rows = []
@@ -548,7 +548,7 @@ def email_purchase_order(request, shipment_id):
         template = get_template(template_name)
         context = {
             'shipment': shipment,
-            'invq_transactions': shipment.transaction_set.filter(product__account_prepay_type=Product.INVQ),
+            'invq_transactions': shipment.transaction_set.filter(product__accounting_prepay_type=Product.AccountingPrepayType.INVQ),
             'total_pages': int(math.ceil(float(shipment.transaction_set.count()) / float(max_products_per_page))),
             'max_products_per_page': max_products_per_page,
             'remainder_rows': list(range(max_products_per_page - (shipment.transaction_set.count() % max_products_per_page))),

@@ -228,7 +228,7 @@ def inventory_request_delivery(request):
         shipment = Shipment(
             client=request.selected_client,
             user=request.user,
-            status=Shipment.STATUS_PENDING,
+            status=Shipment.Status.PENDING,
         )
 
     shipment.location = location

@@ -209,7 +209,7 @@ class Command(BaseCommand):
                     height = old['height'] or 0,
                     item_number = old['itemnum'],
                     location = location,
-                    account_prepay_type = old['account']
+                    accounting_prepay_type = old['account']
                 )
                 new.date_created = old['createdon']
                 new.save()

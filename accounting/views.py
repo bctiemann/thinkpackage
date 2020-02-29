@@ -76,8 +76,8 @@ def shipments_fetch(request):
 
     shipments = Shipment.objects.all()
     shipments = shipments.filter(
-        Q(transaction__product__account_prepay_type=Product.INVQ) | Q(delivery_charge__gt=0),
-        status=Shipment.STATUS_SHIPPED,
+        Q(transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ) | Q(delivery_charge__gt=0),
+        status=Shipment.Status.SHIPPED,
         accounting_status=status_filter
     )\
     .filter(location__isnull=False)

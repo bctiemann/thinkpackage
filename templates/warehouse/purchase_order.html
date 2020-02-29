@@ -467,7 +467,7 @@ Page {{ forloop.counter }} of {{ total_pages }}
         <td class="client_id">{{ shipment.client.company_name }}</td>
         <td class="item_no">{{ transaction.product.item_number }}</td>
         <td class="item_descr">{{ transaction.product.name|truncatechars:72 }}
-            <span class="account-label">{% if transaction.product.account_prepay_type == 1 %}[INVQ]{% elif transaction.product.account_prepay_type == 2 %}[Prepaid]{% endif %}</span>
+            <span class="account-label">[{{ transaction.product.get_accounting_prepay_type_display }}]</span>
         </td>
         <td class="packing">{{ transaction.product.packing|intcomma }}</td>
         <td class="no_cases">{{ transaction.cases|intcomma }}</td>

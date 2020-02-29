@@ -30,7 +30,7 @@
     <tr class="shipment-detail detail" id="productdetail_{{ transaction.product.id }}">
         <td class="text">{{ transaction.product.item_number }}</td>
         <td class="text" style="width: 300px;">{{ transaction.product.name }}</td>
-        <td class="text">{{ transaction.product.get_account_prepay_type_display|default_if_none:"" }}</td>
+        <td class="text">{{ transaction.product.get_accounting_prepay_type_display|default_if_none:"" }}</td>
         <td class="text">{{ transaction.shipment.carrier }}{% if transaction.shipment.tracking %}<br />{{ transaction.shipment.tracking }}{% endif %}</td>
         <td class="text">{{ transaction.shipment.third_party }}</td>
         <td class="date">{{ transaction.shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}</td>

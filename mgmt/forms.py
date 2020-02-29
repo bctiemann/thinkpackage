@@ -213,7 +213,7 @@ class ProductForm(forms.ModelForm):
             'packing',
             'cases_inventory',
 #            'units_inventory',
-            'account_prepay_type',
+            'accounting_prepay_type',
             'contracted_quantity',
             'unit_price',
             'gross_weight',
@@ -224,7 +224,7 @@ class ProductForm(forms.ModelForm):
             'location',
         ]
         widgets = {
-            'account_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
+            'accounting_prepay_type': forms.Select(attrs={'style': 'display: block;'}),
             'contracted_quantity': forms.NumberInput(attrs={'style': 'width: 100px;'}),
             'unit_price': forms.NumberInput(attrs={'style': 'width: 65px;', 'min': 0, 'step': '0.00001', 'onchange': 'this.value = parseFloat(this.value).toFixed(5);'}),
             'gross_weight': forms.NumberInput(attrs={'style': 'width: 50px;'}),

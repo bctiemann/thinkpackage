@@ -427,22 +427,22 @@ function selectProduct(productid,load_details,elem) {
 
 function saveProduct(productid) {
     var product = {
-        client:               $('#customerid').val(),
-        item_number:          $('#itemnum_'+productid).val(),
-        location:             $('#location_'+productid).val() || null,
-        client_tag:           $('#ctag_'+productid).val(),
-        name:                 $('#pname_'+productid).val(),
-        packing:              Math.floor($('#packing_'+productid).val()),
-        cases_inventory:      Math.floor($('#remain_'+productid).val()),
-        PO:                   $('#PO_'+productid).val() ? $('#PO_'+productid).val() : null,
-        contracted_quantity:  $('#id_contracted_quantity').length ? Math.floor($('#id_contracted_quantity').val()) : null,
-        unit_price:           $('#id_unit_price').val() ? $('#id_unit_price').val() : null,
-        gross_weight:         isNaN(parseFloat($('#id_gross_weight').val())) ? 0 : parseFloat($('#id_gross_weight').val()),
-        length:               isNaN(parseFloat($('#id_length').val())) ? 0 : parseFloat($('#id_length').val()),
-        width:                isNaN(parseFloat($('#id_width').val())) ? 0 : parseFloat($('#id_width').val()),
-        height:               isNaN(parseFloat($('#id_height').val())) ? 0 : parseFloat($('#id_height').val()),
-        is_domestic:          $('#id_is_domestic').val(),
-        account_prepay_type:  $('#id_account_prepay_type').val() || $('#account_prepay_type_'+productid).val(),
+        client:                  $('#customerid').val(),
+        item_number:             $('#itemnum_'+productid).val(),
+        location:                $('#location_'+productid).val() || null,
+        client_tag:              $('#ctag_'+productid).val(),
+        name:                    $('#pname_'+productid).val(),
+        packing:                 Math.floor($('#packing_'+productid).val()),
+        cases_inventory:         Math.floor($('#remain_'+productid).val()),
+        PO:                      $('#PO_'+productid).val() ? $('#PO_'+productid).val() : null,
+        contracted_quantity:     $('#id_contracted_quantity').length ? Math.floor($('#id_contracted_quantity').val()) : null,
+        unit_price:              $('#id_unit_price').val() ? $('#id_unit_price').val() : null,
+        gross_weight:            isNaN(parseFloat($('#id_gross_weight').val())) ? 0 : parseFloat($('#id_gross_weight').val()),
+        length:                  isNaN(parseFloat($('#id_length').val())) ? 0 : parseFloat($('#id_length').val()),
+        width:                   isNaN(parseFloat($('#id_width').val())) ? 0 : parseFloat($('#id_width').val()),
+        height:                  isNaN(parseFloat($('#id_height').val())) ? 0 : parseFloat($('#id_height').val()),
+        is_domestic:             $('#id_is_domestic').val(),
+        accounting_prepay_type:  $('#id_accounting_prepay_type').val() || $('#accounting_prepay_type_'+productid).val(),
     };
 console.log($('#id_contracted_quantity'));
     if (units == 'imperial') {

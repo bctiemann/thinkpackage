@@ -86,7 +86,7 @@ def redirect(request, client_id=None):
 
 
 def notifications_delivery_requests(request):
-    delivery_requests = Shipment.objects.exclude(status=Shipment.STATUS_SHIPPED).order_by('-date_created')
+    delivery_requests = Shipment.objects.exclude(status=Shipment.Status.SHIPPED).order_by('-date_created')
 
     context = {
         'delivery_requests': delivery_requests,
@@ -95,7 +95,7 @@ def notifications_delivery_requests(request):
 
 
 def notifications_ready_to_ship(request):
-    ready_to_ship = Shipment.objects.filter(status=Shipment.STATUS_READY).order_by(F('date_shipped').asc(nulls_last=True))
+    ready_to_ship = Shipment.objects.filter(status=Shipment.Status.READY).order_by(F('date_shipped').asc(nulls_last=True))
 
     context = {
         'ready_to_ship': ready_to_ship,
@@ -124,7 +124,7 @@ def notifications_inbound_receivables(request):
 
 
 def notifications_invq(request):
-    invq = Shipment.objects.filter(status=Shipment.STATUS_SHIPPED, transaction__product__account_prepay_type=Product.INVQ, accounting_status__in=[Shipment.ACCOUNTING_INVQ, Shipment.ACCOUNTING_PENDING]) \
+    invq = Shipment.objects.filter(status=Shipment.Status.SHIPPED, transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ, accounting_status__in=[Shipment.AccountingStatus.INVQ, Shipment.AccountingStatus.PENDING]) \
         .order_by('-date_created') \
         .annotate(date=Func(F('date_created'), function='DATE')) \
         .values('date', 'id', 'client__company_name', 'location__name', 'client__id') \
@@ -244,9 +244,9 @@ def shipments_fetch(request, client_id=None):
     shipments = client.shipment_set.all().order_by('status', '-date_created')
 
     if shipped_filter:
-        shipments = shipments.exclude(status=Shipment.STATUS_SHIPPED)[start:end]
+        shipments = shipments.exclude(status=Shipment.Status.SHIPPED)[start:end]
     else:
-        shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)[start:end]
+        shipments = shipments.filter(status=Shipment.Status.SHIPPED)[start:end]
 
     context = {
         'client': client,
@@ -729,7 +729,7 @@ class ProductTransfer(APIView):
                 cases_inventory = 0,
 #                units_inventory = 0,
                 is_active = True,
-                account_prepay_type = from_product.account_prepay_type,
+                accounting_prepay_type = from_product.accounting_prepay_type,
                 contracted_quantity = from_product.contracted_quantity,
                 unit_price = from_product.unit_price,
                 gross_weight = from_product.gross_weight,

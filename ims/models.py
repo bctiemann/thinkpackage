@@ -318,27 +318,17 @@ class CustContact(models.Model):
 
 
 class AdminUser(models.Model):
-    ACCESS_LEVEL_ADMIN = 1
-    ACCESS_LEVEL_CUSTOMER_MANAGEMENT = 2
-    ACCESS_LEVEL_PRODUCT_MANAGEMENT = 3
-    ACCESS_LEVEL_MARKETING = 4
-    ACCESS_LEVEL_BBS = 5
 
-    ACCESS_LEVEL_CHOICES = (
-        (ACCESS_LEVEL_ADMIN, 'Admin'),
-        (ACCESS_LEVEL_CUSTOMER_MANAGEMENT, 'Customer Management'),
-        (ACCESS_LEVEL_PRODUCT_MANAGEMENT, 'Product Management'),
-        (ACCESS_LEVEL_MARKETING, 'Marketing Only'),
-        (ACCESS_LEVEL_BBS, 'BBS Only'),
-    )
+    class AccessLevel(models.IntegerChoices):
+        ACCESS_LEVEL_ADMIN = 1, _('Admin')
+        ACCESS_LEVEL_CUSTOMER_MANAGEMENT = 2, _('Customer Management')
+        ACCESS_LEVEL_PRODUCT_MANAGEMENT = 3, _('Product Management')
+        ACCESS_LEVEL_MARKETING = 4, _('Marketing Only')
+        ACCESS_LEVEL_BBS = 5, _('BBS Only')
 
-    TWO_FACTOR_OTP = 1
-    TWO_FACTOR_SMS = 2
-
-    TWO_FACTOR_CHOICES = (
-        (TWO_FACTOR_OTP, 'OTP auth'),
-        (TWO_FACTOR_SMS, 'SMS auth'),
-    )
+    class TwoFactorType(models.IntegerChoices):
+        TWO_FACTOR_OTP = 1, _('OTP auth')
+        TWO_FACTOR_SMS = 2, _('SMS auth')
 
     id = models.AutoField(primary_key=True, db_column='adminid')
     username = models.CharField(max_length=100, blank=True, db_column='user')
@@ -349,12 +339,12 @@ class AdminUser(models.Model):
     full_name = models.CharField(max_length=150, blank=True, db_column='fullname')
     email = models.EmailField(max_length=192, blank=True)
     about = models.TextField(blank=True)
-    access_level = models.IntegerField(choices=ACCESS_LEVEL_CHOICES, db_column='acclev')
+    access_level = models.IntegerField(choices=AccessLevel.choices, db_column='acclev')
     is_sleeping = models.BooleanField(default=False, db_column='sleeping')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
     pic_first_name = models.CharField(max_length=255, blank=True, db_column='picfname')
     mobile_number = models.CharField(max_length=30, blank=True, db_column='cell')
-    two_factor_type = models.IntegerField(choices=TWO_FACTOR_CHOICES, db_column='twofac')
+    two_factor_type = models.IntegerField(choices=TwoFactorType.choices, db_column='twofac')
     is_active = models.BooleanField(default=True, db_column='enable')
 
     def __str__(self):
@@ -366,13 +356,9 @@ class AdminUser(models.Model):
 
 class WarehouseUser(models.Model):
 
-    ROLE_ACCOUNTING = 'accounting'
-    ROLE_WAREHOUSE = 'warehouse'
-
-    ROLE_CHOICES = (
-        (ROLE_ACCOUNTING, 'Accounting'),
-        (ROLE_WAREHOUSE, 'Warehouse'),
-    )
+    class Role(models.TextChoices):
+        ROLE_ACCOUNTING = 'accounting', _('Accounting')
+        ROLE_WAREHOUSE = 'warehouse', _('Warehouse')
 
     id = models.AutoField(primary_key=True, db_column='wuserid')
     username = models.CharField(max_length=100, blank=True, db_column='user')
@@ -385,7 +371,7 @@ class WarehouseUser(models.Model):
     last_login = models.DateTimeField(null=True, db_column='lastlogin')
     login_count = models.IntegerField(default=0, db_column='logintimes')
     is_active = models.BooleanField(default=True, db_column='enable')
-    role = models.CharField(max_length=30, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=30, choices=Role.choices)
 
     def __str__(self):
         return ('{0}'.format(self.username))
@@ -427,13 +413,10 @@ class Location(models.Model):
 
 
 class Product(models.Model):
-    INVQ = 1
-    PREPAID = 2
 
-    PREPAY_CHOICES = (
-        (INVQ, 'INVQ'),
-        (PREPAID, 'Prepaid'),
-    )
+    class AccountingPrepayType(models.IntegerChoices):
+        INVQ = 1, _('INVQ')
+        PREPAID = 2, _('Prepaid')
 
     id = models.AutoField(primary_key=True, db_column='productid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
@@ -455,7 +438,7 @@ class Product(models.Model):
     height = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, blank=True)
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid', on_delete=models.SET_NULL)
-    account_prepay_type = models.IntegerField(choices=PREPAY_CHOICES, null=True, blank=True, db_column='account')
+    accounting_prepay_type = models.IntegerField(choices=AccountingPrepayType.choices, null=True, blank=True, db_column='account')
 
     @property
     def units_inventory(self):
@@ -607,32 +590,23 @@ class ShipperAddress(models.Model):
 
 
 class Shipment(models.Model):
-    STATUS_PENDING = 0
-    STATUS_READY = 1
-    STATUS_SHIPPED = 2
 
-    STATUS_CHOICES = (
-        (STATUS_PENDING, 'Pending'),
-        (STATUS_READY, 'Ready to Ship'),
-        (STATUS_SHIPPED, 'Shipped'),
-    )
+    class Status(models.IntegerChoices):
+        PENDING = 0, _('Pending')
+        READY = 1, _('Ready to Ship')
+        SHIPPED = 2, _('Shipped')
 
-    ACCOUNTING_INVQ = 0
-    ACCOUNTING_PENDING = 1
-    ACCOUNTING_SUBMITTED = 2
-
-    ACCOUNTING_STATUS_CHOICES = (
-        (ACCOUNTING_INVQ, 'INVQ'),
-        (ACCOUNTING_PENDING, 'Pending'),
-        (ACCOUNTING_SUBMITTED, 'Submitted'),
-    )
+    class AccountingStatus(models.IntegerChoices):
+        INVQ = 0, _('INVQ')
+        PENDING = 1, _('Pending')
+        SUBMITTED = 2, _('Submitted')
 
     id = models.AutoField(primary_key=True, db_column='shipmentid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     date_shipped = models.DateTimeField(null=True, blank=True, db_column='shippedon')
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField(choices=Status.choices, default=0)
     carrier = models.CharField(max_length=50, blank=True, default='')
     tracking = models.CharField(max_length=50, blank=True, default='')
     ship_by = models.IntegerField(null=True, blank=True, db_column='shipby')
@@ -656,7 +630,7 @@ class Shipment(models.Model):
     sort_segregation = models.BooleanField(default=False, db_column='sortseg')
     shipment_class = models.CharField(max_length=50, blank=True, default='', db_column='class')
     pallet_count = models.IntegerField(null=True, blank=True, db_column='numpallets')
-    accounting_status = models.IntegerField(choices=ACCOUNTING_STATUS_CHOICES, default=0, db_column='acctstatus')
+    accounting_status = models.IntegerField(choices=AccountingStatus.choices, default=0, db_column='acctstatus')
     invoice_number = models.IntegerField(null=True, blank=True, db_column='invoice')
     delivery_charge = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, db_column='deliverycharge')
 
@@ -1026,17 +1000,17 @@ class BulkOrder(models.Model):
 
 
 class BulkOrderItem(models.Model):
-    SPLIT_FLAG_CHOICES = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-    )
+
+    class SplitFlag(models.TextChoices):
+        Y = 'Y', _('Yes')
+        N = 'N', _('No')
 
     id = models.AutoField(primary_key=True, db_column='bulkorderitemid')
     bulk_order = models.ForeignKey('BulkOrder', null=True, db_column='bulkorderid', on_delete=models.SET_NULL)
     item_number = models.CharField(max_length=40, blank=True, default='', db_column='itemnum')
     quantity = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, db_column='quantity')
     package_type = models.CharField(max_length=20, blank=True, default='', db_column='pkgtype')
-    split_flag = models.CharField(choices=SPLIT_FLAG_CHOICES, max_length=1, blank=True, default='', db_column='splitflag')
+    split_flag = models.CharField(choices=SplitFlag.choices, max_length=1, blank=True, default='', db_column='splitflag')
     product_name = models.TextField(null=True, blank=True, db_column='pname')
     bid_price = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True, db_column='bidprice')
 

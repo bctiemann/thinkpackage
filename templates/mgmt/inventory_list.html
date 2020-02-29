@@ -29,7 +29,7 @@
             <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text clickable location" location_id="{{ product.location.id }}" productid="{{ product.id }}">{{ product.location.name }}</td>
             <td style="width: 434px;" class="text editable clickable" productid="{{ product.id }}">
                 <input type="text" id="pname_{{ product.id }}" value="{{ product.name }}" productid="{{ product.id }}" style="width: 280px;" maxlength="500" />
-                <span class="account-label">{{ product.get_account_prepay_type_display|default_if_none:"" }}</span>
+                <span class="account-label">{{ product.get_accounting_prepay_type_display|default_if_none:"" }}</span>
             </td>
             <td style="width: 120px;" class="numeric editable clickable" productid="{{ product.id }}"><input type="text" id="packing_{{ product.id }}" value="{{ product.packing|intcomma }}" productid="{{ product.id }}" style="width: 80px;" maxlength="8" /></td>
             <td style="width: 140px;" class="numeric editable clickable" productid="{{ product.id }}">
@@ -68,7 +68,7 @@
             <td style="width: 434px;" class="text editable" productid="new">
                 <input type="text" id="pname_new" productid="new" style="width: 280px;" maxlength="255" />
                 <span class="account-label">
-                <select id="account_prepay_type_new">
+                <select id="accounting_prepay_type_new">
                     <option value="1">INVQ</option>
                     <option value="2">Prepaid</option>
                 </select>

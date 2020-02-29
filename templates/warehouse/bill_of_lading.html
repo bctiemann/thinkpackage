@@ -435,7 +435,7 @@ ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.c
         <td class="no_cases">{{ transaction.cases|intcomma }}</td>
         <td class="item_id">{{ transaction.product.item_number }}</td>
         <td class="item_descr">{{ transaction.product.name|truncatechars:72 }}
-            <span class="account-label">{% if transaction.product.account_prepay_type == 1 %}[INVQ]{% elif transaction.product.account_prepay_type == 2 %}[Prepaid]{% endif %}</span>
+            <span class="account-label">[{{ transaction.product.get_accounting_prepay_type_display }}]</span>
         </td>
         <td class="packing">{{ transaction.product.packing|intcomma }}</td>
         <td class="total_pcs">{{ transaction.total_quantity|intcomma }}</td>

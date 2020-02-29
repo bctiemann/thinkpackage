@@ -105,10 +105,10 @@ def shipments_fetch(request):
     # three_weeks_ago = timezone.now() - timedelta(days=21)
 
     if shipped_filter:
-        shipments = shipments.exclude(status=Shipment.STATUS_SHIPPED)
+        shipments = shipments.exclude(status=Shipment.Status.SHIPPED)
     else:
         # shipments = shipments.filter(status=2, date_shipped__gt=three_weeks_ago)
-        shipments = shipments.filter(status=Shipment.STATUS_SHIPPED)[start:end]
+        shipments = shipments.filter(status=Shipment.Status.SHIPPED)[start:end]
 
     context = {
         'shipments': shipments,
@@ -200,7 +200,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
     def form_valid(self, form):
         response = super(ShipmentShip, self).form_valid(form)
         self.object.date_shipped = timezone.now()
-        self.object.status = Shipment.STATUS_SHIPPED
+        self.object.status = Shipment.Status.SHIPPED
         self.object.save()
         for transaction in self.object.transaction_set.all():
             ActionLog.objects.create(
@@ -219,7 +219,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 #            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
             transaction.product.save()
 
-        if self.object.transaction_set.filter(product__account_prepay_type=Product.INVQ).exists():
+        if self.object.transaction_set.filter(product__accounting_prepay_type=Product.AccountingPrepayType.INVQ).exists():
             request_dict = {
                 'scheme': self.request.scheme,
                 'host': self.request.get_host(),
@@ -336,7 +336,7 @@ class PurchaseOrderView(PDFView):
         context = super(PurchaseOrderView, self).get_context_data(**kwargs)
         shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
         context['shipment'] = shipment
-        context['invq_transactions'] = shipment.transaction_set.filter(product__account_prepay_type=Product.INVQ)
+        context['invq_transactions'] = shipment.transaction_set.filter(product__accounting_prepay_type=Product.AccountingPrepayType.INVQ)
         context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
         context['pages'] = list(range(context['total_pages']))
         context['max_products_per_page'] = self.max_products_per_page

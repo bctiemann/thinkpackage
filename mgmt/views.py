@@ -892,7 +892,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         data = {
             'success': True,
         }
-        logger.info(f'Receivable processed by {self.request.user} via {request.resolver_match.app_name}')
+        logger.info(f'Receivable processed by {self.request.user} via {self.request.resolver_match.app_name}')
         logger.warning(form.data)
         logger.warning(form.cleaned_data)
 #        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])

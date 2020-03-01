@@ -7,7 +7,7 @@ django-localflavor==2.1
 django-countries==5.5
 django-jsonfield==1.4.0
 django_two_factor_auth==1.10.0
-django-otp==0.8.1
+django-otp==0.7.5
 django-tables2==2.2.1
 django-formtools==2.2
 #django-filter==2.0.0
@@ -18,7 +18,7 @@ colorlog==2.10
 ConcurrentLogHandler==0.9.1
 qrcode==6.0
 Pillow==4.2.1
-celery==4.2.1
+celery==4.4.0
 redis==3.2.1
 twilio==6.22.0
 python-dateutil==2.8.0

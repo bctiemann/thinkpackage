@@ -4,13 +4,16 @@
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Func, F, Count
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import (
+    login, authenticate, get_user_model, password_validation, update_session_auth_hash,
+)
 
 from django_pdfkit import PDFView
 
@@ -23,7 +26,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, Pallet, AsyncTask
-from ims.forms import AjaxableResponseMixin, UserLoginForm
+from ims.forms import AjaxableResponseMixin, UserLoginForm, PasswordChangeForm
 from ims import utils
 
 import math
@@ -189,3 +192,23 @@ class LoginView(LoginView):
             return HttpResponseRedirect(self.home_url)
         return super(LoginView, self).dispatch(request, *args, **kwargs)
 
+
+class PasswordChangeView(UpdateView):
+    model = User
+    form_class = PasswordChangeForm
+    template_name = 'accounts/change_password.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        update_session_auth_hash(self.request, self.request.user)
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('change-password-done')
+
+
+class PasswordChangeDoneView(TemplateView):
+    template_name = 'accounts/change_password_done.html'

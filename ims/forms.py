@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.safestring import mark_safe
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, AuthenticationForm
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
 
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
+from ims.models import User, Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
 from ims import utils
 
 import logging
@@ -69,3 +69,14 @@ class UserLoginForm(AuthenticationForm):
         # }
 
 
+class PasswordChangeForm(SetPasswordForm):
+    existing_password = forms.CharField(max_length=50)
+
+    def __init__(self, *args, **kwargs):
+        # request = kwargs.pop("request")
+        self.instance = kwargs.pop('instance')
+        print(kwargs)
+        super().__init__(self.instance, *args, **kwargs)
+        self.fields['new_password2'].label = 'Repeat password'
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})

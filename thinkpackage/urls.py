@@ -44,6 +44,14 @@ urlpatterns = [
         ims_views.LoginView.as_view(),
         name='login',
     ),
+    url(r'^account/change_password/$',
+        ims_views.PasswordChangeView.as_view(),
+        name='change-password',
+    ),
+    url(r'^account/change_password/done/$',
+        ims_views.PasswordChangeDoneView.as_view(),
+        name='change-password-done',
+    ),
 
     url(r'', include(tf_urls, 'two_factor')),
 

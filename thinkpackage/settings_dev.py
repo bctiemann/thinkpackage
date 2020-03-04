@@ -45,6 +45,7 @@ STATIC_ROOT = '/Users/brian.tiemann/Development/thinkpackage-dj/static_root'
 
 # STATIC_ROOT = '/usr/local/www/thinkpackage-dj/static_root'
 MEDIA_ROOT = '/Users/brian.tiemann/Development/thinkpackage-dj/media'
+MEDIA_ROOT_LEGACY = '/Users/brian.tiemann/Development/thinkpackage-dj/media'
 MEDIA_URL = '/media/'
 
 LOG_DIR = '/Users/brian.tiemann/Development/thinkpackage-dj/logs'

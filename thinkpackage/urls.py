@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.urls import path, register_converter
 from django.contrib import admin
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
@@ -7,52 +8,56 @@ from two_factor.urls import urlpatterns as tf_urls
 
 from django.contrib.auth import views as auth_views
 from ims import views as ims_views
+from ims.converters import CapitalAlphaStringConverter
+
+
+register_converter(CapitalAlphaStringConverter, 'caps')
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 
-    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='home'), name='sign-out'),
+    path('sign_out/', auth_views.LogoutView.as_view(next_page='home'), name='sign-out'),
 
-    url(r'^recovery/password_reset/$', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset_form.html'), name='password_reset'),
-    url(r'^recovery/password_reset/done/$', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password_reset_done'),
-    url(r'^recovery/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'), name='password_reset_confirm'),
-    url(r'^recovery/reset/done/$', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),
+    path('recovery/password_reset/', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset_form.html'), name='password_reset'),
+    path('recovery/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password_reset_done'),
+    path('recovery/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('recovery/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),
 
-    url(r'^$', ims_views.home, name='home'),
-    url(r'^shipment/doc/(?P<doc_id>\d+)/$', ims_views.shipment_doc, name='shipment-doc'),
-    url(r'^pallet/code/(?P<pallet_id>[A-Z]+)/$', ims_views.pallet_code, name='pallet-code'),
-    url(r'^product/code/(?P<product_id>[A-Z]+)/$', ims_views.product_code, name='product-code'),
+    path('', ims_views.home, name='home'),
+    path('shipment/doc/<int:doc_id>/', ims_views.shipment_doc, name='shipment-doc'),
+    path('pallet/code/<caps:pallet_id>/', ims_views.pallet_code, name='pallet-code'),
+    path('product/code/<caps:product_id>/', ims_views.product_code, name='product-code'),
 
-    url(
-        r'^favicon.ico$',
+    path(
+        'favicon.ico',
         RedirectView.as_view(
             url=staticfiles_storage.url('favicon.ico'),
             permanent=False),
         name="favicon"
     ),
 
-    url(r'^mgmt/', include(('mgmt.urls', 'mgmt'), namespace='mgmt')),
-    url(r'^client/', include(('client.urls', 'client'), namespace='client')),
-    url(r'^warehouse/', include(('warehouse.urls', 'warehouse'), namespace='warehouse')),
-    url(r'^wapp/', include(('warehouse_app.urls', 'warehouse_app'), namespace='warehouse_app')),
-    url(r'^accounting/', include(('accounting.urls', 'accounting'), namespace='accounting')),
-    url(r'^api/', include(('api.urls', 'api'), namespace='api')),
+    path('mgmt/', include(('mgmt.urls', 'mgmt'), namespace='mgmt')),
+    path('client/', include(('client.urls', 'client'), namespace='client')),
+    path('warehouse/', include(('warehouse.urls', 'warehouse'), namespace='warehouse')),
+    path('wapp/', include(('warehouse_app.urls', 'warehouse_app'), namespace='warehouse_app')),
+    path('accounting/', include(('accounting.urls', 'accounting'), namespace='accounting')),
+    path('api/', include(('api.urls', 'api'), namespace='api')),
 
-    url(
-        r'^account/login/$',
+    path(
+        'account/login/',
         ims_views.LoginView.as_view(),
         name='login',
     ),
-    url(r'^account/change_password/$',
+    path('account/change_password/',
         ims_views.PasswordChangeView.as_view(),
         name='change-password',
     ),
-    url(r'^account/change_password/done/$',
+    path('account/change_password/done/',
         ims_views.PasswordChangeDoneView.as_view(),
         name='change-password-done',
     ),
 
-    url(r'', include(tf_urls, 'two_factor')),
+    path('', include(tf_urls, 'two_factor')),
 
 ]

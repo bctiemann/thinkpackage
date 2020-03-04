@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib.admin.models import LogEntry
 from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
@@ -207,3 +208,19 @@ class ShipmentDocAdmin(admin.ModelAdmin):
     list_filter = ()
 admin.site.register(ShipmentDoc, ShipmentDocAdmin)
 
+
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ('action_time', 'user', '__str__')
+    readonly_fields = ('content_type',
+        'user',
+        'action_time',
+        'object_id',
+        'object_repr',
+        'action_flag',
+        'change_message'
+    )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+admin.site.register(LogEntry, LogEntryAdmin)

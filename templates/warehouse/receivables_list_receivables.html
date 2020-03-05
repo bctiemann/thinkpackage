@@ -12,7 +12,7 @@
         <td style="width: 89px;" class="numeric clickable" receivableid="{{ transaction.receivable.id }}">{{ transaction.receivable.cases|intcomma }}</td>
         <td style="width: 55px;" class="numeric clickable" receivableid="{{ transaction.receivable.id }}">{% if transaction.cases %}{{ transaction.cases|intcomma }}{% endif %}
         {% if transaction.cases and transaction.cases != transaction.receivable.cases %}
-            <span class="{% if transaction.cases_received_split > 0 %}partial_receivable{% endif %}">({{ transaction.cases_received_split|intcomma }})</span>
+            <span class="{% if transaction.cases_received_split %}partial_receivable{% endif %}">({{ transaction.cases_received_split|intcomma }})</span>
         {% endif %}
         </td>
         <td style="width: 89px;" class="numeric clickable" receivableid="{{ transaction.receivable.id }}"></td>

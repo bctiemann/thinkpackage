@@ -764,7 +764,7 @@ class Transaction(models.Model):
             return None
         if not self.receivable.cases or not self.cases:
             return None
-        return self.receivable.cases - self.cases
+        return (self.receivable.cases - self.cases) * -1
 
     @property
     def total_quantity(self):

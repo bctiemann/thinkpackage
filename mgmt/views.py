@@ -410,6 +410,18 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
     model = Location
     fields = ['is_active']
 
+    def form_valid(self, form):
+        self.object = self.get_object()
+        logger.info(f'{self.request.user} deleted location {self.object}')
+        ActionLog.objects.create(
+            user=self.request.user,
+            client=self.object.client,
+            product=None,
+            log_message=f'Deleted location {self.object}',
+            app=self.request.resolver_match.app_name,
+        )
+        return super().form_valid(form)
+
     def get_object(self):
         return get_object_or_404(Location, pk=self.kwargs['location_id'])
 
@@ -1013,6 +1025,20 @@ class ShipmentDelete(AjaxableResponseMixin, DeleteView):
     def get_object(self):
         return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        logger.info(f'{request.user} deleted shipment {self.object}')
+        ActionLog.objects.create(
+            user=self.request.user,
+            client=self.object.client,
+            product=None,
+            log_message=f'Deleted shipment {self.object}',
+            app=self.request.resolver_match.app_name,
+        )
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
     def get_success_url(self):
         return reverse_lazy('mgmt:shipments', kwargs={'client_id': self.object.client.id})
 
@@ -1053,6 +1079,19 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
 
     def get_object(self):
         return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        logger.info(f'{request.user} deleted shipment doc {self.object} for shipment {self.object.shipment}')
+        ActionLog.objects.create(
+            user=self.request.user,
+            client=self.object.shipment.client,
+            product=None,
+            log_message=f'Deleted shipment doc {self.object} for shipment {self.object.shipment}',
+            app=self.request.resolver_match.app_name,
+        )
+        self.object.delete()
 
     def get_success_url(self):
         return reverse_lazy('mgmt:shipment-docs', kwargs={'shipment_id': self.object.shipment.id})

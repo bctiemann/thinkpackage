@@ -725,7 +725,7 @@ class Transaction(models.Model):
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     cases = models.IntegerField(null=True, blank=True)
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')
-    receivable = models.ForeignKey('Receivable', null=True, blank=True, db_column='receivableid', on_delete=models.SET_NULL)
+    receivable = models.ForeignKey('Receivable', null=True, blank=True, db_column='receivableid', on_delete=models.CASCADE)
     transfer_client = models.ForeignKey('Client', null=True, blank=True, db_column='transfercustomerid', related_name='transfers', on_delete=models.SET_NULL)
     transfer_product = models.ForeignKey('Product', null=True, blank=True, db_column='transferproductid', related_name='transfers', on_delete=models.SET_NULL)
     is_scanned_to_pallet = models.BooleanField(default=False)

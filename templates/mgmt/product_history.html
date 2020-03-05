@@ -93,7 +93,7 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
                 {% endif %}
             {% endif %}
             {% if transaction.cases != transaction.receivable.cases and transaction.cases and transaction.receivable.cases %}
-                <span class="{% if transaction.cases_received_split %}partial_receivable{% endif %}">({{ transaction.cases_received_split }})</span>
+                <span class="{% if transaction.cases_received_split and False %}partial_receivable{% endif %}">({{ transaction.cases_received_split }})</span>
             {% endif %}
         </td>
         <td class="numeric">

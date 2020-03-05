@@ -9,7 +9,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
@@ -982,6 +982,20 @@ class ReceivableDelete(AjaxableResponseMixin, DeleteView):
 
     def get_object(self):
         return get_object_or_404(Receivable, pk=self.kwargs['receivable_id'])
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        logger.info(f'{request.user} deleted receivable {self.object}, transaction {self.object.transaction}')
+        ActionLog.objects.create(
+            user=self.request.user,
+            client=self.object.client,
+            product=self.object.transaction.product,
+            log_message=f'Deleted receivable {self.object}, transaction {self.object.transaction} with {self.object.cases} cases',
+            app=self.request.resolver_match.app_name,
+        )
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
     def get_success_url(self):
         return reverse_lazy('mgmt:product-history', kwargs={'product_id': self.object.product.id})

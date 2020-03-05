@@ -7,7 +7,7 @@ from django.db.models import Func, F, Count
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
@@ -114,6 +114,9 @@ class PalletPrint(PDFView):
     def get(self, *args, **kwargs):
         try:
             return super(PalletPrint, self).get(*args, **kwargs)
+        except FileNotFoundError as e:
+            logger.warning(e)
+            return HttpResponseNotFound('Document not found.')
         except Exception as e:
             logger.warning(e)
             logger.warning('PDF generation failed; retrying')
@@ -148,6 +151,9 @@ class ProductPrint(PDFView):
     def get(self, *args, **kwargs):
         try:
             return super(ProductPrint, self).get(*args, **kwargs)
+        except FileNotFoundError as e:
+            logger.warning(e)
+            return HttpResponseNotFound('Document not found.')
         except Exception as e:
             logger.warning(e)
             logger.warning('PDF generation failed; retrying')

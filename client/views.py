@@ -123,6 +123,8 @@ def profile_location_detail(request, location_id):
 
 
 def inventory(request):
+    logger.info(f'{request.user} viewed client inventory page for {request.selected_client}')
+
     locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
@@ -267,11 +269,13 @@ def inventory_request_delivery(request):
         'email/delivery_request.html',
         cc=[request.user.email],
     )
+    logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
 
     return JsonResponse({'success': True})
 
 
 def history(request):
+    logger.info(f'{request.user} viewed client history page for {request.selected_client}')
 
     products = None
     if request.selected_client:

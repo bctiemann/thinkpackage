@@ -70,6 +70,7 @@ def home(request):
 
 
 def shipments(request):
+    logger.info(f'{request.user} viewed warehouse shipments page')
 
     context = {
     }

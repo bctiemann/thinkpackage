@@ -43,7 +43,8 @@ def home(request):
 
 
 def shipments(request):
-#    locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
+    logger.info(f'{request.user} viewed accounting shipments page')
+    #    locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
     }

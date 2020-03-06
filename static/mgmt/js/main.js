@@ -368,7 +368,7 @@ function execute_deleteCustContact() {
     var url = cgiroot + 'contact/' + globals['custcontactid'] + '/delete/';
     $.post(url,custcontact,function(data) {
 //        loadCustContact(null,globals['customerid'],true);
-        window.location = cgiroot + '/' + globals['customerid'] + '/profile';
+        window.location = `${cgiroot}${globals['customerid']}/profile/`;
     },'json');
 }
 

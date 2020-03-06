@@ -154,24 +154,26 @@ def notifications_low_stock(request):
     return render(request, 'mgmt/notifications_low_stock.html', context)
 
 
-def profile(request, client_id=None):
-    client = get_object_or_404(Client, pk=client_id)
-    all_clients = []
-    for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
-        indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in range(parent_client['depth'])])
-        parent_client['indent'] = indent
-        all_clients.append(parent_client)
-
-    context = {
-        'client': client,
-        'primary_contact': CustContact.objects.filter(client=client, is_primary=True).first(),
-        'all_clients': all_clients,
-    }
-    return render(request, 'mgmt/profile.html', context)
+# def profile(request, client_id=None):
+#     client = get_object_or_404(Client, pk=client_id)
+#     logger.info(f'{request.user} viewed profile page for {client}')
+#     all_clients = []
+#     for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
+#         indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in range(parent_client['depth'])])
+#         parent_client['indent'] = indent
+#         all_clients.append(parent_client)
+#
+#     context = {
+#         'client': client,
+#         'primary_contact': CustContact.objects.filter(client=client, is_primary=True).first(),
+#         'all_clients': all_clients,
+#     }
+#     return render(request, 'mgmt/profile.html', context)
 
 
 def inventory(request, client_id=None, product_id=None):
     client = get_object_or_404(Client, pk=client_id)
+    logger.info(f'{request.user} viewed inventory page for {client}')
 
     context = {
         'client': client,
@@ -358,6 +360,9 @@ class ClientCreate(AjaxableResponseMixin, CreateView):
     form_class = forms.ClientCreateForm
     template_name = 'mgmt/profile.html'
 
+    def form_valid(self, form):
+        logger.info(f'{self.request.user} created client {form.cleaned_data["company_name"]}')
+        return super().form_valid(form)
 
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
@@ -373,9 +378,11 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
         if form.cleaned_data['primary_contact']:
             form.cleaned_data['primary_contact'].is_primary = True
             form.cleaned_data['primary_contact'].save()
+        logger.info(f'{self.request.user} updated client {self.object}')
         return super(ClientUpdate, self).form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
+        logger.info(f'{self.request.user} viewed profile page for {self.object}')
         context = super(ClientUpdate, self).get_context_data(*args, **kwargs)
         context['primary_contact'] = self.object.custcontact_set.filter(is_primary=True).first()
         return context
@@ -385,6 +392,11 @@ class LocationCreate(AjaxableResponseMixin, CreateView):
     model = Location
     form_class = forms.LocationForm
     template_name = 'mgmt/location_form.html'
+
+    def form_valid(self, form):
+        logger.info(form.cleaned_data)
+        logger.info(f'{self.request.user} created location {form.cleaned_data["name"]} for client {form.cleaned_data["client"]}')
+        return super().form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
         context = super(LocationCreate, self).get_context_data(*args, **kwargs)
@@ -396,6 +408,11 @@ class LocationUpdate(AjaxableResponseMixin, UpdateView):
     model = Location
     form_class = forms.LocationForm
     template_name = 'mgmt/location_form.html'
+
+    def form_valid(self, form):
+        logger.info(form.cleaned_data)
+        logger.info(f'{self.request.user} updated location {form.cleaned_data["name"]} for client {form.cleaned_data["client"]}')
+        return super().form_valid(form)
 
     def get_object(self):
         return get_object_or_404(Location, pk=self.kwargs['location_id'])
@@ -412,7 +429,7 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = self.get_object()
-        logger.info(f'{self.request.user} deleted location {self.object}')
+        logger.info(f'{self.request.user} deleted location {self.object} for client {self.object.client}')
         ActionLog.objects.create(
             user=self.request.user,
             client=self.object.client,
@@ -473,6 +490,7 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
                 client_user.user.set_password(user_form.cleaned_data['password'])
             client_user.user.save()
 
+            logger.info(f'{self.request.user} created contact {client_user.user} for {form.cleaned_data["client"]}')
             return super(CustContactCreate, self).form_valid(form)
         elif not form.is_valid():
             return super(CustContactCreate, self).form_invalid(form)
@@ -481,26 +499,26 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
                 user.delete()
             return super(CustContactCreate, self).form_invalid(user_form)
 
-    def form_valid_bak(self, form):
-        client_user = form.save(commit=False)
-        client_user.user = user_form
-
-        response = super(CustContactCreate, self).form_valid(form)
-        logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
-
-        try:
-            self.object.user = User.objects.get(email=self.object.email)
-        except User.DoesNotExist:
-            self.object.user = User.objects.create_user(
-                email = self.object.email,
-                password = self.object.password,
-            )
-        client_user = ClientUser.objects.create(
-            client = form.cleaned_data['client'],
-            user = self.object.user,
-        )
-
-        return response
+    # def form_valid_bak(self, form):
+    #     client_user = form.save(commit=False)
+    #     client_user.user = user_form
+    #
+    #     response = super(CustContactCreate, self).form_valid(form)
+    #     logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
+    #
+    #     try:
+    #         self.object.user = User.objects.get(email=self.object.email)
+    #     except User.DoesNotExist:
+    #         self.object.user = User.objects.create_user(
+    #             email = self.object.email,
+    #             password = self.object.password,
+    #         )
+    #     client_user = ClientUser.objects.create(
+    #         client = form.cleaned_data['client'],
+    #         user = self.object.user,
+    #     )
+    #
+    #     return response
 
     def get_context_data(self, *args, **kwargs):
         context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
@@ -547,6 +565,7 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
                 client_user.user.set_password(user_form.cleaned_data['password'])
             client_user.user.save()
 
+            logger.info(f'{self.request.user} updated contact {self.object.user} for {self.object.client}')
             return super(CustContactUpdate, self).form_valid(form)
         elif not form.is_valid():
             return super(CustContactUpdate, self).form_invalid(form)
@@ -555,36 +574,36 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
                 user.delete()
             return super(CustContactUpdate, self).form_invalid(user_form)
 
-    def form_valid_bak(self, form):
-        logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
-        logger.info(form.cleaned_data)
-        response = super(CustContactUpdate, self).form_valid(form)
-
-        if self.object.user == None and self.object.email:
-            try:
-                self.object.user = User.objects.get(email=self.object.email)
-            except User.DoesNotExist:
-                self.object.user = User.objects.create_user(
-                    email = self.object.email,
-                    password = self.object.password,
-                )
-
-        if form.cleaned_data['password'] == '********':
-            logger.info('Password unchanged')
-            self.object.password = form.initial['password']
-            self.object.user.set_password(self.object.password)
-        else:
-            logger.info('Password changed')
-            self.object.user.set_password(form.cleaned_data['password'])
-            self.object.password = self.object.user.password
-        self.object.user.save()
-        self.object.save()
-
-        client_user, is_created = ClientUser.objects.get_or_create(user=self.object.user, client=form.cleaned_data['client'])
-        client_user.title = form.cleaned_data['title']
-        client_user.save()
-
-        return response
+    # def form_valid_bak(self, form):
+    #     logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
+    #     logger.info(form.cleaned_data)
+    #     response = super(CustContactUpdate, self).form_valid(form)
+    #
+    #     if self.object.user == None and self.object.email:
+    #         try:
+    #             self.object.user = User.objects.get(email=self.object.email)
+    #         except User.DoesNotExist:
+    #             self.object.user = User.objects.create_user(
+    #                 email = self.object.email,
+    #                 password = self.object.password,
+    #             )
+    #
+    #     if form.cleaned_data['password'] == '********':
+    #         logger.info('Password unchanged')
+    #         self.object.password = form.initial['password']
+    #         self.object.user.set_password(self.object.password)
+    #     else:
+    #         logger.info('Password changed')
+    #         self.object.user.set_password(form.cleaned_data['password'])
+    #         self.object.password = self.object.user.password
+    #     self.object.user.save()
+    #     self.object.save()
+    #
+    #     client_user, is_created = ClientUser.objects.get_or_create(user=self.object.user, client=form.cleaned_data['client'])
+    #     client_user.title = form.cleaned_data['title']
+    #     client_user.save()
+    #
+    #     return response
 
     def get_context_data(self, *args, **kwargs):
         context = super(CustContactUpdate, self).get_context_data(*args, **kwargs)
@@ -592,6 +611,7 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
 #        data = {'form-TOTAL_FORMS': u'1','form-INITIAL_FORMS': u'0','form-MAX_NUM_FORMS': u''}
 #        context['clientuser_formset'] = forms.ClientUserFormSet(self.request.POST or None, instance=self.get_object().user)
         context['user_form'] = self.user_form_class(instance=self.object.user)
+        logger.info(f'{self.request.user} viewed contact {self.object.user} for {self.object.client}')
 
         return context
 
@@ -613,6 +633,7 @@ class CustContactDelete(AjaxableResponseMixin, DeleteView):
 
     def delete(self, *args, **kwargs):
         self.object = self.get_object()
+        logger.info(f'{self.request.user} deleted contact {self.object.user} for {self.object.client}')
         self.object.delete()
         data = {
             'success': True,

@@ -285,7 +285,7 @@ class ClientUser(models.Model):
         return ('{0} {1}'.format(self.user.first_name, self.user.last_name))
 
     def get_absolute_url(self):
-        return reverse('mgmt:profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
+        return reverse('mgmt:contact-update', kwargs={'custcontact_id': self.pk})
 
 
 class CustContact(models.Model):
@@ -405,7 +405,7 @@ class Location(models.Model):
         return (self.name)
 
     def get_absolute_url(self):
-        return reverse('mgmt:profile', kwargs={'client_id': self.client_id, 'location_id': self.pk})
+        return reverse('mgmt:location-update', kwargs={'location_id': self.pk})
 
     class Meta:
         db_table = 'Locations'

@@ -154,23 +154,6 @@ def notifications_low_stock(request):
     return render(request, 'mgmt/notifications_low_stock.html', context)
 
 
-# def profile(request, client_id=None):
-#     client = get_object_or_404(Client, pk=client_id)
-#     logger.info(f'{request.user} viewed profile page for {client}')
-#     all_clients = []
-#     for parent_client in utils.tree_to_list(Client.objects.filter(is_active=True).order_by('company_name'), sort_by='company_name'):
-#         indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in range(parent_client['depth'])])
-#         parent_client['indent'] = indent
-#         all_clients.append(parent_client)
-#
-#     context = {
-#         'client': client,
-#         'primary_contact': CustContact.objects.filter(client=client, is_primary=True).first(),
-#         'all_clients': all_clients,
-#     }
-#     return render(request, 'mgmt/profile.html', context)
-
-
 def inventory(request, client_id=None, product_id=None):
     client = get_object_or_404(Client, pk=client_id)
     logger.info(f'{request.user} viewed inventory page for {client}')

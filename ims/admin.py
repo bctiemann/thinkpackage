@@ -118,6 +118,7 @@ class ClientAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()
     search_fields = ('company_name',)
+    autocomplete_fields = ('parent',)
 admin.site.register(Client, ClientAdmin)
 
 
@@ -126,6 +127,7 @@ class ClientUserAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ('client', 'user')
     search_fields = ('client__company_name', 'user__first_name', 'user__last_name', 'user__email')
+    autocomplete_fields = ('client', 'user',)
 admin.site.register(ClientUser, ClientUserAdmin)
 
 
@@ -161,51 +163,69 @@ admin.site.register(Location, LocationAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
+    list_display = ('item_number', 'name', 'client', )
     list_editable = ()
     list_filter = ()
+    search_fields = ('name', 'client__company_name',)
+    autocomplete_fields = ('client', 'location',)
 admin.site.register(Product, ProductAdmin)
 
 
 class ShipperAddressAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address',)
     list_editable = ()
     list_filter = ()
 admin.site.register(ShipperAddress, ShipperAddressAdmin)
 
 
 class ShipmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'client', 'user', 'date_created', 'status', 'accounting_status',)
     list_editable = ()
     list_filter = ()
     search_fields = ('id', 'client__company_name',)
+    autocomplete_fields = ('client', 'user', 'location',)
 admin.site.register(Shipment, ShipmentAdmin)
 
 
 class ReceivableAdmin(admin.ModelAdmin):
+    list_display = ('id', 'client', 'product', 'cases', 'purchase_order', 'shipment_order', 'date_created', 'date_received',)
     list_editable = ()
     list_filter = ()
+    search_fields = ('id', 'client__company_name',)
+    autocomplete_fields = ('client', 'product',)
 admin.site.register(Receivable, ReceivableAdmin)
 
 
 class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'client', 'product', 'date_created', 'date_completed', 'shipment', 'cases', 'is_outbound', 'receivable',)
     list_editable = ()
     list_filter = ()
+    autocomplete_fields = ('client', 'product', 'shipment', 'receivable', 'transfer_product', 'transfer_client',)
 admin.site.register(Transaction, TransactionAdmin)
 
 
 class PalletAdmin(admin.ModelAdmin):
+    list_display = ('pallet_id', 'client', 'date_created',)
     list_editable = ()
     list_filter = ()
+    search_fields = ('pallet_id', 'client__company_name',)
+    autocomplete_fields = ('shipment', 'client',)
 admin.site.register(Pallet, PalletAdmin)
 
 
 class PalletContentsAdmin(admin.ModelAdmin):
+    list_display = ('product', 'pallet',)
     list_editable = ()
     list_filter = ()
+    autocomplete_fields = ('pallet', 'product',)
 admin.site.register(PalletContents, PalletContentsAdmin)
 
 
 class ShipmentDocAdmin(admin.ModelAdmin):
+    list_display = ('uuid', 'file', 'shipment', 'date_created',)
     list_editable = ()
     list_filter = ()
+    autocomplete_fields = ('shipment',)
 admin.site.register(ShipmentDoc, ShipmentDocAdmin)
 
 

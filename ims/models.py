@@ -524,7 +524,7 @@ class Product(models.Model):
 
     @property
     def item_number_force_string(self):
-        return f'"=""{self.item_number}"""'
+        return f'{self.item_number}\t'
 
     def __str__(self):
         return (self.name)

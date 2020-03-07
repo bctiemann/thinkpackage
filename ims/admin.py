@@ -117,7 +117,7 @@ class ClientAdmin(admin.ModelAdmin):
     list_display = ('id', 'email', 'created_on', 'company_name',)
     list_editable = ()
     list_filter = ()
-    search_fields = ('company_name',)
+    search_fields = ('id', 'company_name',)
     autocomplete_fields = ('parent',)
 admin.site.register(Client, ClientAdmin)
 
@@ -158,7 +158,7 @@ class LocationAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ('client',)
     autocomplete_fields = ('client', 'customer_contact', 'contact_user',)
-    search_fields = ('name', 'client__company_name',)
+    search_fields = ('id', 'name', 'client__company_name',)
 admin.site.register(Location, LocationAdmin)
 
 
@@ -166,7 +166,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('item_number', 'name', 'client', )
     list_editable = ()
     list_filter = ()
-    search_fields = ('name', 'client__company_name',)
+    search_fields = ('item_number', 'name', 'client__company_name',)
     autocomplete_fields = ('client', 'location',)
 admin.site.register(Product, ProductAdmin)
 

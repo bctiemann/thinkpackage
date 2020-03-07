@@ -56,7 +56,7 @@ def generate_item_lookup(async_task_id, item_number):
         for product in products:
             writer.writerow([
                 now.strftime('%m/%d/%Y'),
-                product.item_number,
+                product.item_number_force_string,
                 product.client.company_name,
                 product.name,
                 product.packing,
@@ -216,21 +216,21 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
         for product in products:
             writer.writerow([
-                product.item_number,
+                product.item_number_force_string,
                 product.client_tag,
                 product.name,
                 product.packing,
                 'IN',
             ] + [product_counts[column['id']][product.id]['in'] for column in columns])
             writer.writerow([
-                product.item_number,
+                product.item_number_force_string,
                 product.client_tag,
                 product.name,
                 product.packing,
                 'OUT',
             ] + [product_counts[column['id']][product.id]['out'] for column in columns])
             writer.writerow([
-                product.item_number,
+                product.item_number_force_string,
                 product.client_tag,
                 product.name,
                 product.packing,
@@ -283,7 +283,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'date': transaction.receivable.returned_product.date_returned.date(),
                 'shipment_id': 'RETURN',
                 'location': transaction.receivable.returned_product.location.name,
-                'item_number': transaction.product.item_number,
+                'item_number': transaction.product.item_number_force_string,
                 'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'month': transaction.receivable.returned_product.date_returned.month,
@@ -297,7 +297,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'date': transaction.shipment.date_shipped.date(),
                 'shipment_id': transaction.shipment.id,
                 'location': transaction.shipment.location.name,
-                'item_number': transaction.product.item_number,
+                'item_number': transaction.product.item_number_force_string,
                 'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'month': transaction.shipment.date_shipped.month,
@@ -394,7 +394,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 'year': transaction.date_created.year,
                 'purchase_order': purchase_order,
                 'shipment_order': transaction.shipment_order,
-                'item_number': transaction.product.item_number,
+                'item_number': transaction.product.item_number_force_string,
                 'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'cases': cases,

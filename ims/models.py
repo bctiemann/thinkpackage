@@ -522,6 +522,10 @@ class Product(models.Model):
     def last_receivable(self):
         return self.receivable_set.order_by('-date_created').first()
 
+    @property
+    def item_number_force_string(self):
+        return f'{self.item_number} '
+
     def __str__(self):
         return (self.name)
 

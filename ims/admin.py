@@ -229,6 +229,38 @@ class ShipmentDocAdmin(admin.ModelAdmin):
 admin.site.register(ShipmentDoc, ShipmentDocAdmin)
 
 
+class ActionLogAdmin(admin.ModelAdmin):
+    list_display = ('date_created', 'user', 'log_message', 'client', 'product', 'app',)
+    list_editable = ()
+    list_filter = ()
+    autocomplete_fields = ('product', 'client', 'user',)
+admin.site.register(ActionLog, ActionLogAdmin)
+
+
+class BulkOrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'client', 'filename', 'date_ordered', 'date_imported', 'shipment',)
+    list_editable = ()
+    list_filter = ()
+    search_fields = ('id', 'client', 'filename',)
+    autocomplete_fields = ('client', 'location', 'shipment',)
+admin.site.register(BulkOrder, BulkOrderAdmin)
+
+
+class BulkOrderItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'bulk_order', 'item_number', 'product_name', 'quantity',)
+    list_editable = ()
+    list_filter = ()
+    autocomplete_fields = ('bulk_order',)
+admin.site.register(BulkOrderItem, BulkOrderItemAdmin)
+
+
+class AsyncTaskAdmin(admin.ModelAdmin):
+    list_display = ('id', 'date_created', 'name', 'percent_complete', 'is_complete', 'has_failed',)
+    list_editable = ()
+    list_filter = ()
+admin.site.register(AsyncTask, AsyncTaskAdmin)
+
+
 class LogEntryAdmin(admin.ModelAdmin):
     list_display = ('action_time', 'user', '__str__')
     readonly_fields = ('content_type',
@@ -242,5 +274,6 @@ class LogEntryAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
 
 admin.site.register(LogEntry, LogEntryAdmin)

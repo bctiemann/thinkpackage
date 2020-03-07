@@ -138,7 +138,7 @@ def notifications_invq(request):
 
 def notifications_low_stock(request):
     low_stock = []
-    for product in Product.objects.filter(cases_inventory__lt=F('contracted_quantity') / 2, is_active=True).order_by('name'):
+    for product in Product.objects.filter(cases_inventory__lt=F('contracted_quantity') / 2, is_active=True, client__is_active=True).order_by('name'):
         try:
             last_shipment = Transaction.objects.filter(product=product).order_by('-date_created').first()
             low_stock.append({

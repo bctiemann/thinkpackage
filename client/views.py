@@ -267,7 +267,7 @@ def inventory_request_delivery(request):
         'Delivery Order #{0} - {1}'.format(shipment.id, request.selected_client.company_name),
         'email/delivery_request.txt',
         'email/delivery_request.html',
-        cc=[request.user.email],
+        # cc=[request.user.email],
     )
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
 

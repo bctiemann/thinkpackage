@@ -14,6 +14,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import (
     login, authenticate, get_user_model, password_validation, update_session_auth_hash,
 )
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, INTERNAL_RESET_SESSION_TOKEN
 
 from django_pdfkit import PDFView
 
@@ -218,3 +219,17 @@ class PasswordChangeView(UpdateView):
 
 class PasswordChangeDoneView(TemplateView):
     template_name = 'accounts/change_password_done.html'
+
+
+class PasswordResetView(PasswordResetView):
+
+    def form_valid(self, form):
+        logger.info(f'{form.cleaned_data["email"]} requested a password reset')
+        return super().form_valid(form)
+
+
+class PasswordResetConfirmView(PasswordResetConfirmView):
+
+    def form_valid(self, form):
+        logger.info(f'{self.user} successfully reset their password')
+        return super().form_valid(form)

@@ -277,3 +277,4 @@ class LogEntryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.site_header = 'ThinkPACKAGE administration'

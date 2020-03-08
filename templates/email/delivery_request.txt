@@ -1,1 +1,2 @@
-(Please use an HTML email reader)
+The following delivery request from {{ client.company_name }} ({{ user.first_name }} {{ user.last_name }} {{ user.email }}) was
+{% if shipment_updated %}updated{% else %}submitted{% endif %}.

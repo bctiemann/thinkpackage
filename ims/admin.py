@@ -137,6 +137,7 @@ admin.site.register(ClientUser, ClientUserAdmin)
 
 
 class CustContactAdmin(admin.ModelAdmin):
+    list_display = ('email', 'first_name', 'last_name', 'client', 'title', 'phone_number', 'is_active',)
     list_editable = ()
     list_filter = ()
     search_fields = ('first_name', 'last_name', 'email',)

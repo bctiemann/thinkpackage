@@ -48,22 +48,27 @@ class Command(BaseCommand):
                     phone_number = custcontact.phone_number,
                     notes = custcontact.notes,
                     last_login = custcontact.last_login,
-                    is_active = custcontact.is_active,
+                    is_active = True,
                 )
             if DEBUG:
                 print('{0}\t{1}'.format(custcontact.email, password))
 
-            print(user, custcontact.client)
-            client_user, created = ClientUser.objects.get_or_create(
-                user = user,
-                client = custcontact.client,
-                defaults = {
-                    'title': custcontact.title,
-                    'is_primary': custcontact.is_primary,
-                }
-            )
+            if custcontact.is_active:
+                print(user, custcontact.client)
 
-            for location in Location.objects.filter(customer_contact=custcontact):
-                print(ascii(location.name))
-                location.contact_user = client_user
-                location.save()
+                print(f'Setting password for {user}')
+                user.set_password(password)
+
+                client_user, created = ClientUser.objects.get_or_create(
+                    user = user,
+                    client = custcontact.client,
+                    defaults = {
+                        'title': custcontact.title,
+                        'is_primary': custcontact.is_primary,
+                    }
+                )
+
+                for location in Location.objects.filter(customer_contact=custcontact):
+                    print(ascii(location.name))
+                    location.contact_user = client_user
+                    location.save()

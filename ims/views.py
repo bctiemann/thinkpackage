@@ -229,6 +229,7 @@ class PasswordResetView(PasswordResetView):
 
 
 class PasswordResetConfirmView(PasswordResetConfirmView):
+    post_reset_login = True
 
     def form_valid(self, form):
         logger.info(f'{self.user} successfully reset their password')

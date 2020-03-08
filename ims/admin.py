@@ -85,6 +85,7 @@ class UserAdmin(BaseUserAdmin):
         'is_admin',
         'is_warehouse',
         'is_accounting',
+        'two_factor_enabled',
         'locations',
         'clients',
     )
@@ -105,6 +106,10 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
+
+    def two_factor_enabled(self, instance):
+        return instance.two_factor_enabled
+    two_factor_enabled.boolean = True
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)

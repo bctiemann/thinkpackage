@@ -15,6 +15,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django_countries.fields import CountryField
 from jsonfield import JSONField
 from localflavor.us.us_states import STATE_CHOICES
+from two_factor.utils import default_device
 
 from ims import utils
 
@@ -205,6 +206,10 @@ class User(AbstractBaseUser):
     @property
     def is_superuser(self):
         return self.is_admin
+
+    @property
+    def two_factor_enabled(self):
+        return bool(default_device(self))
 
 
 class ClientManager(models.Manager):

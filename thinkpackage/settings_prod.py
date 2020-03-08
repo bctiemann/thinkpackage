@@ -61,10 +61,10 @@ EMAIL_HOST = 'blend.lionwire.com'
 EMAIL_PORT = 25
 
 SUPPORT_EMAIL = 'btman@mac.com'
-SITE_EMAIL = 'btman@mac.com'
-DELIVERY_EMAIL = 'btman@mac.com'
-PO_EMAIL = 'btman@mac.com'
-COMPANY_PHONE_NUMBER = '(866) 111-2222'
+SITE_EMAIL = 'info@thinkpackage.com'
+DELIVERY_EMAIL = 'delivery@thinkpackage.com'
+PO_EMAIL = 'po@thinkpackage.com'
+COMPANY_PHONE_NUMBER = '(212) 229-0700'
 
 CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 

@@ -7,7 +7,7 @@ except ImportError:
 DEBUG = False
 
 SERVER_HOST = 'secure.thinkpackage.com'
-SERVER_URL_PREFIX = 'http://'
+SERVER_URL_PREFIX = 'https://'
 SERVER_BASE_URL = '{0}{1}'.format(SERVER_URL_PREFIX, SERVER_HOST)
 
 DATABASES = {

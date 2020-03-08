@@ -141,8 +141,8 @@ AUTH_USER_MODEL = 'ims.User'
 
 
 #LOGIN_URL = 'mgmt-two_factor:login'
-#LOGIN_URL = 'two_factor:login'
-LOGIN_URL = '/account/login/'
+LOGIN_URL = 'two_factor:login'
+# LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/account/two_factor/'
 
 LOGIN_EXEMPT_URLS = (

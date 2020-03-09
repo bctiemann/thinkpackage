@@ -78,7 +78,7 @@ class UserAdmin(BaseUserAdmin):
     # that reference specific fields on auth.User.
     list_display = (
         'email',
-        'date_joined',
+        'last_login',
         'first_name',
         'last_name',
         'is_active',

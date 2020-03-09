@@ -569,6 +569,7 @@ class Product(models.Model):
             if not transaction.cases:
                 continue
             transaction.cases_remaining_differential = cases_balance_differential
+            transaction.units_remaining_differential = cases_balance_differential * self.packing
             if transaction.is_shipped or not transaction.is_outbound or transaction.is_transfer:
                 if transaction.is_outbound:
                     cases_balance_differential += transaction.cases

@@ -338,23 +338,9 @@ def product_report(request, product_id):
     except:
         pass
 
-    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('-date_created')
-
-    cases_balance_differential = product.cases_inventory
-    for transaction in history:
-        if not transaction.cases:
-            continue
-        transaction.cases_remaining_differential = cases_balance_differential
-        transaction.units_remaining_differential = cases_balance_differential * product.packing
-        if transaction.is_shipped or not transaction.is_outbound or transaction.is_transfer:
-            if transaction.is_outbound:
-                cases_balance_differential += transaction.cases
-            else:
-                cases_balance_differential -= transaction.cases
-
     context = {
         'product': product,
-        'history': history,
+        'history': product.get_history(date_from),
         'date_from': date_from,
         'date_to': date_to,
     }

@@ -463,7 +463,7 @@ ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.c
 
 <div class="totals">
 <p class="total total-cases">CASES: <b>{{ shipment.total_cases|intcomma }}</b></p>
-<p class="total total-pallets">PALLETS: <b>{{ shipment.pallet_count|intcomma }}</b></p>
+<p class="total total-pallets">PALLETS: <b>{{ shipment.pallet_count|default_if_none:0|intcomma }}</b></p>
 <p class="total total-class">CLASS: <b>{{ shipment.shipment_class }}</b></p>
 <p class="total total-pieces">PIECES: <b>{{ shipment.total_pieces|intcomma }}</b></p>
 <p class="total total-weight">WEIGHT: <b>{{ shipment.total_weight_imperial|floatformat:1 }} lbs</b></p>

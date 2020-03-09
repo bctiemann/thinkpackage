@@ -338,12 +338,17 @@ def product_report(request, product_id):
     except:
         pass
 
+    cleaned_name = product.name.replace('\'', '')
+
     context = {
         'product': product,
+        'chart_title': f'{product.item_number} {cleaned_name}',
         'history': product.get_history(date_from),
         'date_from': date_from,
         'date_to': date_to,
     }
+
+    logger.info(f'{request.user} viewed product history report for {product} ({request.selected_client})')
     return render(request, 'client/product_report.html', context)
 
 

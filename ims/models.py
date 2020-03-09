@@ -532,7 +532,7 @@ class Product(models.Model):
         return f'{self.item_number}\t'
 
     def __str__(self):
-        return (self.name)
+        return f'[{self.item_number}] {self.name}'
 
     def create_qrcode(self):
         img = self.get_qrcode(format='PNG')

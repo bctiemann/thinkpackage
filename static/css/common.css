@@ -968,6 +968,7 @@ td.flashing a {
 }
 
 span.partial_receivable,
+span.incomplete_shipment,
 span.low_qty {
 	transform: translate3d(0, 0, 0);
 	padding: 4px;

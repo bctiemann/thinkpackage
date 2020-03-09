@@ -1,6 +1,6 @@
 {% load humanize %}
 
-<p>The following delivery request from {{ client.company_name }} ({{ user.first_name }} {{ user.last_name }} {{ user.email }}) was
+<p>The following delivery request from {{ client.company_name }} ({{ requesting_user.first_name }} {{ requesting_user.last_name }} {{ requesting_user.email }}) was
 {% if shipment_updated %}updated{% else %}submitted{% endif %}.</p>
             
     <table style="background-color: ##eee; border-bottom: 5px solid ##aaa; border-top: 1px solid ##aaa;">

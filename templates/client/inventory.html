@@ -3,10 +3,24 @@
 {% block content %}
 
 <div class="dialog" id="dialog_locations" title="Delivery Locations">
-Please select the location for delivery.
-{% for location in locations %}
-    <button class="actionbtn minibtn" onClick="requestDelivery({{ location.id }})" id="location_{{ location.id }}">{{ location.name }}</button>
-{% endfor %}
+    {% if user.is_admin %}
+        <p>
+            Ordering on behalf of:
+            <select name="id_on_behalf_of" id="on_behalf_of">
+                <option value="">(Select)</option>
+                {% for contact in selected_client.contacts %}
+                    <option value="{{ contact.id }}">{{ contact.user }}</option>
+                {% endfor %}
+            </select>
+        </p>
+    {% endif %}
+
+    <p>
+        Please select the location for delivery.
+    </p>
+    {% for location in locations %}
+        <button class="actionbtn minibtn" onClick="requestDelivery({{ location.id }})" id="location_{{ location.id }}">{{ location.name }}</button>
+    {% endfor %}
 </div>
 
 <div class="dialog" id="dialog_request_confirm" title="Delivery Requested Confirmation">

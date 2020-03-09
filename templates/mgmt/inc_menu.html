@@ -15,6 +15,9 @@
 <li><a class="tnav {% if page_selected == 'securitylogs' %}selected{% endif %}" href="securitylogs.cfm">Security Logs</a></li>
 {% endcomment %}
 <li><a class="tnav {% if page_selected == 'actionlogs' %}selected{% endif %}" href="{% url "mgmt:action-log" %}">Action Logs</a></li>
+<li>
+    <a class="tnav" href="{% url "client:home" %}">Client Portal Access</a>
+</li>
 </ul>
 </div>
 

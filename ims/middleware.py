@@ -66,6 +66,8 @@ class SelectedClientMiddleware(object):
             if 'selected_client_id' in request.session:
                 try:
                     client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
+                    if request.user.is_admin:
+                        return client
                     if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
                         client = None
                 except ClientUser.DoesNotExist:
@@ -99,6 +101,8 @@ class PermissionsMiddleware(object):
     def is_authorized_for_client(self, user, client):
         if not client:
             return False
+        if user.is_admin:
+            return True
         return ClientUser.objects.filter(user=user, client__id__in=client.ancestors).exists()
 
     def __call__(self, request):

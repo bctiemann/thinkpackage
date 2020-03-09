@@ -249,6 +249,7 @@ function execute_requestDelivery() {
         customerid: $('#customerid').val(),
         shipmentid: 'shipmentid' in globals ? globals['shipmentid'] : 0,
         client_po: $('#client_po').val(),
+        on_behalf_of: $('#on_behalf_of').val(),
     };
 console.log(requestdelivery);
 //    var url = cgiroot+'ajax_request_delivery.cfm';

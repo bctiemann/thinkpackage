@@ -86,12 +86,13 @@ def change_password(request):
 @require_POST
 def select_client(request, client_id):
     client = get_object_or_404(Client, pk=client_id, is_active=True)
-    try:
-        if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
+    if not request.user.is_admin:
+        try:
+            if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
+                return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
+        except Exception as e:
+            logger.warning('Failed to select client {0}: {1}'.format(client, e))
             return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
-    except Exception as e:
-        logger.warning('Failed to select client {0}: {1}'.format(client, e))
-        return JsonResponse({'success': False, 'message': 'Invalid client selected.'})
     request.session['selected_client_id'] = client.id
     return JsonResponse({'success': True})
 
@@ -218,6 +219,18 @@ def inventory_request_delivery(request):
     except Location.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Invalid location.'})
 
+    requesting_user = request.user
+
+    # Validate on-behalf-of user
+    on_behalf_of = delivery_data.get('on_behalf_of')
+    if on_behalf_of:
+        try:
+            client_user = request.selected_client.contacts.get(pk=on_behalf_of)
+            requesting_user = client_user.user
+        except ClientUser.DoesNotExist:
+            pass
+    print(requesting_user)
+
     # If we're editing a previous shipment request, pull that shipment and clear
     # out all transactions. Otherwise, create a new shipment
     shipment_updated = False
@@ -231,7 +244,7 @@ def inventory_request_delivery(request):
     else:
         shipment = Shipment(
             client=request.selected_client,
-            user=request.user,
+            user=requesting_user,
             status=Shipment.Status.PENDING,
         )
 
@@ -254,7 +267,7 @@ def inventory_request_delivery(request):
 
     # Send a notification email to the configured delivery admin
     context = {
-        'user': request.user,
+        'requesting_user': requesting_user,
         'shipment': shipment,
         'client': request.selected_client,
         'location': location,

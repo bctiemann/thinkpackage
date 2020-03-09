@@ -196,6 +196,8 @@ def inventory_request_delivery(request):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
+    logger.info(delivery_data)
+
     # Check all requested products for validity and availability
     requested_products = []
     for requested_product in delivery_data['products']:

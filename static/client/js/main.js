@@ -254,10 +254,11 @@ console.log(requestdelivery);
 //    var url = cgiroot+'ajax_request_delivery.cfm';
     var url = cgiroot + 'inventory/request_delivery/';
     $('input.delivery_request').each(function() {
-        if ($(this).val()) {
+        var cases = parseInt($(this).val());
+        if (cases) {
             requestdelivery['products'].push({
                 productid: $(this).attr('productid'),
-                cases: parseInt($(this).val()),
+                cases: cases,
             });
         }
     });

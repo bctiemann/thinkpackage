@@ -47,6 +47,7 @@ class LoginView(LoginView):
 
 def home(request):
 
+    logger.info(f'{request.user} viewed warehouse app home page')
     context = {
     }
     return render(request, 'warehouse_app/home.html', context)
@@ -109,6 +110,7 @@ def barcode_lookup_product(request):
         except Product.DoesNotExist:
             product = None
 
+    logger.info(f'{request.user} used warehouse app to look up product code {code}')
     context = {
         'product': product,
     }
@@ -124,6 +126,7 @@ def barcode_lookup_pallet_contents(request):
         except Pallet.DoesNotExist:
             pallet = None
 
+    logger.info(f'{request.user} used warehouse app to look up pallet code {code}')
     context = {
         'pallet': pallet,
     }
@@ -143,6 +146,7 @@ def barcode_pallet(request):
             response['company_name'] = product.client.company_name
         except Product.DoesNotExist:
             product = None
+    logger.info(f'{request.user} used warehouse app to look up details of product code {code}')
 
     return JsonResponse(response)
 
@@ -214,6 +218,7 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
 
 #        pallet.create_qrcode()
 
+        logger.info(f'{self.request.user} used warehouse app to create pallet {pallet} {pallet.pallet_id}')
         data['success'] = True
         return JsonResponse(data)
 

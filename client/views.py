@@ -338,7 +338,7 @@ def product_report(request, product_id):
     except:
         pass
 
-    cleaned_name = product.name.replace('\'', '')
+    cleaned_name = product.name.replace('\'', r'′').replace('"', '″')
 
     context = {
         'product': product,

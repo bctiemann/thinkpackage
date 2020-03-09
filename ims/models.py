@@ -198,6 +198,10 @@ class User(AbstractBaseUser):
         return ClientUser.objects.filter(user=self, client__id__in=client.ancestors).exists()
 
     @property
+    def is_authorized_for_docs(self):
+        return self.is_admin or self.is_accounting or self.is_warehouse
+
+    @property
     def is_staff(self):
         # Is the user a member of staff?
         # Simplest possible answer: All admins are staff

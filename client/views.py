@@ -229,7 +229,6 @@ def inventory_request_delivery(request):
             requesting_user = client_user.user
         except ClientUser.DoesNotExist:
             pass
-    print(requesting_user)
 
     # If we're editing a previous shipment request, pull that shipment and clear
     # out all transactions. Otherwise, create a new shipment

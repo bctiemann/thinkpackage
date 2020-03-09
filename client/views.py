@@ -250,7 +250,7 @@ def inventory_request_delivery(request):
             cases = product['cases'],
         )
         transaction.save()
-        total_cases += requested_product['cases']
+        total_cases += product['cases']
 
     # Send a notification email to the configured delivery admin
     context = {

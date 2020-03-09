@@ -172,7 +172,7 @@ class ReturnedProductReconcile(AjaxableResponseMixin, UpdateView):
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     model = ShipmentDoc
     form_class = forms.ShipmentDocForm
-    template_name = 'warehouse/shipment_docs.html'
+    template_name = 'mgmt/shipment_docs.html'
 
     def form_valid(self, form):
         logger.warning(form.data)

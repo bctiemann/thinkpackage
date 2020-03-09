@@ -637,7 +637,7 @@ class Shipment(models.Model):
     purchase_order_number = models.CharField(max_length=50, blank=True, default='', db_column='loadnum')
     shipper_instructions = models.TextField(null=True, blank=True, db_column='shipperinstructions')
     consignee_instructions = models.TextField(null=True, blank=True, default='', db_column='consigneeinstructions')
-    shipper_address = models.ForeignKey('ShipperAddress', null=True, blank=True, db_column='shipperaddress', on_delete=models.SET_NULL)
+    shipper_address = models.ForeignKey('ShipperAddress', null=True, blank=True, default=settings.DEFAULT_SHIPPER_ADDRESS, db_column='shipperaddress', on_delete=models.SET_NULL)
     inside_delivery = models.BooleanField(default=False, db_column='insidedelivery')
     liftgate_required = models.BooleanField(default=False, db_column='liftgate')
     appointment_required = models.BooleanField(default=False, db_column='appointment')

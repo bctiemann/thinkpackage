@@ -290,6 +290,8 @@ INFINITE_SCROLL_PAGE_SIZE = 30
 COUNTRIES_FIRST = ['US', 'CA']
 # COUNTRIES_FIRST_BREAK = '(Select country)'
 
+DEFAULT_SHIPPER_ADDRESS = None
+
 # Workaround Safari email click-tracking issue for password reset links
 CSRF_COOKIE_SAMESITE = None
 SESSION_COOKIE_SAMESITE = None

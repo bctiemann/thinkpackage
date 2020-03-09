@@ -164,7 +164,7 @@ class User(AbstractBaseUser):
 
     @property
     def child_clients(self):
-        if self.email == settings.CLIENTACCESS_EMAIL:
+        if self.is_admin or self.email == settings.CLIENTACCESS_EMAIL:
             return utils.tree_to_list(Client.objects.all(), sort_by='company_name_lower')
 
         # List of clients this user is associated with, along with depth for rendering with indents in a select menu

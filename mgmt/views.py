@@ -1143,6 +1143,7 @@ def action_log(request):
     logs_table = ActionLogTable(logs)
     tables.RequestConfig(request).configure(logs_table)
 
+    logger.info(f'{request.user} viewed action logs for product {product_id}, client {client_id}')
     context = {
         'logs_table': logs_table,
     }
@@ -1170,6 +1171,7 @@ def search(request):
     if request.GET.get('search_location'):
         transactions = transactions.filter(shipment__location__name__icontains=request.GET.get('search_location'))
 
+    logger.info(f'{request.user} performed search: {request.GET}')
     context = {
         'transactions': transactions[0:50],
     }
@@ -1184,6 +1186,7 @@ class ItemLookupReport(APIView):
 
         tasks.generate_item_lookup.delay(async_task.id, item_number)
 
+        logger.info(f'{self.request.user} generated item lookup report for {item_number}, async task {async_task.id}')
         result = {
             'success': True,
             'task_id': async_task.id,
@@ -1199,6 +1202,7 @@ class InventoryListReport(APIView):
 
         tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
 
+        logger.info(f'{self.request.user} generated inventory list report for {client}, async task {async_task.id}')
         result = {
             'success': True,
             'task_id': async_task.id,
@@ -1214,6 +1218,7 @@ class DeliveryListReport(APIView):
 
         tasks.generate_delivery_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
 
+        logger.info(f'{self.request.user} generated delivery list report for {client}, async task {async_task.id}')
         result = {
             'success': True,
             'task_id': async_task.id,
@@ -1229,6 +1234,7 @@ class IncomingListReport(APIView):
 
         tasks.generate_incoming_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
 
+        logger.info(f'{self.request.user} generated incoming list report for {client}, async task {async_task.id}')
         result = {
             'success': True,
             'task_id': async_task.id,
@@ -1244,6 +1250,7 @@ class LocationListReport(APIView):
 
         tasks.generate_location_list.delay(async_task.id, client.id)
 
+        logger.info(f'{self.request.user} generated location list report for {client}, async task {async_task.id}')
         result = {
             'success': True,
             'task_id': async_task.id,
@@ -1259,6 +1266,7 @@ class ContactListReport(APIView):
 
         tasks.generate_contact_list.delay(async_task.id, client.id)
 
+        logger.info(f'{self.request.user} generated contact list report for {client}, async task {async_task.id}')
         result = {
             'success': True,
             'task_id': async_task.id,

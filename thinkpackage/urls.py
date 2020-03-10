@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import url, include
 from django.urls import path, register_converter
 from django.contrib import admin
@@ -19,7 +20,13 @@ urlpatterns = [
 
     path('sign_out/', auth_views.LogoutView.as_view(next_page='home'), name='sign-out'),
 
-    path('recovery/password_reset/', ims_views.PasswordResetView.as_view(template_name='accounts/password_reset_form.html'), name='password_reset'),
+    path('recovery/password_reset/', ims_views.PasswordResetView.as_view(
+        template_name='accounts/password_reset_form.html',
+        from_email=settings.SUPPORT_EMAIL,
+        extra_email_context={
+            'site_name': settings.COMPANY_NAME
+        },
+    ), name='password_reset'),
     path('recovery/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password_reset_done'),
     path('recovery/reset/<uidb64>/<token>/', ims_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'), name='password_reset_confirm'),
     path('recovery/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),

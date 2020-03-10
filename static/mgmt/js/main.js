@@ -467,7 +467,7 @@ console.log(data);
             selectProduct(null,false);
             $('#dialog_saveproduct_result').dialog("open");
         } else {
-            alert(data.message);
+            displayErrorDialog(data);
         }
     },'json');
 }

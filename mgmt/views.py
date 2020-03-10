@@ -649,7 +649,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
             log_message = 'Created',
             app = self.request.resolver_match.app_name,
         )
-        logger.info('Product {0} ({1}) created.'.format(self.object, self.object.id))
+        logger.info(f'{self.request.user} created product {self.object} ({self.object.id}) for {self.object.client}')
         return response
 
 #    def get_context_data(self, *args, **kwargs):
@@ -877,7 +877,7 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
             receivable = self.object,
         )
         transaction.save()
-        logger.info('Receivable {0} created.'.format(self.object))
+        logger.info(f'{self.request.user} created receivable {self.object} for {self.object.client}')
         return response
 
     def get_initial(self):

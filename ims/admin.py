@@ -231,6 +231,7 @@ class ShipmentDocAdmin(admin.ModelAdmin):
     list_display = ('uuid', 'file', 'shipment', 'date_created',)
     list_editable = ()
     list_filter = ()
+    search_fields = ('uuid', 'basename', 'shipment__client__company_name',)
     autocomplete_fields = ('shipment',)
 admin.site.register(ShipmentDoc, ShipmentDocAdmin)
 

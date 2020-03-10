@@ -638,7 +638,7 @@ class ProductCreate(AjaxableResponseMixin, CreateView):
 #    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
 
     def form_valid(self, form):
-        logger.warning(form.data)
+        logger.info(form.data)
         response = super(ProductCreate, self).form_valid(form)
 #        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
         self.object.save()
@@ -669,20 +669,21 @@ class ProductUpdate(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Product, pk=self.kwargs['product_id'])
 
     def form_valid(self, form):
-        logger.warning(form.data)
+        logger.info(form.data)
 #        self.object.units_inventory = form.cleaned_data['cases_inventory'] * form.cleaned_data['packing']
 
         self.object.cases_inventory = form.cleaned_data['cases_inventory'] + self.object.cases_unshipped
 
         response = super(ProductUpdate, self).form_valid(form)
-        ActionLog.objects.create(
-            user = self.request.user,
-            client = self.object.client,
-            product = self.object,
-            log_message = 'Updated cases to {0}'.format(self.object.cases_inventory),
-            app = self.request.resolver_match.app_name,
-        )
-        logger.info('Product {0} ({1}) updated.'.format(self.object, self.object.id))
+        if self.object.cases_inventory != form.initial['cases_inventory']:
+            ActionLog.objects.create(
+                user = self.request.user,
+                client = self.object.client,
+                product = self.object,
+                log_message = 'Updated cases to {0}'.format(self.object.cases_inventory),
+                app = self.request.resolver_match.app_name,
+            )
+        logger.info(f'{self.request.user} updated product {self.object} ({self.object.id}) for {self.object.client}')
         return response
 
 #    def get_context_data(self, *args, **kwargs):

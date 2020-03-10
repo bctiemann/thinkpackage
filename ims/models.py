@@ -533,7 +533,9 @@ class Product(models.Model):
 
     @property
     def item_number_force_string(self):
-        return f'{self.item_number}\t'
+        return self.item_number
+        # Unnecessary to append a tab because item_number being interpreted as an int in Excel is fine
+        # return f'{self.item_number}\t'
 
     def __str__(self):
         return f'[{self.item_number}] {self.name}'

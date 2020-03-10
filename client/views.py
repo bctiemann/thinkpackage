@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 company_info = {
     'name': settings.COMPANY_NAME,
     'site_email': settings.SITE_EMAIL,
+    'support_email': settings.SUPPORT_EMAIL,
     'phone_number': settings.COMPANY_PHONE_NUMBER,
 }
 

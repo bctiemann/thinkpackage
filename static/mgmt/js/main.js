@@ -436,7 +436,7 @@ function saveProduct(productid) {
         cases_inventory:         Math.floor($('#remain_'+productid).val()),
         PO:                      $('#PO_'+productid).val() ? $('#PO_'+productid).val() : null,
         contracted_quantity:     $('#id_contracted_quantity').length ? Math.floor($('#id_contracted_quantity').val()) : null,
-        unit_price:              $('#id_unit_price').val() ? $('#id_unit_price').val() : null,
+        unit_price:              $('#id_unit_price').val() ? $('#id_unit_price').val() : 0,
         gross_weight:            isNaN(parseFloat($('#id_gross_weight').val())) ? 0 : parseFloat($('#id_gross_weight').val()),
         length:                  isNaN(parseFloat($('#id_length').val())) ? 0 : parseFloat($('#id_length').val()),
         width:                   isNaN(parseFloat($('#id_width').val())) ? 0 : parseFloat($('#id_width').val()),

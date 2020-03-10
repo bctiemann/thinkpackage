@@ -203,6 +203,10 @@ class ProductForm(forms.ModelForm):
     def clean_location(self):
         return self.instance.location
 
+    def clean_unit_price(self):
+        if not self.cleaned_data.get('unit_price'):
+            return 0
+
     class Meta:
         model = Product
         fields = [

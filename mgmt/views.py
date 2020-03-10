@@ -1054,8 +1054,6 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     template_name = 'mgmt/shipment_docs.html'
 
     def form_valid(self, form):
-        logger.warning(form.data)
-        logger.warning(self.request.FILES)
         if not 'file' in self.request.FILES:
             return JsonResponse({
                 'success': False,
@@ -1069,7 +1067,7 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
         self.object.basename = '.'.join(filename_parts[0:-1])
         self.object.ext = filename_parts[-1]
         self.object.save()
-        logger.info('ShipmentDoc {0} created.'.format(self.object))
+        logger.info(f'{self.request.user} created shipment doc {self.object.id} {self.object} for shipment {self.object.shipment} ({self.object.shipment.client})')
         return response
 
     def get_context_data(self, *args, **kwargs):
@@ -1088,7 +1086,7 @@ class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        logger.info(f'{request.user} deleted shipment doc {self.object} for shipment {self.object.shipment}')
+        logger.info(f'{request.user} deleted shipment doc {self.object.id} {self.object} for shipment {self.object.shipment}')
         ActionLog.objects.create(
             user=self.request.user,
             client=self.object.shipment.client,

@@ -966,7 +966,6 @@ class ShipmentDoc(models.Model):
     def save(self, *args, **kwargs):
         if not self.uuid:
             self.uuid = str(uuid.uuid4()).upper()
-            logger.warning(self.uuid)
         super(ShipmentDoc, self).save(*args, **kwargs)
 
     def get_absolute_url(self):

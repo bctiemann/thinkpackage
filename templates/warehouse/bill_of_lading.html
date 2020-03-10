@@ -297,6 +297,10 @@ table.signatures input {
 	width: 350px;
 }
 
+input.signature {
+    height: 24px;
+}
+
 p.total {
 	width: 180px;
 	float: left;
@@ -390,8 +394,8 @@ This form contains only the information necessary for the motor carrier to deliv
 <br />
 <div class="box style="width: 287px;">
 <p class="box_inner_heading">All Freight Charges PPD/3rd Party Bill To:</p>
-{{ shipment.third_party }}<br />
-{{ shipment.third_party_address|format_newlines|safe }}
+{{ shipment.third_party|default_if_none:'' }}<br />
+{{ shipment.third_party_address|default_if_none:''|format_newlines|safe }}
 </div>
 </div>
 
@@ -482,14 +486,14 @@ SHIPPER SPECIAL INSTRUCTIONS:
 </div>
 <div class="recvhours">{% if shipment.location.receiving_hours %}Receiving hours: {{ shipment.location.receiving_hours }}{% endif %}</div>
 <div class="special_instructions">
-{{ shipment.shipper_instructions|format_newlines|safe }}
+{{ shipment.shipper_instructions|default_if_none:''|format_newlines|safe }}
 </div>
 
 <div class="special_instructions_header">
 CONSIGNEE SPECIAL INSTRUCTIONS:
 </div>
 <div class="special_instructions">
-{{ shipment.consignee_instructions|format_newlines|safe }}
+{{ shipment.consignee_instructions|default_if_none:''|format_newlines|safe }}
 </div>
 
 <div class="special_instructions_header">

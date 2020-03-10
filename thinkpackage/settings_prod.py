@@ -60,7 +60,7 @@ ADMINS = (
 EMAIL_HOST = 'blend.lionwire.com'
 EMAIL_PORT = 25
 
-SUPPORT_EMAIL = 'btman@mac.com'
+SUPPORT_EMAIL = 'hello@thinkpackage.com'
 SITE_EMAIL = 'info@thinkpackage.com'
 DELIVERY_EMAIL = 'delivery@thinkpackage.com'
 PO_EMAIL = 'po@thinkpackage.com'

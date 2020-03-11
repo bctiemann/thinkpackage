@@ -247,7 +247,7 @@ class Client(models.Model):
 
     @property
     def company_name_clean(self):
-        return self.company_name.replace(',' '')
+        return self.company_name.replace(',', '')
 
     @property
     def contacts(self):

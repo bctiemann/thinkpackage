@@ -246,6 +246,10 @@ class Client(models.Model):
         return self.company_name.lower()
 
     @property
+    def company_name_clean(self):
+        return self.company_name.replace(',' '')
+
+    @property
     def contacts(self):
         return self.clientuser_set.exclude(user__email=settings.CLIENTACCESS_EMAIL).order_by('-is_primary', 'user__first_name')
 

@@ -204,7 +204,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 #        response.write(columns)
 #        response.write('{0}\n'.format(history_item.id))
 
-    filename = 'InventoryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    filename = 'InventoryList - {0} - {1}.csv'.format(client.company_name_clean, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 #    with open('{0}/reports/InventoryList.csv'.format(settings.MEDIA_ROOT), mode='w') as csvfile:
         writer = csv.writer(csvfile)
@@ -307,7 +307,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'units': transaction.total_quantity * -1,
             })
 
-    filename = 'DeliveryList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    filename = 'DeliveryList - {0} - {1}.csv'.format(client.company_name_clean, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -402,7 +402,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 'units': units,
             })
 
-    filename = 'IncomingList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    filename = 'IncomingList - {0} - {1}.csv'.format(client.company_name_clean, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -450,7 +450,7 @@ def generate_location_list(async_task_id, client_id):
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
 
-    filename = 'LocationList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    filename = 'LocationList - {0} - {1}.csv'.format(client.company_name_clean, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -494,7 +494,7 @@ def generate_contact_list(async_task_id, client_id):
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
 
-    filename = 'ContactList - {0} - {1}.csv'.format(client.company_name, timezone.now().strftime('%m-%d-%Y %H%M%S'))
+    filename = 'ContactList - {0} - {1}.csv'.format(client.company_name_clean, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)

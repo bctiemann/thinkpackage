@@ -39,7 +39,7 @@ class AjaxableResponseMixin(object):
     Must be used with an object-based FormView (e.g. CreateView)
     """
     def form_invalid(self, form):
-        logger.warning(form.errors)
+        logger.warning(form.errors.as_json())
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
             return HttpResponse(form.errors.as_json())

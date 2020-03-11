@@ -25,6 +25,8 @@ import re
 import logging
 logger = logging.getLogger(__name__)
 
+PASSWORD_REGEX = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$'
+PASSWORD_COMPLEXITY = 'minimum 8 characters, at least one letter, one number and one special character'
 
 company_info = {
     'name': settings.COMPANY_NAME,
@@ -62,7 +64,6 @@ def home(request):
 
 @require_POST
 def change_password(request):
-    passwd_regex = '(?=^.{6,255}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*'
 
     current_password = request.POST.get('current_password')
     new_password_1 = request.POST.get('new_password_1')
@@ -74,8 +75,8 @@ def change_password(request):
     if new_password_1 != new_password_2:
         return JsonResponse({'success': False, 'message': 'Passwords did not match.'})
 
-    if not re.match(passwd_regex, new_password_1):
-        return JsonResponse({'success': False, 'message': 'Password does not meet the complexity requirements.'})
+    if not re.match(PASSWORD_REGEX, new_password_1):
+        return JsonResponse({'success': False, 'message': f'Password does not meet the complexity requirements ({PASSWORD_COMPLEXITY}).'})
 
     request.user.set_password(new_password_1)
     request.user.save()

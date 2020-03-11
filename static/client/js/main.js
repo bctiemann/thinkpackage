@@ -366,6 +366,7 @@ function execute_changePassword() {
     $.post(url,passwd,function(data) {
         if (data.success) {
             alert('Password changed successfully.');
+            window.location.reload();
         } else {
             alert(data.message);
         }

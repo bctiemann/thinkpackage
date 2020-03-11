@@ -319,7 +319,7 @@ class CustContact(models.Model):
         return ('{0} {1}'.format(self.first_name, self.last_name))
 
     def get_absolute_url(self):
-        return reverse('mgmt:profile', kwargs={'client_id': self.client_id, 'custcontact_id': self.pk})
+        return reverse('mgmt:profile', kwargs={'client_id': self.client.id})
 
     class Meta:
         db_table = 'CustContacts'
@@ -585,7 +585,7 @@ class Product(models.Model):
         return history
 
     def get_absolute_url(self):
-        return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client.id})
 
     def save(self, *args, **kwargs):
         if not self.product_id:
@@ -722,7 +722,7 @@ class Receivable(models.Model):
         return ('{0}'.format(self.id))
 
     def get_absolute_url(self):
-        return reverse('mgmt:inventory', kwargs={'client_id': self.client_id})
+        return reverse('mgmt:inventory', kwargs={'client_id': self.client.id})
 
     class Meta:
         db_table = 'Receivables'
@@ -969,7 +969,7 @@ class ShipmentDoc(models.Model):
         super(ShipmentDoc, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('mgmt:shipment-docs', kwargs={'shipment_id': self.shipment_id})
+        return reverse('mgmt:shipment-docs', kwargs={'shipment_id': self.shipment.id})
 
     def __str__(self):
         return ('{0}.{1}'.format(self.basename, self.ext))

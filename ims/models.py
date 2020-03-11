@@ -969,7 +969,7 @@ class ShipmentDoc(models.Model):
         super(ShipmentDoc, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('mgmt:shipment-docs', kwargs={'shipment_id': self.shipment.id})
+        return reverse('shipment-doc', kwargs={'doc_id': self.id})
 
     def __str__(self):
         return ('{0}.{1}'.format(self.basename, self.ext))

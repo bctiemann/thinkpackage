@@ -198,6 +198,7 @@ class LoginView(LoginView):
     )
 
     def dispatch(self, request, *args, **kwargs):
+        logger.info(f'{request.resolver_match.app_name} login: {request.user} {request.method} {request.POST.get("auth-username")}')
         if self.request.user.is_authenticated:
             return HttpResponseRedirect(self.home_url)
         return super(LoginView, self).dispatch(request, *args, **kwargs)

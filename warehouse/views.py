@@ -227,6 +227,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
             }
             email_purchase_order(request=request_dict, shipment_id=self.object.id)
 
+        logger.info(f'{self.request.user} shipped shipment {self.object}')
         return response
 
     def get_object(self):

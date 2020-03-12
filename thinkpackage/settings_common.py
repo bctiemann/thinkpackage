@@ -164,12 +164,17 @@ LOGIN_EXEMPT_URLS = (
 )
 
 AUTH_EXEMPT_ROUTES = (
+    'login',
     'mgmt:home',
     'mgmt:login',
     'mgmt:sign_out',
 )
 
 MGMT_AUTH_LOGIN_ROUTE = 'mgmt:login'
+ACCOUNTING_AUTH_LOGIN_ROUTE = 'accounting:login'
+WAREHOUSE_AUTH_LOGIN_ROUTE = 'warehouse:login'
+WAREHOUSE_APP_AUTH_LOGIN_ROUTE = 'warehouse_app:login'
+CLIENT_AUTH_LOGIN_ROUTE = 'client:login'
 
 #LOGIN_URL = '/sign_in/'
 #LOGIN_REDIRECT_URL = '/account/profile/'

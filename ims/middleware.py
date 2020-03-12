@@ -67,11 +67,25 @@ class LoginRequiredMiddleware(MiddlewareMixin):
         'django.contrib.auth.context_processors.auth'."""
 
         if not request.user.is_authenticated:
-            current_route_name = resolve(request.path_info).url_name
+            resolved = resolve(request.path_info)
+            current_route_name = resolved.url_name
+
             print(current_route_name)
+            print(resolved.route)
+            print(resolved.app_name)
+            print(dir(resolve(request.path_info)))
 
             if not current_route_name in settings.AUTH_EXEMPT_ROUTES:
-                return HttpResponseRedirect(reverse(settings.MGMT_AUTH_LOGIN_ROUTE))
+                if resolved.app_name == 'mgmt':
+                    return HttpResponseRedirect(reverse(settings.MGMT_AUTH_LOGIN_ROUTE))
+                elif resolved.app_name == 'client':
+                    return HttpResponseRedirect(reverse(settings.CLIENT_AUTH_LOGIN_ROUTE))
+                elif resolved.app_name == 'accounting':
+                    return HttpResponseRedirect(reverse(settings.ACCOUNTING_AUTH_LOGIN_ROUTE))
+                elif resolved.app_name == 'warehouse':
+                    return HttpResponseRedirect(reverse(settings.WAREHOUSE_AUTH_LOGIN_ROUTE))
+                elif resolved.app_name == 'warehouse_app':
+                    return HttpResponseRedirect(reverse(settings.WAREHOUSE_APP_AUTH_LOGIN_ROUTE))
 
 
 class SelectedClientMiddleware(object):

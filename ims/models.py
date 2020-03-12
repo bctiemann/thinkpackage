@@ -102,6 +102,7 @@ class User(AbstractBaseUser):
     created_by = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
     last_login = models.DateTimeField(null=True, blank=True)
     login_count = models.IntegerField(null=True, blank=True)
+    date_password_changed = models.DateTimeField(default=timezone.now, blank=True)
 
     USERNAME_FIELD = 'email'
 
@@ -131,6 +132,10 @@ class User(AbstractBaseUser):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
+
+    def set_password(self, raw_password):
+        self.date_password_changed = timezone.now()
+        super().set_password(raw_password)
 
 #    def get_selected_client(self, request):
 #        "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
@@ -214,6 +219,10 @@ class User(AbstractBaseUser):
     @property
     def two_factor_enabled(self):
         return bool(default_device(self))
+
+    @property
+    def password_expired(self):
+        return (timezone.now() - self.date_password_changed).days > settings.PASSWORD_EXPIRE_DAYS
 
 
 class ClientManager(models.Manager):

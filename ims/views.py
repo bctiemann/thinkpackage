@@ -36,6 +36,7 @@ from datetime import datetime, timedelta
 
 import logging
 logger = logging.getLogger(__name__)
+auth_logger = logging.getLogger('auth')
 
 
 def home(request):
@@ -199,6 +200,7 @@ class LoginView(LoginView):
 
     def dispatch(self, request, *args, **kwargs):
         logger.info(f'{request.resolver_match.app_name} login: {request.user} {request.method} {request.POST.get("auth-username")} {request.META.get("REMOTE_ADDR")}')
+        auth_logger.info(f'{request.user} {request.POST}')
         if self.request.user.is_authenticated:
             return HttpResponseRedirect(self.home_url)
         return super(LoginView, self).dispatch(request, *args, **kwargs)

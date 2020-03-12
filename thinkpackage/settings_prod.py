@@ -44,7 +44,6 @@ MEDIA_URL = '/media/'
 
 LOG_DIR = '/usr/local/www/thinkpackage-dj/logs'
 LOGGING['handlers']['logfile']['filename'] = LOG_DIR + '/django.log'
-LOGGING['handlers']['auth_logfile']['filename'] = LOG_DIR + '/auth.log'
 
 TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
 #TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'

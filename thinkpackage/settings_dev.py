@@ -6,7 +6,7 @@ except ImportError:
 
 #DEBUG = False
 
-SERVER_HOST = 'thinkpackage.lionking.org'
+SERVER_HOST = 'localhost:8000'
 SERVER_URL_PREFIX = 'http://'
 SERVER_BASE_URL = '{0}{1}'.format(SERVER_URL_PREFIX, SERVER_HOST)
 

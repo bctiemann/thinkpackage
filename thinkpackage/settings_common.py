@@ -260,7 +260,7 @@ LOGGING = {
         'auth': {
             'handlers': ['auth_logfile'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
         },
         # Log database diagnostics at WARN level
         'django.db.backends': {

@@ -82,6 +82,8 @@ def change_password(request):
     request.user.save()
     login(request, request.user)
 
+    logger.info(f'{request.user} changed their password')
+
     return JsonResponse({'success': True})
 
 

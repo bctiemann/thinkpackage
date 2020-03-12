@@ -163,6 +163,14 @@ LOGIN_EXEMPT_URLS = (
     r'^accounting/sign_out/$',
 )
 
+AUTH_EXEMPT_ROUTES = (
+    'mgmt:home',
+    'mgmt:login',
+    'mgmt:sign_out',
+)
+
+MGMT_AUTH_LOGIN_ROUTE = 'mgmt:login'
+
 #LOGIN_URL = '/sign_in/'
 #LOGIN_REDIRECT_URL = '/account/profile/'
 #LOGOUT_REDIRECT_URL = '/'

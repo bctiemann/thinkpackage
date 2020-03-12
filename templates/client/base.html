@@ -18,30 +18,39 @@
 
 {% if user.is_authenticated %}
 
-<body>
+    <body>
 
-<div id="header">
-    <div class="logoutlink"><a href="{% url "client:sign-out" %}">Log out</a></div>
-    <div class="logoutlink"><a href="javascript:nop()" onClick="showSupport();">Support</a>
-        <ul class="dropdown-menu">
-            <li class="header"></li>
-            <a href="javascript:nop()" onClick="showSupport();"><li>Contact</li></a>
-            <a href="javascript:nop()" onClick="showChangePassword();"><li>Change Password</li></a>
-        </ul>
+    <div id="header">
+        <div class="logoutlink"><a href="{% url "client:sign-out" %}">Log out</a></div>
+        <div class="logoutlink"><a href="javascript:nop()" onClick="showSupport();">Support</a>
+            <ul class="dropdown-menu">
+                <li class="header"></li>
+                <a href="javascript:nop()" onClick="showSupport();"><li>Contact</li></a>
+                <a href="javascript:nop()" onClick="showChangePassword();"><li>Change Password</li></a>
+            </ul>
+        </div>
+        <div class="logoutlink">{% now "D F j, g:i A" %}</div>
+        <div class="pagetitle">{{ selected_client.company_name }}</div>
+
+        {% if user.child_clients|length > 1 %}
+        <select class="client-picker">
+            {% for child in user.child_clients %}
+                <option value="{{ child.obj.id }}" {% if selected_client == child.obj %}selected{% endif %}>{{ child.indent_rendered|safe }}{{ child.obj.company_name }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+        <a href="{% url "client:home" %}"><div class="homelink"></div></a>
     </div>
-    <div class="logoutlink">{% now "D F j, g:i A" %}</div>
-    <div class="pagetitle">{{ selected_client.company_name }}</div>
 
-    {% if user.child_clients|length > 1 %}
-    <select class="client-picker">
-        {% for child in user.child_clients %}
-            <option value="{{ child.obj.id }}" {% if selected_client == child.obj %}selected{% endif %}>{{ child.indent_rendered|safe }}{{ child.obj.company_name }}</option>
-        {% endfor %}
-    </select>
+    {% if user.password_expired and False %}
+    <div class="password-expired">
+        <p>
+            Your password has not been changed in some time. We recommend changing your password to ensure increased security.
+            Please select "Change password" from the Support menu.
+        </p>
+    </div>
     {% endif %}
-
-    <a href="{% url "client:home" %}"><div class="homelink"></div></a>
-</div>
 
 {% else %}
 
@@ -57,20 +66,23 @@
 </div>
 
 <div class="dialog" id="dialog_change_password" title="Change Password">
-<table>
-    <tr>
-        <td class="label">Current password:</td>
-        <td><input type="password" id="current_password"></td>
-    </tr>
-    <tr>
-        <td class="label">New password:</td>
-        <td><input type="password" id="new_password_1"></td>
-    </tr>
-    <tr>
-        <td class="label">Repeat password:</td>
-        <td><input type="password" id="new_password_2"></td>
-    </tr>
-</table>
+    <p>
+        Complexity requirements: {{ company_info.password_complexity }}
+    </p>
+    <table>
+        <tr>
+            <td class="label">Current password:</td>
+            <td><input type="password" id="current_password"></td>
+        </tr>
+        <tr>
+            <td class="label">New password:</td>
+            <td><input type="password" id="new_password_1"></td>
+        </tr>
+        <tr>
+            <td class="label">Repeat password:</td>
+            <td><input type="password" id="new_password_2"></td>
+        </tr>
+    </table>
 </div>
 
 <div class="dialog" id="dialog_errors" title="Error">

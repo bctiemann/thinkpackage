@@ -33,6 +33,7 @@ company_info = {
     'site_email': settings.SITE_EMAIL,
     'support_email': settings.SUPPORT_EMAIL,
     'phone_number': settings.COMPANY_PHONE_NUMBER,
+    'password_complexity': PASSWORD_COMPLEXITY,
 }
 
 

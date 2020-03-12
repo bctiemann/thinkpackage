@@ -550,6 +550,10 @@ $(document).ready(function() {
         selectCustomer();
     });
 
+    setTimeout(function() {
+        $('.password-expired').addClass('active');
+    }, 5000);
+
     refreshInventory();
     loadLocationsList();
 

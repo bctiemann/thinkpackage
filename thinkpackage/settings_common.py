@@ -145,29 +145,8 @@ LOGIN_URL = 'two_factor:login'
 # LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/account/two_factor/'
 
-LOGIN_EXEMPT_URLS = (
-    r'^recovery/',
-    r'^mgmt/login/$',
-    r'^mgmt/sign_out/$',
-    r'^client/$',
-    r'^client/login/$',
-    r'^client/sign_out/$',
-    r'^warehouse/$',
-    r'^warehouse/login/$',
-    r'^warehouse/sign_out/$',
-    #    r'^warehouse_app/$',
-    r'^wapp/login/$',
-    r'^wapp/sign_out/$',
-    r'^accounting/$',
-    r'^accounting/login/$',
-    r'^accounting/sign_out/$',
-)
-
 AUTH_EXEMPT_ROUTES = (
     'login',
-    'mgmt:home',
-    'mgmt:login',
-    'mgmt:sign_out',
 )
 
 MGMT_AUTH_LOGIN_ROUTE = 'mgmt:login'

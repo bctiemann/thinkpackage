@@ -66,27 +66,31 @@ class SelectedClientMiddleware(object):
             if 'selected_client_id' in request.session:
                 try:
                     client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
+                    # Admins have access to all valid clients
                     if request.user.is_admin:
                         return client
-                    if ClientUser.objects.filter(user=request.user, client__id__in=client.ancestors).count() == 0:
-                        client = None
-                except ClientUser.DoesNotExist:
-                    client = ClientUser.objects.filter(user=request.user, client__is_active=True).first().client
-                    if client:
-                        request.session['selected_client_id'] = client.id
-                return client
+                    # This client or an ancestor is assigned to this user, so user is authorized
+                    if ClientUser.objects.filter(user=request.user, client__is_active=True, client__id__in=client.ancestors).exists():
+                        return client
+                    # A previously selected client is no longer authorized for this user, so remove it from the session
+                    # and return the results of get_first_authorized_client()
+                    logger.info(f'Selected client {client} no longer valid for {request.user}')
+                    del request.session['selected_client_id']
+                    return self.get_first_authorized_client(request)
+                except Client.DoesNotExist:
+                    return self.get_first_authorized_client(request)
             else:
-                try:
-                    client = ClientUser.objects.filter(user=request.user, client__is_active=True).first().client
-                except AttributeError:
-                    logger.debug('No client for user {0}'.format(request.user))
-                    return None
-                if client:
-                    request.session['selected_client_id'] = client.id
-            return client
+                return self.get_first_authorized_client(request)
         except Exception as e:
             logger.info(e)
             return None
+
+    def get_first_authorized_client(self, request):
+        client_user = ClientUser.objects.filter(user=request.user, client__is_active=True).first()
+        if client_user:
+            request.session['selected_client_id'] = client_user.client.id
+            return client_user.client
+        return None
 
     def __call__(self, request):
         request.selected_client = self.get_selected_client(request)
@@ -103,7 +107,7 @@ class PermissionsMiddleware(object):
             return False
         if user.is_admin:
             return True
-        return ClientUser.objects.filter(user=user, client__id__in=client.ancestors).exists()
+        return ClientUser.objects.filter(user=user, client__is_active=True, client__id__in=client.ancestors).exists()
 
     def __call__(self, request):
         path = request.path_info.lstrip('/')

@@ -33,7 +33,7 @@ globals['customerid_current'] = {{ client_id }};
 
     <div class="content">
     {% block content %}
-        <p>Already logged in. You can <a href="{% url "change-password" %}">change your password</a> if necessary.</p>
+        <p>Already logged in.</p>
         <a class="btn" href="{% url "sign-out" %}">
             Log out
         </a>

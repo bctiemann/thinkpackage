@@ -75,6 +75,9 @@ def shipment_doc(request, doc_id=None):
 def async_task_result(request, async_task_id=None):
     async_task = get_object_or_404(AsyncTask, pk=async_task_id)
 
+    if not request.user.is_admin:
+        raise PermissionDenied
+
     # Pick up here -- add a FileField to AsyncTask instead of url
     if not async_task.result_file:
         raise Http404

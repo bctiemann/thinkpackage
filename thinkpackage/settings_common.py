@@ -227,6 +227,15 @@ LOGGING = {
             'backupCount': 5,
             'formatter': 'colored',
         },
+        'auth_logfile': {
+            'level': 'INFO',
+            'filters': [],
+            'class': 'logging.handlers.ConcurrentRotatingFileHandler',
+            'filename': LOG_DIR + '/auth.log',
+            'maxBytes': 1024 * 1024 * 64,  # 64mb
+            'backupCount': 5,
+            'formatter': 'colored',
+        },
         'console': {
             'level': 'DEBUG',
             'filters': [],
@@ -245,6 +254,11 @@ LOGGING = {
         # Log all app logger messages to the central logfile
         '': {
             'handlers': ['logfile'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'auth': {
+            'handlers': ['auth_logfile'],
             'level': 'INFO',
             'propagate': True,
         },

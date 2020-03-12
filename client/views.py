@@ -331,7 +331,9 @@ def reorder(request):
 
 
 def product_history(request, product_id):
-    product = get_object_or_404(Product, pk=product_id, client__in=request.user.authorized_clients)
+    product = get_object_or_404(Product, pk=product_id)
+    if not request.user.is_authorized_for_client(product.client):
+        raise Http404
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)
@@ -355,7 +357,9 @@ def product_history(request, product_id):
 
 
 def product_report(request, product_id):
-    product = get_object_or_404(Product, pk=product_id, client__in=request.user.authorized_clients)
+    product = get_object_or_404(Product, pk=product_id)
+    if not request.user.is_authorized_for_client(product.client):
+        raise Http404
 
     date_to = timezone.now() + timedelta(days=30)
     date_from = timezone.now() - timedelta(days=365)

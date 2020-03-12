@@ -183,6 +183,7 @@ class User(AbstractBaseUser):
                     child_clients.append(child)
         return child_clients
 
+    # Don't use authorized_clients; it doesn't take all hierarchical children/ancestors into account
     @property
     def authorized_clients(self):
         return [client_user.client for client_user in ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')]
@@ -196,11 +197,11 @@ class User(AbstractBaseUser):
         return ', '.join(['{0} ({1})'.format(location.client.company_name, location.name) for location in Location.objects.filter(contact_user__user=self)])
 
     def is_authorized_for_client(self, client):
-        # Takes the current request and returns whether the user is authorized to access the selected client defined in the session
-#        client = self.get_selected_client(request)
         if not client:
             return False
-        return ClientUser.objects.filter(user=self, client__id__in=client.ancestors).exists()
+        if self.is_admin:
+            return True
+        return ClientUser.objects.filter(user=self, client__is_active=True, client__id__in=client.ancestors).exists()
 
     @property
     def is_authorized_for_docs(self):

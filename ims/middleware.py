@@ -81,12 +81,12 @@ class PermissionsMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def is_authorized_for_client(self, user, client):
-        if not client:
-            return False
-        if user.is_admin:
-            return True
-        return ClientUser.objects.filter(user=user, client__is_active=True, client__id__in=client.ancestors).exists()
+    # def is_authorized_for_client(self, user, client):
+    #     if not client:
+    #         return False
+    #     if user.is_admin:
+    #         return True
+    #     return ClientUser.objects.filter(user=user, client__is_active=True, client__id__in=client.ancestors).exists()
 
     def __call__(self, request):
         resolved = resolve(request.path_info)
@@ -94,7 +94,7 @@ class PermissionsMiddleware(object):
             if resolved.app_name == 'mgmt' and not request.user.is_admin:
                 logger.info(f'{request.user} not authorized for mgmt.')
                 raise PermissionDenied
-            if resolved.app_name == 'client' and not self.is_authorized_for_client(request.user, request.selected_client):
+            if resolved.app_name == 'client' and not request.user.is_authorized_for_client(request.selected_client):
                 logger.info(f'Unauthorized client login ({request.user} for {request.selected_client}).')
                 raise PermissionDenied(f'No clients assigned to user {request.user}.')
             if resolved.app_name == 'warehouse' and not request.user.is_warehouse:

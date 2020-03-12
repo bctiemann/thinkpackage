@@ -26,17 +26,10 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             resolved = resolve(request.path_info)
             current_route_name = resolved.url_name
 
-            if not current_route_name in settings.AUTH_EXEMPT_ROUTES:
-                if resolved.app_name == 'mgmt':
-                    return HttpResponseRedirect(reverse(settings.MGMT_AUTH_LOGIN_ROUTE))
-                elif resolved.app_name == 'client':
-                    return HttpResponseRedirect(reverse(settings.CLIENT_AUTH_LOGIN_ROUTE))
-                elif resolved.app_name == 'accounting':
-                    return HttpResponseRedirect(reverse(settings.ACCOUNTING_AUTH_LOGIN_ROUTE))
-                elif resolved.app_name == 'warehouse':
-                    return HttpResponseRedirect(reverse(settings.WAREHOUSE_AUTH_LOGIN_ROUTE))
-                elif resolved.app_name == 'warehouse_app':
-                    return HttpResponseRedirect(reverse(settings.WAREHOUSE_APP_AUTH_LOGIN_ROUTE))
+            if current_route_name not in settings.AUTH_EXEMPT_ROUTES:
+                if resolved.app_name:
+                    return HttpResponseRedirect(reverse(f'{resolved.app_name}:login'))
+                return HttpResponseRedirect(reverse('login'))
 
 
 class SelectedClientMiddleware(object):

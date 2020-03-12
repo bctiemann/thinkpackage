@@ -147,6 +147,8 @@ LOGIN_REDIRECT_URL = '/account/two_factor/'
 
 AUTH_EXEMPT_ROUTES = (
     'login',
+    'pallet-code',
+    'product-code',
 )
 
 

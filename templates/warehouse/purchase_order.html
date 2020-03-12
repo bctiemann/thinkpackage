@@ -522,7 +522,7 @@ Page {{ forloop.counter }} of {{ total_pages }}
     </tr>
     <tr>
         <td class="label">Total Pallets</td>
-        <td class="right_col">{{ shipment.total_pallets }}</td>
+        <td class="right_col">{{ shipment.pallet_count|default_if_none:'' }}</td>
     </tr>
     <tr>
         <td class="label">PRO / Tracking #</td>

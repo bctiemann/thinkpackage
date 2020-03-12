@@ -17,6 +17,7 @@ from ims.models import Product, Transaction, Shipment, Client, ClientUser, Locat
 from ims.forms import UserLoginForm
 from ims.views import LoginView
 from ims import utils
+from ims.tasks import email_purchase_order
 
 from datetime import datetime, timedelta
 import json
@@ -280,6 +281,7 @@ def inventory_request_delivery(request):
         'shipment_updated': shipment_updated,
     }
 
+    # Send email with shipment details to delivery address
     utils.send_templated_email(
         [settings.DELIVERY_EMAIL],
         context,
@@ -288,6 +290,14 @@ def inventory_request_delivery(request):
         'email/delivery_request.html',
         # cc=[request.user.email],
     )
+
+    # Generate PO PDF and email to PO address
+    request_dict = {
+        'scheme': request.scheme,
+        'host': request.get_host(),
+    }
+    email_purchase_order(request=request_dict, shipment_id=shipment.id)
+
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
 
     return JsonResponse({'success': True})

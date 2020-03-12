@@ -220,12 +220,13 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 #            transaction.product.units_inventory = transaction.product.cases_inventory * transaction.product.packing
             transaction.product.save()
 
-        if self.object.transaction_set.filter(product__accounting_prepay_type=Product.AccountingPrepayType.INVQ).exists():
-            request_dict = {
-                'scheme': self.request.scheme,
-                'host': self.request.get_host(),
-            }
-            email_purchase_order(request=request_dict, shipment_id=self.object.id)
+        # Moved this PO email generation to the client's placement of the order
+        # if self.object.transaction_set.filter(product__accounting_prepay_type=Product.AccountingPrepayType.INVQ).exists():
+        #     request_dict = {
+        #         'scheme': self.request.scheme,
+        #         'host': self.request.get_host(),
+        #     }
+        #     email_purchase_order(request=request_dict, shipment_id=self.object.id)
 
         logger.info(f'{self.request.user} shipped shipment {self.object}')
         return response

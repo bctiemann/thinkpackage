@@ -206,6 +206,7 @@ class ProductForm(forms.ModelForm):
     def clean_unit_price(self):
         if not self.cleaned_data.get('unit_price'):
             return 0
+        return self.cleaned_data['unit_price']
 
     class Meta:
         model = Product

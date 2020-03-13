@@ -357,6 +357,7 @@ def product_history(request, product_id):
         'date_from': date_from,
         'date_to': date_to,
     }
+    logger.info(f'{request.user} viewed product history for {product} ({request.selected_client})')
     return render(request, 'client/product_history.html', context)
 
 

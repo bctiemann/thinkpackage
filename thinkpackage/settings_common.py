@@ -297,6 +297,7 @@ DEFAULT_SHIPPER_ADDRESS = None
 
 PASSWORD_EXPIRE_DAYS = 90
 LOG_AUTH = True
+GENERATE_QRCODE_IMAGES = True
 
 # Workaround Safari email click-tracking issue for password reset links
 CSRF_COOKIE_SAMESITE = None

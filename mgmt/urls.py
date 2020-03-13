@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^notifications/low_stock/$', mgmt_views.notifications_low_stock,
         name='notifications-low-stock'),
 
-    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='mgmt:login'), name='sign-out'),
+    url(r'^sign_out/', ims_views.LogoutView.as_view(next_page='mgmt:login'), name='sign-out'),
 
     url(r'^customers_list/$', mgmt_views.customers_list, name='customers-list'),
     url(r'^contacts_list/(?P<client_id>\d+)/$', mgmt_views.contacts_list, name='contacts-list'),

@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import (
     login, authenticate, get_user_model, password_validation, update_session_auth_hash,
 )
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, INTERNAL_RESET_SESSION_TOKEN
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LogoutView, INTERNAL_RESET_SESSION_TOKEN
 
 from django_pdfkit import PDFView
 
@@ -208,6 +208,13 @@ class LoginView(LoginView):
         if self.request.user.is_authenticated:
             return HttpResponseRedirect(self.home_url)
         return super(LoginView, self).dispatch(request, *args, **kwargs)
+
+
+class LogoutView(LogoutView):
+
+    def dispatch(self, request, *args, **kwargs):
+        logger.info(f'{request.user} logged out.')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class PasswordChangeView(UpdateView):

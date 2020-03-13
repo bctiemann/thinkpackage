@@ -18,7 +18,7 @@ register_converter(CapitalAlphaStringConverter, 'caps')
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('sign_out/', auth_views.LogoutView.as_view(next_page='home'), name='sign-out'),
+    path('sign_out/', ims_views.LogoutView.as_view(next_page='home'), name='sign-out'),
 
     path('recovery/password_reset/', ims_views.PasswordResetView.as_view(
         template_name='accounts/password_reset_form.html',

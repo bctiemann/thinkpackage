@@ -16,7 +16,7 @@ urlpatterns = [
         name='login',
     ),
     url(r'^$', accounting_views.home, name='home'),
-    url(r'^sign_out/', auth_views.LogoutView.as_view(next_page='accounting:login'), name='sign-out'),
+    url(r'^sign_out/', ims_views.LogoutView.as_view(next_page='accounting:login'), name='sign-out'),
 
     url(r'^shipments/$', accounting_views.shipments, name='shipments'),
     url(r'^shipments/list/$', accounting_views.shipments_list, name='shipments-list'),

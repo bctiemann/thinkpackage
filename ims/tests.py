@@ -1,4 +1,5 @@
 from decimal import Decimal
+import copy
 
 from django.test import TestCase, Client as TestClient
 
@@ -31,10 +32,7 @@ class ProductTestCase(TestCase):
             height=0,
             width=0,
         )
-
-    def test_update_product(self):
-        self.assertEqual(self.product.name, 'Test Product')
-        payload = {
+        self.payload = {
             'client': self.client.id,
             'item_number': '00001',
             'location': '',
@@ -44,7 +42,7 @@ class ProductTestCase(TestCase):
             'cases_inventory': 35,
             'PO': '',
             'contracted_quantity': 100000,
-            'unit_price': '1.01',
+            'unit_price': 0,
             'gross_weight': 0,
             'length': 0,
             'width': 0,
@@ -52,7 +50,43 @@ class ProductTestCase(TestCase):
             'is_domestic': 1,
             'accounting_prepay_type': 1,
         }
+
+    def test_unit_price(self):
+        payload = self.payload
+
+        payload['unit_price'] = '1.01'
         response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
         self.assertEqual(response.status_code, 302)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.unit_price, Decimal('1.01'))
+
+        payload['unit_price'] = 'abc'
+        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        self.assertEqual(response.status_code, 200)
+        updated_product = Product.objects.get(pk=self.product.id)
+        self.assertEqual(updated_product.unit_price, Decimal('1.01'))
+
+        del payload['unit_price']
+        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        self.assertEqual(response.status_code, 302)
+        updated_product = Product.objects.get(pk=self.product.id)
+        self.assertEqual(updated_product.unit_price, Decimal('0'))
+
+        updated_product.unit_price = Decimal('1.01')
+        updated_product.save()
+
+        payload['unit_price'] = ''
+        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        self.assertEqual(response.status_code, 302)
+        updated_product = Product.objects.get(pk=self.product.id)
+        self.assertEqual(updated_product.unit_price, Decimal('0'))
+
+
+    def test_gross_weight(self):
+        payload = self.payload
+
+        payload['gross_weight'] = '1.01'
+        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        self.assertEqual(response.status_code, 302)
+        updated_product = Product.objects.get(pk=self.product.id)
+        self.assertEqual(updated_product.gross_weight, Decimal('1.01'))

@@ -282,8 +282,11 @@ class Client(models.Model):
             self.created_on = timezone.now()
         super(Client, self).save(*args, **kwargs)
 
-        clientaccess_user = User.objects.get(email=settings.CLIENTACCESS_EMAIL)
-        client_user, created = ClientUser.objects.get_or_create(user=clientaccess_user, client=self)
+        try:
+            clientaccess_user = User.objects.get(email=settings.CLIENTACCESS_EMAIL)
+            client_user, created = ClientUser.objects.get_or_create(user=clientaccess_user, client=self)
+        except User.DoesNotExist:
+            pass
 
         if started_with_id:
             self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]

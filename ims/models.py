@@ -197,10 +197,10 @@ class User(AbstractBaseUser):
         return ', '.join(['{0} ({1})'.format(location.client.company_name, location.name) for location in Location.objects.filter(contact_user__user=self)])
 
     def is_authorized_for_client(self, client):
-        if not client:
-            return False
         if self.is_admin:
             return True
+        if not client:
+            return False
         return ClientUser.objects.filter(user=self, client__is_active=True, client__id__in=client.ancestors).exists()
 
     @property

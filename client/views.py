@@ -132,7 +132,9 @@ def profile_location_detail(request, location_id):
 def inventory(request):
     logger.info(f'{request.user} viewed client inventory page for {request.selected_client}')
 
-    locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
+    locations = []
+    if request.selected_client:
+        locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
         'company_info': company_info,
@@ -151,7 +153,9 @@ def inventory_list(request):
         for transaction in shipment.transaction_set.all():
             shipment_product_cases[transaction.product.id] = transaction.cases
 
-    filter_clients = [c['obj'] for c in request.selected_client.children]
+    filter_clients = []
+    if request.selected_client:
+        filter_clients = [c['obj'] for c in request.selected_client.children]
 
     tab = request.GET.get('tab', 'request')
     context = {

@@ -3,6 +3,7 @@ from django.test import TestCase
 from ims.models import Client, User, Shipment, Transaction, Receivable
 
 class ShipmentTestCase(TestCase):
+    fixtures = ['ShipperAddress']
 
     def setUp(self):
         self.client = Client.objects.create(company_name="Client 1")

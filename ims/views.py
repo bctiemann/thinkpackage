@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import (
     login, authenticate, get_user_model, password_validation, update_session_auth_hash,
 )
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, INTERNAL_RESET_SESSION_TOKEN
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LogoutView, INTERNAL_RESET_SESSION_TOKEN
 
 from django_pdfkit import PDFView
 
@@ -132,12 +132,14 @@ class PalletPrint(PDFView):
 
     def get_context_data(self, **kwargs):
         pallet = get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
-        pallet.create_qrcode()
+        if settings.GENERATE_QRCODE_IMAGES:
+            pallet.create_qrcode()
         context = super(PalletPrint, self).get_context_data(**kwargs)
         context['pallet'] = pallet
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
         context['copies'] = list(range(2))
+        logger.info(f'{self.request.user} generated printable labels for pallet {pallet.pallet_id} ({pallet.client})')
         return context
 
     def get_pdfkit_options(self):
@@ -169,13 +171,15 @@ class ProductPrint(PDFView):
 
     def get_context_data(self, **kwargs):
         product = get_object_or_404(Product, pk=self.kwargs['product_id'])
-        product.create_qrcode()
+        if settings.GENERATE_QRCODE_IMAGES:
+            product.create_qrcode()
         context = super(ProductPrint, self).get_context_data(**kwargs)
         context['product'] = product
         context['last_received'] = Receivable.objects.filter(transaction__product=product).order_by('-date_created').first()
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
 #        context['copies'] = range(2)
+        logger.info(f'{self.request.user} generated printable labels for product {product} ({product.client})')
         return context
 
     def get_pdfkit_options(self):
@@ -203,10 +207,18 @@ class LoginView(LoginView):
 
     def dispatch(self, request, *args, **kwargs):
         logger.info(f'{request.resolver_match.app_name} login: {request.user} {request.method} {request.POST.get("auth-username")} {request.META.get("REMOTE_ADDR")}')
-        auth_logger.info(f'{request.user} {request.POST}')
+        if settings.LOG_AUTH:
+            auth_logger.info(f'{request.user} {request.POST}')
         if self.request.user.is_authenticated:
             return HttpResponseRedirect(self.home_url)
         return super(LoginView, self).dispatch(request, *args, **kwargs)
+
+
+class LogoutView(LogoutView):
+
+    def dispatch(self, request, *args, **kwargs):
+        logger.info(f'{request.user} logged out.')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class PasswordChangeView(UpdateView):

@@ -197,10 +197,10 @@ class User(AbstractBaseUser):
         return ', '.join(['{0} ({1})'.format(location.client.company_name, location.name) for location in Location.objects.filter(contact_user__user=self)])
 
     def is_authorized_for_client(self, client):
-        if not client:
-            return False
         if self.is_admin:
             return True
+        if not client:
+            return False
         return ClientUser.objects.filter(user=self, client__is_active=True, client__id__in=client.ancestors).exists()
 
     @property
@@ -282,8 +282,11 @@ class Client(models.Model):
             self.created_on = timezone.now()
         super(Client, self).save(*args, **kwargs)
 
-        clientaccess_user = User.objects.get(email=settings.CLIENTACCESS_EMAIL)
-        client_user, created = ClientUser.objects.get_or_create(user=clientaccess_user, client=self)
+        try:
+            clientaccess_user = User.objects.get(email=settings.CLIENTACCESS_EMAIL)
+            client_user, created = ClientUser.objects.get_or_create(user=clientaccess_user, client=self)
+        except User.DoesNotExist:
+            pass
 
         if started_with_id:
             self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
@@ -666,7 +669,7 @@ class Shipment(models.Model):
 
     @property
     def is_pending(self):
-        return self.status in [0,1] and self.id != None
+        return self.status in [self.Status.PENDING, self.Status.READY] and self.id != None
 
     @property
     def total_pallets(self):

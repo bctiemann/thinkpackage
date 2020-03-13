@@ -64,16 +64,24 @@ globals['shipmentid'] = {{ shipmentid }};
 
 <div class="greeting">Hello {{ user.first_name }} {{ user.last_name }}!</div>
 
-{% with page_selected="inventory" %}
-{% include "client/inc_nav.html" %}
-{% endwith %}
+    {% with page_selected="inventory" %}
+    {% include "client/inc_nav.html" %}
+    {% endwith %}
 
-<div id="list_inventory"></div>
+    {% if not selected_client %}
 
-<div id="status"></div>
+        <p>No client is selected. Please select a client from the menu at the top.</p>
+
+    {% else %}
+
+        <div id="list_inventory"></div>
+
+    {% endif %}
+
+    <div id="status"></div>
 
 
-<input type="hidden" id="customerid" value="{{ selected_client.id }}" />
+    <input type="hidden" id="customerid" value="{{ selected_client.id }}" />
 
 </div>
 

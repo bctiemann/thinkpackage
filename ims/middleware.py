@@ -26,6 +26,9 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             resolved = resolve(request.path_info)
             current_route_name = resolved.url_name
 
+            if not resolved.app_name or resolved.app_name == 'admin':
+                return None
+
             if current_route_name not in settings.AUTH_EXEMPT_ROUTES:
                 if resolved.app_name:
                     return HttpResponseRedirect(reverse(f'{resolved.app_name}:login'))

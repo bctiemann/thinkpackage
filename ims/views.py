@@ -139,6 +139,7 @@ class PalletPrint(PDFView):
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
         context['copies'] = list(range(2))
+        logger.info(f'{self.request.user} generated printable labels for pallet {pallet.pallet_id} ({pallet.client})')
         return context
 
     def get_pdfkit_options(self):
@@ -178,6 +179,7 @@ class ProductPrint(PDFView):
         context['site_url'] = settings.SERVER_BASE_URL
         context['media_url'] = settings.MEDIA_URL
 #        context['copies'] = range(2)
+        logger.info(f'{self.request.user} generated printable labels for product {product} ({product.client})')
         return context
 
     def get_pdfkit_options(self):

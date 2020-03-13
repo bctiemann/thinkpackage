@@ -666,7 +666,7 @@ class Shipment(models.Model):
 
     @property
     def is_pending(self):
-        return self.status in [0,1] and self.id != None
+        return self.status in [self.Status.PENDING, self.Status.READY] and self.id != None
 
     @property
     def total_pallets(self):

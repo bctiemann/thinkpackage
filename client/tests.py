@@ -17,16 +17,31 @@ class AuthTestCase(TestCase):
         self.child_client = Client.objects.create(company_name="Child Client", parent=self.client)
         self.other_client = Client.objects.create(company_name="Client 2")
         self.client_user = User.objects.get(email='client_user@example.com')
+        self.admin_user = User.objects.get(email='admin_user@example.com')
         ClientUser.objects.create(
             client=self.client,
             user=self.client_user,
             title='Master and Commander',
         )
 
-    # Admin user has access to client site
+    # Admin user (with no client linkages) has access to client site
     def test_admin_access(self):
         url = reverse('client:home')
 
+        self.test_client.login(username='admin_user@example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('client:inventory'))
+
+    # Admin user (with a client linkage) has access to client site
+    def test_admin_access_with_client_link(self):
+        url = reverse('client:home')
+
+        ClientUser.objects.create(
+            client=self.client,
+            user=self.admin_user,
+            title='BOFH',
+        )
         self.test_client.login(username='admin_user@example.com', password='test123')
         response = self.test_client.get(url)
         self.assertEqual(response.status_code, 302)

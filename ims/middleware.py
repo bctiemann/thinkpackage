@@ -93,6 +93,9 @@ class PermissionsMiddleware(object):
 
     def __call__(self, request):
         resolved = resolve(request.path_info)
+        if resolved.url_name == 'sign-out':
+            return self.get_response(request)
+
         if request.user.is_authenticated:
             if resolved.app_name == 'mgmt' and not request.user.is_admin:
                 logger.info(f'{request.user} not authorized for mgmt.')

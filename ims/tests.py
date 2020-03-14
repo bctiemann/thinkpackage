@@ -2,8 +2,10 @@ from decimal import Decimal
 import copy
 
 from django.test import TestCase, Client as TestClient
+from django.urls import reverse, reverse_lazy
 
 from ims.models import Client, Location, User, Product, Shipment, Transaction, Receivable
+
 
 class ShipmentTestCase(TestCase):
     fixtures = ['ShipperAddress']
@@ -53,21 +55,22 @@ class ProductTestCase(TestCase):
 
     def test_unit_price(self):
         payload = self.payload
+        url = reverse('mgmt:product-update', kwargs={'product_id': self.product.id})
 
         payload['unit_price'] = '1.01'
-        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        response = self.test_client.post(url, payload)
         self.assertEqual(response.status_code, 302)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.unit_price, Decimal('1.01'))
 
         payload['unit_price'] = 'abc'
-        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        response = self.test_client.post(url, payload)
         self.assertEqual(response.status_code, 200)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.unit_price, Decimal('1.01'))
 
         del payload['unit_price']
-        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        response = self.test_client.post(url, payload)
         self.assertEqual(response.status_code, 302)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.unit_price, Decimal('0'))
@@ -76,7 +79,7 @@ class ProductTestCase(TestCase):
         updated_product.save()
 
         payload['unit_price'] = ''
-        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        response = self.test_client.post(url, payload)
         self.assertEqual(response.status_code, 302)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.unit_price, Decimal('0'))
@@ -84,9 +87,10 @@ class ProductTestCase(TestCase):
 
     def test_gross_weight(self):
         payload = self.payload
+        url = reverse('mgmt:product-update', kwargs={'product_id': self.product.id})
 
         payload['gross_weight'] = '1.01'
-        response = self.test_client.post(f'/mgmt/product/{self.product.id}/', payload)
+        response = self.test_client.post(url, payload)
         self.assertEqual(response.status_code, 302)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.gross_weight, Decimal('1.01'))

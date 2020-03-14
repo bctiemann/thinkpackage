@@ -14,6 +14,8 @@ class AuthTestCase(TestCase):
     def setUp(self):
         self.test_client = TestClient()
         self.client = Client.objects.create(company_name="Client 1")
+        self.child_client = Client.objects.create(company_name="Child Client", parent=self.client)
+        self.other_client = Client.objects.create(company_name="Client 2")
         self.client_user = User.objects.get(email='client_user@example.com')
         ClientUser.objects.create(
             client=self.client,
@@ -73,8 +75,70 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:login'))
 
+    def test_valid_user_with_no_clients(self):
+        url = reverse('client:home')
+
+        self.test_client.login(username='client_user@example.com', password='test123')
+        self.client_user.clientuser_set.all().delete()
+        response = self.test_client.get(url)
+        self.assertContains(response, 'No clients assigned to user', status_code=403)
+
+    def test_user_with_access_to_client_ancestor(self):
+        url = reverse('client:home')
+        session = self.test_client.session
+        session['selected_client_id'] = self.child_client.id
+        session.save()
+
+        self.test_client.login(username='client_user@example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('client:inventory'))
+
+    def test_user_with_unassigned_selected_client_and_valid_client(self):
+        url = reverse('client:home')
+        session = self.test_client.session
+        session['selected_client_id'] = self.other_client.id
+        session.save()
+
+        self.test_client.login(username='client_user@example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('client:inventory'))
+
+    def test_user_with_unassigned_selected_client_and_no_valid_client(self):
+        url = reverse('client:home')
+        session = self.test_client.session
+        session['selected_client_id'] = self.other_client.id
+        session.save()
+
+        self.client_user.clientuser_set.all().delete()
+        self.test_client.login(username='client_user@example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertContains(response, 'No clients assigned to user', status_code=403)
+
+    def test_user_with_nonexistent_selected_client_and_valid_client(self):
+        url = reverse('client:home')
+        session = self.test_client.session
+        session['selected_client_id'] = 100
+        session.save()
+
+        self.test_client.login(username='client_user@example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('client:inventory'))
+
+    def test_user_with_nonexistent_selected_client_and_no_valid_client(self):
+        url = reverse('client:home')
+        session = self.test_client.session
+        session['selected_client_id'] = 100
+        session.save()
+
+        self.client_user.clientuser_set.all().delete()
+        self.test_client.login(username='client_user@example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertContains(response, 'No clients assigned to user', status_code=403)
+
     # User can select any client to which he has a ClientUser linkage
-    # User with a selected_client_id in his session which is invalid (no ClientUser linkage) results in a 403
     # Admin user with no ClientUser linkages gets access
     # Admin user with a ClientUser linkage gets access
     # Admin user can select any valid client

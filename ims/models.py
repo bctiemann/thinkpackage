@@ -42,6 +42,21 @@ class SoftDeleteManager(models.Manager):
         return super(SoftDeleteManager, self).get_queryset().filter(is_active=False)
 
 
+class LowercaseEmailField(models.EmailField):
+    """
+    Override EmailField to convert emails to lowercase before saving.
+    """
+    def to_python(self, value):
+        """
+        Convert email to lowercase.
+        """
+        value = super(LowercaseEmailField, self).to_python(value)
+        # Value can be None so check that it's a string before lowercasing.
+        if isinstance(value, str):
+            return value.lower()
+        return value
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
@@ -74,7 +89,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(
+    email = LowercaseEmailField(
         verbose_name='email address',
         max_length=191,
         unique=True,

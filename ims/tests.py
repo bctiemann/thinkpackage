@@ -7,7 +7,7 @@ from django.urls import reverse, reverse_lazy
 from ims.models import Client, Location, User, Product, Shipment, Transaction, Receivable
 
 
-json_headers = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+ajax_headers = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
 
 
 class ShipmentTestCase(TestCase):
@@ -61,12 +61,62 @@ class ProductTestCase(TestCase):
         url = reverse('mgmt:product-add', kwargs={'client_id': self.client.id})
 
         payload['unit_price'] = '1.01'
-        response = self.test_client.post(url, payload, **json_headers)
+        response = self.test_client.post(url, payload, **ajax_headers)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
+        self.assertTrue(result['success'])
         new_product_id = result['pk']
         new_product = Product.objects.get(pk=new_product_id)
         self.assertEqual(new_product.unit_price, Decimal('1.01'))
+
+    def test_delete_and_undelete_product(self):
+        payload = self.payload
+        url = reverse('mgmt:product-add', kwargs={'client_id': self.client.id})
+
+        response = self.test_client.post(url, payload, **ajax_headers)
+        result = json.loads(response.content)
+        new_product_id = result['pk']
+
+        url = reverse('mgmt:product-delete', kwargs={'product_id': new_product_id})
+
+        # Delete
+        payload = {
+            'is_active': False,
+            'is_deleted': False,
+        }
+        response = self.test_client.post(url, payload, **ajax_headers)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertTrue(result['success'])
+        updated_product = Product.objects.get(pk=new_product_id)
+        self.assertFalse(updated_product.is_active)
+        self.assertFalse(updated_product.is_deleted)
+
+        # Delete permanently
+        payload = {
+            'is_active': False,
+            'is_deleted': True,
+        }
+        response = self.test_client.post(url, payload, **ajax_headers)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertTrue(result['success'])
+        updated_product = Product.objects.get(pk=new_product_id)
+        self.assertFalse(updated_product.is_active)
+        self.assertTrue(updated_product.is_deleted)
+
+        # Undelete
+        payload = {
+            'is_active': True,
+            'is_deleted': False,
+        }
+        response = self.test_client.post(url, payload, **ajax_headers)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertTrue(result['success'])
+        updated_product = Product.objects.get(pk=new_product_id)
+        self.assertTrue(updated_product.is_active)
+        self.assertFalse(updated_product.is_deleted)
 
     def test_unit_price(self):
         payload = self.payload

@@ -39,7 +39,7 @@ Order details for Item {{ product.item_number }}: {{ product.name }}</span>
         <td style="width: 104px;" class="numeric">${{ product.total_price|floatformat:2|intcomma }}</td>
         <td style="width: 100px;" class="numeric">
             {{ form.gross_weight }}
-            <input type="hidden" id="gross_weight_metric" value="{{ product.gross_weight|floatformat:1 }}" />
+            <input type="hidden" id="gross_weight_metric" value="{{ product.gross_weight|floatformat:2 }}" />
             <input type="hidden" id="gross_weight_imperial" value="{{ product.gross_weight_imperial|floatformat:1 }}" />
         </td>
         <td style="width: 286px;" class="text">

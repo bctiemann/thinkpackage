@@ -1,10 +1,13 @@
 from decimal import Decimal
-import copy
+import json
 
 from django.test import TestCase, Client as TestClient
 from django.urls import reverse, reverse_lazy
 
 from ims.models import Client, Location, User, Product, Shipment, Transaction, Receivable
+
+
+json_headers = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
 
 
 class ShipmentTestCase(TestCase):
@@ -53,6 +56,18 @@ class ProductTestCase(TestCase):
             'accounting_prepay_type': 1,
         }
 
+    def test_create_product(self):
+        payload = self.payload
+        url = reverse('mgmt:product-add', kwargs={'client_id': self.client.id})
+
+        payload['unit_price'] = '1.01'
+        response = self.test_client.post(url, payload, **json_headers)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        new_product_id = result['pk']
+        new_product = Product.objects.get(pk=new_product_id)
+        self.assertEqual(new_product.unit_price, Decimal('1.01'))
+
     def test_unit_price(self):
         payload = self.payload
         url = reverse('mgmt:product-update', kwargs={'product_id': self.product.id})
@@ -83,7 +98,6 @@ class ProductTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         updated_product = Product.objects.get(pk=self.product.id)
         self.assertEqual(updated_product.unit_price, Decimal('0'))
-
 
     def test_gross_weight(self):
         payload = self.payload

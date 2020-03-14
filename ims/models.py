@@ -288,6 +288,9 @@ class Client(models.Model):
         except User.DoesNotExist:
             pass
 
+        # If this instance had been previously created, we can populate the ancestors directly. However, if this
+        # is the first time creating the instance, we don't have the id, so we rely on the post_save signal
+        # executing populate_client_ancestors() in ims/apps.py.
         if started_with_id:
             self.ancestors = [self.id] + [a.id for a in self.get_ancestors()]
             super(Client, self).save(*args, **kwargs)

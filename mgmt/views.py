@@ -347,6 +347,7 @@ class ClientCreate(AjaxableResponseMixin, CreateView):
         logger.info(f'{self.request.user} created client {form.cleaned_data["company_name"]}')
         return super().form_valid(form)
 
+
 class ClientUpdate(AjaxableResponseMixin, UpdateView):
     model = Client
     form_class = forms.ClientForm

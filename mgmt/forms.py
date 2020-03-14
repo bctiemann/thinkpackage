@@ -37,6 +37,11 @@ DOMESTIC_CHOICES = (
 
 class ClientCreateForm(forms.ModelForm):
 
+    def save(self, commit=True):
+        client = super().save(commit)
+        client.save()
+        return client
+
     class Meta:
         model = Client
         fields = ['company_name',]

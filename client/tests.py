@@ -198,3 +198,12 @@ class AuthTestCase(TestCase):
         response = self.test_client.post(url, payload, **ajax_headers)
         result = json.loads(response.content)
         self.assertTrue(result['success'])
+
+    # Ensure a client can login with mixed case email
+    def test_mixed_case_email(self):
+        url = reverse('client:home')
+
+        self.test_client.login(username='Client_User@Example.com', password='test123')
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('client:inventory'))

@@ -90,6 +90,7 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:login'))
 
+    # Authenticated user not authorized for any clients gets a 403
     def test_valid_user_with_no_clients(self):
         url = reverse('client:home')
 
@@ -98,6 +99,7 @@ class AuthTestCase(TestCase):
         response = self.test_client.get(url)
         self.assertContains(response, 'No clients assigned to user', status_code=403)
 
+    # User with a linkage to an ancestor client of selected client gets access
     def test_user_with_access_to_client_ancestor(self):
         url = reverse('client:home')
         session = self.test_client.session
@@ -109,6 +111,7 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
 
+    # User with a linkage to a valid client that is not the client saved in the session gets access to the valid one
     def test_user_with_unassigned_selected_client_and_valid_client(self):
         url = reverse('client:home')
         session = self.test_client.session
@@ -120,6 +123,7 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
 
+    # User with no valid client linkages and with an unauthorized client saved in the session gets a 403
     def test_user_with_unassigned_selected_client_and_no_valid_client(self):
         url = reverse('client:home')
         session = self.test_client.session
@@ -131,6 +135,7 @@ class AuthTestCase(TestCase):
         response = self.test_client.get(url)
         self.assertContains(response, 'No clients assigned to user', status_code=403)
 
+    # User with a linkage to a nonexistent client and with a valid linkage to a real client gets access to the valid one
     def test_user_with_nonexistent_selected_client_and_valid_client(self):
         url = reverse('client:home')
         session = self.test_client.session
@@ -142,6 +147,7 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
 
+    # User with a linkage to a nonexistent client and with no valid linkages gets a 403
     def test_user_with_nonexistent_selected_client_and_no_valid_client(self):
         url = reverse('client:home')
         session = self.test_client.session
@@ -153,7 +159,42 @@ class AuthTestCase(TestCase):
         response = self.test_client.get(url)
         self.assertContains(response, 'No clients assigned to user', status_code=403)
 
-    # User can select any client to which he has a ClientUser linkage
-    # Admin user with no ClientUser linkages gets access
-    # Admin user with a ClientUser linkage gets access
-    # Admin user can select any valid client
+    # User can switch from one selected client to another valid one
+    def test_select_valid_client(self):
+        session = self.test_client.session
+        session['selected_client_id'] = self.client.id
+        session.save()
+        url = reverse('client:select', kwargs={'client_id': self.child_client.id})
+
+        self.test_client.login(username='client_user@example.com', password='test123')
+        payload = {}
+        response = self.test_client.post(url, payload, **ajax_headers)
+        result = json.loads(response.content)
+        self.assertTrue(result['success'])
+
+    # User cannot switch from a valid client to an unauthorized one
+    def test_select_invalid_client(self):
+        session = self.test_client.session
+        session['selected_client_id'] = self.client.id
+        session.save()
+        url = reverse('client:select', kwargs={'client_id': self.other_client.id})
+
+        self.test_client.login(username='client_user@example.com', password='test123')
+        payload = {}
+        response = self.test_client.post(url, payload, **ajax_headers)
+        result = json.loads(response.content)
+        self.assertFalse(result['success'])
+        self.assertEqual(result['message'], 'Invalid client selected.')
+
+    # Admin user can select any client
+    def test_admin_user_can_select_unassigned_client(self):
+        session = self.test_client.session
+        session['selected_client_id'] = self.client.id
+        session.save()
+        url = reverse('client:select', kwargs={'client_id': self.other_client.id})
+
+        self.test_client.login(username='admin_user@example.com', password='test123')
+        payload = {}
+        response = self.test_client.post(url, payload, **ajax_headers)
+        result = json.loads(response.content)
+        self.assertTrue(result['success'])

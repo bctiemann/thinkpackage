@@ -1,0 +1,54 @@
+[
+{
+    "model": "ims.client",
+    "pk": 1,
+    "fields": {
+        "email": "",
+        "created_on": "2019-05-04T07:05:38.342",
+        "is_preferred": false,
+        "is_active": true,
+        "notes": "",
+        "company_name": "Client 1",
+        "has_warehousing": true,
+        "parent": null,
+        "ancestors": [
+            1
+        ]
+    }
+},
+{
+    "model": "ims.client",
+    "pk": 2,
+    "fields": {
+        "email": "",
+        "created_on": "2019-05-04T07:05:38.342",
+        "is_preferred": false,
+        "is_active": true,
+        "notes": "",
+        "company_name": "Child Client",
+        "has_warehousing": true,
+        "parent": 1,
+        "ancestors": [
+            1,
+            2
+        ]
+    }
+},
+{
+    "model": "ims.client",
+    "pk": 3,
+    "fields": {
+        "email": "",
+        "created_on": "2019-05-04T07:05:38.342",
+        "is_preferred": false,
+        "is_active": true,
+        "notes": "",
+        "company_name": "Client 2",
+        "has_warehousing": true,
+        "parent": null,
+        "ancestors": [
+            3
+        ]
+    }
+}
+]

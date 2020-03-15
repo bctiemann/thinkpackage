@@ -1,0 +1,71 @@
+[
+{
+    "model": "ims.location",
+    "pk": 225,
+    "fields": {
+        "client": 1,
+        "name": "Location 1",
+        "phone_number": "",
+        "phone_extension": "",
+        "fax_number": "",
+        "address": "2664 First Street",
+        "address_2": "",
+        "city": "Napa",
+        "state": "CA",
+        "postal_code": "94558",
+        "country": "",
+        "non_us_state": "",
+        "customer_contact": null,
+        "contact_user": 1,
+        "notes": "",
+        "receiving_hours": "",
+        "is_active": true
+    }
+},
+{
+    "model": "ims.location",
+    "pk": 226,
+    "fields": {
+        "client": 1,
+        "name": "Location 2",
+        "phone_number": "",
+        "phone_extension": "",
+        "fax_number": "",
+        "address": "31-65 Steinway St.",
+        "address_2": "",
+        "city": "Astoria",
+        "state": "NY",
+        "postal_code": "11103",
+        "country": "",
+        "non_us_state": "",
+        "customer_contact": null,
+        "contact_user": 1,
+        "notes": "",
+        "receiving_hours": "",
+        "is_active": true
+    }
+},
+{
+    "model": "ims.location",
+    "pk": 227,
+    "fields": {
+        "client": 1,
+        "name": "Location 3",
+        "phone_number": "",
+        "phone_extension": "",
+        "fax_number": "",
+        "address": " 89 Washington Street",
+        "address_2": "",
+        "city": "New York",
+        "state": "NY",
+        "postal_code": "10006",
+        "country": "",
+        "non_us_state": "",
+        "customer_contact": null,
+        "contact_user": 1,
+        "notes": "",
+        "receiving_hours": "",
+        "is_active": true
+    }
+}
+]

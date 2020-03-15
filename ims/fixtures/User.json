@@ -123,5 +123,18 @@
         "login_count": null,
         "date_password_changed": "2020-03-13T16:08:04.202"
     }
+},
+{
+    "model": "ims.clientuser",
+    "pk": 1,
+    "fields": {
+        "client": 1,
+        "user": 4,
+        "title": "Master and Commander",
+        "last_login_client": null,
+        "is_primary": false,
+        "view_order_history": true
+    }
 }
+
 ]

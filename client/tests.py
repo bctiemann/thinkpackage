@@ -18,11 +18,6 @@ class AuthTestCase(TestCase):
         self.other_client = Client.objects.get(company_name='Client 2')
         self.client_user = User.objects.get(email='client_user@example.com')
         self.admin_user = User.objects.get(email='admin_user@example.com')
-        ClientUser.objects.create(
-            client=self.client,
-            user=self.client_user,
-            title='Master and Commander',
-        )
 
     # Admin user (with no client linkages) has access to client site
     def test_admin_access(self):
@@ -207,3 +202,55 @@ class AuthTestCase(TestCase):
         response = self.test_client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
+
+
+class InventoryTestCase(TestCase):
+    fixtures = ['User', 'Client', 'Location', 'Product', 'ShipperAddress']
+
+    def setUp(self):
+        self.test_client = TestClient()
+        self.client = Client.objects.get(company_name='Client 1')
+        self.child_client = Client.objects.get(company_name='Child Client')
+        self.other_client = Client.objects.get(company_name='Client 2')
+        self.client_user = User.objects.get(email='client_user@example.com')
+        self.admin_user = User.objects.get(email='admin_user@example.com')
+        self.test_client.login(username='client_user@example.com', password='test123')
+
+    def test_list_locations(self):
+        url = reverse('client:profile-locations')
+        response = self.test_client.get(url)
+        self.assertContains(response, 'Location 1')
+        self.assertContains(response, 'Location 2')
+        self.assertContains(response, 'Location 3')
+
+    def test_list_inventory(self):
+        url = reverse('client:inventory-list')
+        response = self.test_client.get(url)
+        self.assertContains(response, '6PC Macaron Box')
+        self.assertContains(response, 'Pastry Box Small')
+        self.assertContains(response, 'Pastry Box Out of Stock')
+
+    # TODO: More assertions and checks on artifacts
+    def test_request_delivery(self):
+        url = reverse('client:inventory-request_delivery')
+        payload = {
+            'products': [
+                {
+                    'productid': '274',
+                    'cases': 2,
+                },
+                {
+                    'productid': '275',
+                    'cases': 5,
+                },
+            ],
+            'locationid': '225',
+            'customerid': '',
+            'shipmentid': 0,
+            'client_po': 'Test PO',
+            'on_behalf_of': '',
+        }
+        json_payload = {'json': json.dumps(payload)}
+        response = self.test_client.post(url, json_payload, **ajax_headers)
+        result = json.loads(response.content)
+        self.assertTrue(result['success'])

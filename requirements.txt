@@ -13,11 +13,11 @@ django-formtools==2.2
 #django-filter==2.0.0
 #django-pdfkit==0.2.1
 git+https://github.com/alexhayes/django-pdfkit.git
-PyCrypto==2.6.1
+pycryptodome==3.9.7
 colorlog==2.10
 ConcurrentLogHandler==0.9.1
 qrcode==6.0
-Pillow==4.2.1
+Pillow==7.0.0
 celery==4.4.0
 redis==3.2.1
 twilio==6.22.0

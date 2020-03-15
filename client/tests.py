@@ -9,13 +9,13 @@ from ims.tests import ajax_headers
 
 
 class AuthTestCase(TestCase):
-    fixtures = ['User']
+    fixtures = ['User', 'Client']
 
     def setUp(self):
         self.test_client = TestClient()
-        self.client = Client.objects.create(company_name="Client 1")
-        self.child_client = Client.objects.create(company_name="Child Client", parent=self.client)
-        self.other_client = Client.objects.create(company_name="Client 2")
+        self.client = Client.objects.get(company_name='Client 1')
+        self.child_client = Client.objects.get(company_name='Child Client')
+        self.other_client = Client.objects.get(company_name='Client 2')
         self.client_user = User.objects.get(email='client_user@example.com')
         self.admin_user = User.objects.get(email='admin_user@example.com')
         ClientUser.objects.create(

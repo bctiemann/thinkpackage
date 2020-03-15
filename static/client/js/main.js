@@ -437,6 +437,13 @@ $(document).ready(function() {
         $(this).find('td.hoverinfo span').hide();
     });
 
+    $('.password-expired .dialog-dismiss').click(function() {
+        var url = `${cgiroot}dismiss_password_prompt/`;
+        $.post(url, function(data) {
+            $('.password-expired').removeClass('active');
+        })
+    });
+
     $('#dialog_support').dialog({
         autoOpen: false,
         resizable: false,

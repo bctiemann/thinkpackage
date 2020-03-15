@@ -90,6 +90,16 @@ def change_password(request):
 
 
 @require_POST
+def dismiss_password_prompt(request):
+    request.user.date_password_prompt_dismissed = timezone.now()
+    request.user.save()
+
+    logger.info(f'{request.user} dismissed the password change prompt')
+
+    return JsonResponse({'success': True})
+
+
+@require_POST
 def select_client(request, client_id):
     client = get_object_or_404(Client, pk=client_id, is_active=True)
     if not request.user.is_admin:

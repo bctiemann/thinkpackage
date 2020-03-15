@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^sign_out/', ims_views.LogoutView.as_view(next_page='client:login'), name='sign-out'),
 
     url(r'^change_password/$', client_views.change_password, name='change-password'),
+    url(r'^dismiss_password_prompt/$', client_views.dismiss_password_prompt, name='dismiss-password-prompt'),
 
     url(r'^profile/$', client_views.profile, name='profile'),
     url(r'^profile/locations/$', client_views.profile_locations, name='profile-locations'),

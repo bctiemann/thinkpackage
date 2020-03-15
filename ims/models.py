@@ -118,6 +118,7 @@ class User(AbstractBaseUser):
     last_login = models.DateTimeField(null=True, blank=True)
     login_count = models.IntegerField(null=True, blank=True)
     date_password_changed = models.DateTimeField(default=timezone.now, blank=True)
+    date_password_prompt_dismissed = models.DateTimeField(default=timezone.now, blank=True)
 
     USERNAME_FIELD = 'email'
 
@@ -238,7 +239,16 @@ class User(AbstractBaseUser):
 
     @property
     def password_expired(self):
-        return (timezone.now() - self.date_password_changed).days > settings.PASSWORD_EXPIRE_DAYS
+        return (timezone.now() - self.date_password_changed).days >= settings.PASSWORD_EXPIRE_DAYS
+
+    @property
+    def password_prompt_should_reappear(self):
+        return (timezone.now() - self.date_password_prompt_dismissed).days >= settings.PASSWORD_PROMPT_REAPPEAR_DAYS
+
+    @property
+    def prompt_password_change(self):
+        return False
+        # return self.password_expired and self.password_prompt_should_reappear
 
 
 class ClientManager(models.Manager):

@@ -46,9 +46,10 @@
         <a href="{% url "client:home" %}"><div class="homelink"></div></a>
     </div>
 
-    {% if user.password_expired and False %}
+    {% if user.prompt_password_change %}
     <div class="password-expired">
         <p>
+            <span class="dialog-dismiss"><span class="ui-icon ui-icon-close"></span></span>
             Your password has not been changed in some time. We recommend changing your password to ensure increased security.
             Please select "Change password" from the Support menu.
         </p>

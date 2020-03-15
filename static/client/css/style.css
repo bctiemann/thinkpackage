@@ -219,10 +219,17 @@ table.infotable.alternating > tbody > tr:nth-child(odd) input {
     border: 1px solid #fe333b;
     background-color: #ecd8bc;
     border-radius: 5px;
+    padding-right: 30px;
     margin: 5px;
     transition: .5s;
 }
 .password-expired.active {
     right: 0px;
     opacity: 1;
+}
+.dialog-dismiss {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
 }

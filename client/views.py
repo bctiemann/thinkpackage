@@ -314,7 +314,7 @@ def inventory_request_delivery(request):
 
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
 
-    return JsonResponse({'success': True})
+    return JsonResponse({'success': True, 'shipment_id': shipment.id})
 
 
 def history(request):

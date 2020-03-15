@@ -254,3 +254,6 @@ class InventoryTestCase(TestCase):
         response = self.test_client.post(url, json_payload, **ajax_headers)
         result = json.loads(response.content)
         self.assertTrue(result['success'])
+        shipment = Shipment.objects.filter(pk=result['shipment_id']).first()
+        self.assertIsNotNone(shipment)
+        self.assertEqual(shipment.transaction_set.count(), 2)

@@ -144,6 +144,7 @@ class PalletPrint(PDFView):
 
     def get_pdfkit_options(self):
         options = {
+            'quiet': '',
             'page-size': 'Letter',
             'margin-top': '0.52in',
             'margin-right': '0.25in',
@@ -184,6 +185,7 @@ class ProductPrint(PDFView):
 
     def get_pdfkit_options(self):
         options = {
+            'quiet': '',
             'page-size': 'Letter',
             'margin-top': '0.52in',
             'margin-right': '0.25in',

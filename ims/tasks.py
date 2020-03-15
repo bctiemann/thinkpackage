@@ -558,6 +558,7 @@ def email_purchase_order(request, shipment_id):
         html = template.render(context)
 
     options = {
+        'quiet': '',
         'page-size': 'Letter',
         'margin-top': '0.52in',
         'margin-right': '0.25in',

@@ -271,6 +271,7 @@ class BillOfLadingView(PDFView):
         context['pages'] = list(range(context['total_pages']))
         context['max_products_per_page'] = self.max_products_per_page
         context['remainder_rows'] = list(range(self.max_products_per_page - (shipment.transaction_set.count() % self.max_products_per_page)))
+        logger.info(f'{self.request.user} generated Bill of Lading for shipment {shipment.id} ({shipment.client})')
         return context
 
     def get_pdfkit_options(self):

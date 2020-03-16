@@ -28,6 +28,9 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
 
+        response = self.test_client.get(response.url)
+        self.assertContains(response, 'No client is selected. Please select a client from the menu at the top.')
+
     # Admin user (with a client linkage) has access to client site
     def test_admin_access_with_client_link(self):
         url = reverse('client:home')
@@ -41,6 +44,9 @@ class AuthTestCase(TestCase):
         response = self.test_client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
+
+        response = self.test_client.get(response.url)
+        self.assertNotContains(response, 'No client is selected. Please select a client from the menu at the top.')
 
     # Warehouse-only user gets a 403
     def test_no_warehouse_access(self):

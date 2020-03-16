@@ -264,11 +264,11 @@ class Client(models.Model):
     def get_absolute_url(self):
         return reverse('mgmt:profile', kwargs={'client_id': self.id})
 
-    def get_ancestors(self, ancestors=None):
+    def get_ancestors(self):
         new_ancestors = []
         if self.parent:
             new_ancestors.append(self.parent)
-            new_ancestors += self.parent.get_ancestors(new_ancestors)
+            new_ancestors += self.parent.get_ancestors()
         return new_ancestors
 
     def save(self, *args, **kwargs):

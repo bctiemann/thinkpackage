@@ -153,36 +153,6 @@ class User(AbstractBaseUser):
         self.date_password_changed = timezone.now()
         super().set_password(raw_password)
 
-#    def get_selected_client(self, request):
-#        "Get the selected client from the session store, and set it to the first matching one if not already set or invalid"
-#        try:
-#            if 'selected_client_id' in request.session:
-#                try:
-#                    client = Client.objects.get(pk=request.session['selected_client_id'], is_active=True)
-#                    if ClientUser.objects.filter(user=self, client__id__in=client.ancestors).count() == 0:
-#                        client = None
-#                except ClientUser.DoesNotExist:
-#                    client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
-#                    if client:
-#                        request.session['selected_client_id'] = client.id
-#                return client
-#            else:
-#                client = ClientUser.objects.filter(user=self, client__is_active=True).first().client
-#                if client:
-#                    request.session['selected_client_id'] = client.id
-#            return client
-#        except Exception, e:
-#            return None
-
-#    def get_children_of_selected_client(self, request):
-#        # Get list of clients at or below the selected client in the hierarchy
-#        return self.get_children_of_client(self.get_selected_client(request))
-##        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), self.get_selected_client(request))
-
-#    def get_children_of_client(self, client):
-#        # Get list of clients at or below the selected client in the hierarchy
-#        return utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), client)
-
     @property
     def child_clients(self):
         if self.is_admin or self.email == settings.CLIENTACCESS_EMAIL:
@@ -322,11 +292,10 @@ class Client(models.Model):
 
     class Meta:
         db_table = 'Customers'
-#        ordering = (Lower('company_name'),)
         ordering = ('company_name',)
 
 
-# Future model to map client contacts (formerly CustContacts) to clients, in a many-to-many relationship.
+# New-style model to map client contacts (formerly CustContacts) to clients, in a many-to-many relationship.
 class ClientUser(models.Model):
     client = models.ForeignKey('Client', null=True, on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -342,6 +311,7 @@ class ClientUser(models.Model):
         return reverse('mgmt:contact-update', kwargs={'custcontact_id': self.pk})
 
 
+# Legacy model assigning unique users to clients; replaced by ClientUser mapping
 class CustContact(models.Model):
     id = models.AutoField(primary_key=True, db_column='custcontactid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
@@ -374,15 +344,15 @@ class CustContact(models.Model):
 class AdminUser(models.Model):
 
     class AccessLevel(models.IntegerChoices):
-        ACCESS_LEVEL_ADMIN = 1, _('Admin')
-        ACCESS_LEVEL_CUSTOMER_MANAGEMENT = 2, _('Customer Management')
-        ACCESS_LEVEL_PRODUCT_MANAGEMENT = 3, _('Product Management')
-        ACCESS_LEVEL_MARKETING = 4, _('Marketing Only')
-        ACCESS_LEVEL_BBS = 5, _('BBS Only')
+        ADMIN = 1, _('Admin')
+        CUSTOMER_MANAGEMENT = 2, _('Customer Management')
+        PRODUCT_MANAGEMENT = 3, _('Product Management')
+        MARKETING = 4, _('Marketing Only')
+        BBS = 5, _('BBS Only')
 
     class TwoFactorType(models.IntegerChoices):
-        TWO_FACTOR_OTP = 1, _('OTP auth')
-        TWO_FACTOR_SMS = 2, _('SMS auth')
+        OTP = 1, _('OTP auth')
+        SMS = 2, _('SMS auth')
 
     id = models.AutoField(primary_key=True, db_column='adminid')
     username = models.CharField(max_length=100, blank=True, db_column='user')
@@ -411,8 +381,8 @@ class AdminUser(models.Model):
 class WarehouseUser(models.Model):
 
     class Role(models.TextChoices):
-        ROLE_ACCOUNTING = 'accounting', _('Accounting')
-        ROLE_WAREHOUSE = 'warehouse', _('Warehouse')
+        ACCOUNTING = 'accounting', _('Accounting')
+        WAREHOUSE = 'warehouse', _('Warehouse')
 
     id = models.AutoField(primary_key=True, db_column='wuserid')
     username = models.CharField(max_length=100, blank=True, db_column='user')

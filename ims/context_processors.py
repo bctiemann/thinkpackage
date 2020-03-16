@@ -6,6 +6,7 @@ from datetime import timedelta
 def settings_constants(request):
 
     context = {
+        'company_name': settings.COMPANY_NAME,
         'support_email': settings.SUPPORT_EMAIL,
         'site_email': settings.SITE_EMAIL,
         'delivery_email': settings.DELIVERY_EMAIL,

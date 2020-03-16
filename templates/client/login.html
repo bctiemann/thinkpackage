@@ -1,7 +1,7 @@
 {% extends "login.html" %}
 {% load static %}
 
-{% block title %}Thinkpackage Client Login{% endblock %}
+{% block title %}{{ company_name }} Client Login{% endblock %}
 
 {% block extra_css %}
     <link rel=stylesheet href="{% static "css/site-full.css" %}" type="text/css">
@@ -22,7 +22,7 @@
           <div class="Header-inner Header-inner--bottom" data-nc-group="bottom1">
             <div data-nc-container="bottom-left">
               <a href="{{ frontsite_url }}" class="Header-branding" data-nc-element="branding" data-content-field="site-title">
-                    <img src="{% static "accounts/images/tp_white.png" %}" asrc="#onSite#images/logo.png" alt="Think Package" class="Header-branding-logo" />
+                    <img src="{% static "accounts/images/tp_white.png" %}" alt="{{ company_name }}" class="Header-branding-logo" />
               </a>
             </div>
             <div data-nc-container="bottom-center">

@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-    <title>{% block title %}Think Package Administration{% endblock %}</title>
+    <title>{% block title %}{{ company_name }} Administration{% endblock %}</title>
     <link rel=stylesheet href="{% static "css/common.css" %}" type="text/css">
     <link rel=stylesheet href="{% static "accounts/css/style.css" %}" type="text/css">
     {% block extra_css %}{% endblock %}
@@ -45,7 +45,7 @@ globals['customerid_current'] = {{ client_id }};
 <body id="content" class="login">
 
     {% block top_banner %}
-    <img src="{% static "accounts/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="Think Package Management" />
+    <img src="{% static "accounts/images/tp_white.png" %}" border=0 hspace=0 vspace=0 alt="{{ company_name }} Management" />
     <p>{% block login_page_title %}{% endblock %}</p>
     {% endblock %}
 

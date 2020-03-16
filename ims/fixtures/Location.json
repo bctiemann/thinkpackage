@@ -67,5 +67,51 @@
         "receiving_hours": "",
         "is_active": true
     }
+},
+{
+    "model": "ims.location",
+    "pk": 228,
+    "fields": {
+        "client": 2,
+        "name": "Location for Child Client",
+        "phone_number": "",
+        "phone_extension": "",
+        "fax_number": "",
+        "address": " 89 Washington Street",
+        "address_2": "",
+        "city": "New York",
+        "state": "NY",
+        "postal_code": "10006",
+        "country": "",
+        "non_us_state": "",
+        "customer_contact": null,
+        "contact_user": 1,
+        "notes": "",
+        "receiving_hours": "",
+        "is_active": true
+    }
+},
+{
+    "model": "ims.location",
+    "pk": 229,
+    "fields": {
+        "client": 3,
+        "name": "Location for Client 2",
+        "phone_number": "",
+        "phone_extension": "",
+        "fax_number": "",
+        "address": " 89 Washington Street",
+        "address_2": "",
+        "city": "New York",
+        "state": "NY",
+        "postal_code": "10006",
+        "country": "",
+        "non_us_state": "",
+        "customer_contact": null,
+        "contact_user": 1,
+        "notes": "",
+        "receiving_hours": "",
+        "is_active": true
+    }
 }
 ]

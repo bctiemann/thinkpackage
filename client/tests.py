@@ -9,7 +9,7 @@ from ims.tests import ajax_headers
 
 
 class AuthTestCase(TestCase):
-    fixtures = ['User', 'Client']
+    fixtures = ['Client', 'User']
 
     def setUp(self):
         self.test_client = TestClient()
@@ -210,8 +210,8 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.url, reverse('client:inventory'))
 
 
-class InventoryTestCase(TestCase):
-    fixtures = ['User', 'Client', 'Location', 'Product', 'ShipperAddress']
+class ProfileTestCase(TestCase):
+    fixtures = ['User', 'Client', 'Location']
 
     def setUp(self):
         self.test_client = TestClient()
@@ -228,6 +228,41 @@ class InventoryTestCase(TestCase):
         self.assertContains(response, 'Location 1')
         self.assertContains(response, 'Location 2')
         self.assertContains(response, 'Location 3')
+
+    def test_location_detail(self):
+        url = reverse('client:profile-location-detail', kwargs={'location_id': 225})
+        response = self.test_client.get(url)
+        self.assertContains(response, 'Location 1')
+
+    def test_location_detail_child_client(self):
+        url = reverse('client:profile-location-detail', kwargs={'location_id': 228})
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_location_detail_other_client(self):
+        url = reverse('client:profile-location-detail', kwargs={'location_id': 229})
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    # Even admin user can't pull data for a location belonging to a client other than the selected_client
+    def test_location_detail_other_client_admin_user(self):
+        self.test_client.login(username='admin_user@example.com', password='test123')
+        url = reverse('client:profile-location-detail', kwargs={'location_id': 229})
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+
+class InventoryTestCase(TestCase):
+    fixtures = ['User', 'Client', 'Location', 'Product', 'ShipperAddress']
+
+    def setUp(self):
+        self.test_client = TestClient()
+        self.client = Client.objects.get(company_name='Client 1')
+        self.child_client = Client.objects.get(company_name='Child Client')
+        self.other_client = Client.objects.get(company_name='Client 2')
+        self.client_user = User.objects.get(email='client_user@example.com')
+        self.admin_user = User.objects.get(email='admin_user@example.com')
+        self.test_client.login(username='client_user@example.com', password='test123')
 
     def test_list_inventory(self):
         url = reverse('client:inventory-list')

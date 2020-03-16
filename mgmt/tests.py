@@ -9,7 +9,7 @@ from ims.tests import ajax_headers
 
 
 class AuthTestCase(TestCase):
-    fixtures = ['User']
+    fixtures = ['User', 'Client']
 
     def setUp(self):
         self.test_client = TestClient()
@@ -60,12 +60,12 @@ class AuthTestCase(TestCase):
 
 
 class ProductTestCase(TestCase):
-    fixtures = ['User']
+    fixtures = ['User', 'Client']
 
     def setUp(self):
         self.test_client = TestClient()
         self.test_client.login(username='admin_user@example.com', password='test123')
-        self.client = Client.objects.create(company_name="Client 1")
+        self.client = Client.objects.get(company_name='Client 1')
         self.product = Product.objects.create(
             client=self.client,
             name='Test Product',

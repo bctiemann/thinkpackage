@@ -446,10 +446,10 @@ function saveProduct(productid) {
     };
 console.log($('#id_contracted_quantity'));
     if (units == 'imperial') {
-        product.gross_weight *= 0.453592;
-        product.length *= 2.54;
-        product.height *= 2.54;
-        product.width *= 2.54;
+        product.gross_weight = (product.gross_weight *= 0.453592).toFixed(2);
+        product.length = (product.length *= 2.54).toFixed(1);
+        product.height = (product.height *= 2.54).toFixed(1);
+        product.width = (product.width *= 2.54).toFixed(1);
     }
 console.log(product);
     var url = cgiroot + 'product/';

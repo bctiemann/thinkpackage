@@ -467,7 +467,7 @@ console.log(url);
 console.log(data);
         if (data.success) {
             globals['productid'] = null;
-            units = 'metric';
+            // units = 'metric';
             refreshInventory();
             selectProduct(null,false);
             $('#dialog_saveproduct_result').dialog("open");

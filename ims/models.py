@@ -29,6 +29,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+KG_TO_LB_MULTIPLIER = 2.20462
+CM_TO_IN_MULTIPLIER = 0.393701
+
+
 def get_report_path(instance, filename):
     return 'reports/{0}'.format(filename)
 
@@ -510,25 +514,25 @@ class Product(models.Model):
     def gross_weight_imperial(self):
         if not self.gross_weight:
             return 0
-        return float(self.gross_weight) * 2.20462
+        return float(self.gross_weight) * KG_TO_LB_MULTIPLIER
 
     @property
     def length_imperial(self):
         if not self.length:
             return 0
-        return float(self.length) * 0.393701
+        return float(self.length) * CM_TO_IN_MULTIPLIER
 
     @property
     def width_imperial(self):
         if not self.width:
             return 0
-        return float(self.width) * 0.393701
+        return float(self.width) * CM_TO_IN_MULTIPLIER
 
     @property
     def height_imperial(self):
         if not self.height:
             return 0
-        return float(self.height) * 0.393701
+        return float(self.height) * CM_TO_IN_MULTIPLIER
 
     @property
     def cases_available(self):
@@ -931,7 +935,7 @@ class Pallet(models.Model):
 
     @property
     def gross_weight_imperial(self):
-        return float(self.gross_weight) * 2.20462
+        return float(self.gross_weight) * KG_TO_LB_MULTIPLIER
 
     def __str__(self):
         return ('{0}'.format(self.id))

@@ -169,7 +169,6 @@ class User(AbstractBaseUser):
             children_of_other = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), cu.client)
             for child in children_of_other:
                 if not child in child_clients:
-                    child['indent_rendered'] = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(['' for i in range(child['depth'] + 1)])
                     child_clients.append(child)
         return child_clients
 

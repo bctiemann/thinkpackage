@@ -169,7 +169,7 @@ admin.site.register(Location, LocationAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('item_number', 'name', 'client', )
+    list_display = ('id', 'item_number', 'name', 'client', 'date_created', 'cases_inventory', 'is_active', 'is_deleted',)
     list_editable = ()
     list_filter = ()
     search_fields = ('item_number', 'name', 'client__company_name',)

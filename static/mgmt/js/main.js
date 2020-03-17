@@ -412,7 +412,7 @@ function selectProduct(productid,load_details,elem) {
             $('.switch-units.length').html(units == 'metric' ? 'cm' : 'in');
             $('#product_details').load(url,function() {
                 $('.switch-units').click(function() {
-                    units = units == 'switchingmetric' ? 'imperial' : 'metric';
+                    units = units == 'metric' ? 'imperial' : 'metric';
                     $('#id_length').val($('#length_' + units).val());
                     $('#id_width').val($('#width_' + units).val());
                     $('#id_height').val($('#height_' + units).val());
@@ -467,7 +467,7 @@ console.log(url);
 console.log(data);
         if (data.success) {
             globals['productid'] = null;
-            // units = 'metric';
+            units = 'metric';
             refreshInventory();
             selectProduct(null,false);
             $('#dialog_saveproduct_result').dialog("open");

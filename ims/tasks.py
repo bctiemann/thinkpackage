@@ -9,8 +9,6 @@ from django.test import override_settings
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
-from django_pdfkit import PDFView
-
 from datetime import datetime, timedelta
 from dateutil import rrule
 import csv
@@ -19,7 +17,6 @@ import os
 import pdfkit
 
 from ims.models import AsyncTask, Client, Product, Shipment, Transaction
-# from warehouse.views import PurchaseOrderView
 from ims import utils
 
 import logging
@@ -39,10 +36,6 @@ def generate_item_lookup(async_task_id, item_number):
 
         writer = csv.writer(csvfile)
 
-#    response = HttpResponse(content_type='text/csv')
-#    response['Content-Disposition'] = 'attachment; filename="ItemLookup-{0}.csv"'.format(item_number)
-
-#    writer = csv.writer(response)
         writer.writerow([
             'CURRENT Date',
             'Item Number',
@@ -91,15 +84,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
         pass
 
     products = Product.objects.filter(client__in=client_tree, is_deleted=False).order_by('item_number')
-#    shipments = Shipment.objects.filter(client=client, date_shipped__gt=date_from, date_shipped__lte=date_to)
-#    non_shipment_transactions = Transaction.objects.filter(client=client, shipment__isnull=True, date_created__gt=date_from, date_created__lte=date_to)
-#    transactions = Transaction.objects.filter(client=client, date_created__gt=date_from, date_created__lte=date_to)
     transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from)
-
-#    transactions = Transaction.objects.filter(date_created__gt=date_from, date_created__lte=date_to)
-#    transactions = transactions.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
-#    transactions = transactions.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
-#    transactions = transactions.order_by('-date_in_out', '-shipment__id')
 
     product_counts = {}
     columns = []
@@ -139,7 +124,6 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 'out': 0,
             }
         if not column_id in [column['id'] for column in columns]:
-#        if not column_id in column_ids:
             column_date = transaction.date_created
             shipment_id = transaction.id
             if transaction.shipment:
@@ -155,8 +139,6 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 'shipment_id': shipment_id,
                 'is_month_end': False,
             })
-#            logger.info('{0} {1}'.format(shipment_id, column_id))
-#            column_ids[column_id] = True
 
     async_task.percent_complete = 100
     async_task.save()
@@ -181,14 +163,10 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     product_balance = {}
     for product in products:
-#        product_balance[product.id] = product.cases_inventory
         product_balance[product.id] = product.cases_available
 
     for column in columns:
-#        logger.info('{0} {1} {2}'.format(column['shipment_id'], column['date'], column['id']))
         for product in products:
-#            if column['is_month_end']:
-#                product_counts[column['id'][product.id] = {'in': 0, 'out': 0}
             if not product.id in product_counts[column['id']]:
                 product_counts[column['id']][product.id] = {'in': 0, 'out': 0}
 
@@ -197,16 +175,9 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 product_balance[product.id] -= product_counts[column['id']][product.id]['in']
             if product_counts[column['id']][product.id]['out']:
                 product_balance[product.id] += product_counts[column['id']][product.id]['out']
-#            product_counts[column['id']][product.id]['balance'] = product_balance[product.id]
-#        logger.info(product_counts[column['id']][2310])
-
-#        response.write(product_counts)
-#        response.write(columns)
-#        response.write('{0}\n'.format(history_item.id))
 
     filename = 'InventoryList - {0} - {1}.csv'.format(client.company_name_clean, timezone.now().strftime('%m-%d-%Y %H%M%S'))
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
-#    with open('{0}/reports/InventoryList.csv'.format(settings.MEDIA_ROOT), mode='w') as csvfile:
         writer = csv.writer(csvfile)
 
         columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']))
@@ -239,13 +210,11 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     logger.info('Done writing CSV')
     async_task.is_complete = True
-#    async_task.result_url = '{0}reports/{1}'.format(settings.MEDIA_URL, filename)
     async_task.result_file = 'reports/{0}'.format(filename)
     async_task.result_content_type = 'text/csv'
-#    async_task.result_url = reverse('mgmt:async-task-result', kwargs={'async_task_id': async_task.id})
     async_task.save()
+
     return 'done'
-    return response
 
 
 @shared_task

@@ -927,7 +927,7 @@ ul.mode_toggle a {
 	color: #fff;
 }
 ul.mode_toggle li.selected {
-	background-color: #eee;
+	background-color: #f3f3f4;
 }
 ul.mode_toggle a li.selected {
 	color: #445;
@@ -1223,4 +1223,5 @@ input.search {
     position: relative;
     bottom: 5px;
     margin: 0px;
+    margin-bottom: -1px;
 }

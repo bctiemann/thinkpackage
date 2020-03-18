@@ -4,6 +4,8 @@
 <a href="javascript:nop()" onClick="showStatus(2)"><li {% if status_filter == 2 %}class="selected"{% endif %}>submitted</li></a>
 </ul>
 
+<input type="search" placeholder="Search DL#" class="search" />
+
 <table class="infotable alternating shipments editable scrollable">
     <thead>
         <tr>
@@ -25,4 +27,10 @@
 //if (globals['shipped_filter'] == 0) {
     infiniteScrollTable('#list_shipments', fetchShipments);
 //}
+
+$(document).ready(function() {
+    $('.search').on('search', function(event, obj) {
+        refreshShipments($(this).val());
+    });
+});
 </script>

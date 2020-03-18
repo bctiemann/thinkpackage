@@ -1218,3 +1218,9 @@ table.pageheader {
 
   margin: -70px 0 0 -170px;
 }
+
+input.search {
+    position: relative;
+    bottom: 5px;
+    margin: 0px;
+}

@@ -228,6 +228,10 @@ def shipments_fetch(request, client_id=None):
 
     shipments = client.shipment_set.all().order_by('status', '-date_created')
 
+    shipment_id = request.GET.get('shipment_id')
+    if shipment_id and shipment_id.isnumeric():
+        shipments = shipments.filter(pk=int(shipment_id))
+
     if shipped_filter:
         shipments = shipments.exclude(status=Shipment.Status.SHIPPED)[start:end]
     else:

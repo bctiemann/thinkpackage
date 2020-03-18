@@ -76,12 +76,18 @@ def shipments_fetch(request):
     end = start + page_size
 
     shipments = Shipment.objects.all()
+
+    shipment_id = request.GET.get('shipment_id')
+    if shipment_id and shipment_id.isnumeric():
+        shipments = shipments.filter(pk=int(shipment_id))
+
     shipments = shipments.filter(
         Q(transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ) | Q(delivery_charge__gt=0),
         status=Shipment.Status.SHIPPED,
         accounting_status=status_filter
     )\
     .filter(location__isnull=False)
+
     shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
 
     # three_months_ago = timezone.now() - timedelta(days=90)

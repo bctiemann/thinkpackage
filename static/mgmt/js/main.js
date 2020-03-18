@@ -972,23 +972,25 @@ function refreshShipments(shipmentid) {
 
 console.log(url);
     $('#list_shipments').load(url,function(data) {
+        $('.shipment_detail').html('');
         fetchShipments(shipmentid);
     });
 }
 
-function fetchShipments(shipmentid) {
+function fetchShipments(shipmentid='') {
     globals['fetching'] = true;
-    var url = `${cgiroot}${$('#customerid').val()}/shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}`;
+    var url = `${cgiroot}${$('#customerid').val()}/shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}&shipment_id=${shipmentid}`;
     $.get(url, function(html) {
         globals['fetching'] = false;
         $('#list_shipments tbody').append(html);
         refreshUI();
         if (shipmentid) {
-            selectShipment(shipmentid);
             if ($('tr#shipment_' + shipmentid).length) {
+                selectShipment(shipmentid);
                 var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
                 $('table.shipments tbody').animate({ scrollTop: rowpos});
             }
+            $('.search').val(shipmentid);
         }
         globals['startFrom'] = $('tr.shipment').length;
         console.log(globals);

@@ -105,6 +105,10 @@ def shipments_fetch(request):
 
     # three_weeks_ago = timezone.now() - timedelta(days=21)
 
+    shipment_id = request.GET.get('shipment_id')
+    if shipment_id and shipment_id.isnumeric():
+        shipments = shipments.filter(pk=int(shipment_id))
+
     if shipped_filter:
         shipments = shipments.exclude(status=Shipment.Status.SHIPPED)
     else:
@@ -162,6 +166,10 @@ def receivables_fetch(request):
     transactions = Transaction.objects.filter(receivable__isnull=False).annotate(null_count=Count('cases')).order_by('-null_count', '-receivable__date_created')
 
     # three_weeks_ago = timezone.now() - timedelta(days=21)
+
+    receivable_id = request.GET.get('receivable_id')
+    if receivable_id and receivable_id.isnumeric():
+        transactions = transactions.filter(receivable__pk=int(receivable_id))
 
     if received_filter:
         transactions = transactions.filter(cases__isnull=True)[start:end]

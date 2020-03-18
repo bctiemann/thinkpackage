@@ -5,6 +5,8 @@
 <a href="javascript:nop()" onClick="showReceived(true)"><li {% if received_filter == 0 %}class="selected"{% endif %}>complete</li></a>
 </ul>
 
+<!--<input type="search" placeholder="Search DL#" class="search" />-->
+
 <table class="infotable alternating receivables editable scrollable">
     <thead>
         <tr>
@@ -28,4 +30,10 @@
 
 <script type="text/javascript">
 infiniteScrollTable('#list_receivables', fetchReceivables);
+
+$(document).ready(function() {
+    $('.search').on('search', function(event, obj) {
+        refreshReceivables($(this).val());
+    });
+});
 </script>

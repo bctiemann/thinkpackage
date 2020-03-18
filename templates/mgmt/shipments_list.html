@@ -5,6 +5,8 @@
 <a href="javascript:nop()" onClick="showShipped(true)"><li {% if shipped_filter == 0 %}class="selected"{% endif %}>shipped</li></a>
 </ul>
 
+<input type="search" placeholder="Search DL#" class="search" />
+
 <table class="infotable alternating shipments editable scrollable">
     <thead>
         <tr>
@@ -25,4 +27,10 @@
 
 <script type="text/javascript">
 infiniteScrollTable('#list_shipments', fetchShipments);
+
+$(document).ready(function() {
+    $('.search').on('search', function(event, obj) {
+        refreshShipments($(this).val());
+    });
+});
 </script>

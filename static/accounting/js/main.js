@@ -19,6 +19,7 @@ function refreshShipments(shipmentid) {
 //    var url = cgiroot+'ajax_shipments_list.cfm?status_filter='+globals['status_filter'];
     var url = cgiroot + 'shipments/list/?status_filter=' + globals['status_filter'];
     $('#list_shipments').load(url,function(data) {
+        $('.shipment_detail').html('');
         fetchShipments(shipmentid);
         /*
         refreshUI();
@@ -31,19 +32,20 @@ function refreshShipments(shipmentid) {
     });
 }
 
-function fetchShipments(shipmentid) {
+function fetchShipments(shipmentid='') {
     globals['fetching'] = true;
-    var url = `${cgiroot}shipments/fetch/?status_filter=${globals['status_filter']}&start=${globals['startFrom']}`;
+    var url = `${cgiroot}shipments/fetch/?status_filter=${globals['status_filter']}&start=${globals['startFrom']}&shipment_id=${shipmentid}`;
     $.get(url, function(html) {
         globals['fetching'] = false;
         $('#list_shipments tbody').append(html);
         refreshUI();
         if (shipmentid) {
-            selectShipment(shipmentid);
             if ($('tr#shipment_' + shipmentid).length) {
+                selectShipment(shipmentid);
                 var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
                 $('table.shipments tbody').animate({ scrollTop: rowpos});
             }
+            $('.search').val(shipmentid);
         }
         globals['startFrom'] = $('tr.shipment').length;
         console.log(globals);

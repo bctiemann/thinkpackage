@@ -19,30 +19,32 @@ function refreshShipments(shipmentid) {
 //    var url = cgiroot+'ajax_shipments_list.cfm?shipped_filter='+globals['shipped_filter'];
     var url = `${cgiroot}shipments/list/?shipped_filter=${globals['shipped_filter']}`;
     $('#list_shipments').load(url,function(data) {
+        $('.shipment_detail').html('');
         fetchShipments(shipmentid);
     });
 }
 
-function fetchShipments(shipmentid) {
+function fetchShipments(shipmentid='') {
     globals['fetching'] = true;
-    var url = `${cgiroot}shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}`;
+    var url = `${cgiroot}shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}&shipment_id=${shipmentid}`;
     $.get(url, function(html) {
         globals['fetching'] = false;
         $('#list_shipments tbody').append(html);
         refreshUI();
         if (shipmentid) {
-            selectShipment(shipmentid);
             if ($('tr#shipment_' + shipmentid).length) {
+                selectShipment(shipmentid);
                 var rowpos = $('tr#shipment_' + shipmentid).position().top - $('table.shipments tbody').position().top;
                 $('table.shipments tbody').animate({ scrollTop: rowpos});
             }
+            $('.search').val(shipmentid);
         }
         globals['startFrom'] = $('tr.shipment').length;
         console.log(globals);
     })
 }
 
-function refreshReceivables() {
+function refreshReceivables(receivableid) {
     if (!('received_filter' in globals)) {
         globals['received_filter'] = 1;
     }
@@ -52,13 +54,13 @@ function refreshReceivables() {
     var url = `${cgiroot}receivables/list/?received_filter=${globals['received_filter']}`;
     $('#list_receivables').load(url,function(data) {
         // refreshUI();
-        fetchReceivables();
+        fetchReceivables(receivableid);
     });
 }
 
-function fetchReceivables() {
+function fetchReceivables(receivableid='') {
     globals['fetching'] = true;
-    var url = `${cgiroot}receivables/fetch/?received_filter=${globals['received_filter']}&start=${globals['startFrom']}`;
+    var url = `${cgiroot}receivables/fetch/?received_filter=${globals['received_filter']}&start=${globals['startFrom']}&receivable_id=${receivableid}`;
     $.get(url, function(html) {
         globals['fetching'] = false;
         $('#list_receivables tbody').append(html);

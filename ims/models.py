@@ -755,7 +755,7 @@ class Transaction(models.Model):
 #    quantity_remaining = models.BigIntegerField(null=True, blank=True, db_column='qtyremain')
     cases_remaining = models.BigIntegerField(null=True, blank=True)
     is_outbound = models.BooleanField(default=False, db_column='direction')
-    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid', on_delete=models.SET_NULL)
+    shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid', on_delete=models.CASCADE)
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     cases = models.IntegerField(null=True, blank=True)
     shipment_order = models.CharField(max_length=50, blank=True, db_column='SO')

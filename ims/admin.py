@@ -206,6 +206,7 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'client', 'product', 'date_created', 'date_completed', 'shipment', 'cases', 'is_outbound', 'receivable',)
     list_editable = ()
     list_filter = ()
+    search_fields = ('client__company_name', 'shipment__id',)
     autocomplete_fields = ('client', 'product', 'shipment', 'receivable', 'transfer_product', 'transfer_client',)
 admin.site.register(Transaction, TransactionAdmin)
 

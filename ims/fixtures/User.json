@@ -135,5 +135,17 @@
         "is_primary": false,
         "view_order_history": true
     }
+},
+{
+    "model": "ims.clientuser",
+    "pk": 2,
+    "fields": {
+        "client": 5,
+        "user": 4,
+        "title": "Middle Manager",
+        "last_login_client": null,
+        "is_primary": false,
+        "view_order_history": true
+    }
 }
 ]

@@ -209,6 +209,18 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('client:inventory'))
 
+    # Hierarchy of clients: A -> B -> C (A at top)
+    # User is assigned to B
+    # User should have access to B and C
+    def test_hierarchical_permissions(self):
+        client_A = Client.objects.get(company_name='A')
+        client_B = Client.objects.get(company_name='B')
+        client_C = Client.objects.get(company_name='C')
+
+        self.assertFalse(self.client_user.is_authorized_for_client(client_A))
+        self.assertTrue(self.client_user.is_authorized_for_client(client_B))
+        self.assertTrue(self.client_user.is_authorized_for_client(client_C))
+
 
 class ProfileTestCase(TestCase):
     fixtures = ['User', 'Client', 'Location']

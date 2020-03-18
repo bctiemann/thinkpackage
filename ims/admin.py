@@ -128,7 +128,7 @@ admin.site.register(Client, ClientAdmin)
 
 
 class ClientUserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'client', 'title')
+    list_display = ('user', 'client', 'title', 'is_primary',)
     list_editable = ()
     list_filter = ('client', 'user')
     search_fields = ('client__company_name', 'user__first_name', 'user__last_name', 'user__email')

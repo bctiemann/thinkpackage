@@ -359,6 +359,7 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
     def form_valid(self, form):
         logger.info(form.cleaned_data)
         self.object.custcontact_set.update(is_primary=False)
+        self.object.clientuser_set.update(is_primary=False)
         if form.cleaned_data['primary_contact']:
             form.cleaned_data['primary_contact'].is_primary = True
             form.cleaned_data['primary_contact'].save()

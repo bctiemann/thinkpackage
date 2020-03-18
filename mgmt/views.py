@@ -473,6 +473,7 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
             else:
                 logger.info('Password changed')
                 client_user.user.set_password(user_form.cleaned_data['password'])
+                client_user.user.set_password_to_expired()
             client_user.user.save()
 
             logger.info(f'{self.request.user} created contact {client_user.user} for {form.cleaned_data["client"]}')
@@ -548,6 +549,7 @@ class CustContactUpdate(AjaxableResponseMixin, UpdateView):
             else:
                 logger.info('Password changed')
                 client_user.user.set_password(user_form.cleaned_data['password'])
+                client_user.user.set_password_to_expired()
             client_user.user.save()
 
             logger.info(f'{self.request.user} updated contact {self.object.user} for {self.object.client}')

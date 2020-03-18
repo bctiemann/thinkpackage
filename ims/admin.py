@@ -119,7 +119,7 @@ admin.site.unregister(Group)
 
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'created_on', 'company_name',)
+    list_display = ('id', 'email', 'created_on', 'company_name', 'is_active',)
     list_editable = ()
     list_filter = ()
     search_fields = ('id', 'company_name',)

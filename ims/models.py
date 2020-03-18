@@ -221,8 +221,8 @@ class User(AbstractBaseUser):
 
     @property
     def prompt_password_change(self):
-        # return False
-        return self.password_expired and self.password_prompt_should_reappear
+        return False
+        # return self.password_expired and self.password_prompt_should_reappear
 
     def set_password_to_expired(self):
         self.date_password_changed = timezone.now() - datetime.timedelta(days=settings.PASSWORD_EXPIRE_DAYS)

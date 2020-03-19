@@ -31,10 +31,3 @@ class ReconciliationForm(forms.ModelForm):
     class Meta:
         model = ReturnedProduct
         fields = []
-
-
-class ShipmentDocForm(forms.ModelForm):
-    class Meta:
-        model = ShipmentDoc
-        fields = ['shipment', 'file']
-

@@ -99,3 +99,9 @@ class PasswordChangeForm(SetPasswordForm):
                 code='incorrect_current_password',
             )
         return current_password
+
+
+class ShipmentDocForm(forms.ModelForm):
+    class Meta:
+        model = ShipmentDoc
+        fields = ['shipment', 'file']

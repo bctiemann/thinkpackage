@@ -1056,64 +1056,6 @@ class ShipmentDelete(AjaxableResponseMixin, DeleteView):
         return reverse_lazy('mgmt:shipments', kwargs={'client_id': self.object.client.id})
 
 
-class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
-    model = ShipmentDoc
-    form_class = forms.ShipmentDocForm
-    template_name = 'mgmt/shipment_docs.html'
-
-    def form_valid(self, form):
-        logger.warning(form.data)
-        logger.warning(self.request.FILES)
-        if not 'file' in self.request.FILES:
-            return JsonResponse({
-                'success': False,
-                'message': 'No file was uploaded.',
-            })
-        response = super(ShipmentDocCreate, self).form_valid(form)
-        uploaded_file = self.request.FILES['file']
-        self.object.content_type = uploaded_file.content_type
-        self.object.size = uploaded_file.size
-        filename_parts = uploaded_file.name.split('.')
-        self.object.basename = '.'.join(filename_parts[0:-1])
-        self.object.ext = filename_parts[-1]
-        self.object.save()
-        logger.info(f'{self.request.user} created shipment doc {self.object.id} {self.object} for shipment {self.object.shipment} ({self.object.shipment.client})')
-        return response
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ShipmentDocCreate, self).get_context_data(*args, **kwargs)
-        shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
-        context['shipment'] = shipment
-        return context
-
-
-class ShipmentDocDelete(AjaxableResponseMixin, DeleteView):
-    model = ShipmentDoc
-
-    def get_object(self):
-        return get_object_or_404(ShipmentDoc, pk=self.kwargs['doc_id'])
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-        logger.info(f'{request.user} deleted shipment doc {self.object.id} {self.object} for shipment {self.object.shipment}')
-        ActionLog.objects.create(
-            user=self.request.user,
-            client=self.object.shipment.client,
-            product=None,
-            log_message=f'Deleted shipment doc {self.object} for shipment {self.object.shipment}',
-            app=self.request.resolver_match.app_name,
-        )
-        self.object.delete()
-
-    def get_success_url(self):
-        return reverse_lazy('mgmt:shipment-docs', kwargs={'shipment_id': self.object.shipment.id})
-
-    def post(self, *args, **kwargs):
-        super(ShipmentDocDelete, self).post(*args, **kwargs)
-        return JsonResponse({'success': True, 'shipment_id': self.object.shipment_id})
-
-
 # Tools
 
 class ActionLogTable(tables.Table):

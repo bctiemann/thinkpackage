@@ -25,11 +25,11 @@ urlpatterns = [
     url(r'^shipments/fetch/$', warehouse_views.shipments_fetch, name='shipments-fetch'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', warehouse_views.ShipmentUpdate.as_view(), name='shipment-details'),
     url(r'^shipment/(?P<shipment_id>\d+)/ship/$', warehouse_views.ShipmentShip.as_view(), name='shipment-ship'),
-    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', mgmt_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', ims_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
     url(r'^shipment/(?P<shipment_id>\d+)/bill_of_lading/$', warehouse_views.BillOfLadingView.as_view(), name='bill-of-lading'),
     # url(r'^shipment/(?P<shipment_id>\d+)/purchase_order/$', warehouse_views.PurchaseOrderView.as_view(), name='purchase-order'),
     url(r'^shipment/(?P<shipment_id>\d+)/send_purchase_order/$', warehouse_views.SendPurchaseOrder.as_view(), name='send-purchase-order'),
-    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', mgmt_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 
     # url(r'^shipment/(?P<shipment_id>\d+)/purchase_order_test/$', warehouse_views.purchase_order_test, name='purchase-order-test'),
 

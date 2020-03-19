@@ -13,12 +13,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ShipmentDocForm(forms.ModelForm):
-    class Meta:
-        model = ShipmentDoc
-        fields = ['shipment', 'file']
-
-
 class ShipmentForm(forms.ModelForm):
     class Meta:
         model = Shipment

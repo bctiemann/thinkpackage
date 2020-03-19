@@ -283,12 +283,6 @@ class ReturnedProductForm(forms.ModelForm):
         fields = ['cases_undamaged', 'cases_damaged', 'location', 'date_returned',]
 
 
-class ShipmentDocForm(forms.ModelForm):
-    class Meta:
-        model = ShipmentDoc
-        fields = ['shipment', 'file']
-
-
 class ShipmentForm(forms.ModelForm):
     class Meta:
         model = Shipment

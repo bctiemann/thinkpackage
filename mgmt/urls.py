@@ -53,8 +53,8 @@ urlpatterns = [
 
     url(r'^shipment/(?P<shipment_id>\d+)/$', mgmt_views.ShipmentDetail.as_view(), name='shipment-detail'),
     url(r'^shipment/(?P<shipment_id>\d+)/delete/$', mgmt_views.ShipmentDelete.as_view(), name='shipment-delete'),
-    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', mgmt_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
-    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', mgmt_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
+    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', ims_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 
     url(r'^pallet/(?P<pallet_id>\d+)/print/$', ims_views.PalletPrint.as_view(), name='pallet-print'),
     url(r'^product/(?P<product_id>\d+)/print/$', ims_views.ProductPrint.as_view(), name='product-print'),

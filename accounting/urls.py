@@ -7,6 +7,7 @@ from two_factor.urls import urlpatterns as tf_urls
 from django.contrib.auth import views as auth_views
 from ims import views as ims_views
 from accounting import views as accounting_views
+from mgmt import views as mgmt_views
 
 
 urlpatterns = [
@@ -23,8 +24,8 @@ urlpatterns = [
     url(r'^shipments/fetch/$', accounting_views.shipments_fetch, name='shipments-fetch'),
     url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.ShipmentUpdateInvoice.as_view(), name='shipment-details'),
     url(r'^shipment/(?P<shipment_id>\d+)/submit/$', accounting_views.ShipmentSubmitInvoice.as_view(), name='shipment-submit-invoice'),
-    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', accounting_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
-    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', accounting_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
+    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', mgmt_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    url(r'^shipment/doc/(?P<doc_id>\d+)/delete/$', mgmt_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 
     url(r'^reconciliation/$', accounting_views.reconciliation, name='reconciliation'),
     url(r'^reconciliation/list/$', accounting_views.reconciliation_list, name='reconciliation-list'),

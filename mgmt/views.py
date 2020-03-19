@@ -1062,6 +1062,8 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
     template_name = 'mgmt/shipment_docs.html'
 
     def form_valid(self, form):
+        logger.warning(form.data)
+        logger.warning(self.request.FILES)
         if not 'file' in self.request.FILES:
             return JsonResponse({
                 'success': False,

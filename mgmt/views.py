@@ -819,7 +819,7 @@ class ProductTransfer(APIView):
             app = self.request.resolver_match.app_name,
         )
 
-        logger.info('Product {0} ({1}) transferred from {2} ({3}) to {4} ({5})'.format(from_product, from_product.id, from_product.client, from_product.client.id, to_product.client, to_product.client.id))
+        logger.info(f'{self.request.user} transferred product {from_product} ({from_product.client}) to {to_product} ({to_product.client})')
 
         return Response(response)
 

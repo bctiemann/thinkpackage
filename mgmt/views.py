@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.utils import timezone
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 
@@ -432,17 +433,14 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Location, pk=self.kwargs['location_id'])
 
 
-class CustContactCreate(AjaxableResponseMixin, CreateView):
-#    model = CustContact
-    model = ClientUser
-#    form_class = forms.CustContactForm
-    form_class = forms.ClientUserForm
-    user_form_class = forms.UserForm
-    template_name = 'mgmt/contact_form.html'
-#    fields = ['client', 'first_name', 'last_name', 'password', 'title', 'email', 'phone_number', 'phone_extension', 'mobile_number', 'fax_number', 'notes']
-
-    def get_object(self):
-        return get_object_or_404(Client, pk=self.kwargs['client_id'])
+class CustContactMixin(AjaxableResponseMixin):
+    """
+    This mixin provides a common post() method for both the Create and Update methods for ClientUsers (mappings between
+    Clients and Users). This eliminates redundancy and allows a consistent UI where the admin can either add a new
+    user inline while creating the ClientUser, or select an existing user, and also change the password if desired;
+    the same functionality is present when updating an existing ClientUser.
+    """
+    create_method = False
 
     def post(self, *args, **kwargs):
         logger.info(self.request.POST)
@@ -457,7 +455,7 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
             logger.info(form.cleaned_data)
             logger.info(user_form.cleaned_data)
 
-            if not user_created:
+            if self.create_method and not user_created:
                 try:
                     client_user = ClientUser.objects.get(user=user, client=form.cleaned_data['client'])
                     response = {
@@ -467,6 +465,8 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
                 except ClientUser.DoesNotExist:
                     pass
 
+            ClientUser.objects.filter(user=user, client=form.cleaned_data['client']).delete()
+
             client_user = form.save(commit=False)
             client_user.user = user_form.save(commit=False)
             client_user.save()
@@ -478,40 +478,37 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
                 logger.info('Password changed')
                 client_user.user.set_password(user_form.cleaned_data['password'])
                 client_user.user.set_password_to_expired()
+                if self.request.user == client_user.user:
+                    logger.info(f'{self.request.user} changed their own password; reauthenticating')
+                    user = authenticate(self.request, username=self.request.user.email, password=user_form.cleaned_data['password'])
+                    login(self.request, user)
             client_user.user.save()
 
-            logger.info(f'{self.request.user} created contact {client_user.user} for {form.cleaned_data["client"]}')
-            return super(CustContactCreate, self).form_valid(form)
+            if self.create_method:
+                logger.info(f'{self.request.user} created contact {client_user.user} for {form.cleaned_data["client"]}')
+            else:
+                logger.info(f'{self.request.user} updated contact {client_user.user} for {form.cleaned_data["client"]}')
+            return super().form_valid(form)
         elif not form.is_valid():
-            return super(CustContactCreate, self).form_invalid(form)
+            return super().form_invalid(form)
         elif not user_form.is_valid():
             if user_created:
                 user.delete()
-            return super(CustContactCreate, self).form_invalid(user_form)
+            return super().form_invalid(user_form)
 
-    # def form_valid_bak(self, form):
-    #     client_user = form.save(commit=False)
-    #     client_user.user = user_form
-    #
-    #     response = super(CustContactCreate, self).form_valid(form)
-    #     logger.info('Cust contact {0} ({1}) created.'.format(self.object, self.object.id))
-    #
-    #     try:
-    #         self.object.user = User.objects.get(email=self.object.email)
-    #     except User.DoesNotExist:
-    #         self.object.user = User.objects.create_user(
-    #             email = self.object.email,
-    #             password = self.object.password,
-    #         )
-    #     client_user = ClientUser.objects.create(
-    #         client = form.cleaned_data['client'],
-    #         user = self.object.user,
-    #     )
-    #
-    #     return response
+
+class CustContactCreate(CustContactMixin, CreateView):
+    model = ClientUser
+    form_class = forms.ClientUserForm
+    user_form_class = forms.UserForm
+    template_name = 'mgmt/contact_form.html'
+    create_method = True
+
+    def get_object(self):
+        return get_object_or_404(Client, pk=self.kwargs['client_id'])
 
     def get_context_data(self, *args, **kwargs):
-        context = super(CustContactCreate, self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         if 'client_id' in self.kwargs:
             context['client'] = get_object_or_404(Client, pk=self.kwargs['client_id'])
         try:
@@ -521,103 +518,26 @@ class CustContactCreate(AjaxableResponseMixin, CreateView):
         return context
 
 
-class CustContactUpdate(AjaxableResponseMixin, UpdateView):
-#    model = CustContact
+class CustContactUpdate(CustContactMixin, UpdateView):
     model = ClientUser
-#    model = User
-#    form_class = forms.CustContactForm
     form_class = forms.ClientUserForm
     user_form_class = forms.UserForm
     template_name = 'mgmt/contact_form.html'
+    create_method = False
 
     def get_object(self):
         return get_object_or_404(ClientUser, pk=self.kwargs['custcontact_id'])
 
-    def post(self, *args, **kwargs):
-        logger.info(self.request.POST)
-        self.object = self.get_object()
-
-        user, user_created = User.objects.get_or_create(email=self.request.POST.get('email'))
-
-        form = self.form_class(self.request.POST, instance=self.object)
-        user_form = self.user_form_class(self.request.POST, instance=user)
-
-        if form.is_valid() and user_form.is_valid():
-            client_user = form.save(commit=False)
-            client_user.user = user_form.save(commit=False)
-            client_user.save()
-
-            if user_form.cleaned_data['password'] == '********':
-                logger.info('Password unchanged')
-                client_user.user.password = user_form.initial['password']
-            else:
-                logger.info('Password changed')
-                client_user.user.set_password(user_form.cleaned_data['password'])
-                client_user.user.set_password_to_expired()
-            client_user.user.save()
-
-            logger.info(f'{self.request.user} updated contact {self.object.user} for {self.object.client}')
-            return super(CustContactUpdate, self).form_valid(form)
-        elif not form.is_valid():
-            return super(CustContactUpdate, self).form_invalid(form)
-        elif not user_form.is_valid():
-            if user_created:
-                user.delete()
-            return super(CustContactUpdate, self).form_invalid(user_form)
-
-    # def form_valid_bak(self, form):
-    #     logger.info('Cust contact {0} ({1}) updated.'.format(self.object, self.object.id))
-    #     logger.info(form.cleaned_data)
-    #     response = super(CustContactUpdate, self).form_valid(form)
-    #
-    #     if self.object.user == None and self.object.email:
-    #         try:
-    #             self.object.user = User.objects.get(email=self.object.email)
-    #         except User.DoesNotExist:
-    #             self.object.user = User.objects.create_user(
-    #                 email = self.object.email,
-    #                 password = self.object.password,
-    #             )
-    #
-    #     if form.cleaned_data['password'] == '********':
-    #         logger.info('Password unchanged')
-    #         self.object.password = form.initial['password']
-    #         self.object.user.set_password(self.object.password)
-    #     else:
-    #         logger.info('Password changed')
-    #         self.object.user.set_password(form.cleaned_data['password'])
-    #         self.object.password = self.object.user.password
-    #     self.object.user.save()
-    #     self.object.save()
-    #
-    #     client_user, is_created = ClientUser.objects.get_or_create(user=self.object.user, client=form.cleaned_data['client'])
-    #     client_user.title = form.cleaned_data['title']
-    #     client_user.save()
-    #
-    #     return response
-
     def get_context_data(self, *args, **kwargs):
-        context = super(CustContactUpdate, self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         context['client'] = self.object.client
-#        data = {'form-TOTAL_FORMS': u'1','form-INITIAL_FORMS': u'0','form-MAX_NUM_FORMS': u''}
-#        context['clientuser_formset'] = forms.ClientUserFormSet(self.request.POST or None, instance=self.get_object().user)
         context['user_form'] = self.user_form_class(instance=self.object.user)
         logger.info(f'{self.request.user} viewed contact {self.object.user} for {self.object.client}')
-
         return context
-
-
-#class CustContactDelete(AjaxableResponseMixin, UpdateView):
-#    model = CustContact
-#    fields = ['is_active']
-
-#    def get_object(self):
-#        return get_object_or_404(CustContact, pk=self.kwargs['custcontact_id'])
 
 
 class CustContactDelete(AjaxableResponseMixin, DeleteView):
     model = ClientUser
-#    fields = ['is_active']
 
     def get_object(self):
         return get_object_or_404(ClientUser, pk=self.kwargs['custcontact_id'])
@@ -631,9 +551,6 @@ class CustContactDelete(AjaxableResponseMixin, DeleteView):
             'pk': self.object.pk,
         }
         return JsonResponse(data)
-
-#        return super(CustContactDelete, self).form_valid(*args, **kwargs)
-#        return super(CustContactDelete, self).delete(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('mgmt:profile', kwargs={'client_id': self.object.client.id})

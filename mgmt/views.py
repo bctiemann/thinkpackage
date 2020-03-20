@@ -1133,7 +1133,7 @@ class ItemLookupReport(APIView):
 
     def post(self, *args, **kwargs):
         item_number = self.request.data['itemnum']
-        async_task = AsyncTask.objects.create(name='ItemLookup-{0}'.format(item_number))
+        async_task = AsyncTask.objects.create(name='ItemLookup-{0}'.format(item_number), user=self.request.user)
 
         tasks.generate_item_lookup.delay(async_task.id, item_number)
 
@@ -1149,7 +1149,7 @@ class InventoryListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name))
+        async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name), user=self.request.user)
 
         tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
 
@@ -1165,7 +1165,7 @@ class DeliveryListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='DeliveryList-{0}'.format(client.company_name))
+        async_task = AsyncTask.objects.create(name='DeliveryList-{0}'.format(client.company_name), user=self.request.user)
 
         tasks.generate_delivery_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
 
@@ -1181,7 +1181,7 @@ class IncomingListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='IncomingList-{0}'.format(client.company_name))
+        async_task = AsyncTask.objects.create(name='IncomingList-{0}'.format(client.company_name), user=self.request.user)
 
         tasks.generate_incoming_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
 
@@ -1197,7 +1197,7 @@ class LocationListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name))
+        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name), user=self.request.user)
 
         tasks.generate_location_list.delay(async_task.id, client.id)
 
@@ -1213,7 +1213,7 @@ class ContactListReport(APIView):
 
     def post(self, *args, **kwargs):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name))
+        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name), user=self.request.user)
 
         tasks.generate_contact_list.delay(async_task.id, client.id)
 

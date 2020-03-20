@@ -1060,6 +1060,7 @@ class AsyncTask(models.Model):
     id = models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=255, blank=True, default='')
+    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
     is_complete = models.BooleanField(default=False)
     has_failed = models.BooleanField(default=False)
     percent_complete = models.FloatField(default=0)
@@ -1089,3 +1090,5 @@ class AsyncTask(models.Model):
             return ''
         return self.result_filename.split('.')[-1].lower()
 
+    class Meta:
+        ordering = ('-date_created',)

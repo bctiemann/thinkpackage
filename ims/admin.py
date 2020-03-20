@@ -263,7 +263,7 @@ admin.site.register(BulkOrderItem, BulkOrderItemAdmin)
 
 
 class AsyncTaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date_created', 'name', 'percent_complete', 'is_complete', 'has_failed',)
+    list_display = ('id', 'date_created', 'user', 'name', 'percent_complete', 'is_complete', 'has_failed',)
     list_editable = ()
     list_filter = ()
 admin.site.register(AsyncTask, AsyncTaskAdmin)

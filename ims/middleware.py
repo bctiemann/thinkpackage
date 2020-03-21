@@ -30,6 +30,8 @@ class LoginRequiredMiddleware(MiddlewareMixin):
                 return None
 
             if current_route_name not in settings.AUTH_EXEMPT_ROUTES:
+                if resolved.app_name == 'api':
+                    return HttpResponseRedirect(reverse('login'))
                 if resolved.app_name:
                     return HttpResponseRedirect(reverse(f'{resolved.app_name}:login'))
                 return HttpResponseRedirect(reverse('login'))
@@ -97,6 +99,9 @@ class PermissionsMiddleware(object):
             return self.get_response(request)
 
         if request.user.is_authenticated:
+            if resolved.app_name == 'api' and not request.user.is_admin:
+                logger.info(f'{request.user} not authorized for api.')
+                raise PermissionDenied
             if resolved.app_name == 'mgmt' and not request.user.is_admin:
                 logger.info(f'{request.user} not authorized for mgmt.')
                 raise PermissionDenied

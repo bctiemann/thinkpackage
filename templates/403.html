@@ -23,9 +23,11 @@
 <div class="login-form-container">
     <img src="{% static "accounts/images/tp.png" %}" alt="{{ company_name }}" />
     <h1>403 - Unauthorized</h1>
-    <p>
-        You do not have authorization to access this area.
-    </p>
+    {% block error_text %}
+        <p>
+            You do not have authorization to access this area.
+        </p>
+    {% endblock %}
     {% if exception %}
     <p><b>Error:</b> {{ exception }}</p>
     {% endif %}

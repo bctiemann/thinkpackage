@@ -45,6 +45,11 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+def csrf_failure(request, reason=''):
+    context = {'reason': reason}
+    return render(request, 'csrf_failure.html', context)
+
+
 def shipment_doc(request, doc_id=None):
     shipment_doc = get_object_or_404(ShipmentDoc, pk=doc_id)
 

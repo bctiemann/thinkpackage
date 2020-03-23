@@ -1,0 +1,13 @@
+{% extends "403.html" %}
+
+{% block error_text %}
+    <p>
+        Multiple login screens have been detected for your session. Please check that you are not logged in already in
+        another window. If necessary, click "Log out" and then sign in again.
+    </p>
+    {% if reason %}
+        <p>
+            Error: {{ reason }}
+        </p>
+    {% endif %}
+{% endblock %}

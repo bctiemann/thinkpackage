@@ -1,0 +1,72 @@
+[
+{
+    "model": "ims.shipmentdoc",
+    "pk": 1,
+    "fields": {
+        "shipment": 1,
+        "uuid": "34B0587C-AF09-0591-C66B39A9FAAC2A71",
+        "file": "34B0587C-AF09-0591-C66B39A9FAAC2A71/bol_3411.pdf",
+        "basename": "bol_3411",
+        "ext": "pdf",
+        "size": 983254,
+        "content_type": "application/pdf",
+        "date_created": "2016-11-28T16:37:46"
+    }
+},
+{
+    "model": "ims.shipmentdoc",
+    "pk": 2,
+    "fields": {
+        "shipment": 2,
+        "uuid": "34B0587C-AF09-0591-C66B39A9FAAC2A71",
+        "file": "34B0587C-AF09-0591-C66B39A9FAAC2A71/bol_3411.pdf",
+        "basename": "bol_3411",
+        "ext": "pdf",
+        "size": 983254,
+        "content_type": "application/pdf",
+        "date_created": "2016-11-28T16:37:46"
+    }
+},
+{
+    "model": "ims.shipmentdoc",
+    "pk": 3,
+    "fields": {
+        "shipment": 3,
+        "uuid": "34B0587C-AF09-0591-C66B39A9FAAC2A71",
+        "file": "34B0587C-AF09-0591-C66B39A9FAAC2A71/bol_3411.pdf",
+        "basename": "bol_3411",
+        "ext": "pdf",
+        "size": 983254,
+        "content_type": "application/pdf",
+        "date_created": "2016-11-28T16:37:46"
+    }
+},
+{
+    "model": "ims.shipmentdoc",
+    "pk": 4,
+    "fields": {
+        "shipment": 4,
+        "uuid": "34B0587C-AF09-0591-C66B39A9FAAC2A71",
+        "file": "34B0587C-AF09-0591-C66B39A9FAAC2A71/bol_3411.pdf",
+        "basename": "bol_3411",
+        "ext": "pdf",
+        "size": 983254,
+        "content_type": "application/pdf",
+        "date_created": "2016-11-28T16:37:46"
+    }
+},
+{
+    "model": "ims.shipmentdoc",
+    "pk": 5,
+    "fields": {
+        "shipment": 5,
+        "uuid": "34B0587C-AF09-0591-C66B39A9FAAC2A71",
+        "file": "34B0587C-AF09-0591-C66B39A9FAAC2A71/bol_3411.pdf",
+        "basename": "bol_3411",
+        "ext": "pdf",
+        "size": 983254,
+        "content_type": "application/pdf",
+        "date_created": "2016-11-28T16:37:46"
+    }
+}
+]

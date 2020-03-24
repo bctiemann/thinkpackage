@@ -504,7 +504,7 @@ def generate_product_list(async_task_id, client_id=None):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
 
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('client', 'item_number',)
 
     client_name = 'All Clients'
     if client_id:
@@ -529,6 +529,7 @@ def generate_product_list(async_task_id, client_id=None):
             'Width (cm)',
             'Height (cm)',
             'Unit Price',
+            'Status',
         ])
         for product in products:
             writer.writerow([
@@ -543,6 +544,7 @@ def generate_product_list(async_task_id, client_id=None):
                 product.width,
                 product.height,
                 product.unit_price,
+                'Active' if product.is_active else 'Deleted',
             ])
 
     logger.info('Done writing CSV')

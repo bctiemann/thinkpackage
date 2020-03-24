@@ -9,7 +9,7 @@ from ims.tests import ajax_headers
 
 
 class AuthTestCase(TestCase):
-    fixtures = ['Client', 'User']
+    fixtures = ['Client', 'User', 'Location', 'Product', 'ShipperAddress', 'Shipment', 'ShipmentDoc']
 
     def setUp(self):
         self.test_client = TestClient()
@@ -18,6 +18,9 @@ class AuthTestCase(TestCase):
         self.other_client = Client.objects.get(company_name='Client 2')
         self.client_user = User.objects.get(email='client_user@example.com')
         self.admin_user = User.objects.get(email='admin_user@example.com')
+        self.client_A = Client.objects.get(company_name='A')
+        self.client_B = Client.objects.get(company_name='B')
+        self.client_C = Client.objects.get(company_name='C')
 
     # Admin user (with no client linkages) has access to client site
     def test_admin_access(self):
@@ -213,13 +216,36 @@ class AuthTestCase(TestCase):
     # User is assigned to B
     # User should have access to B and C
     def test_hierarchical_permissions(self):
-        client_A = Client.objects.get(company_name='A')
-        client_B = Client.objects.get(company_name='B')
-        client_C = Client.objects.get(company_name='C')
+        self.assertFalse(self.client_user.is_authorized_for_client(self.client_A))
+        self.assertTrue(self.client_user.is_authorized_for_client(self.client_B))
+        self.assertTrue(self.client_user.is_authorized_for_client(self.client_C))
 
-        self.assertFalse(self.client_user.is_authorized_for_client(client_A))
-        self.assertTrue(self.client_user.is_authorized_for_client(client_B))
-        self.assertTrue(self.client_user.is_authorized_for_client(client_C))
+    def test_client_can_download_own_document(self):
+        self.test_client.login(username='client_user@example.com', password='test123')
+
+        url = reverse('shipment-doc', kwargs={'doc_id': 1})
+        response = self.test_client.get(url)
+        self.assertNotEqual(response.status_code, 403)
+
+        # Doc for client_A - not allowed
+        url = reverse('shipment-doc', kwargs={'doc_id': 2})
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+        # Doc for client_B - allowed
+        url = reverse('shipment-doc', kwargs={'doc_id': 3})
+        response = self.test_client.get(url)
+        self.assertNotEqual(response.status_code, 403)
+
+        # Doc for client_C - allowed
+        url = reverse('shipment-doc', kwargs={'doc_id': 4})
+        response = self.test_client.get(url)
+        self.assertNotEqual(response.status_code, 403)
+
+        # Doc for unrelated client - not allowed
+        url = reverse('shipment-doc', kwargs={'doc_id': 5})
+        response = self.test_client.get(url)
+        self.assertEqual(response.status_code, 403)
 
 
 class ProfileTestCase(TestCase):

@@ -1213,6 +1213,54 @@ console.log(statusData);
     });
 }
 
+function setupProductList(customerid) {
+    globals['customerid'] = customerid;
+    $('#dialog_product_list').dialog('open');
+}
+
+function execute_productList(customerid) {
+    var url = cgiroot + 'report/product_list/';
+    var params = {
+        client: customerid,
+    };
+    $('#product_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'product_list_progress_percent',
+    }));
+
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#product_list_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+//                        $('.spinner').removeClass('active');
+                        $('#product_list_progress_percent').html('');
+                        clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#product_list_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
+                    }
+                });
+            }, 1000);
+        }
+    });
+}
+
 function setupInventoryAnalysis(customerid) {
     globals['customerid'] = customerid;
     $('#dialog_inventory_analysis').dialog('open');
@@ -1841,6 +1889,22 @@ $(document).ready(function() {
 //                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
 //                window.open(url);
                 execute_incomingList(globals['customerid'], $('#incoming_list_fromdate').val(), $('#incoming_list_todate').val());
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_product_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 500,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+                execute_productList(globals['customerid']);
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

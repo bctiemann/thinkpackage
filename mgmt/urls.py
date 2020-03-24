@@ -79,6 +79,7 @@ urlpatterns = [
     url(r'^report/inventory_list/$', mgmt_views.InventoryListReport.as_view(), name='inventory-list-report'),
     url(r'^report/delivery_list/$', mgmt_views.DeliveryListReport.as_view(), name='delivery-list-report'),
     url(r'^report/incoming_list/$', mgmt_views.IncomingListReport.as_view(), name='incoming-list-report'),
+    url(r'^report/product_list/$', mgmt_views.ProductListReport.as_view(), name='product-list-report'),
     url(r'^report/location_list/$', mgmt_views.LocationListReport.as_view(), name='location-list-report'),
     url(r'^report/contact_list/$', mgmt_views.ContactListReport.as_view(), name='contact-list-report'),
 ]

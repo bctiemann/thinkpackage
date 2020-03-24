@@ -500,6 +500,62 @@ def generate_contact_list(async_task_id, client_id):
 
 
 @shared_task
+def generate_product_list(async_task_id, client_id=None):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+
+    products = Product.objects.all()
+
+    client_name = 'All Clients'
+    if client_id:
+        client = Client.objects.get(pk=client_id)
+        client_name = client.company_name_clean
+        products = products.filter(client=client)
+
+    timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
+    filename = f'ProductList - {client_name} - {timestamp}.csv'
+    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            'ID',
+            'Client',
+            'Item #',
+            'Client ID',
+            'Item Description',
+            'Packing',
+            'GW (kg)',
+            'Length (cm)',
+            'Width (cm)',
+            'Height (cm)',
+            'Unit Price',
+        ])
+        for product in products:
+            writer.writerow([
+                product.id,
+                product.client.company_name,
+                product.item_number,
+                product.client_tag,
+                product.name,
+                product.packing,
+                product.gross_weight,
+                product.length,
+                product.width,
+                product.height,
+                product.unit_price,
+            ])
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'
+
+
+@shared_task
 def email_purchase_order(request, shipment_id):
 
     template_name = 'warehouse/purchase_order.html'

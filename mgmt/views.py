@@ -1110,6 +1110,27 @@ class IncomingListReport(APIView):
         return JsonResponse(result)
 
 
+class ProductListReport(APIView):
+
+    def post(self, *args, **kwargs):
+        client_id = self.request.data.get('client')
+        client_name = 'All Clients'
+        if client_id:
+            client = get_object_or_404(Client, pk=client_id)
+            client_name = client.company_name
+
+        async_task = AsyncTask.objects.create(name=f'ProductList-{client_name}', user=self.request.user)
+
+        tasks.generate_product_list.delay(async_task.id, client_id)
+
+        logger.info(f'{self.request.user} generated product list report for {client_name}, async task {async_task.id}')
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
 class LocationListReport(APIView):
 
     def post(self, *args, **kwargs):

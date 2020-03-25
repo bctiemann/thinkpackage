@@ -19,6 +19,7 @@ env_variables_to_pass = [
     'DJANGO_SETTINGS_MODULE',
     'WKHTMLTOPDF_BIN',
     'CELERY_BROKER_URL',
+    'LOG_AUTH',
 ]
 
 def application(environ, start_response):

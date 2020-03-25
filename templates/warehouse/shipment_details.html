@@ -3,8 +3,8 @@
 
 <div class="form_header dark">
 <button class="actionbtn floatright" id="generate_bol" onClick="window.open('{% url "warehouse:bill-of-lading" shipment_id=shipment.id %}?inline')">BOL</button>
-{% if shipment.status == 1 or shipment.pallet_set.count > 0 %}
-    {% if shipment.status != 2 %}<button class="actionbtn floatright" id="ship_shipment" onClick="shipShipment({{ shipment.id }})">Shipped</button>{% endif %}
+{% if shipment.status == shipment.Status.READY or shipment.pallet_set.count > 0 %}
+    {% if shipment.status != shipment.Status.SHIPPED %}<button class="actionbtn floatright" id="ship_shipment" onClick="shipShipment({{ shipment.id }})">Shipped</button>{% endif %}
 {% endif %}
 
 <div class="shipping_info">
@@ -14,11 +14,11 @@
 </div>
 <div style="margin-left: 30px; display: inline-block;">
 <p>{% if shipment.third_party %}Load #: {{ shipment.purchase_order_number }}{% endif %}</p>
-<p>{% if shipment.date_shipped %}{% if shipment.status == 2 %}Shipped{% else %}Ship on{% endif %}: {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}{% endif %}</p>
+<p>{% if shipment.date_shipped %}{% if shipment.status == shipment.Status.SHIPPED %}Shipped{% else %}Ship on{% endif %}: {{ shipment.date_shipped|date:"SHORT_DATE_FORMAT" }}{% endif %}</p>
 </div>
 </div>
 
-{% if shipment.status < 2 %}<button class="actionbtn floatright" id="edit_shipment" onClick="showShippingInfo({{ shipment.id }})">Edit</button>{% endif %}
+{% if shipment.status < shipment.Status.SHIPPED %}<button class="actionbtn floatright" id="edit_shipment" onClick="showShippingInfo({{ shipment.id }})">Edit</button>{% endif %}
 
 <div class="bol-icon">
     <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>

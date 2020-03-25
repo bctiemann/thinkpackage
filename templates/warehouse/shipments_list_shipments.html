@@ -11,7 +11,7 @@
         <td style="width: 120px" class="spacer20 clickable" shipmentid="{{ shipment.id }}"></td>
         <td style="width: 120px" class="text clickable" shipmentid="{{ shipment.id }}">
             {{ shipment.get_status_display }}
-            {% if shipment.status == 2 %}
+            {% if shipment.status == shipment.Status.SHIPPED %}
                 <a href="#" onclick="resendPOEmail(event, {{ shipment.id }});" class="ui-icon ui-icon-mail-closed" title="Resend PO email"></a>
             {% endif %}
         </td>

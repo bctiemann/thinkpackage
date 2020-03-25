@@ -80,7 +80,7 @@
             <td class="spacer20"></td>
             <td class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.location.name }}</td>
             <td class="text clickable" shipmentid="{{ shipment.id }}">{{ shipment.get_status_display }}</td>
-            <td class="text">{% if shipment.status == 0 %}<a href="javascript:nop()"; onCLick="loadDelivery({{ shipment.id }});">Edit</a>{% endif %}</td>
+            <td class="text">{% if shipment.status == shipment.Status.PENDING %}<a href="javascript:nop()"; onCLick="loadDelivery({{ shipment.id }});">Edit</a>{% endif %}</td>
         </tr>
         {% endfor %}
     </tbody>

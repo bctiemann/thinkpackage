@@ -25,6 +25,6 @@
             <button class="show-shipment-docs" onClick="showShipmentDocs({{ shipment.id }});">{{ shipment.shipmentdoc_set.count }}</button>
             {% endif %}
         </td>
-        <td style="width: 96px;" class="action">{% if shipment.status < 2 %}<a href="javascript:nop()" onClick="cancelShipment({{ shipment.id }})">cancel</a>{% endif %}</td>
+        <td style="width: 96px;" class="action">{% if shipment.status < shipment.Status.SHIPPED %}<a href="javascript:nop()" onClick="cancelShipment({{ shipment.id }})">cancel</a>{% endif %}</td>
     </tr>
 {% endfor %}

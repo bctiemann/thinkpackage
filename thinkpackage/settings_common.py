@@ -298,8 +298,9 @@ DEFAULT_SHIPPER_ADDRESS = None
 
 PASSWORD_EXPIRE_DAYS = 90
 PASSWORD_PROMPT_REAPPEAR_DAYS = 1
-LOG_AUTH = True
 GENERATE_QRCODE_IMAGES = True
+
+LOG_AUTH = True if os.environ.get('LOG_AUTH') else False
 
 # Workaround Safari email click-tracking issue for password reset links
 CSRF_COOKIE_SAMESITE = None

@@ -223,8 +223,10 @@ def inventory_request_delivery(request):
     requested_products = []
     for requested_product in delivery_data['products']:
         try:
-            product = Product.objects.get(pk=requested_product['productid'], client=request.selected_client)
+            product = Product.objects.get(pk=requested_product['productid'])
         except Product.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
+        if not request.selected_client.id in product.client.ancestors:
             return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
         if requested_product['cases'] > product.cases_available:
             return JsonResponse({'success': False, 'message': 'Invalid number of cases requested for product {0}.'.format(product.item_number)})
@@ -271,6 +273,8 @@ def inventory_request_delivery(request):
     shipment.purchase_order_number = delivery_data.get('client_po')
     shipment.save()
 
+    logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
+
     # Create new transactions for each requested product
     total_cases = 0
     for product in requested_products:
@@ -282,6 +286,7 @@ def inventory_request_delivery(request):
             cases = product['cases'],
         )
         transaction.save()
+        logger.info(f'{transaction.cases}\t{transaction.product}')
         total_cases += product['cases']
 
     # Send a notification email to the configured delivery admin
@@ -311,8 +316,6 @@ def inventory_request_delivery(request):
         'host': request.get_host(),
     }
     email_purchase_order(request=request_dict, shipment_id=shipment.id)
-
-    logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
 
     return JsonResponse({'success': True, 'shipment_id': shipment.id})
 

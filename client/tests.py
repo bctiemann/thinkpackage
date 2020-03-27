@@ -336,3 +336,13 @@ class InventoryTestCase(TestCase):
         shipment = Shipment.objects.filter(pk=result['shipment_id']).first()
         self.assertIsNotNone(shipment)
         self.assertEqual(shipment.transaction_set.count(), 2)
+
+    # TODO:
+    # Test email is sent
+    # Test requesting products not in requested_client
+    # Test requesting products in children of requested_client
+    # Test requesting products not in children of requested_client
+    # Test invalid products
+    # Test on-behalf-of functionality
+    # Test selected location
+    # Test invalid location

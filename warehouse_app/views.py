@@ -218,7 +218,7 @@ class PalletCreate(AjaxableResponseMixin, CreateView):
 
 #        pallet.create_qrcode()
 
-        logger.info(f'{self.request.user} used warehouse app to create pallet {pallet} {pallet.pallet_id}')
+        logger.info(f'{self.request.user} used warehouse app to create pallet {pallet} {pallet.pallet_id} for shipment {pallet.shipment}')
         data['success'] = True
         return JsonResponse(data)
 

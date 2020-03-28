@@ -4,11 +4,12 @@ from django.db import migrations, models
 import uuid
 
 
-def save_objects(apps, _):
+def convert_ids(apps, _):
 
     async_task_model: AsyncTask = apps.get_model("ims", "AsyncTask")
 
     for async_task in async_task_model.objects.all():
+        async_task.id = async_task.id.replace('-', '')
         async_task.save()
 
 
@@ -19,10 +20,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(convert_ids, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
             model_name='asynctask',
             name='id',
             field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
         ),
-        migrations.RunPython(save_objects, reverse_code=migrations.RunPython.noop),
     ]

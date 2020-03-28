@@ -1057,7 +1057,7 @@ class BulkOrderItem(models.Model):
 
 
 class AsyncTask(models.Model):
-    id = models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=255, blank=True, default='')
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)

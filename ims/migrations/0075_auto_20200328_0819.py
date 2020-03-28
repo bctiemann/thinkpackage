@@ -4,6 +4,14 @@ from django.db import migrations, models
 import uuid
 
 
+def save_objects(apps, _):
+
+    async_task_model: AsyncTask = apps.get_model("ims", "AsyncTask")
+
+    for async_task in async_task_model.objects.all():
+        async_task.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -16,4 +24,5 @@ class Migration(migrations.Migration):
             name='id',
             field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
         ),
+        migrations.RunPython(save_objects, reverse_code=migrations.RunPython.noop),
     ]

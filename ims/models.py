@@ -37,6 +37,9 @@ CM_TO_IN_MULTIPLIER = 0.393701
 def get_report_path(instance, filename):
     return 'reports/{0}'.format(filename)
 
+def get_document_path(instance, filename):
+    return 'shipment_docs/{0}/{1}'.format(str(instance.uuid).upper(), filename)
+
 
 class SoftDeleteManager(models.Manager):
     def get_queryset(self):
@@ -972,13 +975,10 @@ class PalletContents(models.Model):
         verbose_name_plural = 'pallet contents'
 
 
-def get_image_path(instance, filename):
-    return 'shipment_docs/{0}/{1}'.format(str(instance.uuid).upper(), filename)
-
 class ShipmentDoc(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, blank=True, editable=False)
     shipment = models.ForeignKey('Shipment', null=True, db_column='shipmentid', on_delete=models.SET_NULL)
-    file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
+    file = models.FileField(max_length=255, upload_to=get_document_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)
     ext = models.CharField(max_length=10, blank=True)
     size = models.IntegerField(null=True, blank=True)

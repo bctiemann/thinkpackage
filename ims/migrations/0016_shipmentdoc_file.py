@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='shipmentdoc',
             name='file',
-            field=models.FileField(blank=True, max_length=255, null=True, upload_to=ims.models.get_image_path),
+            field=models.FileField(blank=True, max_length=255, null=True, upload_to=ims.models.get_document_path),
         ),
     ]

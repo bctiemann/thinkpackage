@@ -973,7 +973,7 @@ class PalletContents(models.Model):
 
 
 def get_image_path(instance, filename):
-    return 'shipment_docs/{0}/{1}'.format(instance.uuid, filename)
+    return 'shipment_docs/{0}/{1}'.format(str(instance.uuid).upper(), filename)
 
 class ShipmentDoc(models.Model):
     id = models.AutoField(primary_key=True, db_column='docid')

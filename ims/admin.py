@@ -229,7 +229,7 @@ admin.site.register(PalletContents, PalletContentsAdmin)
 
 
 class ShipmentDocAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'file', 'shipment', 'date_created',)
+    list_display = ('id', 'file', 'shipment', 'date_created',)
     list_editable = ()
     list_filter = ()
     search_fields = ('uuid', 'basename', 'shipment__client__company_name',)

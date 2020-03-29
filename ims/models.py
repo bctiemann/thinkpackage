@@ -38,7 +38,7 @@ def get_report_path(instance, filename):
     return 'reports/{0}'.format(filename)
 
 def get_document_path(instance, filename):
-    return 'shipment_docs/{0}/{1}'.format(str(instance.uuid).upper(), filename)
+    return 'shipment_docs/{0}/{1}'.format(str(instance.id).upper(), filename)
 
 
 class SoftDeleteManager(models.Manager):
@@ -976,7 +976,7 @@ class PalletContents(models.Model):
 
 
 class ShipmentDoc(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, blank=True, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     shipment = models.ForeignKey('Shipment', null=True, db_column='shipmentid', on_delete=models.SET_NULL)
     file = models.FileField(max_length=255, upload_to=get_document_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)
@@ -984,15 +984,6 @@ class ShipmentDoc(models.Model):
     size = models.IntegerField(null=True, blank=True)
     content_type = models.CharField(max_length=32, blank=True, db_column='mimetype')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
-
-    @property
-    def uuid(self):
-        return self.id
-
-    def save(self, *args, **kwargs):
-        if not self.uuid:
-            self.uuid = str(uuid.uuid4()).upper()
-        super(ShipmentDoc, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('shipment-doc', kwargs={'doc_id': self.id})

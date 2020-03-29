@@ -32,7 +32,7 @@ urlpatterns = [
     path('recovery/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),
 
     path('', ims_views.home, name='home'),
-    path('shipment/doc/<int:doc_id>/', ims_views.shipment_doc, name='shipment-doc'),
+    path('shipment/doc/<uuid:doc_id>/', ims_views.shipment_doc, name='shipment-doc'),
     path('pallet/code/<caps:pallet_id>/', ims_views.pallet_code, name='pallet-code'),
     path('product/code/<caps:product_id>/', ims_views.product_code, name='product-code'),
 

@@ -976,15 +976,18 @@ def get_image_path(instance, filename):
     return 'shipment_docs/{0}/{1}'.format(str(instance.uuid).upper(), filename)
 
 class ShipmentDoc(models.Model):
-    id = models.AutoField(primary_key=True, db_column='docid')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, blank=True, editable=False)
     shipment = models.ForeignKey('Shipment', null=True, db_column='shipmentid', on_delete=models.SET_NULL)
-    uuid = models.UUIDField(default=uuid.uuid4, blank=True)
     file = models.FileField(max_length=255, upload_to=get_image_path, null=True, blank=True)
     basename = models.CharField(max_length=255, blank=True)
     ext = models.CharField(max_length=10, blank=True)
     size = models.IntegerField(null=True, blank=True)
     content_type = models.CharField(max_length=32, blank=True, db_column='mimetype')
     date_created = models.DateTimeField(auto_now_add=True, db_column='stamp')
+
+    @property
+    def uuid(self):
+        return self.id
 
     def save(self, *args, **kwargs):
         if not self.uuid:

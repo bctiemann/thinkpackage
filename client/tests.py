@@ -223,27 +223,27 @@ class AuthTestCase(TestCase):
     def test_client_can_download_own_document(self):
         self.test_client.login(username='client_user@example.com', password='test123')
 
-        url = reverse('shipment-doc', kwargs={'doc_id': 1})
+        url = reverse('shipment-doc', kwargs={'doc_id': '34b0587c-af09-0591-c66b-39a9faac2a71'})
         response = self.test_client.get(url)
         self.assertNotEqual(response.status_code, 403)
 
         # Doc for client_A - not allowed
-        url = reverse('shipment-doc', kwargs={'doc_id': 2})
+        url = reverse('shipment-doc', kwargs={'doc_id': '34b0587c-af09-0591-c66b-39a9faac2a72'})
         response = self.test_client.get(url)
         self.assertEqual(response.status_code, 403)
 
         # Doc for client_B - allowed
-        url = reverse('shipment-doc', kwargs={'doc_id': 3})
+        url = reverse('shipment-doc', kwargs={'doc_id': '34b0587c-af09-0591-c66b-39a9faac2a73'})
         response = self.test_client.get(url)
         self.assertNotEqual(response.status_code, 403)
 
         # Doc for client_C - allowed
-        url = reverse('shipment-doc', kwargs={'doc_id': 4})
+        url = reverse('shipment-doc', kwargs={'doc_id': '34b0587c-af09-0591-c66b-39a9faac2a74'})
         response = self.test_client.get(url)
         self.assertNotEqual(response.status_code, 403)
 
         # Doc for unrelated client - not allowed
-        url = reverse('shipment-doc', kwargs={'doc_id': 5})
+        url = reverse('shipment-doc', kwargs={'doc_id': '34b0587c-af09-0591-c66b-39a9faac2a75'})
         response = self.test_client.get(url)
         self.assertEqual(response.status_code, 403)
 

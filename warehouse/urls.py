@@ -12,34 +12,32 @@ from warehouse import views as warehouse_views
 
 
 urlpatterns = [
-    url(
-        r'^login/$',
+    path(
+        'login/',
         warehouse_views.LoginView.as_view(),
         name='login',
     ),
 
-    url(r'^$', warehouse_views.home, name='home'),
-    url(r'^sign_out/', ims_views.LogoutView.as_view(next_page='warehouse:login'), name='sign-out'),
+    path('', warehouse_views.home, name='home'),
+    path('sign_out/', ims_views.LogoutView.as_view(next_page='warehouse:login'), name='sign-out'),
 
-    url(r'^shipments/$', warehouse_views.shipments, name='shipments'),
-    url(r'^shipments/list/$', warehouse_views.shipments_list, name='shipments-list'),
-    url(r'^shipments/fetch/$', warehouse_views.shipments_fetch, name='shipments-fetch'),
-    url(r'^shipment/(?P<shipment_id>\d+)/$', warehouse_views.ShipmentUpdate.as_view(), name='shipment-details'),
-    url(r'^shipment/(?P<shipment_id>\d+)/ship/$', warehouse_views.ShipmentShip.as_view(), name='shipment-ship'),
-    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    path('shipments/', warehouse_views.shipments, name='shipments'),
+    path('shipments/list/', warehouse_views.shipments_list, name='shipments-list'),
+    path('shipments/fetch/', warehouse_views.shipments_fetch, name='shipments-fetch'),
+    path('shipment/<int:shipment_id>/', warehouse_views.ShipmentUpdate.as_view(), name='shipment-details'),
+    path('shipment/<int:shipment_id>/ship/', warehouse_views.ShipmentShip.as_view(), name='shipment-ship'),
+    path('shipment/<int:shipment_id>/docs/', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
     path('shipment/doc/<uuid:doc_id>/delete/', ims_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
-    url(r'^shipment/(?P<shipment_id>\d+)/bill_of_lading/$', warehouse_views.BillOfLadingView.as_view(), name='bill-of-lading'),
-    # url(r'^shipment/(?P<shipment_id>\d+)/purchase_order/$', warehouse_views.PurchaseOrderView.as_view(), name='purchase-order'),
-    url(r'^shipment/(?P<shipment_id>\d+)/send_purchase_order/$', warehouse_views.SendPurchaseOrder.as_view(), name='send-purchase-order'),
+    path('shipment/<int:shipment_id>/bill_of_lading/', warehouse_views.BillOfLadingView.as_view(), name='bill-of-lading'),
+    path('shipment/<int:shipment_id>/purchase_order/', warehouse_views.PurchaseOrderView.as_view(), name='purchase-order'),
+    path('shipment/<int:shipment_id>/send_purchase_order/', warehouse_views.SendPurchaseOrder.as_view(), name='send-purchase-order'),
 
-    # url(r'^shipment/(?P<shipment_id>\d+)/purchase_order_test/$', warehouse_views.purchase_order_test, name='purchase-order-test'),
+    path('receivables/', warehouse_views.receivables, name='receivables'),
+    path('receivables/list/', warehouse_views.receivables_list, name='receivables-list'),
+    path('receivables/fetch/', warehouse_views.receivables_fetch, name='receivables-fetch'),
 
-    url(r'^receivables/$', warehouse_views.receivables, name='receivables'),
-    url(r'^receivables/list/$', warehouse_views.receivables_list, name='receivables-list'),
-    url(r'^receivables/fetch/$', warehouse_views.receivables_fetch, name='receivables-fetch'),
-
-    url(r'^pallets/$', warehouse_views.pallets, name='pallets'),
-    url(r'^pallet/(?P<pallet_id>\d+)/$', warehouse_views.PalletUpdate.as_view(), name='pallet-details'),
-    url(r'^pallet/(?P<pallet_id>\d+)/delete/$', warehouse_views.PalletDelete.as_view(), name='pallet-delete'),
-    url(r'^pallet/(?P<pallet_id>\d+)/print/$', ims_views.PalletPrint.as_view(), name='pallet-print'),
+    path('pallets/', warehouse_views.pallets, name='pallets'),
+    path('pallet/<int:pallet_id>/', warehouse_views.PalletUpdate.as_view(), name='pallet-details'),
+    path('pallet/<int:pallet_id>/delete/', warehouse_views.PalletDelete.as_view(), name='pallet-delete'),
+    path('pallet/<int:pallet_id>/print/', ims_views.PalletPrint.as_view(), name='pallet-print'),
 ]

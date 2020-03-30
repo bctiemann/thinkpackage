@@ -325,21 +325,6 @@ class PurchaseOrderView(PDFView):
         return options
 
 
-def purchase_order_test(request, shipment_id):
-
-    context = {
-    }
-
-    request_dict= {
-        'scheme': request.scheme,
-        'host': request.get_host(),
-    }
-
-    email_purchase_order(request=request_dict, shipment_id=shipment_id)
-
-    return render(request, 'warehouse/shipments.html', context)
-
-
 class SendPurchaseOrder(APIView):
 
     def post(self, request, shipment_id):

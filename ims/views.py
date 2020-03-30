@@ -121,12 +121,11 @@ def product_code(request, product_id=None):
     return response
 
 
-class PalletPrint(PDFView):
-    template_name = 'warehouse/pallet_label.html'
+class AbstractPDFView(PDFView):
 
     def get(self, *args, **kwargs):
         try:
-            return super(PalletPrint, self).get(*args, **kwargs)
+            return super().get(*args, **kwargs)
         except FileNotFoundError as e:
             logger.warning(e)
             return HttpResponseNotFound('Document not found.')
@@ -134,6 +133,23 @@ class PalletPrint(PDFView):
             logger.warning(e)
             logger.warning('PDF generation failed; retrying')
             return self.get(*args, **kwargs)
+
+    def get_pdfkit_options(self):
+        options = {
+            'quiet': '',
+            'page-size': 'Letter',
+            'margin-top': '0.52in',
+            'margin-right': '0.25in',
+            'margin-bottom': '0.0in',
+            'margin-left': '0.25in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+        }
+        return options
+
+
+class PalletPrint(AbstractPDFView):
+    template_name = 'warehouse/pallet_label.html'
 
     def get_context_data(self, **kwargs):
         pallet = get_object_or_404(Pallet, pk=self.kwargs['pallet_id'])
@@ -147,33 +163,9 @@ class PalletPrint(PDFView):
         logger.info(f'{self.request.user} generated printable labels for pallet {pallet.pallet_id} ({pallet.client})')
         return context
 
-    def get_pdfkit_options(self):
-        options = {
-            'quiet': '',
-            'page-size': 'Letter',
-            'margin-top': '0.52in',
-            'margin-right': '0.25in',
-            'margin-bottom': '0.0in',
-            'margin-left': '0.25in',
-            'encoding': "UTF-8",
-            'no-outline': None,
-        }
-        return options
 
-
-class ProductPrint(PDFView):
+class ProductPrint(AbstractPDFView):
     template_name = 'warehouse/product_label.html'
-
-    def get(self, *args, **kwargs):
-        try:
-            return super(ProductPrint, self).get(*args, **kwargs)
-        except FileNotFoundError as e:
-            logger.warning(e)
-            return HttpResponseNotFound('Document not found.')
-        except Exception as e:
-            logger.warning(e)
-            logger.warning('PDF generation failed; retrying')
-            return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         product = get_object_or_404(Product, pk=self.kwargs['product_id'])
@@ -187,19 +179,6 @@ class ProductPrint(PDFView):
 #        context['copies'] = range(2)
         logger.info(f'{self.request.user} generated printable labels for product {product} ({product.client})')
         return context
-
-    def get_pdfkit_options(self):
-        options = {
-            'quiet': '',
-            'page-size': 'Letter',
-            'margin-top': '0.52in',
-            'margin-right': '0.25in',
-            'margin-bottom': '0.0in',
-            'margin-left': '0.25in',
-            'encoding': "UTF-8",
-            'no-outline': None,
-        }
-        return options
 
 
 class ShipmentDocCreate(AjaxableResponseMixin, CreateView):

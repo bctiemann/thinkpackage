@@ -22,7 +22,7 @@ from django_pdfkit import PDFView
 
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm
-from ims.views import LoginView
+from ims.views import LoginView, AbstractPDFView
 from ims.tasks import email_purchase_order
 from warehouse import forms
 from ims import utils
@@ -267,7 +267,7 @@ class PalletDelete(AjaxableResponseMixin, DeleteView):
 
 
 #class BillOfLadingView(TemplateView):
-class BillOfLadingView(PDFView):
+class BillOfLadingView(AbstractPDFView):
     template_name = 'warehouse/bill_of_lading.html'
     max_products_per_page = 20
 
@@ -282,21 +282,8 @@ class BillOfLadingView(PDFView):
         logger.info(f'{self.request.user} generated Bill of Lading for shipment {shipment.id} ({shipment.client})')
         return context
 
-    def get_pdfkit_options(self):
-        options = {
-            'quiet': '',
-            'page-size': 'Letter',
-            'margin-top': '0.52in',
-            'margin-right': '0.25in',
-            'margin-bottom': '0.0in',
-            'margin-left': '0.25in',
-            'encoding': "UTF-8",
-            'no-outline': None,
-        }
-        return options
 
-
-class PurchaseOrderView(PDFView):
+class PurchaseOrderView(AbstractPDFView):
     template_name = 'warehouse/purchase_order.html'
     max_products_per_page = 20
 
@@ -310,19 +297,6 @@ class PurchaseOrderView(PDFView):
         context['max_products_per_page'] = self.max_products_per_page
         context['remainder_rows'] = list(range(self.max_products_per_page - (shipment.transaction_set.count() % self.max_products_per_page)))
         return context
-
-    def get_pdfkit_options(self):
-        options = {
-            'quiet': '',
-            'page-size': 'Letter',
-            'margin-top': '0.52in',
-            'margin-right': '0.25in',
-            'margin-bottom': '0.0in',
-            'margin-left': '0.25in',
-            'encoding': "UTF-8",
-            'no-outline': None,
-        }
-        return options
 
 
 class SendPurchaseOrder(APIView):

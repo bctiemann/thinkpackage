@@ -274,6 +274,7 @@ def inventory_request_delivery(request):
     shipment.save()
 
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
+    logger.info(f'Location: {location}')
 
     # Create new transactions for each requested product
     total_cases = 0

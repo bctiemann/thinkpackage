@@ -779,6 +779,9 @@ class ProductReturn(AjaxableResponseMixin, CreateView):
             )
             transaction.save()
 
+        logger.info(f'{self.request.user} created return {returned_product} for {returned_product.client}')
+        logger.info(f'{returned_product.cases_damaged} damaged / {returned_product.cases_undamaged} undamaged\t{returned_product.product}')
+
         response = super(ProductReturn, self).form_valid(form)
         return response
 
@@ -804,6 +807,7 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
         )
         transaction.save()
         logger.info(f'{self.request.user} created receivable {self.object} for {self.object.client}')
+        logger.info(f'{self.object.cases}\t{self.object.product}')
         return response
 
     def get_initial(self):

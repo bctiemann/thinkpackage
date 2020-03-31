@@ -12,26 +12,26 @@ from mgmt import views as mgmt_views
 
 
 urlpatterns = [
-    url(
-        r'^login/$',
+    path(
+        'login/',
         accounting_views.LoginView.as_view(),
         name='login',
     ),
-    url(r'^$', accounting_views.home, name='home'),
-    url(r'^sign_out/', ims_views.LogoutView.as_view(next_page='accounting:login'), name='sign-out'),
+    path('', accounting_views.home, name='home'),
+    path('sign_out/', ims_views.LogoutView.as_view(next_page='accounting:login'), name='sign-out'),
 
-    url(r'^shipments/$', accounting_views.shipments, name='shipments'),
-    url(r'^shipments/list/$', accounting_views.shipments_list, name='shipments-list'),
-    url(r'^shipments/fetch/$', accounting_views.shipments_fetch, name='shipments-fetch'),
-    url(r'^shipment/(?P<shipment_id>\d+)/$', accounting_views.ShipmentUpdateInvoice.as_view(), name='shipment-details'),
-    url(r'^shipment/(?P<shipment_id>\d+)/submit/$', accounting_views.ShipmentSubmitInvoice.as_view(), name='shipment-submit-invoice'),
-    url(r'^shipment/(?P<shipment_id>\d+)/docs/$', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
+    path('shipments/', accounting_views.shipments, name='shipments'),
+    path('shipments/list/', accounting_views.shipments_list, name='shipments-list'),
+    path('shipments/fetch/', accounting_views.shipments_fetch, name='shipments-fetch'),
+    path('shipment/<int:shipment_id>/', accounting_views.ShipmentUpdateInvoice.as_view(), name='shipment-details'),
+    path('shipment/<int:shipment_id>/submit/', accounting_views.ShipmentSubmitInvoice.as_view(), name='shipment-submit-invoice'),
+    path('shipment/<int:shipment_id>/docs/', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
     path('shipment/doc/<uuid:doc_id>/delete/', ims_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),
 
-    url(r'^reconciliation/$', accounting_views.reconciliation, name='reconciliation'),
-    url(r'^reconciliation/list/$', accounting_views.reconciliation_list, name='reconciliation-list'),
-    url(r'^reconciliation/(?P<returned_product_id>\d+)/$', accounting_views.ReturnedProductReconcile.as_view(), name='reconciliation-reconcile'),
+    path('reconciliation/', accounting_views.reconciliation, name='reconciliation'),
+    path('reconciliation/list/', accounting_views.reconciliation_list, name='reconciliation-list'),
+    path('reconciliation/<int:returned_product_id>/', accounting_views.ReturnedProductReconcile.as_view(), name='reconciliation-reconcile'),
 
-    url(r'^incoming/$', accounting_views.incoming, name='incoming'),
+    path('incoming/', accounting_views.incoming, name='incoming'),
 ]
 

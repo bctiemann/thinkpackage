@@ -155,7 +155,7 @@ def notifications_low_stock(request):
     return render(request, 'mgmt/notifications_low_stock.html', context)
 
 
-def inventory(request, client_id=None, product_id=None):
+def inventory(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
     logger.info(f'{request.user} viewed inventory page for {client}')
 
@@ -194,8 +194,8 @@ def shipments(request, client_id=None, shipment_id=None):
 
     context = {
         'client': client,
-#        'shipmentid': request.GET.get('shipmentid', 'null'),
-        'shipmentid': shipment_id,
+        'shipmentid': request.GET.get('shipmentid', 'null'),
+        # 'shipmentid': shipment_id,
     }
     return render(request, 'mgmt/shipments.html', context)
 

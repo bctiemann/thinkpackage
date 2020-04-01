@@ -157,7 +157,6 @@ def notifications_low_stock(request):
 
 def inventory(request, client_id=None, product_id=None, product_view='detail'):
     client = get_object_or_404(Client, pk=client_id)
-    logger.info(f'{request.user} viewed inventory page for {client}')
 
     product = None
     if product_id:
@@ -168,6 +167,8 @@ def inventory(request, client_id=None, product_id=None, product_view='detail'):
 
     if not product_view in ('detail', 'history'):
         product_view = 'detail'
+
+    logger.info(f'{request.user} viewed inventory {product_view} page for {client}, product {product}')
 
     context = {
         'client': client,

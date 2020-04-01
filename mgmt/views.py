@@ -1067,118 +1067,98 @@ def search(request):
     return render(request, 'mgmt/search.html', context)
 
 
-class ItemLookupReport(APIView):
+class AbstractReport(APIView):
+
+    def launch_report_task(self):
+        raise NotImplementedError
 
     def post(self, *args, **kwargs):
+        async_task = self.launch_report_task()
+
+        result = {
+            'success': True,
+            'task_id': async_task.id,
+        }
+        return JsonResponse(result)
+
+
+class ItemLookupReport(AbstractReport):
+
+    def launch_report_task(self):
         item_number = self.request.data['itemnum']
-        async_task = AsyncTask.objects.create(name='ItemLookup-{0}'.format(item_number), user=self.request.user)
-
+        report_task_name = f'ItemLookup-{item_number}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_item_lookup.delay(async_task.id, item_number)
-
         logger.info(f'{self.request.user} generated item lookup report for {item_number}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task
 
 
-class InventoryListReport(APIView):
+class InventoryListReport(AbstractReport):
 
-    def post(self, *args, **kwargs):
+    def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='InventoryList-{0}'.format(client.company_name), user=self.request.user)
-
+        report_task_name = f'InventoryList-{client.company_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
-
         logger.info(f'{self.request.user} generated inventory list report for {client}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task
 
 
-class DeliveryListReport(APIView):
+class DeliveryListReport(AbstractReport):
 
-    def post(self, *args, **kwargs):
+    def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='DeliveryList-{0}'.format(client.company_name), user=self.request.user)
-
+        report_task_name = f'DeliveryList-{client.company_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_delivery_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
-
         logger.info(f'{self.request.user} generated delivery list report for {client}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task
 
 
-class IncomingListReport(APIView):
+class IncomingListReport(AbstractReport):
 
-    def post(self, *args, **kwargs):
+    def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='IncomingList-{0}'.format(client.company_name), user=self.request.user)
-
+        report_task_name = f'IncomingList-{client.company_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_incoming_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
-
         logger.info(f'{self.request.user} generated incoming list report for {client}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task
 
 
-class ProductListReport(APIView):
+class ProductListReport(AbstractReport):
 
-    def post(self, *args, **kwargs):
+    def launch_report_task(self):
         client_id = self.request.data.get('client')
         client_name = 'All Clients'
         if client_id:
             client = get_object_or_404(Client, pk=client_id)
             client_name = client.company_name
 
-        async_task = AsyncTask.objects.create(name=f'ProductList-{client_name}', user=self.request.user)
-
+        report_task_name = f'ProductList-{client_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_product_list.delay(async_task.id, client_id)
-
         logger.info(f'{self.request.user} generated product list report for {client_name}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task
 
 
-class LocationListReport(APIView):
+class LocationListReport(AbstractReport):
 
-    def post(self, *args, **kwargs):
+    def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name), user=self.request.user)
-
+        report_task_name = f'LocationList-{client.company_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_location_list.delay(async_task.id, client.id)
-
         logger.info(f'{self.request.user} generated location list report for {client}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task
 
 
-class ContactListReport(APIView):
+class ContactListReport(AbstractReport):
 
-    def post(self, *args, **kwargs):
+    def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        async_task = AsyncTask.objects.create(name='LocationList-{0}'.format(client.company_name), user=self.request.user)
-
+        report_task_name = f'ContactList-{client.company_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_contact_list.delay(async_task.id, client.id)
-
         logger.info(f'{self.request.user} generated contact list report for {client}, async task {async_task.id}')
-        result = {
-            'success': True,
-            'task_id': async_task.id,
-        }
-        return JsonResponse(result)
+        return async_task

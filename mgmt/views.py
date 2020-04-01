@@ -155,7 +155,7 @@ def notifications_low_stock(request):
     return render(request, 'mgmt/notifications_low_stock.html', context)
 
 
-def inventory(request, client_id=None, product_id=None):
+def inventory(request, client_id=None, product_id=None, product_view='detail'):
     client = get_object_or_404(Client, pk=client_id)
     logger.info(f'{request.user} viewed inventory page for {client}')
 
@@ -166,9 +166,12 @@ def inventory(request, client_id=None, product_id=None):
         except Product.DoesNotExist:
             pass
 
+    if not product_view in ('detail', 'history'):
+        product_view = 'detail'
+
     context = {
         'client': client,
-        'history': request.GET.get('history', 'null'),
+        'product_view': product_view,
         'product': product,
     }
     return render(request, 'mgmt/inventory.html', context)

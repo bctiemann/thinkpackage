@@ -871,7 +871,11 @@ class Transaction(models.Model):
         return self.shipment.status == 2
 
     def get_absolute_url(self):
-        return reverse('mgmt:inventory', kwargs={'client_id': self.client.id, 'product_id': self.product.id})
+        return reverse('mgmt:inventory', kwargs={
+            'client_id': self.client.id,
+            'product_id': self.product.id,
+            'product_view': 'detail',
+        })
 
     def __str__(self):
         return ('{0}'.format(self.id))
@@ -892,7 +896,11 @@ class ReturnedProduct(models.Model):
     date_reconciled = models.DateTimeField(null=True, blank=True, db_column='reconciled')
 
     def get_absolute_url(self):
-        return reverse('mgmt:inventory', kwargs={'client_id': self.client.id, 'product_id': self.product.id})
+        return reverse('mgmt:inventory', kwargs={
+            'client_id': self.client.id,
+            'product_id': self.product.id,
+            'product_view': 'detail',
+        })
 
     class Meta:
         db_table = 'Returns'

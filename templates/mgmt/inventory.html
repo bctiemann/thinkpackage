@@ -5,15 +5,10 @@
 
 <div class="content">
     
-{% if history %}
-<script type="text/javascript">
-globals['history'] = {{ history }};
-</script>
-{% endif %}
-
 {% if product %}
 <script type="text/javascript">
 globals['productid'] = {{ product.id }};
+globals['product_view'] = '{{ product_view }}';
 </script>
 {% endif %}
 

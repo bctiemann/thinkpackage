@@ -1,5 +1,5 @@
 {% for receivable in inbound_receivables %}
-    <a href="{% url "mgmt:inventory" client_id=receivable.obj.client.id %}?history={{ receivable.obj.product.id }}">
+    <a href="{% url "mgmt:inventory" client_id=receivable.obj.client.id product_id=receivable.obj.product.id product_view='history' %}">
         <li>
             <div class="date floatright">{{ receivable.obj.date_created | date:"SHORT_DATE_FORMAT" }}</div>
             <div class="items-list-content">

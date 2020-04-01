@@ -55,7 +55,7 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
             {% elif transaction.receivable %}
                 {{ transaction.receivable.location.name }}
             {% elif transaction.transfer_client %}
-                <i><a href="{% url "mgmt:inventory" client_id=transaction.transfer_client.id %}?history={{ transaction.transfer_product.id }}">
+                <i><a href="{% url "mgmt:inventory" client_id=transaction.transfer_client.id product_id=transaction.transfer_product.id product_view='history' %}">
                     (Transfer {% if transaction.is_outbound %}to{% else %}from{% endif %} {{ transaction.transfer_client.company_name }})
                 </a></i>
             {% endif %}

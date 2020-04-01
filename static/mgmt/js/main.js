@@ -664,7 +664,6 @@ console.log(product);
     var url = cgiroot + 'product/' + globals['productid'] + '/delete/';
     $.post(url,product,function(data) {
         globals['productid'] = null;
-        globals['history'] = null;
         refreshInventory();
         $('#product_details').html('');
         $('#product_history').html('');
@@ -934,13 +933,13 @@ console.log(url);
 
         refreshUI();
 
-        if (globals['history']) {
-            selectProduct(globals['history'],false,null);
-            showProductHistory(globals['history']);
-            var rowpos = $('tr#product_' + globals['history']).position().top - $('table.inventory tbody').position().top;
-            $('table.inventory tbody').animate({ scrollTop: rowpos});
-        } else if (globals['productid']) {
-            selectProduct(globals['productid'],true,null);
+        if (globals['productid']) {
+            var load_details = true;
+            if (globals['product_view'] == 'history') {
+                showProductHistory(globals['productid']);
+                load_details = false;
+            }
+            selectProduct(globals['productid'], load_details, null);
             var rowpos = $('tr#product_' + globals['productid']).position().top - $('table.inventory tbody').position().top;
             $('table.inventory tbody').animate({ scrollTop: rowpos});
         }

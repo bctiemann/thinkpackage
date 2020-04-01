@@ -275,6 +275,8 @@ def inventory_request_delivery(request):
 
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
     logger.info(f'Location: {location}')
+    if on_behalf_of:
+        logger.info(f'On behalf of {requesting_user}')
 
     # Create new transactions for each requested product
     total_cases = 0

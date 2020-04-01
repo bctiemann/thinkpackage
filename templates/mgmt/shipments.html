@@ -5,9 +5,10 @@
 
 <div class="content">
 
-{% if shipmentid %}
+{% if shipment %}
 <script type="text/javascript">
-globals['shipmentid'] = {{ shipmentid }};
+globals['shipmentid'] = {{ shipment.id }};
+globals['shipped_filter'] = {{ shipment.is_shipped|yesno:"0,1" }};
 </script>
 {% endif %}
 

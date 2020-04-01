@@ -192,10 +192,17 @@ def inventory_list(request, client_id=None):
 def shipments(request, client_id=None, shipment_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
+    shipment_id = request.GET.get('shipmentid')
+    shipment = None
+    if shipment_id and shipment_id.isnumeric():
+        try:
+            shipment = Shipment.objects.get(pk=shipment_id, client=client)
+        except Shipment.DoesNotExist:
+            pass
+
     context = {
         'client': client,
-        'shipmentid': request.GET.get('shipmentid', 'null'),
-        # 'shipmentid': shipment_id,
+        'shipment': shipment
     }
     return render(request, 'mgmt/shipments.html', context)
 

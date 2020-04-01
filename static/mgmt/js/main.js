@@ -1623,7 +1623,7 @@ $(document).ready(function() {
     setupAddCustomerButton();
     refreshCustomers();
     refreshInventory();
-    refreshShipments();
+    refreshShipments(globals['shipmentid']);
 
     refreshUI();
 

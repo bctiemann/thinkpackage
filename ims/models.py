@@ -681,6 +681,10 @@ class Shipment(models.Model):
         return self.status in [self.Status.PENDING, self.Status.READY] and self.id != None
 
     @property
+    def is_shipped(self):
+        return self.status == self.Status.SHIPPED
+
+    @property
     def total_pallets(self):
         return Pallet.objects.filter(shipment=self).distinct().count()
 

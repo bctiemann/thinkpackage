@@ -155,14 +155,21 @@ def notifications_low_stock(request):
     return render(request, 'mgmt/notifications_low_stock.html', context)
 
 
-def inventory(request, client_id=None):
+def inventory(request, client_id=None, product_id=None):
     client = get_object_or_404(Client, pk=client_id)
     logger.info(f'{request.user} viewed inventory page for {client}')
+
+    product = None
+    if product_id:
+        try:
+            product = Product.objects.get(pk=product_id, client=client)
+        except Product.DoesNotExist:
+            pass
 
     context = {
         'client': client,
         'history': request.GET.get('history', 'null'),
-        'productid': request.GET.get('productid', 'null'),
+        'product': product,
     }
     return render(request, 'mgmt/inventory.html', context)
 
@@ -192,9 +199,8 @@ def inventory_list(request, client_id=None):
 def shipments(request, client_id=None, shipment_id=None):
     client = get_object_or_404(Client, pk=client_id)
 
-    shipment_id = request.GET.get('shipmentid')
     shipment = None
-    if shipment_id and shipment_id.isnumeric():
+    if shipment_id:
         try:
             shipment = Shipment.objects.get(pk=shipment_id, client=client)
         except Shipment.DoesNotExist:

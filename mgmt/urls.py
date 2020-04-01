@@ -65,7 +65,9 @@ urlpatterns = [
     path('client/create/', mgmt_views.ClientCreate.as_view(), name='client-create'),
     path('<int:client_id>/profile/', mgmt_views.ClientUpdate.as_view(), name='profile'),
     path('<int:client_id>/inventory/', mgmt_views.inventory, name='inventory'),
+    path('<int:client_id>/inventory/<int:product_id>/', mgmt_views.inventory, name='inventory'),
     path('<int:client_id>/shipments/', mgmt_views.shipments, name='shipments'),
+    path('<int:client_id>/shipments/<int:shipment_id>/', mgmt_views.shipments, name='shipments'),
 
     path('<int:client_id>/inventory/list/', mgmt_views.inventory_list, name='inventory-list'),
     path('<int:client_id>/shipments/list/', mgmt_views.shipments_list, name='shipments-list'),

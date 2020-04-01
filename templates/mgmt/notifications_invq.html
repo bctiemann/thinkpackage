@@ -1,5 +1,5 @@
 {% for shipment in invq %}
-    <a href="{% url "mgmt:shipments" client_id=shipment.client__id %}?shipmentid={{ shipment.id }}">
+    <a href="{% url "mgmt:shipments" client_id=shipment.client__id shipment_id=shipment.id %}">
         <li>
             <div class="date floatright">{{ shipment.date | date:"SHORT_DATE_FORMAT" }}</div>
             <div class="dl">DL # {{ shipment.id }}</div>

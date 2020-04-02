@@ -33,7 +33,7 @@ def generate_item_lookup(async_task_id, item_number):
     now = timezone.now()
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'ItemLookup - {item_number} - {timestamp}.csv')
+    filename = f'ItemLookup - {get_valid_filename(item_number)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 
@@ -180,7 +180,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 product_balance[product.id] += product_counts[column['id']][product.id]['out']
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'InventoryList - {client.company_name} - {timestamp}.csv')
+    filename = f'InventoryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
         writer = csv.writer(csvfile)
@@ -282,7 +282,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'DeliveryList - {client.company_name} - {timestamp}.csv')
+    filename = f'DeliveryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 
@@ -379,7 +379,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'IncomingList - {client.company_name} - {timestamp}.csv')
+    filename = f'IncomingList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 
@@ -429,7 +429,7 @@ def generate_location_list(async_task_id, client_id):
     client = Client.objects.get(pk=client_id)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'LocationList - {client.company_name} - {timestamp}.csv')
+    filename = f'LocationList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 
@@ -475,7 +475,7 @@ def generate_contact_list(async_task_id, client_id):
     client = Client.objects.get(pk=client_id)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'ContactList - {client.company_name} - {timestamp}.csv')
+    filename = f'ContactList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 
@@ -526,7 +526,7 @@ def generate_product_list(async_task_id, client_id=None):
         products = products.filter(client=client)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = get_valid_filename(f'ProductList - {client_name} - {timestamp}.csv')
+    filename = f'ProductList - {get_valid_filename(client_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 

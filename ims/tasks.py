@@ -442,9 +442,9 @@ def generate_location_list(async_task_id, client_id):
                 location.city,
                 location.state,
                 location.postal_code,
-                location.contact_user.user.full_name,
-                location.contact_user.user.email,
-                location.contact_user.user.phone_number,
+                location.contact_user.user.full_name if location.contact_user else '',
+                location.contact_user.user.email if location.contact_user else '',
+                location.contact_user.user.phone_number if location.contact_user else '',
             ])
 
     logger.info('Done writing CSV')

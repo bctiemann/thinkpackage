@@ -211,7 +211,7 @@ LOGGING = {
             'level':'INFO',
             'filters': [],
             'class':'logging.handlers.ConcurrentRotatingFileHandler',
-            'filename': LOG_DIR + '/django.log',
+            'filename': os.path.join(LOG_DIR, 'django.log'),
             'maxBytes': 1024*1024*64, # 64mb
             'backupCount': 5,
             'formatter': 'colored',
@@ -220,7 +220,7 @@ LOGGING = {
             'level': 'INFO',
             'filters': [],
             'class': 'logging.handlers.ConcurrentRotatingFileHandler',
-            'filename': LOG_DIR + '/auth.log',
+            'filename': os.path.join(LOG_DIR, 'auth.log'),
             'maxBytes': 1024 * 1024 * 64,  # 64mb
             'backupCount': 5,
             'formatter': 'colored',

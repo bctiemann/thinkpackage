@@ -3,7 +3,7 @@
 
 from django.conf import settings
 from django.urls import reverse
-from django.db import models
+from django.db import models, transaction, IntegrityError
 from django.db.models import F, FloatField, Sum
 from django.db.models.functions import Lower, Coalesce, Trunc
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
@@ -39,6 +39,10 @@ def get_report_path(instance, filename):
 
 def get_document_path(instance, filename):
     return 'shipment_docs/{0}/{1}'.format(str(instance.id).upper(), filename)
+
+
+def generate_code():
+    return ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
 
 
 class SoftDeleteManager(models.Manager):
@@ -451,22 +455,22 @@ class Product(models.Model):
 
     id = models.AutoField(primary_key=True, db_column='productid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
-    product_id = models.CharField(max_length=10, db_column='PRID', db_index=True)
+    product_id = models.CharField(max_length=10, default=generate_code, unique=True, db_column='PRID', db_index=True)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     packing = models.IntegerField(null=True, blank=True)
     cases_inventory = models.IntegerField(null=True, blank=True, db_column='remain')
     units_inventory_old = models.IntegerField(null=True, blank=True, db_column='totalq')
-    unit_price = models.DecimalField(max_digits=10, decimal_places=5, blank=True, db_column='unitprice')
-    gross_weight = models.DecimalField(max_digits=7, decimal_places=2, blank=True, db_column='GW')
+    unit_price = models.DecimalField(max_digits=10, decimal_places=5, default=0, blank=True, db_column='unitprice')
+    gross_weight = models.DecimalField(max_digits=7, decimal_places=2, default=0, blank=True, db_column='GW')
     is_domestic = models.BooleanField(default=False, db_column='prodtype')
     name = models.CharField(max_length=255, blank=True, db_column='pname')
     client_tag = models.CharField(max_length=24, blank=True, db_column='ctag')
     contracted_quantity = models.BigIntegerField(null=True, blank=True, db_column='contqty')
     is_active = models.BooleanField(default=True, db_column='active')
     is_deleted = models.BooleanField(default=False)
-    length = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, blank=True)
-    width = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, blank=True)
-    height = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, blank=True)
+    length = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, default=0, blank=True)
+    width = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, default=0, blank=True)
+    height = models.DecimalField(max_digits=6, decimal_places=1, max_length=10, default=0, blank=True)
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid', on_delete=models.SET_NULL)
     accounting_prepay_type = models.IntegerField(choices=AccountingPrepayType.choices, null=True, blank=True, db_column='account')
@@ -610,9 +614,13 @@ class Product(models.Model):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client.id})
 
     def save(self, *args, **kwargs):
-        if not self.product_id:
-            self.product_id = ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
-        super(Product, self).save(*args, **kwargs)
+        try:
+            with transaction.atomic():
+                super().save(*args, **kwargs)
+        except IntegrityError:
+            logger.warning('Key collision detected! Regenerating key and retrying.')
+            self.product_id = generate_code()
+            self.save(*args, **kwargs)
 
     class Meta:
         db_table = 'Products'
@@ -904,7 +912,7 @@ class ReturnedProduct(models.Model):
 
 class Pallet(models.Model):
     id = models.AutoField(primary_key=True, db_column='palletid')
-    pallet_id = models.CharField(max_length=10, db_column='PID', db_index=True)
+    pallet_id = models.CharField(max_length=10, default=generate_code, unique=True, db_column='PID', db_index=True)
     shipment = models.ForeignKey('Shipment', db_column='shipmentid', null=True, blank=True, on_delete=models.SET_NULL)
     client = models.ForeignKey('Client', db_column='customerid', null=True, blank=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
@@ -956,10 +964,14 @@ class Pallet(models.Model):
         return ('{0}'.format(self.id))
 
     def save(self, *args, **kwargs):
-        if not self.pallet_id:
-            self.pallet_id = ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(10))
-#        self.create_qrcode()
-        super(Pallet, self).save(*args, **kwargs)
+        try:
+            with transaction.atomic():
+                super().save(*args, **kwargs)
+        except IntegrityError:
+            logger.warning('Key collision detected! Regenerating key and retrying.')
+            self.pallet_id = generate_code()
+            self.save(*args, **kwargs)
+
 
     class Meta:
         db_table = 'Pallets'

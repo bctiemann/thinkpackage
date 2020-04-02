@@ -34,7 +34,8 @@ def generate_item_lookup(async_task_id, item_number):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'ItemLookup - {item_number} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
 
@@ -63,7 +64,7 @@ def generate_item_lookup(async_task_id, item_number):
     logger.info('Done writing CSV')
     async_task.is_complete = True
     async_task.percent_complete = 100
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 
@@ -180,7 +181,8 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'InventoryList - {client.company_name} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
         writer = csv.writer(csvfile)
 
         columns = sorted(columns, key=lambda column_data: (column_data['date'], column_data['shipment_id']))
@@ -213,7 +215,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     logger.info('Done writing CSV')
     async_task.is_complete = True
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 
@@ -281,7 +283,8 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'DeliveryList - {client.company_name} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
         writer.writerow([
@@ -315,7 +318,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
     logger.info('Done writing CSV')
     async_task.is_complete = True
     async_task.percent_complete = 100
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 
@@ -377,7 +380,8 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'IncomingList - {client.company_name} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
         writer.writerow([
@@ -411,7 +415,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     logger.info('Done writing CSV')
     async_task.is_complete = True
     async_task.percent_complete = 100
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 
@@ -426,7 +430,8 @@ def generate_location_list(async_task_id, client_id):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'LocationList - {client.company_name} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
         writer.writerow([
@@ -456,7 +461,7 @@ def generate_location_list(async_task_id, client_id):
     logger.info('Done writing CSV')
     async_task.is_complete = True
     async_task.percent_complete = 100
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 
@@ -471,7 +476,8 @@ def generate_contact_list(async_task_id, client_id):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'ContactList - {client.company_name} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
         writer.writerow([
@@ -499,7 +505,7 @@ def generate_contact_list(async_task_id, client_id):
     logger.info('Done writing CSV')
     async_task.is_complete = True
     async_task.percent_complete = 100
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 
@@ -521,7 +527,8 @@ def generate_product_list(async_task_id, client_id=None):
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = get_valid_filename(f'ProductList - {client_name} - {timestamp}.csv')
-    with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
         writer.writerow([
@@ -557,7 +564,7 @@ def generate_product_list(async_task_id, client_id=None):
     logger.info('Done writing CSV')
     async_task.is_complete = True
     async_task.percent_complete = 100
-    async_task.result_file = 'reports/{0}'.format(filename)
+    async_task.result_file = os.path.join('reports', filename)
     async_task.result_content_type = 'text/csv'
     async_task.save()
 

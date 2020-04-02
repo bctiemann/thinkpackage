@@ -90,7 +90,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     columns = []
     status_update_interval = transactions.count() / 20
     for i, transaction in enumerate(transactions):
-        if transactions.count() > 1000 and i % status_update_interval == 0:
+        if transactions.count() > 1000 and i % int(status_update_interval) == 0:
             async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
             async_task.save()
             logger.info(i)
@@ -242,7 +242,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
     rows = []
     status_update_interval = transactions.count() / 20
     for i, transaction in enumerate(transactions):
-        if transactions.count() > 100 and i % status_update_interval == 0:
+        if transactions.count() > 100 and int(i % status_update_interval) == 0:
             async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
             async_task.save()
             logger.info(i)
@@ -338,7 +338,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     rows = []
     status_update_interval = transactions.count() / 20
     for i, transaction in enumerate(transactions):
-        if transactions.count() > 100 and i % status_update_interval == 0:
+        if transactions.count() > 100 and i % int(status_update_interval) == 0:
             async_task.percent_complete = math.ceil(i / float(transactions.count()) * 100)
             async_task.save()
             logger.info(i)

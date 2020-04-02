@@ -618,7 +618,7 @@ class Product(models.Model):
             with transaction.atomic():
                 super().save(*args, **kwargs)
         except IntegrityError:
-            logger.warning('Key collision detected! Regenerating key and retrying.')
+            logger.warning(f'Product ID collision ({self.product_id}) detected! Regenerating ID and retrying.')
             self.product_id = generate_code()
             self.save(*args, **kwargs)
 
@@ -968,7 +968,7 @@ class Pallet(models.Model):
             with transaction.atomic():
                 super().save(*args, **kwargs)
         except IntegrityError:
-            logger.warning('Key collision detected! Regenerating key and retrying.')
+            logger.warning(f'Pallet ID collision ({self.pallet_id}) detected! Regenerating ID and retrying.')
             self.pallet_id = generate_code()
             self.save(*args, **kwargs)
 

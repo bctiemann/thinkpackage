@@ -3,6 +3,7 @@ from django.core import mail
 from django.template import Context
 from django.template.loader import get_template
 from django.utils import timezone
+from django.utils.text import get_valid_filename
 from django.urls import reverse
 from django.test import override_settings
 
@@ -31,9 +32,8 @@ def generate_item_lookup(async_task_id, item_number):
 
     now = timezone.now()
 
-    item_number_clean = item_number.replace('/', '-')
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'ItemLookup - {item_number_clean} - {timestamp}.csv'
+    filename = get_valid_filename(f'ItemLookup - {item_number} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -179,7 +179,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 product_balance[product.id] += product_counts[column['id']][product.id]['out']
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'InventoryList - {client.company_name_clean} - {timestamp}.csv'
+    filename = get_valid_filename(f'InventoryList - {client.company_name} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
         writer = csv.writer(csvfile)
 
@@ -280,7 +280,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'DeliveryList - {client.company_name_clean} - {timestamp}.csv'
+    filename = get_valid_filename(f'DeliveryList - {client.company_name} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -376,7 +376,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'IncomingList - {client.company_name_clean} - {timestamp}.csv'
+    filename = get_valid_filename(f'IncomingList - {client.company_name} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -425,7 +425,7 @@ def generate_location_list(async_task_id, client_id):
     client = Client.objects.get(pk=client_id)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'LocationList - {client.company_name_clean} - {timestamp}.csv'
+    filename = get_valid_filename(f'LocationList - {client.company_name} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -470,7 +470,7 @@ def generate_contact_list(async_task_id, client_id):
     client = Client.objects.get(pk=client_id)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'ContactList - {client.company_name_clean} - {timestamp}.csv'
+    filename = get_valid_filename(f'ContactList - {client.company_name} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)
@@ -516,11 +516,11 @@ def generate_product_list(async_task_id, client_id=None):
     client_name = 'All Clients'
     if client_id:
         client = Client.objects.get(pk=client_id)
-        client_name = client.company_name_clean
+        client_name = client.company_name
         products = products.filter(client=client)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'ProductList - {client_name} - {timestamp}.csv'
+    filename = get_valid_filename(f'ProductList - {client_name} - {timestamp}.csv')
     with open('{0}/reports/{1}'.format(settings.MEDIA_ROOT, filename), mode='w') as csvfile:
 
         writer = csv.writer(csvfile)

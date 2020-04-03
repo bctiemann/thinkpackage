@@ -1225,3 +1225,10 @@ input.search {
     margin: 0px;
     margin-bottom: -1px;
 }
+
+
+/* 403 page */
+
+.unauthorized-sign-out {
+    margin-top: 50px;
+}

@@ -31,25 +31,29 @@
     {% if exception %}
     <p><b>Error:</b> {{ exception }}</p>
     {% endif %}
-    {% with request.path|split_path as path %}
-        <a class="btn"
-        {% if path.1 == 'mgmt' %}
-            href="{% url "mgmt:sign-out" %}"
-        {% elif path.1 == 'client' %}
-            href="{% url "client:sign-out" %}"
-        {% elif path.1 == 'warehouse' %}
-            href="{% url "warehouse:sign-out" %}"
-        {% elif path.1 == 'warehouse_app' %}
-            href="{% url "warehouse_app:sign-out" %}"
-        {% elif path.1 == 'accounting' %}
-            href="{% url "accounting:sign-out" %}"
-        {% else %}
-            href="{% url "sign-out" %}"
-        {% endif %}
-        >
-            Log out
-        </a>
-    {% endwith %}
+
+    <div class="unauthorized-sign-out">
+        <p>Logged in as {{ user.email }}</p>
+        {% with request.path|split_path as path %}
+            <a class="btn"
+            {% if path.1 == 'mgmt' %}
+                href="{% url "mgmt:sign-out" %}"
+            {% elif path.1 == 'client' %}
+                href="{% url "client:sign-out" %}"
+            {% elif path.1 == 'warehouse' %}
+                href="{% url "warehouse:sign-out" %}"
+            {% elif path.1 == 'warehouse_app' %}
+                href="{% url "warehouse_app:sign-out" %}"
+            {% elif path.1 == 'accounting' %}
+                href="{% url "accounting:sign-out" %}"
+            {% else %}
+                href="{% url "sign-out" %}"
+            {% endif %}
+            >
+                Log out
+            </a>
+        {% endwith %}
+    </div>
 
 </div>
 

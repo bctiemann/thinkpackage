@@ -3,7 +3,15 @@
     {% if contact.user.is_active %}
     <a href="javascript:nop()"><li class="{% if contact.is_primary %}primary{% endif %}" id="custcontact_{{ contact.id }}" onClick="loadCustContact({{ contact.id }}, {{ client.id }})">
         <div class="items-list-content">
-        {{ contact.user.first_name }} {{contact.user.last_name }}{% if contact.title %} [{{ contact.title }}]{% endif %} - {{ contact.user.email }}
+            <p class="contact-title">
+                {{ contact.title }}
+            </p>
+            <p class="contact-name">
+                {{ contact.user.full_name }}
+            </p>
+            <p class="contact-email">
+                {{ contact.user.email }}
+            </p>
         </div>
     </li></a>
     {% endif %}

@@ -66,7 +66,6 @@ class ClientForm(forms.ModelForm):
 
     def clean_parent(self):
         data = self.cleaned_data.get('parent')
-        logger.warning(data)
         if data == None:
             return None
         return Client.objects.get(pk=data)
@@ -134,7 +133,6 @@ class UserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        logger.info(self.instance)
         self.fields['email'].widget.attrs['value'] = self.instance.email
         if self.instance.id == None:
             self.fields['password'].widget.attrs['value'] = ''

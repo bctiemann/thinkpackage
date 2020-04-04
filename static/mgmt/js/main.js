@@ -2111,9 +2111,9 @@ $(document).ready(function() {
         var productid = $(this).attr('productid');
         var url;
         if (globals['search_itemnum']) {
-            url = cgiroot + customerid + '/inventory/?history=' + productid;
+            url = `${cgiroot}${customerid}/inventory/${productid}/history/`;
         } else {
-            url = cgiroot + customerid + '/shipments/?shipmentid=' + shipmentid;
+            url = `${cgiroot}${customerid}/shipments/${shipmentid}/`;
         }
         window.open(url);
     });

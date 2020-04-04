@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.utils import timezone
+from django.utils.text import get_valid_filename
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
@@ -1041,29 +1042,32 @@ def action_log(request):
 
 def search(request):
 
-    transactions = Transaction.objects.filter(is_outbound=True).order_by('-shipment__date_created')
-    if request.GET.get('search_itemnum'):
-        transactions = transactions.filter(product__item_number=request.GET.get('search_itemnum'))
-    if request.GET.get('search_shipmentid'):
-        transactions = transactions.filter(shipment__id=request.GET.get('search_shipmentid'))
-    if request.GET.get('search_shippedon'):
-        date_filter = datetime.strptime(request.GET.get('search_shippedon', ''), '%m/%d/%Y')
-        transactions = transactions.annotate(date_shipped_day = Trunc('shipment__date_shipped', 'day')).filter(date_shipped_day=date_filter)
-    if request.GET.get('search_client'):
-        transactions = transactions.filter(client__company_name__icontains=request.GET.get('search_client'))
-    if request.GET.get('search_so'):
-        transactions = transactions.filter(shipment_order=request.GET.get('search_so'))
-    if request.GET.get('search_po'):
-        transactions = transactions.filter(shipment__purchase_order=request.GET.get('search_po'))
-    if request.GET.get('search_carrier'):
-        transactions = transactions.filter(shipment__carrier__icontains=request.GET.get('search_carrier'))
-    if request.GET.get('search_location'):
-        transactions = transactions.filter(shipment__location__name__icontains=request.GET.get('search_location'))
+    search_params = request.GET.dict()
+    context = search_params
 
-    logger.info(f'{request.user} performed search: {request.GET}')
-    context = {
-        'transactions': transactions[0:50],
-    }
+    transactions = Transaction.objects.filter(is_outbound=True).order_by('-shipment__date_created')
+    if search_params.get('search_itemnum'):
+        transactions = transactions.filter(product__item_number=search_params['search_itemnum'])
+        context['search_itemnum'] = get_valid_filename(context['search_itemnum'])
+    if search_params.get('search_shipmentid'):
+        transactions = transactions.filter(shipment__id=search_params['search_shipmentid'])
+    if search_params.get('search_shippedon'):
+        date_filter = datetime.strptime(search_params['search_shippedon'], '%m/%d/%Y')
+        transactions = transactions.annotate(date_shipped_day = Trunc('shipment__date_shipped', 'day')).filter(date_shipped_day=date_filter)
+    if search_params.get('search_client'):
+        transactions = transactions.filter(client__company_name__icontains=search_params['search_client'])
+    if search_params.get('search_so'):
+        transactions = transactions.filter(shipment_order=search_params['search_so'])
+    if search_params.get('search_po'):
+        transactions = transactions.filter(shipment__purchase_order=search_params['search_po'])
+    if search_params.get('search_carrier'):
+        transactions = transactions.filter(shipment__carrier__icontains=search_params['search_carrier'])
+    if search_params.get('search_location'):
+        transactions = transactions.filter(shipment__location__name__icontains=search_params['search_location'])
+
+    logger.info(f'{request.user} performed search: {search_params}')
+    context['transactions'] = transactions[0:50]
+
     return render(request, 'mgmt/search.html', context)
 
 

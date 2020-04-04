@@ -2,6 +2,12 @@
 
 {% block content %}
 
+{% if search_itemnum %}
+<script type="text/javascript">
+globals['search_itemnum'] = '{{ search_itemnum }}';
+</script>
+{% endif %}
+
 <div class="content">
 
 <h1>Search Results</h1>

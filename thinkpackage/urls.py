@@ -20,16 +20,34 @@ urlpatterns = [
 
     path('sign_out/', ims_views.LogoutView.as_view(next_page='home'), name='sign-out'),
 
-    path('recovery/password_reset/', ims_views.PasswordResetView.as_view(
-        template_name='accounts/password_reset_form.html',
-        from_email=settings.SUPPORT_EMAIL,
-        extra_email_context={
-            'site_name': settings.COMPANY_NAME
-        },
-    ), name='password_reset'),
-    path('recovery/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password_reset_done'),
-    path('recovery/reset/<uidb64>/<token>/', ims_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('recovery/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),
+    path('recovery/password_reset/',
+        ims_views.PasswordResetView.as_view(
+            template_name='accounts/password_reset_form.html',
+            from_email=settings.SUPPORT_EMAIL,
+            extra_email_context={
+                'site_name': settings.COMPANY_NAME
+            },
+        ),
+        name='password_reset',
+    ),
+    path('recovery/password_reset/done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='accounts/password_reset_done.html'
+         ),
+         name='password_reset_done'
+    ),
+    path('recovery/reset/<uidb64>/<token>/',
+         ims_views.PasswordResetConfirmView.as_view(
+             template_name='accounts/password_reset_confirm.html'
+         ),
+         name='password_reset_confirm'
+    ),
+    path('recovery/reset/done/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='accounts/password_reset_complete.html'
+         ),
+         name='password_reset_complete'
+    ),
 
     path('', ims_views.home, name='home'),
     path('shipment/doc/<uuid:doc_id>/', ims_views.shipment_doc, name='shipment-doc'),
@@ -41,7 +59,7 @@ urlpatterns = [
         RedirectView.as_view(
             url=staticfiles_storage.url('favicon.ico'),
             permanent=False),
-        name="favicon"
+        name='favicon'
     ),
 
     path('mgmt/', include(('mgmt.urls', 'mgmt'), namespace='mgmt')),
@@ -56,14 +74,6 @@ urlpatterns = [
         ims_views.LoginView.as_view(),
         name='login',
     ),
-    # path('account/change_password/',
-    #     ims_views.PasswordChangeView.as_view(),
-    #     name='change-password',
-    # ),
-    # path('account/change_password/done/',
-    #     ims_views.PasswordChangeDoneView.as_view(),
-    #     name='change-password-done',
-    # ),
 
     path('', include(tf_urls, 'two_factor')),
 

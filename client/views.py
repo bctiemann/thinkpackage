@@ -80,6 +80,9 @@ def change_password(request):
     if not re.match(PASSWORD_REGEX, new_password_1):
         return JsonResponse({'success': False, 'message': f'Password does not meet the complexity requirements ({PASSWORD_COMPLEXITY}).'})
 
+    if authenticate(username=request.user.email, password=new_password_1):
+        return JsonResponse({'success': False, 'message': f'Password cannot be the same as your existing password.'})
+
     request.user.set_password(new_password_1)
     request.user.save()
     login(request, request.user)

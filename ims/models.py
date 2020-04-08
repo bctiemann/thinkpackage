@@ -230,6 +230,8 @@ class User(AbstractBaseUser):
     def prompt_password_change(self):
         if not settings.ENFORCE_CLIENT_PASSWORD_EXPIRY:
             return False
+        if self.is_admin:
+            return False
         return self.password_expired and self.password_prompt_should_reappear
 
     def set_password_to_expired(self):

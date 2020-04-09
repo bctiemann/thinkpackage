@@ -366,13 +366,13 @@ def product_history(request, product_id):
     except:
         pass
 
-    history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('-date_created')
+    # history = Transaction.objects.filter(product=product, date_created__gt=date_from, date_created__lte=date_to).order_by('-date_created')
 
 #    request.session['selected_client_id'] = 241
 
     context = {
         'product': product,
-        'history': history,
+        'history': product.get_history(date_from),
         'date_from': date_from,
         'date_to': date_to,
     }

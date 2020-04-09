@@ -20,6 +20,8 @@ env_variables_to_pass = [
     'WKHTMLTOPDF_BIN',
     'CELERY_BROKER_URL',
     'LOG_AUTH',
+    'SPS_APP_ID',
+    'SPS_APP_SECRET',
 ]
 
 def application(environ, start_response):

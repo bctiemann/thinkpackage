@@ -306,3 +306,7 @@ LOG_AUTH = True if os.environ.get('LOG_AUTH') else False
 # Workaround Safari email click-tracking issue for password reset links
 CSRF_COOKIE_SAMESITE = None
 SESSION_COOKIE_SAMESITE = None
+
+# SPS Commerce / Netsuite integration
+SPS_APP_ID = os.environ.get('SPS_APP_ID')
+SPS_APP_SECRET = os.environ.get('SPS_APP_SECRET')

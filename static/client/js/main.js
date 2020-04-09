@@ -158,6 +158,10 @@ function selectProduct(productid,fromdate,todate) {
 //    var url = cgiroot+'ajax_product_history.cfm?productid='+productid+'&fromdate='+fromdate+'&todate='+todate;
     var url = cgiroot + 'product/' + productid + '/history/?fromdate=' + fromdate + '&todate=' + todate;
 console.log(url);
+    $('#shipments_list').empty().append($('<img>', {
+        src: '/static/images/loading_bar.gif',
+        class: 'loading',
+    }));
     $('#shipments_list').load(url,function() {
         $('#fromdate').datepicker({
             onSelect: function() {

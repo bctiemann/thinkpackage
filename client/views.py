@@ -358,11 +358,11 @@ def product_history(request, product_id):
     if not request.user.is_authorized_for_client(product.client):
         raise Http404
 
-    date_to = timezone.now() + timedelta(days=30)
-    date_from = timezone.now() - timedelta(days=365)
+    date_to = timezone.now().date() + timedelta(days=30)
+    date_from = timezone.now().date() - timedelta(days=365)
     try:
-        date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y')
-        date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y')
+        date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y').date()
+        date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y').date()
     except:
         pass
 
@@ -376,7 +376,7 @@ def product_history(request, product_id):
         'date_from': date_from,
         'date_to': date_to,
     }
-    logger.info(f'{request.user} viewed product history for {product} ({request.selected_client})')
+    logger.info(f'{request.user} viewed product history for {product} ({request.selected_client}) - {date_from} to {date_to}')
     return render(request, 'client/product_history.html', context)
 
 
@@ -385,11 +385,11 @@ def product_report(request, product_id):
     if not request.user.is_authorized_for_client(product.client):
         raise Http404
 
-    date_to = timezone.now() + timedelta(days=30)
-    date_from = timezone.now() - timedelta(days=365)
+    date_to = timezone.now().date() + timedelta(days=30)
+    date_from = timezone.now().date() - timedelta(days=365)
     try:
-        date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y')
-        date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y')
+        date_from = datetime.strptime(request.GET.get('fromdate', ''), '%m/%d/%Y').date()
+        date_to = datetime.strptime(request.GET.get('todate', ''), '%m/%d/%Y').date()
     except:
         pass
 

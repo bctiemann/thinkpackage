@@ -8,35 +8,35 @@ google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawBackgroundColor);
 
 function drawBackgroundColor() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('date', 'Time');
-      data.addColumn('number', 'Cases');
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'Time');
+    data.addColumn('number', 'Cases');
 
-      data.addRows([
-      {% for transaction in history %}
-          [new Date('{{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}'), {{ transaction.cases_remaining_differential }}],
-      {% endfor %}
-      ]);
+    data.addRows([
+    {% for transaction in history %}
+        [new Date('{{ transaction.date_created|date:"SHORT_DATE_FORMAT" }}'), {{ transaction.cases_remaining_differential|default_if_none:0 }}],
+    {% endfor %}
+    ]);
 
-      var options = {
-        hAxis: {
-          title: 'Time'
-        },
-        vAxis: {
-          title: 'Inventory'
-        },
-        backgroundColor: {
-            fill: '#f3f3f4',
-            stroke: '#d9dadc',
-            strokeWidth: 2,
-        },
-        height: 600,
-        title: '{{ chart_title }}',
-      };
+    var options = {
+    hAxis: {
+      title: 'Time'
+    },
+    vAxis: {
+      title: 'Inventory'
+    },
+    backgroundColor: {
+        fill: '#f3f3f4',
+        stroke: '#d9dadc',
+        strokeWidth: 2,
+    },
+    height: 600,
+    title: '{{ chart_title }}',
+    };
 
-      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+}
 </script>
 {% endblock %}
 

@@ -14,7 +14,7 @@ function drawBackgroundColor() {
 
     data.addRows([
     {% for transaction in history %}
-        [new Date('{{ transaction.date_requested|date:"SHORT_DATE_FORMAT" }}'), {{ transaction.cases_remaining_differential|default_if_none:0 }}],
+        [new Date('{{ transaction.date_in_out|date:"SHORT_DATE_FORMAT" }}'), {{ transaction.cases_remaining_differential|default_if_none:0 }}],
     {% endfor %}
     ]);
 

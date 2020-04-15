@@ -19,9 +19,10 @@ class SPSService(object):
 
     def __init__(self, *args, **kwargs):
         self.redis_client = Redis(connection_pool=BlockingConnectionPool())
-        try:
-            self.token = self.redis_client.get(REDIS_KEY).decode()
-        except AttributeError:
+        saved_token = self.redis_client.get(REDIS_KEY)
+        if saved_token:
+            self.token = saved_token.decode()
+        else:
             self.token = self.get_token()
 
     def get_headers(self):

@@ -180,8 +180,6 @@ STATIC_URL = '/static/'
 # MEDIA_ROOT = '/usr/local/www/django/thinkpackage/media'
 # MEDIA_URL = '/media/'
 
-LOG_DIR = '/var/log/thinkpackage'
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

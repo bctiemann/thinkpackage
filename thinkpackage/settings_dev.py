@@ -48,10 +48,6 @@ MEDIA_ROOT = '/Users/brian.tiemann/Development/thinkpackage-dj/media'
 MEDIA_ROOT_LEGACY = '/Users/brian.tiemann/Development/thinkpackage-dj/old_media'
 MEDIA_URL = '/media/'
 
-# LOG_DIR = '/Users/brian.tiemann/Development/thinkpackage-dj/logs'
-# LOGGING['handlers']['logfile']['filename'] = LOG_DIR + '/django.log'
-# LOGGING['handlers']['auth_logfile']['filename'] = LOG_DIR + '/auth.log'
-
 #TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
 TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
 TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'

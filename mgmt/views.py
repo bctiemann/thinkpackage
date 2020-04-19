@@ -88,70 +88,70 @@ def redirect(request, client_id=None):
 
 
 def notifications_delivery_requests(request):
-    delivery_requests = Shipment.objects.exclude(status=Shipment.Status.SHIPPED).order_by('-date_created')
+    # delivery_requests = Shipment.objects.exclude(status=Shipment.Status.SHIPPED).order_by('-date_created')
 
     context = {
-        'delivery_requests': delivery_requests,
+        # 'delivery_requests': delivery_requests,
     }
     return render(request, 'mgmt/notifications_delivery_requests.html', context)
 
 
 def notifications_ready_to_ship(request):
-    ready_to_ship = Shipment.objects.filter(status=Shipment.Status.READY).order_by(F('date_shipped').asc(nulls_last=True))
+    # ready_to_ship = Shipment.objects.filter(status=Shipment.Status.READY).order_by(F('date_shipped').asc(nulls_last=True))
 
     context = {
-        'ready_to_ship': ready_to_ship,
+        # 'ready_to_ship': ready_to_ship,
     }
     return render(request, 'mgmt/notifications_ready_to_ship.html', context)
 
 
 def notifications_inbound_receivables(request):
-    inbound_receivables = []
-    for receivable in Transaction.objects.filter(is_outbound=False, cases__isnull=True).order_by('-date_created'):
-        split_receivables = Transaction.objects.filter(
-            product=receivable.product,
-            receivable__purchase_order=receivable.receivable.purchase_order,
-            receivable__shipment_order=receivable.receivable.shipment_order,
-            cases__isnull=False
-        )
-        inbound_receivables.append({
-            'obj': receivable,
-            'is_partial': split_receivables.count() > 0,
-        })
+    # inbound_receivables = []
+    # for receivable in Transaction.objects.filter(is_outbound=False, cases__isnull=True).order_by('-date_created'):
+    #     split_receivables = Transaction.objects.filter(
+    #         product=receivable.product,
+    #         receivable__purchase_order=receivable.receivable.purchase_order,
+    #         receivable__shipment_order=receivable.receivable.shipment_order,
+    #         cases__isnull=False
+    #     )
+    #     inbound_receivables.append({
+    #         'obj': receivable,
+    #         'is_partial': split_receivables.count() > 0,
+    #     })
 
     context = {
-        'inbound_receivables': inbound_receivables,
+        # 'inbound_receivables': inbound_receivables,
     }
     return render(request, 'mgmt/notifications_inbound_receivables.html', context)
 
 
 def notifications_invq(request):
-    invq = Shipment.objects.filter(status=Shipment.Status.SHIPPED, transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ, accounting_status__in=[Shipment.AccountingStatus.INVQ, Shipment.AccountingStatus.PENDING]) \
-        .order_by('-date_created') \
-        .annotate(date=Func(F('date_created'), function='DATE')) \
-        .values('date', 'id', 'client__company_name', 'location__name', 'client__id') \
-        .annotate(count=Count('date'))
+    # invq = Shipment.objects.filter(status=Shipment.Status.SHIPPED, transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ, accounting_status__in=[Shipment.AccountingStatus.INVQ, Shipment.AccountingStatus.PENDING]) \
+    #     .order_by('-date_created') \
+    #     .annotate(date=Func(F('date_created'), function='DATE')) \
+    #     .values('date', 'id', 'client__company_name', 'location__name', 'client__id') \
+    #     .annotate(count=Count('date'))
 
     context = {
-        'invq': invq,
+        # 'invq': invq,
     }
     return render(request, 'mgmt/notifications_invq.html', context)
 
 
 def notifications_low_stock(request):
     low_stock = []
-    for product in Product.objects.filter(cases_inventory__lt=F('contracted_quantity') / 2, is_active=True, client__is_active=True).order_by('name'):
-        try:
-            last_shipment = Transaction.objects.filter(product=product).order_by('-date_created').first()
-            low_stock.append({
-                'obj': product,
-                'last_shipment': last_shipment,
-            })
-        except Transaction.DoesNotExist:
-            pass
+    # for product in Product.objects.filter(cases_inventory__lt=F('contracted_quantity') / 2, is_active=True, client__is_active=True).order_by('name'):
+    #     try:
+    #         last_shipment = Transaction.objects.filter(product=product).order_by('-date_created').first()
+    #         low_stock.append({
+    #             'obj': product,
+    #             'last_shipment': last_shipment,
+    #         })
+    #     except Transaction.DoesNotExist:
+    #         pass
 
     context = {
-        'low_stock': low_stock,
+        # 'low_stock': low_stock,
     }
     return render(request, 'mgmt/notifications_low_stock.html', context)
 

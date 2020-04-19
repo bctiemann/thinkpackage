@@ -1620,7 +1620,7 @@ $(document).ready(function() {
       text: false
     })
     setupAddCustomerButton();
-    refreshCustomers();
+    // refreshCustomers();
     refreshInventory();
     refreshShipments(globals['shipmentid']);
 

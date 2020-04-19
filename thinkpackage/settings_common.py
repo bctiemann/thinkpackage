@@ -73,14 +73,14 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_otp.middleware.OTPMiddleware',
+    # 'django_otp.middleware.OTPMiddleware',
 #    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'ims.middleware.LoginRequiredMiddleware',
-    'ims.middleware.SelectedClientMiddleware',
-    'ims.middleware.PermissionsMiddleware',
+#     'ims.middleware.LoginRequiredMiddleware',
+#     'ims.middleware.SelectedClientMiddleware',
+#     'ims.middleware.PermissionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'two_factor.middleware.threadlocals.ThreadLocals',
+    # 'two_factor.middleware.threadlocals.ThreadLocals',
 ]
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
@@ -99,7 +99,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'ims.context_processors.settings_constants',
+                # 'ims.context_processors.settings_constants',
             ],
         },
     },
@@ -200,64 +200,66 @@ LOGGING = {
         }
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'logfile': {
-            'level':'INFO',
-            'filters': [],
-            'class':'logging.handlers.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
-            'maxBytes': 1024*1024*64, # 64mb
-            'backupCount': 5,
-            'formatter': 'colored',
-        },
-        'auth_logfile': {
-            'level': 'INFO',
-            'filters': [],
-            'class': 'logging.handlers.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'auth.log'),
-            'maxBytes': 1024 * 1024 * 64,  # 64mb
-            'backupCount': 5,
-            'formatter': 'colored',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'filters': [],
-            'class': 'logging.StreamHandler',
-        },
-        'null': {
-            'class': 'logging.NullHandler',
-        },
+        # 'mail_admins': {
+        #     'level': 'ERROR',
+        #     'filters': ['require_debug_false'],
+        #     'class': 'django.utils.log.AdminEmailHandler'
+        # },
+        # 'logfile': {
+        #     'level':'INFO',
+        #     'filters': [],
+        #     'class':'logging.FileHandler',
+        #     # 'class':'logging.handlers.ConcurrentRotatingFileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+        #     # 'maxBytes': 1024*1024*64, # 64mb
+        #     # 'backupCount': 5,
+        #     'formatter': 'colored',
+        # },
+        # 'auth_logfile': {
+        #     'level': 'INFO',
+        #     'filters': [],
+        #     'class': 'logging.FileHandler',
+        #     # 'class': 'logging.handlers.ConcurrentRotatingFileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs', 'auth.log'),
+        #     # 'maxBytes': 1024 * 1024 * 64,  # 64mb
+        #     # 'backupCount': 5,
+        #     'formatter': 'colored',
+        # },
+        # 'console': {
+        #     'level': 'DEBUG',
+        #     'filters': [],
+        #     'class': 'logging.StreamHandler',
+        # },
+        # 'null': {
+        #     'class': 'logging.NullHandler',
+        # },
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
+        # 'django.request': {
+        #     'handlers': ['mail_admins'],
+        #     'level': 'ERROR',
+        #     'propagate': True,
+        # },
         # Log all app logger messages to the central logfile
-        '': {
-            'handlers': ['logfile'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'auth': {
-            'handlers': ['auth_logfile'],
-            'level': 'INFO',
-            'propagate': False,
-        },
+        # '': {
+        #     'handlers': ['logfile'],
+        #     'level': 'INFO',
+        #     'propagate': True,
+        # },
+        # 'auth': {
+        #     'handlers': ['auth_logfile'],
+        #     'level': 'INFO',
+        #     'propagate': False,
+        # },
         # Log database diagnostics at WARN level
-        'django.db.backends': {
-            'level': 'WARN',
-            'handlers': ['logfile'],
-        },
-        'django.security.DisallowedHost': {
-            'handlers': ['null'],
-            'propagate': False,
-        },
+        # 'django.db.backends': {
+        #     'level': 'WARN',
+        #     'handlers': ['logfile'],
+        # },
+        # 'django.security.DisallowedHost': {
+        #     'handlers': ['null'],
+        #     'propagate': False,
+        # },
     },
 }
 

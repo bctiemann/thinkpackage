@@ -144,6 +144,13 @@ LOGGING = {
         #     'filters': ['require_debug_false'],
         #     'class': 'django.utils.log.AdminEmailHandler'
         # },
+        # 'logfile': {
+        #     'level':'INFO',
+        #     'filters': [],
+        #     'class':'logging.FileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+        #     'formatter': 'standard',
+        # },
         # 'console': {
         #     'level': 'DEBUG',
         #     'filters': [],

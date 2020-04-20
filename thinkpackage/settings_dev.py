@@ -17,7 +17,6 @@ ALLOWED_HOSTS = [
 STATIC_ROOT = '/Users/brian.tiemann/Development/thinkpackage-dj/static_root'
 
 MEDIA_ROOT = '/Users/brian.tiemann/Development/thinkpackage-dj/media'
-MEDIA_ROOT_LEGACY = '/Users/brian.tiemann/Development/thinkpackage-dj/old_media'
 MEDIA_URL = '/media/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

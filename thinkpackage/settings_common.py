@@ -149,9 +149,9 @@ LOGGING = {
         #     'filters': [],
         #     'class': 'logging.StreamHandler',
         # },
-        'null': {
-            'class': 'logging.NullHandler',
-        },
+        # 'null': {
+        #     'class': 'logging.NullHandler',
+        # },
     },
     'loggers': {
     },

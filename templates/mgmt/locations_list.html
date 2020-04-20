@@ -1,9 +1,0 @@
-{% for location in client.location_set.all %}
-    {% if location.is_active %}
-    <a href="javascript:nop()"><li id="location_{{ location.id }}" onClick="loadLocation({{ location.id }}, {{ client.id }})">
-        <div class="items-list-content">
-        {{ location.name }}
-        </div>
-    </li></a>
-    {% endif %}
-{% endfor %}

@@ -1,6 +1,0 @@
-<ul class="nav">
-    <a href="{% url "mgmt:home" %}"><li id="li_home" {% if page_selected == "home" %}class="selected"{% endif %}>Home</li></a>
-    <a href="{% url "mgmt:profile" client_id=client.id %}"><li id="li_profile" {% if page_selected == "profile" %}class="selected"{% endif %}>Profile</li></a>
-    <a href="{% url "mgmt:inventory" client_id=client.id %}"><li id="li_inventory" {% if page_selected == "inventory" %} class="selected"{% endif %}>Inventory</li></a>
-    <a href="{% url "mgmt:shipments" client_id=client.id %}"><li id="li_shipments" {% if page_selected == "shipments" %}class="selected"{% endif %}>Delivery Requests</li></a>
-</ul>

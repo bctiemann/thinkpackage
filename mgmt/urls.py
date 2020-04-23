@@ -15,7 +15,6 @@ urlpatterns = [
 
     path('', mgmt_views.home, name='home'),
 
-    path('notifications/', mgmt_views.notifications, name='notifications'),
     path('notifications/delivery_requests/', mgmt_views.notifications_delivery_requests,
         name='notifications-delivery-requests'),
     path('notifications/ready_to_ship/', mgmt_views.notifications_ready_to_ship,

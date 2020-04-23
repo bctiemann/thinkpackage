@@ -175,15 +175,9 @@ function toggleInactiveCustomers() {
 }
 
 function refreshNotifications(notificationType) {
-    var url = `${cgiroot}notifications/`;
-    $('#notifications_container').load(url, function() {
-        refreshUI();
-    });
-    /*
     var url = `${cgiroot}notifications/${notificationType}/`;
     $(`#${notificationType}_list`).load(url, function() {
     })
-    */
 }
 
 function loadLocationsList(customerid,locationid) {
@@ -866,27 +860,6 @@ function refreshUI() {
             primary: "ui-icon-document"
         },
         text: true
-    });
-    
-    // Expand/collapse notification panels
-    $('#notifications .list_header').click(function() {
-        var section = $(this).attr('section');
-
-        $('.list_wrap[section=' + section + ']').toggleClass('minimized').toggleClass('maximized');
-
-        $('.list_wrap[section=' + section + ']').animate({
-            height: $('.list_wrap[section=' + section + ']').hasClass('maximized') ? 600 : $('.list_wrap[section=' + section + ']').hasClass('two') ? 280 : 175,
-            maxHeight: $('.list_wrap[section=' + section + ']').hasClass('maximized') ? 600 : 250,
-        }, 300, function() {
-            $('#notifications .list_header[section=' + section + '] .disclosure').toggleClass('open');
-            $('#notifications .list_header[section!=' + section + '] .disclosure').removeClass('open');
-        });
-
-        $(this).siblings('.list_wrap').not('[section=' + section + ']').animate({
-            height: $('.list_wrap[section=' + section + ']').hasClass('maximized') ? 0 : $('.list_wrap[section=' + section + ']').hasClass('two') ? 280 : 175,
-        }, 300, function() {
-            $(this).removeClass('maximized').addClass('minimized');
-        });
     });
 }
 
@@ -1649,7 +1622,6 @@ $(document).ready(function() {
     setupAddCustomerButton();
     refreshCustomers();
     refreshInventory();
-    refreshNotifications();
     refreshShipments(globals['shipmentid']);
 
     refreshUI();
@@ -2098,6 +2070,27 @@ $(document).ready(function() {
         }
     });
 */
+
+    // Expand/collapse notification panels
+    $('#notifications .list_header').click(function() {
+        var section = $(this).attr('section');
+
+        $('.list_wrap[section=' + section + ']').toggleClass('minimized').toggleClass('maximized');
+
+        $('.list_wrap[section=' + section + ']').animate({
+            height: $('.list_wrap[section=' + section + ']').hasClass('maximized') ? 600 : $('.list_wrap[section=' + section + ']').hasClass('two') ? 280 : 175,
+            maxHeight: $('.list_wrap[section=' + section + ']').hasClass('maximized') ? 600 : 250,
+        }, 300, function() {
+            $('#notifications .list_header[section=' + section + '] .disclosure').toggleClass('open');
+            $('#notifications .list_header[section!=' + section + '] .disclosure').removeClass('open');
+        });
+
+        $(this).siblings('.list_wrap').not('[section=' + section + ']').animate({
+            height: $('.list_wrap[section=' + section + ']').hasClass('maximized') ? 0 : $('.list_wrap[section=' + section + ']').hasClass('two') ? 280 : 175,
+        }, 300, function() {
+            $(this).removeClass('maximized').addClass('minimized');
+        });
+    });
 
     if (globals['shipmentid']) {
         selectShipment(globals['shipmentid']);

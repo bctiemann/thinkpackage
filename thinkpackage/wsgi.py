@@ -24,12 +24,17 @@ env_variables_to_pass = [
     'SPS_APP_SECRET',
 ]
 
-django_application = get_wsgi_application()
+os.environ["DJANGO_SETTINGS_MODULE"] = "thinkpackage.settings_prod"
+
+django_application = None
 
 def application(environ, start_response):
-    # pass the WSGI environment variables on through to os.environ
-    for var in env_variables_to_pass:
-        os.environ[var] = environ.get(var, '')
-    if not os.environ['BASE_PATH'] in sys.path:
-        sys.path.append(os.environ['BASE_PATH'])
+    global django_application
+    if django_application is None:
+        # pass the WSGI environment variables on through to os.environ
+        for var in env_variables_to_pass:
+            os.environ[var] = environ.get(var, '')
+        django_application = get_wsgi_application()
     return django_application(environ, start_response)
+
+

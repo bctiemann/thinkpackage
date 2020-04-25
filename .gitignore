@@ -10,4 +10,6 @@ scratch
 data.json
 *.csv
 .env*
+env.yaml
+env.prod.yaml
 certs

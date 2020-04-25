@@ -4,7 +4,7 @@ from cloghandler import ConcurrentRotatingFileHandler
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'dummy'
 
 DEBUG = False
 
@@ -287,15 +287,15 @@ PASSWORD_PROMPT_REAPPEAR_DAYS = 1
 ENFORCE_CLIENT_PASSWORD_EXPIRY = False
 GENERATE_QRCODE_IMAGES = True
 
-LOG_AUTH = True if os.environ.get('LOG_AUTH') else False
+LOG_AUTH = False
 
 # Workaround Safari email click-tracking issue for password reset links
 CSRF_COOKIE_SAMESITE = None
 SESSION_COOKIE_SAMESITE = None
 
 # SPS Commerce / Netsuite integration
-SPS_APP_ID = os.environ.get('SPS_APP_ID')
-SPS_APP_SECRET = os.environ.get('SPS_APP_SECRET')
+SPS_APP_ID = None
+SPS_APP_SECRET = None
 
 
 # Local overrides from env.yaml

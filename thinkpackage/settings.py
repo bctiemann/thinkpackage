@@ -257,18 +257,24 @@ ADMINS = (
 
 TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
 TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+TWILIO_CALLER_ID = '404-800-7627'
 
 # Celery
 #CELERY_TASK_SERIALIZER = 'pickle'
 #CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_RESULT_BACKEND = 'rpc://'
 #CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_BROKER_URL = 'redis://localhost:6379'
 
 CSRF_FAILURE_VIEW = 'ims.views.csrf_failure'
 
+# Email config
+EMAIL_HOST = 'blend.lionwire.com'
+EMAIL_PORT = 25
+
 COMPANY_NAME = 'THINK[PACKAGE]'
 COMPANY_PHONE_NUMBER = '(212) 229-0700'
-SUPPORT_EMAIL = 'info@thinkpackage.com'
+SUPPORT_EMAIL = 'hello@thinkpackage.com'
 SITE_EMAIL = 'info@thinkpackage.com'
 DELIVERY_EMAIL = 'delivery@thinkpackage.com'
 PO_EMAIL = 'po@thinkpackage.com'
@@ -277,6 +283,7 @@ FRONTSITE_URL = 'http://thinkpackage.com'
 CLIENTACCESS_EMAIL = 'clientaccess@thinkpackage.com'
 
 INFINITE_SCROLL_PAGE_SIZE = 30
+
 COUNTRIES_FIRST = ['US', 'CA']
 # COUNTRIES_FIRST_BREAK = '(Select country)'
 
@@ -284,8 +291,9 @@ DEFAULT_SHIPPER_ADDRESS = None
 
 PASSWORD_EXPIRE_DAYS = 90
 PASSWORD_PROMPT_REAPPEAR_DAYS = 1
-ENFORCE_CLIENT_PASSWORD_EXPIRY = False
-GENERATE_QRCODE_IMAGES = True
+ENFORCE_CLIENT_PASSWORD_EXPIRY = True
+
+GENERATE_QRCODE_IMAGES = False
 
 LOG_AUTH = False
 

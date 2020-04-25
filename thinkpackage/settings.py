@@ -255,8 +255,8 @@ ADMINS = (
     ('Brian Tiemann', 'btman@mac.com'),
 )
 
-TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Fake'
-TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Fake'
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
 
 # Celery
 #CELERY_TASK_SERIALIZER = 'pickle'

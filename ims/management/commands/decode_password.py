@@ -20,7 +20,7 @@ class Command(BaseCommand):
     control_char_re = re.compile('[%s]' % re.escape(control_chars))
 
     def add_arguments(self, parser):
-        parser.add_argument('--key', dest='key',)
+        parser.add_argument('--key', dest='key', default=settings.CF_GLOBAL_KEY)
         parser.add_argument('--encrypted', dest='encrypted')
 
     def remove_control_chars(self, s):

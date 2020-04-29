@@ -17,6 +17,7 @@ import math
 import os
 import pdfkit
 
+from thinkpackage.celery import app
 from ims.models import AsyncTask, Client, Product, Shipment, Transaction
 from ims import utils
 

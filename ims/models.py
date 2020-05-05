@@ -270,8 +270,7 @@ class Client(models.Model):
 
     @property
     def contacts(self):
-        # return self.clientuser_set.order_by('-is_primary', 'user__first_name')
-        return self.clientuser_set.exclude(user__email=settings.CLIENTACCESS_EMAIL).order_by('-is_primary', 'user__first_name')
+        return self.clientuser_set.order_by('-is_primary', 'user__first_name')
 
     def __str__(self):
         return (self.company_name)

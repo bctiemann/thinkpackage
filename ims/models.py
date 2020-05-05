@@ -167,7 +167,7 @@ class User(AbstractBaseUser):
 
     @property
     def child_clients(self):
-        if self.is_admin or self.email == settings.CLIENTACCESS_EMAIL:
+        if self.is_admin:
             return utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name_lower')
 
         # List of clients this user is associated with, along with depth for rendering with indents in a select menu
@@ -270,6 +270,7 @@ class Client(models.Model):
 
     @property
     def contacts(self):
+        # return self.clientuser_set.order_by('-is_primary', 'user__first_name')
         return self.clientuser_set.exclude(user__email=settings.CLIENTACCESS_EMAIL).order_by('-is_primary', 'user__first_name')
 
     def __str__(self):
@@ -290,12 +291,6 @@ class Client(models.Model):
         if not self.created_on:
             self.created_on = timezone.now()
         super(Client, self).save(*args, **kwargs)
-
-        try:
-            clientaccess_user = User.objects.get(email=settings.CLIENTACCESS_EMAIL)
-            client_user, created = ClientUser.objects.get_or_create(user=clientaccess_user, client=self)
-        except User.DoesNotExist:
-            pass
 
         # If this instance had been previously created, we can populate the ancestors directly. However, if this
         # is the first time creating the instance, we don't have the id, so we rely on the post_save signal

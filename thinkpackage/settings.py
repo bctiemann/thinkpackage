@@ -280,8 +280,6 @@ DELIVERY_EMAIL = 'delivery@thinkpackage.com'
 PO_EMAIL = 'po@thinkpackage.com'
 FRONTSITE_URL = 'http://thinkpackage.com'
 
-CLIENTACCESS_EMAIL = 'clientaccess@thinkpackage.com'
-
 INFINITE_SCROLL_PAGE_SIZE = 30
 
 COUNTRIES_FIRST = ['US', 'CA']

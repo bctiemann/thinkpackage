@@ -1,5 +1,9 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+from django.template.base import Node
+
+import logging
+logger = logging.getLogger(__name__)
 
 register = template.Library()
 
@@ -20,3 +24,14 @@ def add(value, arg):
 @register.filter
 def split_path(value):
     return value.split('/')
+
+
+class LogCsrfTokenNode(Node):
+    def render(self, context):
+        csrf_token = context.get('csrf_token')
+        logger.info(csrf_token)
+        return ''
+
+@register.tag
+def log_csrf_token(parser, token):
+    return LogCsrfTokenNode()

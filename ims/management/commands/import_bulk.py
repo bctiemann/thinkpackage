@@ -96,7 +96,7 @@ class Command(BaseCommand):
                             client = client,
                             date_shipped = None,
                             purchase_order_number = bulk_order.purchase_order,
-                            accounting_status = 0,
+                            accounting_status = Shipment.AccountingStatus.INVQ,
                             shipper_instructions = bulk_order.message,
                             location = location,
                         )

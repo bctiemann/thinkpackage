@@ -649,7 +649,7 @@ class Shipment(models.Model):
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True, db_column='createdon')
     date_shipped = models.DateTimeField(null=True, blank=True, db_column='shippedon')
-    status = models.IntegerField(choices=Status.choices, default=0)
+    status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
     carrier = models.CharField(max_length=50, blank=True, default='')
     tracking = models.CharField(max_length=50, blank=True, default='')
     ship_by = models.IntegerField(null=True, blank=True, db_column='shipby')
@@ -673,7 +673,7 @@ class Shipment(models.Model):
     sort_segregation = models.BooleanField(default=False, db_column='sortseg')
     shipment_class = models.CharField(max_length=50, blank=True, default='', db_column='class')
     pallet_count = models.IntegerField(null=True, blank=True, db_column='numpallets')
-    accounting_status = models.IntegerField(choices=AccountingStatus.choices, default=0, db_column='acctstatus')
+    accounting_status = models.IntegerField(choices=AccountingStatus.choices, default=AccountingStatus.INVQ, db_column='acctstatus')
     invoice_number = models.IntegerField(null=True, blank=True, db_column='invoice')
     delivery_charge = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, db_column='deliverycharge')
 

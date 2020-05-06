@@ -281,7 +281,7 @@ class LogEntryAdmin(admin.ModelAdmin):
     )
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return request.user.is_admin
 
 
 admin.site.register(LogEntry, LogEntryAdmin)

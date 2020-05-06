@@ -679,7 +679,7 @@ class Shipment(models.Model):
 
     @property
     def is_pending(self):
-        return self.status in [self.Status.PENDING, self.Status.READY] and self.id != None
+        return self.status in [self.Status.PENDING, self.Status.READY] and self.id is not None
 
     @property
     def is_shipped(self):
@@ -859,7 +859,7 @@ class Transaction(models.Model):
 
     @property
     def is_transfer(self):
-        return self.transfer_client != None
+        return self.transfer_client is not None
 
     @property
     def is_return(self):

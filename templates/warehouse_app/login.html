@@ -1,5 +1,6 @@
 {% extends "warehouse_app/base.html" %}
 {% load static %}
+{% load filters %}
 
 {% block extra_css %}
     <link rel=stylesheet href="{% static "warehouse_app/css/style.css" %}" type="text/css">
@@ -41,6 +42,7 @@
 <input type="hidden" name="next" value="{% url "warehouse_app:home" %}" />
 <input type="submit" class="hidden-submit" value="" />
 {% csrf_token %}
+{% log_csrf_token %}
     </div>
 </form>
 

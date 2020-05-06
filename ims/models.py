@@ -863,13 +863,13 @@ class Transaction(models.Model):
 
     @property
     def is_return(self):
-        return self.receivable and self.receivable.returned_product
+        return self.receivable is not None and self.receivable.returned_product is not None
 
     @property
     def is_shipped(self):
         if not self.shipment:
             return False
-        return self.shipment.status == 2
+        return self.shipment.status == Shipment.Status.SHIPPED
 
     def get_absolute_url(self):
         return reverse('mgmt:inventory', kwargs={

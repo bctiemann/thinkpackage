@@ -119,3 +119,12 @@ class PermissionsMiddleware(object):
                 raise PermissionDenied
 
         return self.get_response(request)
+
+
+class LogCsrfMiddleware(MiddlewareMixin):
+
+    def process_request(self, request):
+        csrf_token = request.POST.get('csrfmiddlewaretoken')
+        if csrf_token:
+            logger.info(f'{request.method} {csrf_token}')
+        return None

@@ -304,6 +304,8 @@ SESSION_COOKIE_SAMESITE = None
 SPS_APP_ID = None
 SPS_APP_SECRET = None
 
+os.environ['WKHTMLTOPDF_BIN'] = '/usr/local/bin/wkhtmltopdf'
+
 
 # Local overrides from env.yaml
 with open(os.path.join(BASE_DIR, 'env.yaml')) as f:

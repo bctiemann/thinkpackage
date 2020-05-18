@@ -128,7 +128,10 @@ class PermissionsMiddleware(object):
 class LogCsrfMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        csrf_token = request.POST.get('csrfmiddlewaretoken')
-        if csrf_token:
-            logger.info(f'{request.method} {csrf_token}')
+        try:
+            csrf_token = request.POST.get('csrfmiddlewaretoken')
+            if csrf_token:
+                logger.info(f'{request.method} {csrf_token}')
+        except Exception as exc:
+            logger.warning(exc)
         return None

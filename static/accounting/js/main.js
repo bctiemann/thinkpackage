@@ -216,7 +216,7 @@ console.log(data);
                 showShipmentDocs(globals['shipmentid']);
                 $('#shipment_upfile').val('');
             } else {
-                alert(data.message);
+                displayErrorDialog(data);
             }
         },
     });

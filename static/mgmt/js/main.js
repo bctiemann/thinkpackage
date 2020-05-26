@@ -1064,12 +1064,13 @@ function setupInventoryList(customerid) {
     $('#dialog_inventory_list').dialog('open');
 }
 
-function execute_inventoryList(customerid, fromdate, todate) {
+function execute_inventoryList(customerid, fromdate, todate, includeInactive) {
     var url = cgiroot + 'report/inventory_list/';
     var params = {
         client: customerid,
         fromdate: fromdate,
         todate: todate,
+        include_inactive: includeInactive
     };
     $('#inventory_list_task_status').empty().append($('<div>', {
         class: 'spinner active',
@@ -1108,7 +1109,7 @@ console.log(statusData);
                 });
             }, 1000);
         }
-    });
+    }, 'json');
 }
 
 function setupDeliveryList(customerid) {
@@ -1849,7 +1850,12 @@ $(document).ready(function() {
 //                $( this ).dialog( "close" );
 //                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
 //                window.open(url);
-                execute_inventoryList(globals['customerid'], $('#inventory_list_fromdate').val(), $('#inventory_list_todate').val());
+                execute_inventoryList(
+                    globals['customerid'],
+                    $('#inventory_list_fromdate').val(),
+                    $('#inventory_list_todate').val(),
+                    $('#inventory_list_include_inactive').prop('checked')
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

@@ -53,6 +53,10 @@
     <input type="text" id="inventory_list_todate" value="{{ one_month_from_now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
     </span>
     </p>
+    <p>
+        <input type="checkbox" id="inventory_list_include_inactive" checked />
+        <label for="inventory_list_include_inactive">Include inactive items</label>
+    </p>
     <div class="task_status" id="inventory_list_task_status"></div>
 </div>
 

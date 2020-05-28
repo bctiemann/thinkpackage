@@ -1111,6 +1111,57 @@ console.log(statusData);
     });
 }
 
+function setupClientInventoryList(customerid) {
+    globals['customerid'] = customerid;
+    $('#client_inventory_list_task_status').empty();
+    $('#dialog_client_inventory_list').dialog('open');
+}
+
+function execute_clientInventoryList(customerid) {
+    var url = cgiroot + 'report/client_inventory_list/';
+    var params = {
+        client: customerid,
+    };
+    $('#client_inventory_list_task_status').empty().append($('<div>', {
+        class: 'spinner active',
+    })).append($('<span>', {
+        id: 'client_inventory_list_progress_percent',
+    }));
+
+//    $('.spinner').addClass('active');
+//    $('#inventory_list_result_url').empty();
+    $.post(url, params, function(data) {
+console.log(data);
+        if (data.success) {
+            if (globals['asyncTaskInterval']) {
+                clearInterval(globals['asyncTaskInterval']);
+            }
+            globals['asyncTaskInterval'] = setInterval(function() {
+                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
+                $.getJSON(statusUrl, function(statusData) {
+console.log(statusData);
+                    $('#client_inventory_list_progress_percent').html(statusData.percent_complete + '%');
+                    if (statusData.is_complete) {
+//                        $('.spinner').removeClass('active');
+                        $('#client_inventory_list_progress_percent').html('');
+                        clearInterval(globals['asyncTaskInterval']);
+                        var resultIconSpan = $('<span>', {
+                            class: 'document-icon',
+                        });
+                        $('#client_inventory_list_task_status').empty().append($('<a>', {
+                            href: statusData.result_url,
+                            html: resultIconSpan,
+                        })).append($('<a>', {
+                            href: statusData.result_url,
+                            html: statusData.result_filename,
+                        }));
+                    }
+                });
+            }, 1000);
+        }
+    });
+}
+
 function setupDeliveryList(customerid) {
     globals['customerid'] = customerid;
     $('#delivery_list_task_status').empty();
@@ -1850,6 +1901,22 @@ $(document).ready(function() {
 //                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
 //                window.open(url);
                 execute_inventoryList(globals['customerid'], $('#inventory_list_fromdate').val(), $('#inventory_list_todate').val());
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_client_inventory_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 500,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+                execute_clientInventoryList(globals['customerid']);
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

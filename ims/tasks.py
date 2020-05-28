@@ -72,7 +72,7 @@ def generate_item_lookup(async_task_id, item_number):
 
 
 @shared_task
-def generate_inventory_list(async_task_id, client_id, fromdate, todate, include_inactive):
+def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
@@ -88,9 +88,6 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate, include_
 
     products = Product.objects.filter(client__in=client_tree, is_deleted=False).order_by('item_number')
     transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from)
-
-    if not include_inactive:
-        products = products.filter(is_active=True)
 
     product_counts = {}
     columns = []

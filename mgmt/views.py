@@ -37,7 +37,6 @@ from mgmt import forms
 from ims import utils
 from ims import tasks
 
-import json
 import math
 import os
 import csv
@@ -1101,17 +1100,10 @@ class ItemLookupReport(AbstractReport):
 class InventoryListReport(AbstractReport):
 
     def launch_report_task(self):
-        logger.info(json.loads(self.request.data['include_inactive']))
         client = get_object_or_404(Client, pk=self.request.data['client'])
         report_task_name = f'InventoryList-{client.company_name}'
         async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
-        tasks.generate_inventory_list.delay(
-            async_task.id,
-            client.id,
-            self.request.data['fromdate'],
-            self.request.data['todate'],
-            json.loads(self.request.data['include_inactive']),
-        )
+        tasks.generate_inventory_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
         logger.info(f'{self.request.user} generated inventory list report for {client}, async task {async_task.id}')
         return async_task
 

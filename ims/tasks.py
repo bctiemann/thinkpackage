@@ -243,7 +243,7 @@ def generate_client_inventory_list(async_task_id, client_id):
             'Location',
             'Description',
             'Accounting Type',
-            'Packing (pcs / cs)',
+            'Packing (pcs/cs)',
             'Curr. inventory (cs)',
             'Total quantity (pcs)',
         ])

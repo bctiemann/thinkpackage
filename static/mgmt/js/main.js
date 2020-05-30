@@ -1058,77 +1058,19 @@ function generateReport(productid) {
     window.open(url);  
 }
 
-function setupInventoryList(customerid) {
+function setupReport(customerid, reportName) {
     globals['customerid'] = customerid;
-    $('#inventory_list_task_status').empty();
-    $('#dialog_inventory_list').dialog('open');
+    $(`#${reportName}_task_status`).empty();
+    $(`#${reportName}_list`).dialog('open');
 }
 
-function execute_inventoryList(customerid, fromdate, todate) {
-    var url = cgiroot + 'report/inventory_list/';
-    var params = {
-        client: customerid,
-        fromdate: fromdate,
-        todate: todate,
-    };
-    $('#inventory_list_task_status').empty().append($('<div>', {
+function executeReport(reportName, url, params) {
+    $(`#${reportName}_task_status`).empty().append($('<div>', {
         class: 'spinner active',
     })).append($('<span>', {
-        id: 'inventory_list_progress_percent',
+        id: `${reportName}_progress_percent`,
     }));
-
-//    $('.spinner').addClass('active');
-//    $('#inventory_list_result_url').empty();
-    $.post(url, params, function(data) {
-console.log(data);
-        if (data.success) {
-            if (globals['asyncTaskInterval']) {
-                clearInterval(globals['asyncTaskInterval']);
-            }
-            globals['asyncTaskInterval'] = setInterval(function() {
-                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
-                $.getJSON(statusUrl, function(statusData) {
-console.log(statusData);
-                    $('#inventory_list_progress_percent').html(statusData.percent_complete + '%');
-                    if (statusData.is_complete) {
-//                        $('.spinner').removeClass('active');
-                        $('#inventory_list_progress_percent').html('');
-                        clearInterval(globals['asyncTaskInterval']);
-                        var resultIconSpan = $('<span>', {
-                            class: 'document-icon',
-                        });
-                        $('#inventory_list_task_status').empty().append($('<a>', {
-                            href: statusData.result_url,
-                            html: resultIconSpan,
-                        })).append($('<a>', {
-                            href: statusData.result_url,
-                            html: statusData.result_filename,
-                        }));
-                    }
-                });
-            }, 1000);
-        }
-    });
-}
-
-function setupDeliveryList(customerid) {
-    globals['customerid'] = customerid;
-    $('#delivery_list_task_status').empty();
-    $('#dialog_delivery_list').dialog('open');
-}
-
-function execute_deliveryList(customerid, fromdate, todate) {
-    var url = cgiroot + 'report/delivery_list/';
-    var params = {
-        client: customerid,
-        fromdate: fromdate,
-        todate: todate,
-    };
-    $('#delivery_list_task_status').empty().append($('<div>', {
-        class: 'spinner active',
-    })).append($('<span>', {
-        id: 'delivery_list_progress_percent',
-    }));
+    console.log(params);
 
     $.post(url, params, function(data) {
 console.log(data);
@@ -1140,113 +1082,14 @@ console.log(data);
                 var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
                 $.getJSON(statusUrl, function(statusData) {
 console.log(statusData);
-                    $('#delivery_list_progress_percent').html(statusData.percent_complete + '%');
+                    $(`#${reportName}_progress_percent`).html(statusData.percent_complete + '%');
                     if (statusData.is_complete) {
-//                        $('.spinner').removeClass('active');
-                        $('#delivery_list_progress_percent').html('');
+                        $(`#${reportName}_progress_percent`).html('');
                         clearInterval(globals['asyncTaskInterval']);
                         var resultIconSpan = $('<span>', {
                             class: 'document-icon',
                         });
-                        $('#delivery_list_task_status').empty().append($('<a>', {
-                            href: statusData.result_url,
-                            html: resultIconSpan,
-                        })).append($('<a>', {
-                            href: statusData.result_url,
-                            html: statusData.result_filename,
-                        }));
-                    }
-                });
-            }, 1000);
-        }
-    });
-}
-
-function setupIncomingList(customerid) {
-    globals['customerid'] = customerid;
-    $('#dialog_incoming_list').dialog('open');
-}
-
-function execute_incomingList(customerid, fromdate, todate) {
-    var url = cgiroot + 'report/incoming_list/';
-    var params = {
-        client: customerid,
-        fromdate: fromdate,
-        todate: todate,
-    };
-    $('#incoming_list_task_status').empty().append($('<div>', {
-        class: 'spinner active',
-    })).append($('<span>', {
-        id: 'incoming_list_progress_percent',
-    }));
-
-    $.post(url, params, function(data) {
-console.log(data);
-        if (data.success) {
-            if (globals['asyncTaskInterval']) {
-                clearInterval(globals['asyncTaskInterval']);
-            }
-            globals['asyncTaskInterval'] = setInterval(function() {
-                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
-                $.getJSON(statusUrl, function(statusData) {
-console.log(statusData);
-                    $('#incoming_list_progress_percent').html(statusData.percent_complete + '%');
-                    if (statusData.is_complete) {
-//                        $('.spinner').removeClass('active');
-                        $('#incoming_list_progress_percent').html('');
-                        clearInterval(globals['asyncTaskInterval']);
-                        var resultIconSpan = $('<span>', {
-                            class: 'document-icon',
-                        });
-                        $('#incoming_list_task_status').empty().append($('<a>', {
-                            href: statusData.result_url,
-                            html: resultIconSpan,
-                        })).append($('<a>', {
-                            href: statusData.result_url,
-                            html: statusData.result_filename,
-                        }));
-                    }
-                });
-            }, 1000);
-        }
-    });
-}
-
-function setupProductList(customerid) {
-    globals['customerid'] = customerid;
-    $('#dialog_product_list').dialog('open');
-}
-
-function execute_productList(customerid) {
-    var url = cgiroot + 'report/product_list/';
-    var params = {
-        client: customerid,
-    };
-    $('#product_list_task_status').empty().append($('<div>', {
-        class: 'spinner active',
-    })).append($('<span>', {
-        id: 'product_list_progress_percent',
-    }));
-
-    $.post(url, params, function(data) {
-console.log(data);
-        if (data.success) {
-            if (globals['asyncTaskInterval']) {
-                clearInterval(globals['asyncTaskInterval']);
-            }
-            globals['asyncTaskInterval'] = setInterval(function() {
-                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
-                $.getJSON(statusUrl, function(statusData) {
-console.log(statusData);
-                    $('#product_list_progress_percent').html(statusData.percent_complete + '%');
-                    if (statusData.is_complete) {
-//                        $('.spinner').removeClass('active');
-                        $('#product_list_progress_percent').html('');
-                        clearInterval(globals['asyncTaskInterval']);
-                        var resultIconSpan = $('<span>', {
-                            class: 'document-icon',
-                        });
-                        $('#product_list_task_status').empty().append($('<a>', {
+                        $(`#${reportName}_task_status`).empty().append($('<a>', {
                             href: statusData.result_url,
                             html: resultIconSpan,
                         })).append($('<a>', {
@@ -1263,102 +1106,6 @@ console.log(statusData);
 function setupInventoryAnalysis(customerid) {
     globals['customerid'] = customerid;
     $('#dialog_inventory_analysis').dialog('open');
-}
-
-function setupLocationList(customerid) {
-    globals['customerid'] = customerid;
-    $('#dialog_location_list').dialog('open');
-}
-
-function execute_locationList(customerid) {
-    var url = cgiroot + 'report/location_list/';
-    var params = {
-        client: customerid,
-    };
-    $('#location_list_task_status').empty().append($('<div>', {
-        class: 'spinner active',
-    })).append($('<span>', {
-        id: 'location_list_progress_percent',
-    }));
-
-    $.post(url, params, function(data) {
-        console.log(data);
-        if (data.success) {
-            if (globals['asyncTaskInterval']) {
-                clearInterval(globals['asyncTaskInterval']);
-            }
-            globals['asyncTaskInterval'] = setInterval(function() {
-                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
-                $.getJSON(statusUrl, function(statusData) {
-console.log(statusData);
-                    $('#location_list_progress_percent').html(statusData.percent_complete + '%');
-                    if (statusData.is_complete) {
-//                        $('.spinner').removeClass('active');
-                        $('#location_list_progress_percent').html('');
-                        clearInterval(globals['asyncTaskInterval']);
-                        var resultIconSpan = $('<span>', {
-                            class: 'document-icon',
-                        });
-                        $('#location_list_task_status').empty().append($('<a>', {
-                            href: statusData.result_url,
-                            html: resultIconSpan,
-                        })).append($('<a>', {
-                            href: statusData.result_url,
-                            html: statusData.result_filename,
-                        }));
-                    }
-                });
-            }, 1000);
-        }
-    });
-}
-
-function setupContactList(customerid) {
-    globals['customerid'] = customerid;
-    $('#dialog_contact_list').dialog('open');
-}
-
-function execute_contactList(customerid) {
-    var url = cgiroot + 'report/contact_list/';
-    var params = {
-        client: customerid,
-    };
-    $('#contact_list_task_status').empty().append($('<div>', {
-        class: 'spinner active',
-    })).append($('<span>', {
-        id: 'contact_list_progress_percent',
-    }));
-
-    $.post(url, params, function(data) {
-        console.log(data);
-        if (data.success) {
-            if (globals['asyncTaskInterval']) {
-                clearInterval(globals['asyncTaskInterval']);
-            }
-            globals['asyncTaskInterval'] = setInterval(function() {
-                var statusUrl = apiroot + 'async_task/' + data.task_id + '/status/';
-                $.getJSON(statusUrl, function(statusData) {
-console.log(statusData);
-                    $('#contact_list_progress_percent').html(statusData.percent_complete + '%');
-                    if (statusData.is_complete) {
-//                        $('.spinner').removeClass('active');
-                        $('#contact_list_progress_percent').html('');
-                        clearInterval(globals['asyncTaskInterval']);
-                        var resultIconSpan = $('<span>', {
-                            class: 'document-icon',
-                        });
-                        $('#contact_list_task_status').empty().append($('<a>', {
-                            href: statusData.result_url,
-                            html: resultIconSpan,
-                        })).append($('<a>', {
-                            href: statusData.result_url,
-                            html: statusData.result_filename,
-                        }));
-                    }
-                });
-            }, 1000);
-        }
-    });
 }
 
 function setupProductTransfer(productid, customerid) {
@@ -1849,7 +1596,37 @@ $(document).ready(function() {
 //                $( this ).dialog( "close" );
 //                var url = cgiroot + 'report/inventory_list/?customerid=' + globals['customerid'] + '&fromdate=' + $('#inventory_list_fromdate').val() + '&todate=' + $('#inventory_list_todate').val();
 //                window.open(url);
-                execute_inventoryList(globals['customerid'], $('#inventory_list_fromdate').val(), $('#inventory_list_todate').val());
+                executeReport(
+                    'inventory_list',
+                    `${cgiroot}report/inventory_list/`,
+                    {
+                        client: globals['customerid'],
+                        fromdate: $('#inventory_list_fromdate').val(),
+                        todate: $('#inventory_list_todate').val(),
+                    }
+                );
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $('#dialog_client_inventory_list').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: 500,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: {
+            Generate: function() {
+                executeReport(
+                    'client_inventory_list',
+                    `${cgiroot}report/client_inventory_list/`,
+                    {
+                        client: globals['customerid'],
+                    }
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );
@@ -1865,10 +1642,15 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
-//                $( this ).dialog( "close" );
-//                var url = 'gen_delivery_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#delivery_list_fromdate').val() + '&todate=' + $('#delivery_list_todate').val();;
-//                window.open(url);
-                execute_deliveryList(globals['customerid'], $('#delivery_list_fromdate').val(), $('#delivery_list_todate').val());
+                executeReport(
+                    'delivery_list',
+                    `${cgiroot}report/delivery_list/`,
+                    {
+                        client: globals['customerid'],
+                        fromdate: $('#delivery_list_fromdate').val(),
+                        todate: $('#delivery_list_todate').val(),
+                    }
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );
@@ -1884,10 +1666,15 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
-//                $( this ).dialog( "close" );
-//                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
-//                window.open(url);
-                execute_incomingList(globals['customerid'], $('#incoming_list_fromdate').val(), $('#incoming_list_todate').val());
+                executeReport(
+                    'incoming_list',
+                    `${cgiroot}report/incoming_list/`,
+                    {
+                        client: globals['customerid'],
+                        fromdate: $('#incoming_list_fromdate').val(),
+                        todate: $('#incoming_list_todate').val(),
+                    }
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );
@@ -1904,6 +1691,13 @@ $(document).ready(function() {
         buttons: {
             Generate: function() {
                 execute_productList(globals['customerid']);
+                executeReport(
+                    'product_list',
+                    `${cgiroot}report/product_list/`,
+                    {
+                        client: globals['customerid'],
+                    }
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );
@@ -1936,10 +1730,13 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
-//                $( this ).dialog( "close" );
-//                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
-//                window.open(url);
-                execute_locationList(globals['customerid']);
+                executeReport(
+                    'location_list',
+                    `${cgiroot}report/location_list/`,
+                    {
+                        client: globals['customerid'],
+                    }
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );
@@ -1955,10 +1752,13 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
-//                $( this ).dialog( "close" );
-//                var url = 'gen_incoming_list.cfm?customerid=' + globals['customerid'] + '&fromdate=' + $('#incoming_list_fromdate').val() + '&todate=' + $('#incoming_list_todate').val();;
-//                window.open(url);
-                execute_contactList(globals['customerid']);
+                executeReport(
+                    'contact_list',
+                    `${cgiroot}report/contact_list/`,
+                    {
+                        client: globals['customerid'],
+                    }
+                );
             },
             Cancel: function() {
                 $( this ).dialog( "close" );

@@ -1108,11 +1108,22 @@ class InventoryListReport(AbstractReport):
         return async_task
 
 
+class ClientInventoryListReport(AbstractReport):
+
+    def launch_report_task(self):
+        client = get_object_or_404(Client, pk=self.request.data['client'])
+        report_task_name = f'ClientInventoryList-{client.company_name}'
+        async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
+        tasks.generate_client_inventory_list.delay(async_task.id, client.id)
+        logger.info(f'{self.request.user} generated client inventory list report for {client}, async task {async_task.id}')
+        return async_task
+
+
 class DeliveryListReport(AbstractReport):
 
     def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        report_task_name = f'DeliveryList-{client.company_name}'
+        report_task_name = f'ClientDeliveryList-{client.company_name}'
         async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_delivery_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
         logger.info(f'{self.request.user} generated delivery list report for {client}, async task {async_task.id}')
@@ -1123,7 +1134,7 @@ class IncomingListReport(AbstractReport):
 
     def launch_report_task(self):
         client = get_object_or_404(Client, pk=self.request.data['client'])
-        report_task_name = f'IncomingList-{client.company_name}'
+        report_task_name = f'ClientIncomingList-{client.company_name}'
         async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
         tasks.generate_incoming_list.delay(async_task.id, client.id, self.request.data['fromdate'], self.request.data['todate'])
         logger.info(f'{self.request.user} generated incoming list report for {client}, async task {async_task.id}')

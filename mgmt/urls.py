@@ -79,6 +79,7 @@ urlpatterns = [
 
     path('report/lookup/', mgmt_views.ItemLookupReport.as_view(), name='item-lookup-report'),
     path('report/inventory_list/', mgmt_views.InventoryListReport.as_view(), name='inventory-list-report'),
+    path('report/client_inventory_list/', mgmt_views.ClientInventoryListReport.as_view(), name='client-inventory-list-report'),
     path('report/delivery_list/', mgmt_views.DeliveryListReport.as_view(), name='delivery-list-report'),
     path('report/incoming_list/', mgmt_views.IncomingListReport.as_view(), name='incoming-list-report'),
     path('report/product_list/', mgmt_views.ProductListReport.as_view(), name='product-list-report'),

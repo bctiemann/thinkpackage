@@ -223,6 +223,54 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
 
 @shared_task
+def generate_client_inventory_list(async_task_id, client_id):
+
+    async_task = AsyncTask.objects.get(pk=async_task_id)
+    client = Client.objects.get(pk=client_id)
+    client_tree = [c['obj'] for c in client.children]
+
+    products = Product.objects.filter(client__in=client_tree, is_deleted=False, is_active=True).order_by('item_number')
+
+    timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
+    filename = f'ClientInventoryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
+    file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
+    with open(file_path, mode='w') as csvfile:
+
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            'Item #',
+            'Client ID',
+            'Location',
+            'Description',
+            'Accounting Type',
+            'Packing (pcs / cs)',
+            'Curr. inventory (cs)',
+            'Total quantity (pcs)',
+        ])
+        for product in products:
+            writer.writerow([
+                product.item_number,
+                product.client_tag,
+                product.location.name if product.location else '',
+                product.name,
+                product.get_accounting_prepay_type_display(),
+                product.packing,
+                product.cases_available,
+                product.units_inventory,
+            ])
+
+    logger.info('Done writing CSV')
+    async_task.is_complete = True
+    async_task.percent_complete = 100
+    async_task.result_file = os.path.join('reports', filename)
+    async_task.result_content_type = 'text/csv'
+    async_task.save()
+
+    return 'done'
+
+
+
+@shared_task
 def generate_delivery_list(async_task_id, client_id, fromdate, todate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
@@ -282,7 +330,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'DeliveryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
+    filename = f'ClientDeliveryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 
@@ -379,7 +427,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'IncomingList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
+    filename = f'ClientIncomingList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 

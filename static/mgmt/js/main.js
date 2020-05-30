@@ -1061,7 +1061,7 @@ function generateReport(productid) {
 function setupReport(customerid, reportName) {
     globals['customerid'] = customerid;
     $(`#${reportName}_task_status`).empty();
-    $(`#${reportName}_list`).dialog('open');
+    $(`#dialog_${reportName}`).dialog('open');
 }
 
 function executeReport(reportName, url, params) {

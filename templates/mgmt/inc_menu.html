@@ -30,13 +30,13 @@
 <li><a class="tnav" href="#" onClick="setupProductList({{ client.id }});">Product List</a></li>
 
 {% if client %}
-<li><a class="tnav" href="#" onClick="setupInventoryList({{ client.id }});">Internal - Inventory List</a></li>
-<li><a class="tnav" href="#" onClick="setupClientInventoryList({{ client.id }});">Client - Inventory List</a></li>
-<li><a class="tnav" href="#" onClick="setupDeliveryList({{ client.id }});">Client - Delivery List</a></li>
-<li><a class="tnav" href="#" onClick="setupIncomingList({{ client.id }});">Client - Incoming List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'inventory_list');">Internal - Inventory List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'client_inventory_list');">Client - Inventory List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'delivery_list');">Client - Delivery List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'incoming_list');">Client - Incoming List</a></li>
 <li><a class="tnav" href="#" onClick="setupInventoryAnalysis({{ client.id }});">Inventory Analysis</a></li>
-<li><a class="tnav" href="#" onClick="setupLocationList({{ client.id }});">Location List</a></li>
-<li><a class="tnav" href="#" onClick="setupContactList({{ client.id }});">Contact List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'location_list');">Location List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'contact_list');">Contact List</a></li>
 {% endif %}
 </ul>
 </div>

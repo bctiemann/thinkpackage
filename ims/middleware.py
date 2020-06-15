@@ -74,6 +74,8 @@ class SelectedClientMiddleware(object):
             return None
 
     def get_first_authorized_client(self, request):
+        if request.user.is_admin:
+            return Client.objects.filter(is_active=True).first()
         client_user = ClientUser.objects.filter(user=request.user, client__is_active=True).first()
         if client_user:
             request.session['selected_client_id'] = client_user.client.id

@@ -3,6 +3,9 @@ from django.core import mail
 from django.template import Context
 from django.template.loader import get_template
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def tree_to_list(items, sort_by=None, omit=[], reverse=False):
 
@@ -85,6 +88,7 @@ def send_templated_email(recipients,
                 msg.attach(**attachment)
 
         msg.send()
+        logger.info(f'Sent email "{subject}" to {recipient}')
 
     connection.close()
 

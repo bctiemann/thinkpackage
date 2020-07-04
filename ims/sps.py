@@ -75,9 +75,10 @@ class SPSService(object):
     def list_transactions(self, file_path='', limit=None):
         transaction_url = self.get_transaction_url(file_path)
         transaction_url += '*'
-        if limit:
-            transaction_url += f'?limit={limit}'
-        response = requests.get(transaction_url, headers=self._get_headers())
+        params = {
+            'limit': limit,
+        }
+        response = requests.get(transaction_url, params=params, headers=self._get_headers())
         response.raise_for_status()
         return response.json()
 
@@ -99,8 +100,8 @@ class SPSService(object):
         params = {
             'pageNumber': page_number,
             'pageSize': page_size,
-            'start_date_time': start_date_time,
-            'end_date_time': end_date_time,
+            'startDateTime': start_date_time,
+            'endDateTime': end_date_time,
         }
         response = requests.get(url, params=params, headers=self._get_headers())
         response.raise_for_status()

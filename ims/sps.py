@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 REDIS_KEY = 'sps_api_token'
+MIN_TTL = 300
 
 
 class SPSService(object):
@@ -20,11 +21,16 @@ class SPSService(object):
 
     def __init__(self, *args, **kwargs):
         self.redis_client = Redis(connection_pool=BlockingConnectionPool())
-        saved_token = self.redis_client.get(REDIS_KEY)
-        if saved_token:
-            self.token = saved_token.decode()
-        else:
+
+    def _check_token(self):
+        ttl = self.redis_client.ttl(REDIS_KEY)
+        if ttl < 0:
             self.token = self._get_token()
+        elif ttl < MIN_TTL:
+            self._refresh_token()
+        else:
+            saved_token = self.redis_client.get(REDIS_KEY)
+            self.token = saved_token.decode()
 
     def _get_headers(self):
         return {
@@ -49,11 +55,12 @@ class SPSService(object):
         return result.get('access_token')
 
     def auth_check(self):
+        self._check_token()
         response = requests.get(self.AUTH_CHECK_URL, headers=self._get_headers())
         response.raise_for_status()
         logger.info('Auth successful.')
 
-    def get_transaction_url(self, file_path='', file_key=''):
+    def _get_transaction_url(self, file_path='', file_key=''):
         transaction_url = f'{self.TRANSACTION_URL}'
         if file_path:
             transaction_url += f'{file_path}/'
@@ -61,19 +68,22 @@ class SPSService(object):
         return transaction_url
 
     def create_transaction(self, binary_data, file_path='', file_key=''):
-        transaction_url = self.get_transaction_url(file_path, file_key)
+        self._check_token()
+        transaction_url = self._get_transaction_url(file_path, file_key)
         response = requests.post(transaction_url, data=binary_data, headers=self._get_headers())
         response.raise_for_status()
         return response.json()
 
     def get_transaction(self, file_path='', file_key=''):
-        transaction_url = self.get_transaction_url(file_path, file_key)
+        self._check_token()
+        transaction_url = self._get_transaction_url(file_path, file_key)
         response = requests.get(transaction_url, headers=self._get_headers())
         response.raise_for_status()
-        return response.content
+        return response
 
     def list_transactions(self, file_path='', limit=None):
-        transaction_url = self.get_transaction_url(file_path)
+        self._check_token()
+        transaction_url = self._get_transaction_url(file_path)
         transaction_url += '*'
         params = {
             'limit': limit,
@@ -83,7 +93,8 @@ class SPSService(object):
         return response.json()
 
     def delete_transaction(self, file_path='', file_key=''):
-        transaction_url = self.get_transaction_url(file_path, file_key)
+        self._check_token()
+        transaction_url = self._get_transaction_url(file_path, file_key)
         response = requests.delete(transaction_url, headers=self._get_headers())
         response.raise_for_status()
         return response.content
@@ -96,6 +107,7 @@ class SPSService(object):
         :param end_date_time: datetime in ISO format (2016-06-23T09:07:21), i.e. from datetime.isoformat()
         :return: json
         '''
+        self._check_token()
         url = self.PROCESSING_REPORTS_URL
         params = {
             'pageNumber': page_number,

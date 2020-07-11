@@ -63,6 +63,7 @@ class SPSService(object):
     def _get_transaction_url(self, file_path='', file_key=''):
         transaction_url = f'{self.TRANSACTION_URL}'
         if file_path:
+            file_path = file_path.strip('/')
             transaction_url += f'{file_path}/'
         transaction_url += file_key
         return transaction_url

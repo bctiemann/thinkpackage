@@ -72,8 +72,8 @@ class SPSService(object):
         self._check_token()
         transaction_url = self._get_transaction_url(file_path, file_key)
         response = requests.post(transaction_url, data=binary_data, headers=self._get_headers())
-        response.raise_for_status()
-        return response.json()
+        # response.raise_for_status()
+        return response
 
     def get_transaction(self, file_path='', file_key=''):
         self._check_token()
@@ -98,7 +98,7 @@ class SPSService(object):
         transaction_url = self._get_transaction_url(file_path, file_key)
         response = requests.delete(transaction_url, headers=self._get_headers())
         response.raise_for_status()
-        return response.content
+        return response
 
     def procesing_reports(self, page_number=None, page_size=None, start_date_time=None, end_date_time=None):
         '''

@@ -444,6 +444,15 @@ class Location(models.Model):
         ordering = ['name']
 
 
+class ProductManager(models.Manager):
+
+    # This sorting algorithm (which is intended to mimic Excel's behavior of sorting numerically first
+    # followed by alphabetically) works in MySQL but not in SQLite.
+    def get_queryset(self):
+        products = super().get_queryset().all()
+        return products.extra(select={'sorted_itemnum': "itemnum REGEXP '^-?[0-9]+$'"}).order_by('-sorted_itemnum', 'item_number')
+
+
 class Product(models.Model):
 
     class AccountingPrepayType(models.IntegerChoices):
@@ -471,6 +480,8 @@ class Product(models.Model):
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid', on_delete=models.SET_NULL)
     accounting_prepay_type = models.IntegerField(choices=AccountingPrepayType.choices, null=True, blank=True, db_column='account')
+
+    objects = ProductManager()
 
     @property
     def units_inventory(self):
@@ -621,7 +632,7 @@ class Product(models.Model):
 
     class Meta:
         db_table = 'Products'
-        ordering = ['item_number']
+        # ordering = ['item_number']
 
 
 class ShipperAddress(models.Model):

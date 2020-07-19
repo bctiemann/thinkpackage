@@ -22,7 +22,8 @@
     <table>
         <tr> 
             <th>Item #</th>
-            <th>Description</th>  
+            <th>Description</th>
+            <th>Invoice</th>
             <th>Packing</th>
             <th>Cases</th>
         </tr>
@@ -31,6 +32,7 @@
                 <tr>
                     <td>{{ product.obj.item_number }}</td>
                     <td>{{ product.obj.name }}</td>
+                    <td>{{ product.obj.get_accounting_prepay_type_display|default_if_none:"" }}</td>
                     <td>{{ product.obj.packing|intcomma }}</td>
                     <td>{{ product.cases }}</td>
                 </tr>

@@ -86,7 +86,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    products = Product.objects.filter(client__in=client_tree, is_deleted=False).order_by('item_number')
+    products = Product.objects.filter(client__in=client_tree, is_deleted=False)
     transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from)
 
     product_counts = {}
@@ -229,7 +229,7 @@ def generate_client_inventory_list(async_task_id, client_id):
     client = Client.objects.get(pk=client_id)
     client_tree = [c['obj'] for c in client.children]
 
-    products = Product.objects.filter(client__in=client_tree, is_deleted=False, is_active=True).order_by('item_number')
+    products = Product.objects.filter(client__in=client_tree, is_deleted=False, is_active=True)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     filename = f'ClientInventoryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'

@@ -100,7 +100,7 @@ class SPSService(object):
         response.raise_for_status()
         return response
 
-    def procesing_reports(self, page_number=None, page_size=None, start_date_time=None, end_date_time=None):
+    def processing_reports(self, page_number=None, page_size=None, start_date_time=None, end_date_time=None):
         '''
         :param page_number: int
         :param page_size: int

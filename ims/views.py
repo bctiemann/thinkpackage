@@ -93,7 +93,7 @@ def async_task_result(request, async_task_id=None):
 
     with open(filename, 'rb') as file:
         response = HttpResponse(file.read(), content_type=async_task.result_content_type)
-        response['Content-Disposition'] = 'attachment;filename={0}.{1}'.format(async_task.result_basename, async_task.result_extension)
+        response['Content-Disposition'] = 'attachment;filename={0}'.format(async_task.result_filename)
     return response
 
 

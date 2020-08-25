@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import (
     login, authenticate, get_user_model, password_validation, update_session_auth_hash,
@@ -251,6 +253,7 @@ class LoginView(LoginView):
         ('backup', BackupTokenForm),
     )
 
+    @method_decorator(ensure_csrf_cookie)
     def dispatch(self, request, *args, **kwargs):
         logger.info(f'{request.resolver_match.app_name} login: {request.user} {request.method} '
                     f'{request.POST.get("auth-username")} {request.META.get("REMOTE_ADDR")} '

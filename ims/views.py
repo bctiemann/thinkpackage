@@ -73,7 +73,7 @@ def shipment_doc(request, doc_id=None):
     logger.info('User {0} downloaded {1}, {2}.{3}'.format(request.user, shipment_doc.id, shipment_doc.basename, shipment_doc.ext))
     with open(filename, 'rb') as file:
         response = HttpResponse(file.read(), content_type=shipment_doc.content_type)
-        response['Content-Disposition'] = 'inline;filename={0}.{1}'.format(shipment_doc.basename, shipment_doc.ext)
+        response['Content-Disposition'] = 'inline;filename={0}'.format(shipment_doc.clean_filename)
     return response
 
 

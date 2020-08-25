@@ -10,6 +10,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
+from django.utils.text import get_valid_filename
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from django_countries.fields import CountryField
@@ -1015,6 +1016,10 @@ class ShipmentDoc(models.Model):
 
     def get_absolute_url(self):
         return reverse('shipment-doc', kwargs={'doc_id': self.id})
+
+    @property
+    def clean_filename(self):
+        return get_valid_filename(f'{self.basename}.{self.ext}')
 
     def __str__(self):
         return ('{0}.{1}'.format(self.basename, self.ext))

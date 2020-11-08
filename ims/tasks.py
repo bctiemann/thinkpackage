@@ -306,13 +306,13 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'shipment_id': 'RETURN',
                 'location': transaction.receivable.returned_product.location.name,
                 'item_number': transaction.product.item_number_force_string,
-                'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'month': transaction.receivable.returned_product.date_returned.month,
                 'year': transaction.receivable.returned_product.date_returned.year,
                 'cases': transaction.receivable.returned_product.cases_undamaged,
                 'packing': transaction.product.packing,
                 'units': transaction.total_quantity,
+                'client_tag': transaction.product.client_tag,
             })
         elif transaction.shipment:
             rows.append({
@@ -320,13 +320,13 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 'shipment_id': transaction.shipment.id,
                 'location': transaction.shipment.location.name,
                 'item_number': transaction.product.item_number_force_string,
-                'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'month': transaction.shipment.date_shipped.month,
                 'year': transaction.shipment.date_shipped.year,
                 'cases': transaction.cases * -1,
                 'packing': transaction.product.packing,
                 'units': transaction.total_quantity * -1,
+                'client_tag': transaction.product.client_tag,
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
@@ -340,13 +340,13 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
             'DL #',
             'Store',
             'SKU #',
-            'Client ID',
             'SKU Desc',
             'Month',
             'Year',
             'Cases Out Total',
             'PACKING per case by DL history',
             'QTY Pcs',
+            'Client ID',
         ])
         for row in sorted(rows, key=lambda row_data: (row_data['date'], row_data['shipment_id'])):
             writer.writerow([
@@ -354,13 +354,13 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
                 row['shipment_id'],
                 row['location'],
                 row['item_number'],
-                row['client_tag'],
                 row['product_name'],
                 row['month'],
                 row['year'],
                 row['cases'],
                 row['packing'],
                 row['units'],
+                row['client_tag'],
             ])
 
     logger.info('Done writing CSV')
@@ -419,11 +419,11 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 'purchase_order': purchase_order,
                 'shipment_order': transaction.shipment_order,
                 'item_number': transaction.product.item_number_force_string,
-                'client_tag': transaction.product.client_tag,
                 'product_name': transaction.product.name,
                 'cases': cases,
                 'packing': transaction.product.packing,
                 'units': units,
+                'client_tag': transaction.product.client_tag,
             })
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
@@ -439,11 +439,11 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
             'PO #',
             'SO #',
             'Item #',
-            'Client ID',
             'Description',
             'Cases In',
             'PACKING per case',
             'QTY Pcs',
+            'Client ID',
         ])
         for row in sorted(rows, key=lambda row_data: row_data['date']):
             writer.writerow([
@@ -453,11 +453,11 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 row['purchase_order'],
                 row['shipment_order'],
                 row['item_number'],
-                row['client_tag'],
                 row['product_name'],
                 row['cases'],
                 row['packing'],
                 row['units'],
+                row['client_tag'],
             ])
 
     logger.info('Done writing CSV')

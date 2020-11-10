@@ -626,7 +626,7 @@ class Product(models.Model):
         return history[len(history) - 1].cases_remaining_differential
 
     def units_remaining_on_date(self, on_date):
-        self.cases_remaining_on_date(on_date) * self.packing
+        return self.cases_remaining_on_date(on_date) * self.packing
 
     def get_absolute_url(self):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client.id})

@@ -238,7 +238,8 @@ def generate_client_inventory_list(async_task_id, client_id, ondate):
     products = Product.objects.filter(client__in=client_tree, is_deleted=False, is_active=True)
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
-    filename = f'ClientInventoryList - {get_valid_filename(client.company_name)} - {timestamp}.csv'
+    as_of_timestamp = date_on.strftime('%m-%d-%Y')
+    filename = f'ClientInventoryList - {get_valid_filename(client.company_name)} - as of {as_of_timestamp} - {timestamp}.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, 'reports', filename)
     with open(file_path, mode='w') as csvfile:
 

@@ -223,11 +223,17 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
 
 @shared_task
-def generate_client_inventory_list(async_task_id, client_id):
+def generate_client_inventory_list(async_task_id, client_id, ondate):
 
     async_task = AsyncTask.objects.get(pk=async_task_id)
     client = Client.objects.get(pk=client_id)
     client_tree = [c['obj'] for c in client.children]
+
+    date_on = timezone.now()
+    try:
+        date_on = datetime.strptime(ondate, '%m/%d/%Y')
+    except:
+        pass
 
     products = Product.objects.filter(client__in=client_tree, is_deleted=False, is_active=True)
 
@@ -255,8 +261,8 @@ def generate_client_inventory_list(async_task_id, client_id):
                 product.name,
                 product.get_accounting_prepay_type_display(),
                 product.packing,
-                product.cases_available,
-                product.units_inventory,
+                product.cases_remaining_on_date(date_on),
+                product.units_remaining_on_date(date_on),
             ])
 
     logger.info('Done writing CSV')

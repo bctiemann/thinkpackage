@@ -1625,6 +1625,7 @@ $(document).ready(function() {
                     `${cgiroot}report/client_inventory_list/`,
                     {
                         client: globals['customerid'],
+                        ondate: $('#inventory_list_ondate').val(),
                     }
                 );
             },
@@ -1894,8 +1895,11 @@ $(document).ready(function() {
 
     if (globals['shipmentid']) {
         selectShipment(globals['shipmentid']);
-        var rowpos = $('tr#shipment_' + globals['shipmentid']).position().top - $('table.shipments tbody').position().top;
-        $('table.shipments tbody').animate({ scrollTop: rowpos});
+        var shipmentTr = $('tr#shipment_' + globals['shipmentid']);
+        if (shipmentTr.length) {
+            var rowpos = shipmentTr.position().top - $('table.shipments tbody').position().top;
+            $('table.shipments tbody').animate({ scrollTop: rowpos});
+        }
     }
 
     $('#toggle_inactive').button({
@@ -1920,6 +1924,7 @@ $(document).ready(function() {
 
     $('#inventory_list_fromdate').datepicker();
     $('#inventory_list_todate').datepicker();
+    $('#inventory_list_ondate').datepicker();
     $('#delivery_list_fromdate').datepicker();
     $('#delivery_list_todate').datepicker();
     $('#incoming_list_fromdate').datepicker();

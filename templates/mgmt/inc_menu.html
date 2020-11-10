@@ -60,6 +60,9 @@
 <div class="dialog" id="dialog_client_inventory_list" title="Client Inventory List">
     <p>Fetch a CSV of all current inventory for this client.</p>
 
+    As of date:
+    <input type="text" id="inventory_list_ondate" value="{{ now|date:"SHORT_DATE_FORMAT" }}" style="width: 100px;" />
+
     <div class="task_status" id="client_inventory_list_task_status"></div>
 </div>
 

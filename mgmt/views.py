@@ -1114,7 +1114,7 @@ class ClientInventoryListReport(AbstractReport):
         client = get_object_or_404(Client, pk=self.request.data['client'])
         report_task_name = f'ClientInventoryList-{client.company_name}'
         async_task = AsyncTask.objects.create(name=report_task_name, user=self.request.user)
-        tasks.generate_client_inventory_list.delay(async_task.id, client.id)
+        tasks.generate_client_inventory_list.delay(async_task.id, client.id, self.request.data['ondate'])
         logger.info(f'{self.request.user} generated client inventory list report for {client}, async task {async_task.id}')
         return async_task
 

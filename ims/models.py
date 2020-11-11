@@ -603,8 +603,8 @@ class Product(models.Model):
         history = self.transaction_set.all()
         history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
         history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
-        history_since = history.filter(date_created__gt=date_from)
-        history_prior = history.filter(date_created__lte=date_from).order_by('-date_in_out')
+        history_since = history.filter(date_in_out__gt=date_from)
+        history_prior = history.filter(date_in_out__lte=date_from).order_by('-date_in_out')
         if history_prior.exists():
             last_prior = history_prior.filter(pk=history_prior.first().pk)
             history = history_since | last_prior

@@ -600,9 +600,16 @@ class Product(models.Model):
         return qr.make_image()
 
     def get_history(self, date_from):
-        history = self.transaction_set.filter(date_created__gt=date_from)
+        history = self.transaction_set.all()
         history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
         history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
+        history_since = history.filter(date_created__gt=date_from)
+        history_prior = history.filter(date_created__lte=date_from).order_by('-date_in_out')
+        if history_prior.exists():
+            last_prior = history_prior.filter(pk=history_prior.first().pk)
+            history = history_since | last_prior
+        else:
+            history = history_since
         history = history.order_by('-date_in_out', '-shipment__id')
 
         cases_balance_differential = self.cases_inventory

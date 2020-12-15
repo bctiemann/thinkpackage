@@ -201,6 +201,8 @@ class ShipmentDocCreate(AjaxableResponseMixin, CreateView):
         self.object.content_type = uploaded_file.content_type
         self.object.size = uploaded_file.size
         filename_parts = uploaded_file.name.split('.')
+        if len(filename_parts) == 1:
+            filename_parts.append('')
         self.object.basename = '.'.join(filename_parts[0:-1])
         self.object.ext = filename_parts[-1]
         self.object.save()

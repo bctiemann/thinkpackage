@@ -274,6 +274,10 @@ def inventory_request_delivery(request):
 
     shipment.location = location
     shipment.purchase_order_number = delivery_data.get('client_po')
+    try:
+        shipment.purchase_order_deadline = datetime.strptime(delivery_data.get('po_deadline') or '', '%m/%d/%Y')
+    except ValueError:
+        pass
     shipment.save()
 
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')

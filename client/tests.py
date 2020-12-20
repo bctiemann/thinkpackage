@@ -327,6 +327,7 @@ class InventoryTestCase(TestCase):
             'customerid': '',
             'shipmentid': 0,
             'client_po': 'Test PO',
+            'po_deadline': '12/20/2021',
             'on_behalf_of': '',
         }
         json_payload = {'json': json.dumps(payload)}

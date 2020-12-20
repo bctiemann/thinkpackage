@@ -253,6 +253,7 @@ function execute_requestDelivery() {
         customerid: $('#customerid').val(),
         shipmentid: 'shipmentid' in globals ? globals['shipmentid'] : 0,
         client_po: $('#client_po').val(),
+        po_deadline: $('#po_deadline').val(),
         on_behalf_of: $('#on_behalf_of').val(),
     };
 console.log(requestdelivery);
@@ -567,5 +568,7 @@ $(document).ready(function() {
 
     refreshInventory();
     loadLocationsList();
+
+    $('#po_deadline').datepicker();
 
 });

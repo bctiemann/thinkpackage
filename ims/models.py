@@ -692,6 +692,7 @@ class Shipment(models.Model):
     third_party_charges_advanced = models.CharField(max_length=16, blank=True, default='', db_column='3rdpartychgadvanced')
     pro_number = models.CharField(max_length=50, blank=True, default='', db_column='pro')
     purchase_order_number = models.CharField(max_length=50, blank=True, default='', db_column='loadnum')
+    purchase_order_deadline = models.DateField(null=True, blank=True)
     shipper_instructions = models.TextField(null=True, blank=True, db_column='shipperinstructions')
     consignee_instructions = models.TextField(null=True, blank=True, default='', db_column='consigneeinstructions')
     shipper_address = models.ForeignKey('ShipperAddress', null=True, blank=True, default=settings.DEFAULT_SHIPPER_ADDRESS, db_column='shipperaddress', on_delete=models.SET_NULL)

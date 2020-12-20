@@ -353,7 +353,11 @@ Cannot produce purchase order; no INVQ products in this shipment.
         PURCHASE ORDER
     </div>
 
-    Expected Delivery Date: ASAP
+    {% if shipment.purchase_order_deadline %}
+        PO Deadline: {{ shipment.purchase_order_deadline|date }}
+    {% else %}
+        Expected Delivery Date: ASAP
+    {% endif %}
 </div>
 
 <div class="pagecount">
@@ -401,6 +405,10 @@ Page {{ forloop.counter }} of {{ total_pages }}
     <tr>
         <td class="label">PO Date</td>
         <td class="right_col">{{ shipment.date_created|date:"SHORT_DATE_FORMAT" }}</td>
+    </tr>
+    <tr>
+        <td class="label">PO Deadline</td>
+        <td class="right_col">{{ shipment.purchase_order_deadline|date:"SHORT_DATE_FORMAT" }}</td>
     </tr>
     <tr>
         <td class="label">PO Ship Date</td>

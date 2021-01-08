@@ -101,7 +101,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
         if transaction.shipment:
             if transaction.shipment.date_shipped:
-                column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y'))
+                column_id = 'DL#{0} {1}'.format(transaction.shipment.id, transaction.shipment.date_shipped.strftime('%m/%d/%Y %H:%M'))
             else:
                 column_id = 'DL#{0}'.format(transaction.shipment.id)
             if not column_id in product_counts:
@@ -111,7 +111,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 'out': transaction.cases,
             }
         elif transaction.is_transfer:
-            column_id = 'T#{0} {1}'.format(transaction.id, transaction.date_created.strftime('%m/%d/%Y'))
+            column_id = 'T#{0} {1}'.format(transaction.id, transaction.date_created.strftime('%m/%d/%Y %H:%M'))
             if not column_id in product_counts:
                 product_counts[column_id] = {}
             product_counts[column_id][transaction.product.id] = {
@@ -119,7 +119,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
                 'out': transaction.cases if transaction.is_outbound else 0,
             }
         else:
-            column_id = 'SO: {0} {1}'.format(transaction.shipment_order, transaction.date_created.strftime('%m/%d/%Y'))
+            column_id = 'SO: {0} {1}'.format(transaction.shipment_order, transaction.date_created.strftime('%m/%d/%Y %H:%M'))
             if not column_id in product_counts:
                 product_counts[column_id] = {}
             product_counts[column_id][transaction.product.id] = {

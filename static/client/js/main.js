@@ -201,8 +201,9 @@ function updateTotalCases() {
         var remain = parseInt($(this).attr('remain'));
         var inputVal = parseInt($(this).val());
         if ($(this).val()) {
-            $(this).val(inputVal > remain ? remain : inputVal);
-            totalcases += inputVal;
+            let remainAdjustedVal = inputVal > remain ? remain : inputVal;
+            $(this).val(remainAdjustedVal);
+            totalcases += remainAdjustedVal;
         }
     });
     $('#total_cases').html(totalcases);

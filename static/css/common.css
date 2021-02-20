@@ -822,6 +822,7 @@ div.objectform div.non-input {
 
 td.numeric input {
 	text-align: right;
+	-moz-appearance: textfield;
 }
 
 div.non-input span {

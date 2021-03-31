@@ -72,15 +72,19 @@ def change_password(request):
     new_password_2 = request.POST.get('new_password_2')
 
     if not authenticate(username=request.user.email, password=current_password):
+        logger.info(f'Password change failure for {request.user}: current password incorrect.')
         return JsonResponse({'success': False, 'message': 'Current password was not correct.'})
 
     if new_password_1 != new_password_2:
+        logger.info(f'Password change failure for {request.user}: passwords did not match.')
         return JsonResponse({'success': False, 'message': 'Passwords did not match.'})
 
     if not re.match(PASSWORD_REGEX, new_password_1):
+        logger.info(f'Password change failure for {request.user}: password complexity insufficient.')
         return JsonResponse({'success': False, 'message': f'Password does not meet the complexity requirements ({PASSWORD_COMPLEXITY}).'})
 
     if authenticate(username=request.user.email, password=new_password_1):
+        logger.info(f'Password change failure for {request.user}: new password same as current password.')
         return JsonResponse({'success': False, 'message': f'Password cannot be the same as your existing password.'})
 
     request.user.set_password(new_password_1)

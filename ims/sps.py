@@ -1,8 +1,11 @@
 import requests
+import json
 from redis import BlockingConnectionPool
 from redis.client import Redis
 
 from django.conf import settings
+
+from api.serializers import SPSOrderSerializer
 
 import logging
 logger = logging.getLogger(__name__)
@@ -119,3 +122,8 @@ class SPSService(object):
         response = requests.get(url, params=params, headers=self._get_headers())
         response.raise_for_status()
         return response.json()
+
+    def submit_shipment(self, shipment):
+        serializer = SPSOrderSerializer(shipment)
+        file_key = f'testin/Shipment_{shipment.id}'
+        self.create_transaction(json.dumps(serializer.data), file_key=file_key)

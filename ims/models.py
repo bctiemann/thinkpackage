@@ -753,8 +753,32 @@ class Shipment(models.Model):
             total_weight_imperial += transaction.total_weight_imperial
         return total_weight_imperial
 
+    @property
+    def client_user(self):
+        if not self.user:
+            return None
+        try:
+            return self.client.clientuser_set.get(user=self.user)
+        except ClientUser.DoesNotExist:
+            return None
+
+    @property
+    def requester_job_title(self):
+        client_user = self.client_user
+        if client_user:
+            return client_user.title
+        return None
+
+    @property
+    def subsidiary(self):
+        return settings.COMPANY_NAME
+
+    @property
+    def items(self):
+        return self.transaction_set.all()
+
     def __str__(self):
-        return ('{0}'.format(self.id))
+        return '{0}'.format(self.id)
 
     def get_absolute_url(self):
         return reverse('warehouse:shipment-details', kwargs={'shipment_id': self.id})

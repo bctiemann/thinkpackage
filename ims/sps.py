@@ -125,5 +125,5 @@ class SPSService(object):
 
     def submit_shipment(self, shipment):
         serializer = SPSOrderSerializer(shipment)
-        file_key = f'testin/Shipment_{shipment.id}'
+        file_key = f'testin/Shipment_{shipment.id}.json'
         self.create_transaction(json.dumps(serializer.data), file_key=file_key)

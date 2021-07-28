@@ -51,6 +51,7 @@ class SPSOrderSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', allow_null=True)
     main_phone = serializers.CharField(source='user.phone_number', allow_null=True)
     subsidiary = serializers.CharField()
+    client_internal_id = serializers.CharField(source='location.netsuite_id', allow_null=True)
     ship_to_company = serializers.CharField(source='location.client.company_name', allow_null=True)
     ship_to_client_name = serializers.CharField(source='location.contact_user.user.full_name', allow_null=True)
     ship_to_phone = serializers.CharField(source='location.contact_user.user.phone_number', allow_null=True)
@@ -67,6 +68,6 @@ class SPSOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shipment
         fields = ('po', 'po_date', 'client_po', 'dl', 'company_name', 'contact', 'job_title',
-                  'email', 'main_phone', 'subsidiary', 'ship_to_company', 'ship_to_client_name',
-                  'ship_to_phone', 'ship_to_email', 'ship_to_address_1', 'ship_to_address_2',
+                  'email', 'main_phone', 'subsidiary', 'client_internal_id', 'ship_to_company',
+                  'ship_to_client_name', 'ship_to_phone', 'ship_to_email', 'ship_to_address_1', 'ship_to_address_2',
                   'ship_to_city', 'ship_to_state', 'ship_to_zip', 'items', 'total_amount', 'delivery_charge',)

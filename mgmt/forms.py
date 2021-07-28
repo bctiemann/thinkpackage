@@ -168,6 +168,7 @@ class LocationForm(forms.ModelForm):
     STATE_CHOICES_BLANK = list(STATE_CHOICES)
     STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
 
+    netsuite_id = forms.CharField(label='Internal ID', widget=forms.TextInput(attrs={'placeholder': 'Internal ID'}))
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'placeholder': 'Location name'}))
     state = USStateField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
     postal_code = USZipCodeField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
@@ -183,7 +184,7 @@ class LocationForm(forms.ModelForm):
 
     class Meta:
         model = Location
-        fields = ['client', 'name', 'contact_user', 'address', 'address_2', 'city', 'state', 'country', 'postal_code', 'receiving_hours', 'notes']
+        fields = ['client', 'netsuite_id', 'name', 'contact_user', 'address', 'address_2', 'city', 'state', 'country', 'postal_code', 'receiving_hours', 'notes']
 
 
 class ProductForm(forms.ModelForm):

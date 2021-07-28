@@ -260,6 +260,7 @@ function updateLocation(customerid, locationid) {
     var location = {
         client:           customerid,
         contact_user:     $('#id_contact_user').val() || 0,
+        netsuite_id:      $('#id_netsuite_id').val(),
         name:             $('#id_name').val(),
         address:          $('#id_address').val(),
         address_2:        $('#id_address_2').val(),

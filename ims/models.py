@@ -435,6 +435,12 @@ class Location(models.Model):
     receiving_hours = models.CharField(max_length=100, blank=True, db_column='recvhours')
     is_active = models.BooleanField(default=True)
 
+    @property
+    def combined_location_name(self):
+        if self.netsuite_id:
+            return f'{self.netsuite_id}: {self.name}'
+        return self.name
+
     def __str__(self):
         return (self.name)
 

@@ -2,7 +2,7 @@
     {% if location.is_active %}
     <a href="javascript:nop()"><li id="location_{{ location.id }}" onClick="loadLocation({{ location.id }}, {{ client.id }})">
         <div class="items-list-content">
-        {{ location.name }}
+        {{ location.combined_location_name }}
         </div>
     </li></a>
     {% endif %}

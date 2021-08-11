@@ -32,7 +32,7 @@ class AuthTestCase(TestCase):
         self.assertEqual(response.url, reverse('client:inventory'))
 
         response = self.test_client.get(response.url)
-        self.assertContains(response, 'No client is selected. Please select a client from the menu at the top.')
+        self.assertContains(response, '<option value="4" selected>A</option>')
 
     # Admin user (with a client linkage) has access to client site
     def test_admin_access_with_client_link(self):

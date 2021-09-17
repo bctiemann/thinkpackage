@@ -286,8 +286,9 @@ def inventory_request_delivery(request):
     shipment.save()
 
     # Submit shipment payload to SPS
-    sps = SPSService()
-    sps.submit_shipment(shipment)
+    if settings.SPS_ENABLE:
+        sps = SPSService()
+        sps.submit_shipment(shipment)
 
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
     logger.info(f'Location: {location}')

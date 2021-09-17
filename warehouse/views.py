@@ -24,6 +24,7 @@ from ims.models import Product, Transaction, Shipment, Client, ClientUser, Locat
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims.views import LoginView, AbstractPDFView
 from ims.tasks import email_purchase_order
+from ims.sps import SPSService
 from warehouse import forms
 from ims import utils
 
@@ -235,6 +236,11 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
         #         'host': self.request.get_host(),
         #     }
         #     email_purchase_order(request=request_dict, shipment_id=self.object.id)
+
+        # Submit shipment payload to SPS
+        if settings.SPS_ENABLE:
+            sps = SPSService()
+            sps.submit_shipment(self.object)
 
         logger.info(f'{self.request.user} shipped shipment {self.object}')
         return response

@@ -305,6 +305,7 @@ SPS_APP_ID = None
 SPS_APP_SECRET = None
 SPS_IN_PATH = ''
 SPS_ENABLE = False
+SPS_SUBMIT_ON_CREATE = False
 
 os.environ['WKHTMLTOPDF_BIN'] = '/usr/local/bin/wkhtmltopdf'
 

@@ -76,6 +76,7 @@ class SPSService(object):
         transaction_url = self._get_transaction_url(file_path, file_key)
         response = requests.post(transaction_url, data=binary_data, headers=self._get_headers())
         # response.raise_for_status()
+        logger.info(f'Shipment payload {file_key} submitted as transaction with response code {response.status_code}')
         return response
 
     def get_transaction(self, file_path='', file_key=''):
@@ -125,5 +126,5 @@ class SPSService(object):
 
     def submit_shipment(self, shipment):
         serializer = SPSOrderSerializer(shipment)
-        file_key = f'testin/Shipment_{shipment.id}.json'
+        file_key = f'{settings.SPS_IN_PATH}/Shipment_{shipment.id}.json'
         self.create_transaction(json.dumps(serializer.data), file_key=file_key)

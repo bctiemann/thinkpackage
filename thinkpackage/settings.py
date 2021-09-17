@@ -303,6 +303,7 @@ SESSION_COOKIE_SAMESITE = None
 # SPS Commerce / Netsuite integration
 SPS_APP_ID = None
 SPS_APP_SECRET = None
+SPS_IN_PATH = ''
 
 os.environ['WKHTMLTOPDF_BIN'] = '/usr/local/bin/wkhtmltopdf'
 

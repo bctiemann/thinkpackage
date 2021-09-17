@@ -18,6 +18,7 @@ from ims.forms import UserLoginForm
 from ims.views import LoginView
 from ims import utils
 from ims.tasks import email_purchase_order
+from ims.sps import SPSService
 
 from datetime import datetime, timedelta
 import json
@@ -283,6 +284,10 @@ def inventory_request_delivery(request):
     except ValueError:
         pass
     shipment.save()
+
+    # Submit shipment payload to SPS
+    sps = SPSService()
+    sps.submit_shipment(shipment)
 
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
     logger.info(f'Location: {location}')

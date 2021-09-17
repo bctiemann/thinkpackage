@@ -285,11 +285,6 @@ def inventory_request_delivery(request):
         pass
     shipment.save()
 
-    # Submit shipment payload to SPS
-    if settings.SPS_ENABLE:
-        sps = SPSService()
-        sps.submit_shipment(shipment)
-
     logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
     logger.info(f'Location: {location}')
     if on_behalf_of:
@@ -336,6 +331,11 @@ def inventory_request_delivery(request):
         'host': request.get_host(),
     }
     email_purchase_order(request=request_dict, shipment_id=shipment.id)
+
+    # Submit shipment payload to SPS
+    if settings.SPS_ENABLE:
+        sps = SPSService()
+        sps.submit_shipment(shipment)
 
     return JsonResponse({'success': True, 'shipment_id': shipment.id})
 

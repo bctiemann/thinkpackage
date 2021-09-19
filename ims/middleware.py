@@ -3,6 +3,7 @@ from django.conf import settings
 from django.urls import resolve, reverse, reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.utils.deprecation import MiddlewareMixin
+from django.shortcuts import render
 
 from ims.models import Client, ClientUser
 
@@ -137,3 +138,11 @@ class LogCsrfMiddleware(MiddlewareMixin):
         except Exception as exc:
             logger.warning(exc)
         return None
+
+
+class SiteClosedMiddleware(MiddlewareMixin):
+
+    def process_request(self, request):
+        if settings.SITE_CLOSED:
+            context = {}
+            return render(request, 'site_closed.html', context)

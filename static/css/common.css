@@ -1247,6 +1247,9 @@ table.pageheader {
 
   margin: -70px 0 0 -170px;
 }
+.centered-logo p {
+	margin: 20px auto;
+}
 
 input.search {
     position: relative;

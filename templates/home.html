@@ -21,7 +21,10 @@
 
 <div class="centered-parent">
 
-<img src="{% static "accounts/images/tp.png" %}" alt="{{ company_name }}"  class="centered-logo" />
+    <div class="centered-logo">
+        <img src="{% static "accounts/images/tp.png" %}" alt="{{ company_name }}" />
+        {% block special_message %}{% endblock %}
+    </div>
 
 </div>
 

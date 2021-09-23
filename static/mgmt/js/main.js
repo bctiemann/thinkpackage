@@ -259,17 +259,18 @@ function loadCustContact(custcontactid,customerid,refresh_list) {
 function updateLocation(customerid, locationid) {
     var location = {
         client:           customerid,
-        contact_user:     $('#id_contact_user').val() || 0,
-        netsuite_id:      $('#id_netsuite_id').val(),
-        name:             $('#id_name').val(),
-        address:          $('#id_address').val(),
-        address_2:        $('#id_address_2').val(),
-        city:             $('#id_city').val(),
-        state:            $('#id_state').val(),
-        country:          $('#id_country').val(),
-        postal_code:      $('#id_postal_code').val(),
-        receiving_hours:  $('#id_receiving_hours').val(),
-        notes:            $('#id_notes').val(),
+        contact_user:               $('#id_contact_user').val() || 0,
+        netsuite_id:                $('#id_netsuite_id').val(),
+        netsuite_submit_enabled:    $('#id_netsuite_submit_enabled').prop('checked'),
+        name:                       $('#id_name').val(),
+        address:                    $('#id_address').val(),
+        address_2:                  $('#id_address_2').val(),
+        city:                       $('#id_city').val(),
+        state:                      $('#id_state').val(),
+        country:                    $('#id_country').val(),
+        postal_code:                $('#id_postal_code').val(),
+        receiving_hours:            $('#id_receiving_hours').val(),
+        notes:                      $('#id_notes').val(),
     };
 console.log(location);
     var url = cgiroot + 'location/';

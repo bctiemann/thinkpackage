@@ -794,6 +794,14 @@ div.objectform textarea,
 div.objectform div.non-input {
 	width: 469px;
 }
+div.objectform input[type=checkbox] {
+	width: auto;
+	vertical-align:middle;
+	height: 16px;
+}
+div.objectform label {
+	font-size: 14px;
+}
 #id_company_name {
 	width: 260px;
 	margin: 7px;

@@ -127,7 +127,8 @@ class SPSService(object):
     def submit_shipment(self, shipment):
         if not shipment.location.netsuite_submit_enabled:
             logger.info(f'Not submitting shipment {shipment.id} (disabled for location {shipment.location.id})')
-
+            return None
+        
         serializer = SPSOrderSerializer(shipment)
         file_key = f'{settings.SPS_IN_PATH}/Shipment_{shipment.id}.json'
         self.create_transaction(json.dumps(serializer.data), file_key=file_key)

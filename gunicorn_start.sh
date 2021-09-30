@@ -1,0 +1,50 @@
+#!/usr/local/bin/bash
+
+# Name of the application
+NAME="thinkpackage"
+
+# Django project directory
+DJANGODIR=/usr/local/www/thinkpackage-dj
+
+# we will communicte using this unix socket
+SOCKFILE=/usr/local/www/thinkpackage-dj/run/gunicorn.sock
+
+# the user to run as
+USER=www
+
+# the group to run as
+GROUP=www
+
+# how many worker processes should Gunicorn spawn
+NUM_WORKERS=3
+
+# which settings file should Django use
+DJANGO_SETTINGS_MODULE=thinkpackage.settings
+
+# WSGI module name
+DJANGO_WSGI_MODULE=thinkpackage.wsgi
+
+echo "Starting $NAME as `whoami`"
+
+# Activate the virtual environment
+cd $DJANGODIR
+
+. ./venv/bin/activate
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+# Create the run directory if it doesn't exist
+RUNDIR=$(dirname $SOCKFILE)
+test -d $RUNDIR || mkdir -p $RUNDIR
+
+# Start your Django Unicorn
+# Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
+
+exec ./venv/bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
+--name $NAME \
+--workers $NUM_WORKERS \
+--user=$USER --group=$GROUP \
+--bind=unix:$SOCKFILE \
+--log-level=info \
+--log-file=-
+

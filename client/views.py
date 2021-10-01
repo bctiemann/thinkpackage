@@ -16,8 +16,7 @@ from django.contrib.auth import authenticate, login
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
 from ims.forms import UserLoginForm
 from ims.views import LoginView
-from ims import utils
-from ims.tasks import email_purchase_order
+from ims.tasks import email_purchase_order, send_templated_email
 from ims.sps import SPSService
 
 from datetime import datetime, timedelta
@@ -316,7 +315,7 @@ def inventory_request_delivery(request):
     }
 
     # Send email with shipment details to delivery address
-    utils.send_templated_email(
+    send_templated_email(
         [settings.DELIVERY_EMAIL],
         context,
         'Delivery Order #{0} - {1}'.format(shipment.id, request.selected_client.company_name),

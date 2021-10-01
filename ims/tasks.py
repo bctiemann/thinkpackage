@@ -627,6 +627,38 @@ def generate_product_list(async_task_id, client_id=None):
 
 
 @shared_task
+def send_templated_email(recipients,
+                         context,
+                         subject=None,
+                         text_template=None,
+                         html_template=None,
+                         attachments=None,
+                         cc=None,
+                         bcc=None,
+                        ):
+
+    plaintext_template = get_template(text_template)
+    html_template = get_template(html_template)
+    connection = mail.get_connection()
+    connection.open()
+    for recipient in recipients:
+        text_content = plaintext_template.render(context)
+        html_content = html_template.render(context)
+        msg = mail.EmailMultiAlternatives(subject, text_content, settings.SITE_EMAIL, [recipient], cc=cc, bcc=bcc)
+        msg.attach_alternative(html_content, "text/html")
+        if attachments:
+            for attachment in attachments:
+                msg.attach(**attachment)
+
+        msg.send()
+        logger.info(f'Sent email "{subject}" to {recipient}')
+
+    connection.close()
+
+    return 'done'
+
+
+@shared_task
 def email_purchase_order(request, shipment_id):
 
     template_name = 'warehouse/purchase_order.html'

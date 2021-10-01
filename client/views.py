@@ -16,7 +16,7 @@ from django.contrib.auth import authenticate, login
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
 from ims.forms import UserLoginForm
 from ims.views import LoginView
-from ims.tasks import email_purchase_order, send_templated_email, sps_submit_shipment
+from ims.tasks import email_purchase_order, email_delivery_request, sps_submit_shipment
 from ims.sps import SPSService
 
 from datetime import datetime, timedelta
@@ -304,25 +304,7 @@ def inventory_request_delivery(request):
         total_cases += product['cases']
 
     # Send a notification email to the configured delivery admin
-    context = {
-        'requesting_user': requesting_user,
-        'shipment': shipment,
-        'client': request.selected_client,
-        'location': location,
-        'total_cases': total_cases,
-        'requested_products': requested_products,
-        'shipment_updated': shipment_updated,
-    }
-
-    # Send email with shipment details to delivery address
-    send_templated_email.delay(
-        [settings.DELIVERY_EMAIL],
-        context,
-        'Delivery Order #{0} - {1}'.format(shipment.id, request.selected_client.company_name),
-        'email/delivery_request.txt',
-        'email/delivery_request.html',
-        # cc=[request.user.email],
-    )
+    email_delivery_request.delay(shipment_id=shipment.id, shipment_updated=shipment_updated)
 
     # Generate PO PDF and email to PO address
     request_dict = {

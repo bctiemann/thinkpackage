@@ -660,6 +660,30 @@ def send_templated_email(recipients,
 
 
 @shared_task
+def email_delivery_request(shipment_id, shipment_updated=False):
+    try:
+        shipment = Shipment.objects.get(pk=shipment_id)
+    except Shipment.DoesNotExist:
+        return None
+
+    context = {
+        'shipment': shipment,
+        'shipment_updated': shipment_updated,
+    }
+
+    send_templated_email(
+        [settings.DELIVERY_EMAIL],
+        context,
+        'Delivery Order #{0} - {1}'.format(shipment.id, shipment.client.company_name),
+        'email/delivery_request.txt',
+        'email/delivery_request.html',
+        # cc=[request.user.email],
+    )
+
+    return 'done'
+
+
+@shared_task
 def email_purchase_order(request, shipment_id):
 
     template_name = 'warehouse/purchase_order.html'

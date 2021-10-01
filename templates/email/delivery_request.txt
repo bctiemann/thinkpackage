@@ -1,2 +1,2 @@
-The following delivery request from {{ client.company_name }} ({{ user.first_name }} {{ user.last_name }} {{ user.email }}) was
+The following delivery request from {{ shipment.client.company_name }} ({{ shipment.user.first_name }} {{ shipment.user.last_name }} {{ shipment.user.email }}) was
 {% if shipment_updated %}updated{% else %}submitted{% endif %}.

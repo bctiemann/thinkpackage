@@ -1,6 +1,6 @@
 {% load humanize %}
 
-<p>The following delivery request from {{ client.company_name }} ({{ requesting_user.first_name }} {{ requesting_user.last_name }} {{ requesting_user.email }}) was
+<p>The following delivery request from {{ shipment.client.company_name }} ({{ shipment.user.first_name }} {{ shipment.user.last_name }} {{ shipment.user.email }}) was
 {% if shipment_updated %}updated{% else %}submitted{% endif %}.</p>
             
     <table style="background-color: ##eee; border-bottom: 5px solid ##aaa; border-top: 1px solid ##aaa;">
@@ -12,9 +12,9 @@
         </tr>
         <tr>
             <td>{{ shipment.id }}</td>   
-            <td>{{ client.company_name }}</td>
-            <td>{{ location.name }}</td>   
-            <td>{{ total_cases }}</td>
+            <td>{{ shipment.client.company_name }}</td>
+            <td>{{ shipment.location.name }}</td>
+            <td>{{ shipment.total_cases }}</td>
         </tr>
     </table>
     
@@ -27,7 +27,7 @@
             <th>Packing</th>
             <th>Cases</th>
         </tr>
-        {% for product in requested_products %}
+        {% for product in shipment.requested_products %}
             {% if product.cases > 0 %}
                 <tr>
                     <td>{{ product.obj.item_number }}</td>

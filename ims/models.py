@@ -785,6 +785,13 @@ class Shipment(models.Model):
     def items(self):
         return self.transaction_set.all()
 
+    @property
+    def requested_products(self):
+        requested_products = []
+        for transaction in self.items:
+            requested_products.append({'obj': transaction.product, 'cases': transaction.cases})
+        return requested_products
+
     def __str__(self):
         return '{0}'.format(self.id)
 

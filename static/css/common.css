@@ -28,6 +28,11 @@ a:hover{
 	display: none;
 }
 
+.dialog-spinner {
+	margin: 30px auto;
+	text-align: center;
+}
+
 div#header {
 	background-color: #231f20;
 	color: #fff;

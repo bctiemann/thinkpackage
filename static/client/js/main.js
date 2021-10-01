@@ -275,7 +275,10 @@ console.log(requestdelivery);
 console.log(data);
         $('#dialog_locations').dialog("close");
         if (data.success) {
+            $('#dialog_request_confirm').dialog('close');
             $('#dialog_request_result').dialog("open");
+            $('.dialog-request-content').hide();
+            $('.dialog-request-spinner').removeClass('nodisplay');
         } else {
             alert(data.message);
         }
@@ -527,15 +530,30 @@ $(document).ready(function() {
         modal: true,
         width: 400,
         position: { my: "top", at: "top+200", of: window },
-        buttons: {
-            "Confirm": function() {
-                execute_requestDelivery();
-                $( this ).dialog( "close" );
+        buttons: [
+            {
+                id: 'confirm',
+                text: 'Confirm',
+                click: function() {
+                    execute_requestDelivery();
+                    // $( this ).dialog( "close" );
+                    $('.dialog-request-content').hide();
+                    $('.dialog-request-spinner').removeClass('nodisplay');
+                    let buttons = $('#dialog_request_confirm').dialog('option', 'buttons');
+                    $.each(buttons, function(buttonId, button) {
+                        button.disabled = true;
+                    })
+                    $('#dialog_request_confirm').dialog('option', 'buttons', buttons);
+                }
             },
-            Cancel: function() {
-                $( this ).dialog( "close" );
+            {
+                id: 'cancel',
+                text: 'Cancel',
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
             }
-        }
+        ]
     });
 
     $('#dialog_request_result').dialog({

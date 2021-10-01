@@ -1,4 +1,5 @@
 {% extends "client/base.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -25,42 +26,48 @@
 
 <div class="dialog" id="dialog_request_confirm" title="Delivery Requested Confirmation">
 
-    <p class="zero-inventory-warning">
-    NOTE: One or more of your selected items has zero inventory available. Please review the table below carefully.
-    </p>
+    <div class="dialog-request-spinner dialog-spinner nodisplay">
+        <img src="{% static "warehouse_app/images/spinner.gif" %}" />
+    </div>
 
-    Your delivery request will be submitted as follows:
-    <table id="request_details">
-        <thead>
-        <tr>
-            <th>Item #</th>
-            <th>Description</th>
-            <th class="numeric">Packing</th>
-            <th class="numeric">Cases</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="dialog-request-content">
+        <p class="zero-inventory-warning">
+            NOTE: One or more of your selected items has zero inventory available. Please review the table below carefully.
+        </p>
 
-    <table>
-        <tr>
-            <td class="label">
-                PO #:
-            </td>
-            <td>
-                <input type="text" name="client_po" id="client_po" maxlength="50" placeholder="(Optional)" />
-            </td>
-        </tr>
-        <tr>
-            <td class="label">
-                Deadline:
-            </td>
-            <td>
-                <input type="text" id="po_deadline" value="" style="width: 100px;" placeholder="(Optional)" />
-            </td>
-        </tr>
-    </table>
+        Your delivery request will be submitted as follows:
+        <table id="request_details">
+            <thead>
+            <tr>
+                <th>Item #</th>
+                <th>Description</th>
+                <th class="numeric">Packing</th>
+                <th class="numeric">Cases</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <table>
+            <tr>
+                <td class="label">
+                    PO #:
+                </td>
+                <td>
+                    <input type="text" name="client_po" id="client_po" maxlength="50" placeholder="(Optional)" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label">
+                    Deadline:
+                </td>
+                <td>
+                    <input type="text" id="po_deadline" value="" style="width: 100px;" placeholder="(Optional)" />
+                </td>
+            </tr>
+        </table>
+    </div>
 
 </div>
 

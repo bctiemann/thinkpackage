@@ -238,7 +238,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 
         # Submit shipment payload to SPS
         if settings.SPS_ENABLE:
-            sps_submit_shipment.delay(self.object)
+            sps_submit_shipment.delay(self.object.id)
 
         logger.info(f'{self.request.user} shipped shipment {self.object}')
         return response

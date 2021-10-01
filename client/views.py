@@ -333,7 +333,7 @@ def inventory_request_delivery(request):
 
     # Submit shipment payload to SPS
     if settings.SPS_ENABLE and settings.SPS_SUBMIT_ON_CREATE:
-        sps_submit_shipment.delay(shipment)
+        sps_submit_shipment.delay(shipment.id)
 
     return JsonResponse({'success': True, 'shipment_id': shipment.id})
 

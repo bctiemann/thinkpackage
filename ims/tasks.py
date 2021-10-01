@@ -724,6 +724,11 @@ def email_purchase_order(request, shipment_id):
 
 
 @shared_task
-def sps_submit_shipment(shipment):
+def sps_submit_shipment(shipment_id):
+    try:
+        shipment = Shipment.objects.get(pk=shipment_id)
+    except Shipment.DoesNotExist:
+        return None
+
     sps = SPSService()
     sps.submit_shipment(shipment)

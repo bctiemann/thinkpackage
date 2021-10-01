@@ -19,6 +19,7 @@ import pdfkit
 
 from ims.models import AsyncTask, Client, Product, Shipment, Transaction
 from ims import utils
+from ims.sps import SPSService
 
 import logging
 logger = logging.getLogger(__name__)
@@ -720,3 +721,9 @@ def email_purchase_order(request, shipment_id):
     )
 
     return 'done'
+
+
+@shared_task
+def sps_submit_shipment(shipment):
+    sps = SPSService()
+    sps.submit_shipment(shipment)

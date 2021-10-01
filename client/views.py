@@ -16,7 +16,7 @@ from django.contrib.auth import authenticate, login
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
 from ims.forms import UserLoginForm
 from ims.views import LoginView
-from ims.tasks import email_purchase_order, send_templated_email
+from ims.tasks import email_purchase_order, send_templated_email, sps_submit_shipment
 from ims.sps import SPSService
 
 from datetime import datetime, timedelta
@@ -315,7 +315,7 @@ def inventory_request_delivery(request):
     }
 
     # Send email with shipment details to delivery address
-    send_templated_email(
+    send_templated_email.delay(
         [settings.DELIVERY_EMAIL],
         context,
         'Delivery Order #{0} - {1}'.format(shipment.id, request.selected_client.company_name),
@@ -329,12 +329,11 @@ def inventory_request_delivery(request):
         'scheme': request.scheme,
         'host': request.get_host(),
     }
-    email_purchase_order(request=request_dict, shipment_id=shipment.id)
+    email_purchase_order.delay(request=request_dict, shipment_id=shipment.id)
 
     # Submit shipment payload to SPS
     if settings.SPS_ENABLE and settings.SPS_SUBMIT_ON_CREATE:
-        sps = SPSService()
-        sps.submit_shipment(shipment)
+        sps_submit_shipment.delay(shipment)
 
     return JsonResponse({'success': True, 'shipment_id': shipment.id})
 

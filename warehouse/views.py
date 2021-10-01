@@ -23,8 +23,7 @@ from django_pdfkit import PDFView
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location, ShipperAddress, Pallet, ShipmentDoc, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims.views import LoginView, AbstractPDFView
-from ims.tasks import email_purchase_order
-from ims.sps import SPSService
+from ims.tasks import email_purchase_order, sps_submit_shipment
 from warehouse import forms
 from ims import utils
 
@@ -239,8 +238,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 
         # Submit shipment payload to SPS
         if settings.SPS_ENABLE:
-            sps = SPSService()
-            sps.submit_shipment(self.object)
+            sps_submit_shipment.delay(self.object)
 
         logger.info(f'{self.request.user} shipped shipment {self.object}')
         return response
@@ -314,6 +312,6 @@ class SendPurchaseOrder(APIView):
             'scheme': self.request.scheme,
             'host': self.request.get_host(),
         }
-        email_purchase_order(request=request_dict, shipment_id=shipment.id)
+        email_purchase_order.delay(request=request_dict, shipment_id=shipment.id)
 
         return Response({'success': True})

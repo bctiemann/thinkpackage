@@ -711,7 +711,7 @@ def email_purchase_order(request, shipment_id):
         'shipment': shipment,
     }
 
-    utils.send_templated_email(
+    send_templated_email(
         [settings.PO_EMAIL],
         email_context,
         'Purchase Order for {0} - DL {1}'.format(shipment.client.company_name, shipment.id),

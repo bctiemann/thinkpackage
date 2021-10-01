@@ -237,7 +237,7 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
         #     email_purchase_order(request=request_dict, shipment_id=self.object.id)
 
         # Submit shipment payload to SPS
-        if settings.SPS_ENABLE:
+        if settings.SPS_ENABLE and settings.SPS_SUBMIT_ON_SHIP:
             sps_submit_shipment.delay(self.object.id)
 
         logger.info(f'{self.request.user} shipped shipment {self.object}')

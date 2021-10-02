@@ -315,7 +315,7 @@ function showShipmentDocs(shipmentid) {
 }
 
 function refreshUI() {
-    $('.editable .product input').keyup(function(e) {
+    $('.editable .product input').off('keyup click').keyup(function(e) {
         if (e.keyCode == 13) {
             saveProduct($(this).attr('productid'));
         }

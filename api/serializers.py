@@ -64,10 +64,11 @@ class SPSOrderSerializer(serializers.ModelSerializer):
     items = SPSItemSerializer(source='transaction_set.all', many=True)
     total_amount = serializers.DecimalField(source='total_price', max_digits=12, decimal_places=5)
     delivery_charge = serializers.DecimalField(max_digits=12, decimal_places=5)
+    po_deadline = serializers.DateField(source='purchase_order_deadline')
 
     class Meta:
         model = Shipment
         fields = ('po', 'po_date', 'client_po', 'dl', 'company_name', 'contact', 'job_title',
                   'email', 'main_phone', 'subsidiary', 'client_internal_id', 'ship_to_company',
                   'ship_to_client_name', 'ship_to_phone', 'ship_to_email', 'ship_to_address_1', 'ship_to_address_2',
-                  'ship_to_city', 'ship_to_state', 'ship_to_zip', 'items', 'total_amount', 'delivery_charge',)
+                  'ship_to_city', 'ship_to_state', 'ship_to_zip', 'items', 'total_amount', 'delivery_charge', 'po_deadline')

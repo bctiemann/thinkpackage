@@ -16,6 +16,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django_countries.fields import CountryField
 from jsonfield import JSONField
 from localflavor.us.us_states import STATE_CHOICES
+from localflavor.ca.ca_provinces import PROVINCE_CHOICES
 from two_factor.utils import default_device
 
 from ims import utils
@@ -30,6 +31,8 @@ import datetime
 import logging
 logger = logging.getLogger(__name__)
 
+
+STATE_PROVINCE_CHOICES = STATE_CHOICES + PROVINCE_CHOICES
 
 KG_TO_LB_MULTIPLIER = 2.20462
 CM_TO_IN_MULTIPLIER = 0.393701
@@ -425,7 +428,7 @@ class Location(models.Model):
     address = models.CharField(max_length=150, blank=True, db_column='addr')
     address_2 = models.CharField(max_length=150, blank=True, db_column='addr2')
     city = models.CharField(max_length=150, blank=True)
-    state = models.CharField(choices=STATE_CHOICES, max_length=2, blank=True)
+    state = models.CharField(choices=STATE_PROVINCE_CHOICES, max_length=2, blank=True)
     postal_code = models.CharField(max_length=10, blank=True)
     # country = models.CharField(max_length=2, blank=True)
     country = CountryField(blank=True, blank_label='(Select country)')

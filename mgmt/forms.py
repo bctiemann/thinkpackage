@@ -6,6 +6,7 @@ from django.forms.models import inlineformset_factory
 
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
+from localflavor.ca.ca_provinces import PROVINCE_CHOICES
 
 from ims.models import User, Client, CustContact, ClientUser, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
 from ims import utils
@@ -33,6 +34,8 @@ DOMESTIC_CHOICES = (
     (False, 'Import (12-14 wks)'),
     (True, 'Domestic (6-8 wks)'),
 )
+
+STATE_PROVINCE_CHOICES = STATE_CHOICES + PROVINCE_CHOICES
 
 
 class ClientCreateForm(forms.ModelForm):
@@ -165,14 +168,14 @@ class ClientUserForm(forms.ModelForm):
 
 
 class LocationForm(forms.ModelForm):
-    STATE_CHOICES_BLANK = list(STATE_CHOICES)
+    STATE_CHOICES_BLANK = list(STATE_PROVINCE_CHOICES)
     STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
 
     netsuite_id = forms.CharField(label='Internal ID', widget=forms.TextInput(attrs={'placeholder': 'Internal ID'}))
     netsuite_submit_enabled = forms.BooleanField(required=False, label='Netsuite submission enabled')
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'placeholder': 'Location name'}))
-    state = USStateField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
-    postal_code = USZipCodeField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
+    state = forms.CharField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
+    postal_code = forms.CharField(required=False, label='ZIP', widget=forms.TextInput(attrs={'placeholder': 'ZIP'}))
 
 #    def __init__(self, *args, **kwargs):
 #        super(LocationForm, self).__init__(*args, **kwargs)

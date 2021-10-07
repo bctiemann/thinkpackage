@@ -232,10 +232,13 @@ def inventory_request_delivery(request):
         try:
             product = Product.objects.get(pk=requested_product['productid'])
         except Product.DoesNotExist:
+            logger.info(f"Invalid product ID requested: {requested_product['productid']}")
             return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
         if not request.selected_client.id in product.client.ancestors:
+            logger.info(f"Selected client not in product client hierarchy: {request.selected_client.id} {product}")
             return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
         if requested_product['cases'] > product.cases_available:
+            logger.info(f"Invalid product quantity requested: {requested_product['cases']} for {product}")
             return JsonResponse({'success': False, 'message': 'Invalid number of cases requested for product {0}.'.format(product.item_number)})
         requested_products.append({
             'obj': product,

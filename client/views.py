@@ -246,6 +246,7 @@ def inventory_request_delivery(request):
     try:
         location = Location.objects.get(pk=delivery_data['locationid'])
     except Location.DoesNotExist:
+        logger.info(f"Invalid location: {delivery_data['locationid']}")
         return JsonResponse({'success': False, 'message': 'Invalid location.'})
 
     requesting_user = request.user
@@ -266,6 +267,7 @@ def inventory_request_delivery(request):
         try:
             shipment = Shipment.objects.get(pk=delivery_data['shipmentid'])
         except Shipment.DoesNotExist:
+            logger.info(f"Invalid shipment ID: {delivery_data['shipmentid']}")
             return JsonResponse({'success': False, 'message': 'Invalid shipment ID.'})
         Transaction.objects.filter(shipment=shipment).delete()
         shipment_updated = True
@@ -305,6 +307,7 @@ def inventory_request_delivery(request):
 
     # Send a notification email to the configured delivery admin
     email_delivery_request.delay(shipment_id=shipment.id, shipment_updated=shipment_updated)
+    logger.info('Launched email_delivery_request task')
 
     # Generate PO PDF and email to PO address
     request_dict = {
@@ -312,11 +315,14 @@ def inventory_request_delivery(request):
         'host': request.get_host(),
     }
     email_purchase_order.delay(request=request_dict, shipment_id=shipment.id)
+    logger.info('Launched email_purchase_order task')
 
     # Submit shipment payload to SPS
     if settings.SPS_ENABLE and settings.SPS_SUBMIT_ON_CREATE:
         sps_submit_shipment.delay(shipment.id)
+        logger.info('Launched sps_submit_shipment task')
 
+    logger.info(f'Shipment {shipment.id} created successfully.')
     return JsonResponse({'success': True, 'shipment_id': shipment.id})
 
 

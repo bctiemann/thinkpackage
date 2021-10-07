@@ -225,6 +225,7 @@ def inventory_request_delivery(request):
         return JsonResponse({'success': False, 'message': str(e)})
 
     logger.info(delivery_data)
+    logger.info(f'Selected client: {request.selected_client}')
 
     # Check all requested products for validity and availability
     requested_products = []

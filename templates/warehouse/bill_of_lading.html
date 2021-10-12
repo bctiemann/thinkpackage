@@ -414,8 +414,8 @@ Consignee:
 {% if shipment.location.country and shipment.location.country.code != 'US' %}
     {{ shipment.location.country.name }}<br />
 {% endif %}
-{{ shipment.location.customer_contact.phone_number }}<br />
-ATTN: {{ shipment.location.customer_contact.first_name }} {{ shipment.location.customer_contact.last_name }}
+{{ shipment.location.contact_user.user.phone_number }}<br />
+ATTN: {{ shipment.location.contact_user.user.first_name }} {{ shipment.location.contact_user.user.last_name }}
 </div>
 
 <br />

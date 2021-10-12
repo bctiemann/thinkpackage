@@ -50,8 +50,8 @@
             <p>{{ pallet.shipment.location.name }}</p>
             <p>{{ pallet.shipment.location.address }} {{ pallet.shipment.location.address_2 }}</p>
             <p>{{ pallet.shipment.location.city }}, {{ pallet.shipment.location.state }} {{ pallet.shipment.location.postal_code }}</p>
-            <p>{{ pallet.shipment.location.customer_contact }}</p>
-            <p>{{ pallet.shipment.location.customer_contact.phone_number }}</p>
+            <p>{{ pallet.shipment.location.contact_user.user.full_name }}</p>
+            <p>{{ pallet.shipment.location.contact_user.user.phone_number }}</p>
         </div>
         {% endif %}
 

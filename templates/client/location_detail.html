@@ -8,15 +8,15 @@
         <table>
             <tr>
                 <td>
-                    <div class="non-input" style="width: 469px;">{{ location.customer_contact.first_name }} {{ location.customer_contact.last_name }}</div>
+                    <div class="non-input" style="width: 469px;">{{ location.contact_user.user.first_name }} {{ location.contact_user.user.last_name }}</div>
                 </td>
             </tr>
 
             <tr>
                 <td>
                     <div class="non-input" style="width: 469px;">
-                        <span id="email_primary"><a href="mailto:{{ location.customer_contact.email }}">{{ location.customer_contact.email }}</a></span>
-                        <span id="tel_primary">{{ location.customer_contact.phone_number }} {{ location.customer_contact.phone_extension }}</span>
+                        <span id="email_primary"><a href="mailto:{{ location.contact_user.user.email }}">{{ location.contact_user.user.email }}</a></span>
+                        <span id="tel_primary">{{ location.contact_user.user.phone_number }} {{ location.contact_user.user.phone_extension }}</span>
                     </div>
                 </td>
             </tr>

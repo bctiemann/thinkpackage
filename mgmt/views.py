@@ -29,7 +29,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct, AsyncTask
+from ims.models import User, Client, Shipment, Transaction, Product, Location, Receivable, ShipmentDoc, ClientUser, ActionLog, ReturnedProduct, AsyncTask
 from ims import models
 from ims.forms import AjaxableResponseMixin, UserLoginForm
 from ims.views import LoginView
@@ -333,32 +333,32 @@ def locations_list(request, client_id):
     return render(request, 'mgmt/locations_list.html', context)
 
 
-def contact_form(request):
-    client_id = request.GET.get('client_id', None)
-    custcontact_id = request.GET.get('custcontact_id', None)
+# def contact_form(request):
+#     client_id = request.GET.get('client_id', None)
+#     custcontact_id = request.GET.get('custcontact_id', None)
+#
+#     client = get_object_or_404(Client, pk=client_id)
+#     custcontact = get_object_or_404(CustContact, client=client, pk=custcontact_id)
+#
+#     context = {
+#         'client': client,
+#         'custcontact': custcontact,
+#     }
+#     return render(request, 'mgmt/contact_form.html', context)
 
-    client = get_object_or_404(Client, pk=client_id)
-    custcontact = get_object_or_404(CustContact, client=client, pk=custcontact_id)
 
-    context = {
-        'client': client,
-        'custcontact': custcontact,
-    }
-    return render(request, 'mgmt/contact_form.html', context)
-
-
-def location_form(request):
-    client_id = request.GET.get('client_id', None)
-    location_id = request.GET.get('location_id', None)
-    logger.warning(location_id)
-
-    client = get_object_or_404(Client, pk=client_id)
-    location = get_object_or_404(Location, client=client, pk=location_id)
-
-    context = {
-        'location': location,
-    }
-    return render(request, 'mgmt/location_form.html', context)
+# def location_form(request):
+#     client_id = request.GET.get('client_id', None)
+#     location_id = request.GET.get('location_id', None)
+#     logger.warning(location_id)
+#
+#     client = get_object_or_404(Client, pk=client_id)
+#     location = get_object_or_404(Location, client=client, pk=location_id)
+#
+#     context = {
+#         'location': location,
+#     }
+#     return render(request, 'mgmt/location_form.html', context)
 
 
 class ClientCreate(AjaxableResponseMixin, CreateView):
@@ -381,7 +381,7 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         logger.info(form.cleaned_data)
-        self.object.custcontact_set.update(is_primary=False)
+        # self.object.custcontact_set.update(is_primary=False)
         self.object.clientuser_set.update(is_primary=False)
         if form.cleaned_data['primary_contact']:
             form.cleaned_data['primary_contact'].is_primary = True
@@ -392,7 +392,8 @@ class ClientUpdate(AjaxableResponseMixin, UpdateView):
     def get_context_data(self, *args, **kwargs):
         logger.info(f'{self.request.user} viewed profile page for {self.object}')
         context = super(ClientUpdate, self).get_context_data(*args, **kwargs)
-        context['primary_contact'] = self.object.custcontact_set.filter(is_primary=True).first()
+        # context['primary_contact'] = self.object.custcontact_set.filter(is_primary=True).first()
+        context['primary_contact'] = self.object.clientuser_set.filter(is_primary=True).first()
         return context
 
 
@@ -451,7 +452,7 @@ class LocationDelete(AjaxableResponseMixin, UpdateView):
         return get_object_or_404(Location, pk=self.kwargs['location_id'])
 
 
-class CustContactMixin(AjaxableResponseMixin):
+class ClientUserMixin(AjaxableResponseMixin):
     """
     This mixin provides a common post() method for both the Create and Update methods for ClientUsers (mappings between
     Clients and Users). This eliminates redundancy and allows a consistent UI where the admin can either add a new
@@ -483,9 +484,13 @@ class CustContactMixin(AjaxableResponseMixin):
                 except ClientUser.DoesNotExist:
                     pass
 
-            ClientUser.objects.filter(user=user, client=form.cleaned_data['client']).delete()
+            existing_client_users = ClientUser.objects.filter(user=user, client=form.cleaned_data['client'])
+            is_primary = existing_client_users.filter(is_primary=True).exists()
+            existing_client_users.delete()
 
             client_user = form.save(commit=False)
+            if is_primary:
+                client_user.is_primary = True
             client_user.user = user_form.save(commit=False)
             client_user.save()
 
@@ -515,7 +520,7 @@ class CustContactMixin(AjaxableResponseMixin):
             return super().form_invalid(user_form)
 
 
-class CustContactCreate(CustContactMixin, CreateView):
+class ClientUserCreate(ClientUserMixin, CreateView):
     model = ClientUser
     form_class = forms.ClientUserForm
     user_form_class = forms.UserForm
@@ -536,7 +541,7 @@ class CustContactCreate(CustContactMixin, CreateView):
         return context
 
 
-class CustContactUpdate(CustContactMixin, UpdateView):
+class ClientUserUpdate(ClientUserMixin, UpdateView):
     model = ClientUser
     form_class = forms.ClientUserForm
     user_form_class = forms.UserForm
@@ -544,7 +549,7 @@ class CustContactUpdate(CustContactMixin, UpdateView):
     create_method = False
 
     def get_object(self):
-        return get_object_or_404(ClientUser, pk=self.kwargs['custcontact_id'])
+        return get_object_or_404(ClientUser, pk=self.kwargs['clientuser_id'])
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -554,11 +559,11 @@ class CustContactUpdate(CustContactMixin, UpdateView):
         return context
 
 
-class CustContactDelete(AjaxableResponseMixin, DeleteView):
+class ClientUserDelete(AjaxableResponseMixin, DeleteView):
     model = ClientUser
 
     def get_object(self):
-        return get_object_or_404(ClientUser, pk=self.kwargs['custcontact_id'])
+        return get_object_or_404(ClientUser, pk=self.kwargs['clientuser_id'])
 
     def delete(self, *args, **kwargs):
         self.object = self.get_object()

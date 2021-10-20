@@ -32,9 +32,9 @@ urlpatterns = [
     path('contacts_list/<int:client_id>/', mgmt_views.contacts_list, name='contacts-list'),
     path('locations_list/<int:client_id>/', mgmt_views.locations_list, name='locations-list'),
 
-    path('contact/add/<int:client_id>/', mgmt_views.CustContactCreate.as_view(), name='contact-add'),
-    path('contact/<int:custcontact_id>/', mgmt_views.CustContactUpdate.as_view(), name='contact-update'),
-    path('contact/<int:custcontact_id>/delete/', mgmt_views.CustContactDelete.as_view(), name='contact-delete'),
+    path('contact/add/<int:client_id>/', mgmt_views.ClientUserCreate.as_view(), name='contact-add'),
+    path('contact/<int:clientuser_id>/', mgmt_views.ClientUserUpdate.as_view(), name='contact-update'),
+    path('contact/<int:clientuser_id>/delete/', mgmt_views.ClientUserDelete.as_view(), name='contact-delete'),
 
     path('location/add/<int:client_id>/', mgmt_views.LocationCreate.as_view(), name='location-add'),
     path('location/<int:location_id>/', mgmt_views.LocationUpdate.as_view(), name='location-update'),

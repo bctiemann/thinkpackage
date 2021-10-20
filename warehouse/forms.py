@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidd
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
+from ims.models import Client, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
 from ims import utils
 
 import logging

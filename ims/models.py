@@ -320,7 +320,7 @@ class ClientUser(models.Model):
         return ('{0} {1}'.format(self.user.first_name, self.user.last_name))
 
     def get_absolute_url(self):
-        return reverse('mgmt:contact-update', kwargs={'custcontact_id': self.pk})
+        return reverse('mgmt:contact-update', kwargs={'clientuser_id': self.pk})
 
 
 # Legacy model assigning unique users to clients; replaced by ClientUser mapping

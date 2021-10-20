@@ -10,7 +10,7 @@ from django.utils.translation import gettext, gettext_lazy as _
 from localflavor.us.forms import USStateField, USZipCodeField
 from localflavor.us.us_states import STATE_CHOICES
 
-from ims.models import User, Client, CustContact, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
+from ims.models import User, Client, Location, Product, Receivable, Transaction, ShipmentDoc, Shipment, Pallet, ReturnedProduct
 from ims import utils
 
 import logging

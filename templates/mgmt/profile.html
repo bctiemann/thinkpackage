@@ -67,8 +67,8 @@ Ship To
             {% if primary_contact %}
             <tr>
                 <td><div class="non-input">
-                    <span id="email_primary"><a href="mailto:{{ primary_contact.email }}">{{ primary_contact.email }}</a></span>
-                    <span id="tel_primary">{% if primary_contact.phone_number %}{{ primary_contact.phone_number }}{% endif %} {% if primary_contact.phone_extension %}{{ primary_contact.phone_extension }}{% endif %}</span>
+                    <span id="email_primary"><a href="mailto:{{ primary_contact.user.email }}">{{ primary_contact.user.email }}</a></span>
+                    <span id="tel_primary">{% if primary_contact.user.phone_number %}{{ primary_contact.user.phone_number }}{% endif %} {% if primary_contact.user.phone_extension %}{{ primary_contact.user.phone_extension }}{% endif %}</span>
                 </td>
             </tr>
             {% endif %}

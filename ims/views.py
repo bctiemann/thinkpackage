@@ -28,7 +28,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from ims.models import User, Client, Shipment, Transaction, Product, CustContact, Location, Receivable, ShipmentDoc, ClientUser, Pallet, AsyncTask, ActionLog
+from ims.models import User, Client, Shipment, Transaction, Product, Location, Receivable, ShipmentDoc, ClientUser, Pallet, AsyncTask, ActionLog
 from ims.forms import AjaxableResponseMixin, UserLoginForm, PasswordChangeForm, ShipmentDocForm
 from ims import utils
 

@@ -290,7 +290,10 @@ def inventory_request_delivery(request):
         pass
     shipment.save()
 
-    logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
+    if shipment_updated:
+        logger.info(f'{request.user} updated delivery request {shipment} for {request.selected_client}')
+    else:
+        logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
     logger.info(f'Location: {location}')
     if on_behalf_of:
         logger.info(f'On behalf of {requesting_user}')
@@ -326,7 +329,7 @@ def inventory_request_delivery(request):
         sps_submit_shipment.delay(shipment.id)
         logger.info('Launched sps_submit_shipment task')
 
-    logger.info(f'Shipment {shipment.id} created successfully.')
+    logger.info(f'Shipment {shipment.id} submitted successfully.')
     return JsonResponse({'success': True, 'shipment_id': shipment.id})
 
 

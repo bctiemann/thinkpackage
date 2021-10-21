@@ -147,7 +147,7 @@ def profile_location_detail(request, location_id):
 
 
 def inventory(request):
-    logger.info(f'{request.user} viewed client inventory page for {request.selected_client}')
+    logger.info(f'{request.user} {request.META.get("REMOTE_ADDR")} viewed client inventory page for {request.selected_client}')
 
     locations = []
     if request.selected_client:
@@ -291,9 +291,9 @@ def inventory_request_delivery(request):
     shipment.save()
 
     if shipment_updated:
-        logger.info(f'{request.user} updated delivery request {shipment} for {request.selected_client}')
+        logger.info(f'{request.user} {request.META.get("REMOTE_ADDR")} updated delivery request {shipment} for {request.selected_client}')
     else:
-        logger.info(f'{request.user} created delivery request {shipment} for {request.selected_client}')
+        logger.info(f'{request.user} {request.META.get("REMOTE_ADDR")} created delivery request {shipment} for {request.selected_client}')
     logger.info(f'Location: {location}')
     if on_behalf_of:
         logger.info(f'On behalf of {requesting_user}')

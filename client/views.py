@@ -184,7 +184,7 @@ def inventory_list(request):
 
         products = []
         if request.selected_client:
-            for product in Product.objects.filter(client__in=filter_clients, is_deleted=False, is_active=True).order_by('item_number'):
+            for product in Product.objects.filter(client__in=filter_clients, is_deleted=False, is_active=True).order_by('client_tag', 'item_number'):
                 shipment_cases = None
                 if shipment and product.id in shipment_product_cases:
                     shipment_cases = shipment_product_cases[product.id]

@@ -13,17 +13,25 @@ register = template.Library()
 def format_newlines(value):
     return value.replace('\n', '<br />')
 
+
 @register.filter
 def multiply(value, arg):
     return value * arg
+
 
 @register.filter
 def add(value, arg):
     return value + arg
 
+
 @register.filter
 def split_path(value):
     return value.split('/')
+
+
+@register.simple_tag
+def is_authorized_for_client(user, client):
+    return user.is_authorized_for_client(client)
 
 
 class LogCsrfTokenNode(Node):
@@ -31,6 +39,7 @@ class LogCsrfTokenNode(Node):
         csrf_token = context.get('csrf_token')
         logger.info(csrf_token)
         return ''
+
 
 @register.tag
 def log_csrf_token(parser, token):

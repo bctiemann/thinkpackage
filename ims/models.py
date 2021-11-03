@@ -171,18 +171,18 @@ class User(AbstractBaseUser):
 
     @property
     def child_clients(self):
+        client_list = utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name_lower')
         if self.is_admin:
-            return utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name_lower')
+            return client_list
 
         # List of clients this user is associated with, along with depth for rendering with indents in a select menu
-        child_clients = []
         client_users = ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')
-        for cu in sorted(client_users, key=lambda k: k.client.parent is not None):
-            children_of_other = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), cu.client)
-            for child in children_of_other:
-                if not child in child_clients:
-                    child_clients.append(child)
-        return child_clients
+
+        # We return all root-level ancestors so indentation works properly
+        # Ancestor clients to which the user doesn't have access will be grayed-out in the template
+        ancestor_id_lists = [cu.client.ancestors for cu in client_users]
+        ancestor_ids = [item for sublist in ancestor_id_lists for item in sublist]
+        return list(filter(lambda c: bool(set(c['obj'].ancestors) & set(ancestor_ids)), client_list))
 
     # Don't use authorized_clients; it doesn't take all hierarchical children/ancestors into account
     @property

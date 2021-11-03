@@ -177,12 +177,12 @@ class User(AbstractBaseUser):
         # List of clients this user is associated with, along with depth for rendering with indents in a select menu
         child_clients = []
         client_users = ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')
-        for cu in client_users:
+        for cu in sorted(client_users, key=lambda k: k.client.parent is not None):
             children_of_other = utils.list_at_node(utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name'), cu.client)
             for child in children_of_other:
                 if not child in child_clients:
                     child_clients.append(child)
-        return sorted(child_clients, key=lambda k: (k['depth'], k['obj'].company_name))
+        return child_clients
 
     # Don't use authorized_clients; it doesn't take all hierarchical children/ancestors into account
     @property

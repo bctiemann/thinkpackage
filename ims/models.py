@@ -182,7 +182,7 @@ class User(AbstractBaseUser):
             for child in children_of_other:
                 if not child in child_clients:
                     child_clients.append(child)
-        return child_clients
+        return sorted(child_clients, key=lambda k: (k['depth'], k['obj'].company_name))
 
     # Don't use authorized_clients; it doesn't take all hierarchical children/ancestors into account
     @property

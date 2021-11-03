@@ -429,7 +429,7 @@ function selectProduct(productid,load_details,elem) {
 
 function saveProduct(productid) {
     var product = {
-        client:                  $('#customerid').val(),
+        client:                  $('#product_'+productid).attr('client_id'),
         item_number:             $('#itemnum_'+productid).val(),
         location:                $('#location_'+productid).val() || null,
         client_tag:              $('#ctag_'+productid).val(),

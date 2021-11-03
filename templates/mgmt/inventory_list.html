@@ -23,7 +23,7 @@
     <tbody style="max-height: 400px;">
     {% for product in products %}
 
-        <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
+        <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" client_id="{{ product.client.id }}" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
             <td style="width: 100px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="itemnum_{{ product.id }}" value="{{ product.item_number }}"  productid="{{ product.id }}" style="width: 80px;" maxlength="12" /></td>
             <td style="width: 110px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="ctag_{{ product.id }}" value="{{ product.client_tag }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" /></td>
             <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text clickable location" location_id="{{ product.location.id }}" productid="{{ product.id }}">{{ product.location.name }}</td>
@@ -52,7 +52,7 @@
     {% endfor %}
 
     {% if active_filter %}
-        <tr class="product" id="product_new" onClick="selectProduct('new', false)">
+        <tr class="product" id="product_new" client_id="{{ client.id }}" onClick="selectProduct('new', false)">
             <td style="width: 100px;" class="text editable" productid="new"><input type="text" id="itemnum_new" productid="new" style="width: 80px;" maxlength="12" /></td>
             <td style="width: 110px;" class="text editable" productid="new"><input type="text" id="ctag_new" productid="new" style="width: 100px;" maxlength="16" /></td>
             <td style="width: 94px;" class="text" productid="new">

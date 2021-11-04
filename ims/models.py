@@ -654,9 +654,12 @@ class Product(models.Model):
             with transaction.atomic():
                 super().save(*args, **kwargs)
         except IntegrityError:
-            logger.warning(f'Product ID collision ({self.product_id}) detected! Regenerating ID and retrying.')
-            self.product_id = generate_code()
-            self.save(*args, **kwargs)
+            # Lookup the client and raise RelatedObjectDoesNotExist if nonexistent
+            if self.client:
+                # If we pass that point, an IntegrityError is because we had a product_id collision
+                logger.warning(f'Product ID collision ({self.product_id}) detected! Regenerating ID and retrying.')
+                self.product_id = generate_code()
+                self.save(*args, **kwargs)
 
     class Meta:
         db_table = 'Products'

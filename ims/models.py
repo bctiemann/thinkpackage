@@ -169,19 +169,25 @@ class User(AbstractBaseUser):
         self.date_password_changed = timezone.now()
         super().set_password(raw_password)
 
+    # List of clients this user is associated with, along with depth for rendering with indents in a select menu
     @property
     def child_clients(self):
         client_list = utils.tree_to_list(Client.objects.filter(is_active=True), sort_by='company_name_lower')
         if self.is_admin:
             return client_list
 
-        # List of clients this user is associated with, along with depth for rendering with indents in a select menu
+        # We return all root-level ancestors (even if the user doesn't have access at that level)
+        # so indentation works properly
+        # Ancestor clients to which the user doesn't have access will be grayed-out in the template
         client_users = ClientUser.objects.filter(user=self, client__is_active=True).order_by('client__company_name')
 
-        # We return all root-level ancestors so indentation works properly
-        # Ancestor clients to which the user doesn't have access will be grayed-out in the template
+        # Make a list of lists of ancestor IDs
         ancestor_id_lists = [cu.client.ancestors for cu in client_users]
+
+        # Flatten into a single list of IDs
         ancestor_ids = [item for sublist in ancestor_id_lists for item in sublist]
+
+        # Return all clients whose ancestors overlap with resolved ancestor IDs from client_users
         return list(filter(lambda c: bool(set(c['obj'].ancestors) & set(ancestor_ids)), client_list))
 
     # Don't use authorized_clients; it doesn't take all hierarchical children/ancestors into account

@@ -648,7 +648,7 @@ class ProductDelete(AjaxableResponseMixin, UpdateView):
     fields = ['is_active', 'is_deleted']
 
     def form_valid(self, form):
-        logger.warning(form.data)
+        logger.info(form.data)
         response = super(ProductDelete, self).form_valid(form)
         if self.object.is_active:
             log_message = 'Undeleted'
@@ -677,7 +677,7 @@ class ProductTransfer(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, product_id):
-        logger.warning(request.data)
+        logger.info(request.data)
         response = {'success': True}
         from_product = get_object_or_404(Product, pk=self.kwargs['product_id'])
 
@@ -772,7 +772,7 @@ class ProductReturn(AjaxableResponseMixin, CreateView):
     template_name = 'mgmt/product_detail.html'
 
     def form_valid(self, form):
-        logger.warning(form.data)
+        logger.info(form.data)
         product = get_object_or_404(Product, pk=self.kwargs['product_id'])
         returned_product = form.save(commit=False)
         returned_product.product = product
@@ -820,7 +820,7 @@ class ReceivableCreate(AjaxableResponseMixin, CreateView):
     template_name = 'mgmt/receivable.html'
 
     def form_valid(self, form):
-        logger.warning(form.data)
+        logger.info(form.data)
         response = super(ReceivableCreate, self).form_valid(form)
         transaction = Transaction(
             date_created = self.object.date_received,
@@ -864,8 +864,8 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
             'success': True,
         }
         logger.info(f'Receivable processed by {self.request.user} via {self.request.resolver_match.app_name}')
-        logger.warning(form.data)
-        logger.warning(form.cleaned_data)
+        logger.info(form.data)
+        logger.info(form.cleaned_data)
 #        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
 #        self.object.purchase_order = form.cleaned_data['purchase_order']
 #        self.object.shipment_order = form.cleaned_data['shipment_order']
@@ -922,7 +922,7 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         transaction.cases = form.cleaned_data['cases']
         transaction.purchase_order = form.cleaned_data['purchase_order']
         transaction.shipment_order = form.cleaned_data['shipment_order']
-        logger.warning(transaction.product.packing)
+        logger.info(transaction.product.packing)
         transaction.cases_remaining = transaction.product.cases_inventory + int(transaction.cases)
         transaction.date_completed = timezone.now()
         transaction.save()
@@ -932,8 +932,8 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
 #        self.object.product.units_inventory = self.object.product.cases_inventory * self.object.product.packing
         self.object.product.save()
 
-        logger.warning(self.object.purchase_order)
-        logger.warning(self.object.shipment_order)
+        logger.info(self.object.purchase_order)
+        logger.info(self.object.shipment_order)
         self.object.save()
 
 #        response = super(ReceivableConfirm, self).form_valid(form)

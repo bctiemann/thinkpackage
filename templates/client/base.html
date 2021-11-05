@@ -40,9 +40,9 @@
             {% for child in user.child_clients %}
                 {% is_authorized_for_client user child.obj as is_authorized %}
                 <option
-                    {% if not is_authorized %}disabled{% endif %}
                     value="{{ child.obj.id }}"
                     {% if selected_client == child.obj %}selected{% endif %}
+                    {% if not is_authorized %}disabled{% endif %}
                 >
                     {{ child.indent_rendered|safe }}{{ child.obj.company_name }}
                 </option>

@@ -25,6 +25,7 @@ urlpatterns = [
     path('shipments/list/', warehouse_views.shipments_list, name='shipments-list'),
     path('shipments/fetch/', warehouse_views.shipments_fetch, name='shipments-fetch'),
     path('shipment/<int:shipment_id>/', warehouse_views.ShipmentUpdate.as_view(), name='shipment-details'),
+    path('shipment/<int:shipment_id>/mark_ready/', warehouse_views.ShipmentMarkReady.as_view(), name='shipment-mark-ready'),
     path('shipment/<int:shipment_id>/ship/', warehouse_views.ShipmentShip.as_view(), name='shipment-ship'),
     path('shipment/<int:shipment_id>/docs/', ims_views.ShipmentDocCreate.as_view(), name='shipment-docs'),
     path('shipment/doc/<uuid:doc_id>/delete/', ims_views.ShipmentDocDelete.as_view(), name='shipment-doc-delete'),

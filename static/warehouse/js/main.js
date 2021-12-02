@@ -236,6 +236,11 @@ function shipShipment(shipmentid) {
     globals['shipmentid'] = shipmentid;
 }
 
+function markShipmentReady(shipmentid) {
+    $('#dialog_mark_shipment_ready').dialog("open");
+    globals['shipmentid'] = shipmentid;
+}
+
 function deletePallet(palletid) {
     $('#dialog_delete_pallet').dialog("open");
     globals['palletid'] = palletid;
@@ -280,6 +285,19 @@ function execute_shipShipment() {
 console.log(shipment);
 //    var url = cgiroot+'ajax_shipments_action.cfm';
     var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/ship/';
+    $.post(url,shipment,function(data) {
+console.log(data);
+        window.location.reload();
+    },'json');
+}
+
+function execute_markShipmentReady() {
+    var shipment = {
+        shipmentid: globals['shipmentid'],
+    }
+console.log(shipment);
+//    var url = cgiroot+'ajax_shipments_action.cfm';
+    var url = cgiroot + 'shipment/' + globals['shipmentid'] + '/mark_ready/';
     $.post(url,shipment,function(data) {
 console.log(data);
         window.location.reload();
@@ -383,6 +401,30 @@ $(document).ready(function() {
             },
             {
                 id: 'ship_button_cancel',
+                text: 'Cancel',
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+        ]
+    });
+
+    $('#dialog_mark_shipment_ready').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        position: { my: "top", at: "top+200", of: window },
+        buttons: [
+            {
+                id: 'ready_button_ready',
+                text: 'Mark Ready',
+                click: function() {
+                    $( this ).dialog( "close" );
+                    execute_markShipmentReady();
+                }
+            },
+            {
+                id: 'ready_button_cancel',
                 text: 'Cancel',
                 click: function() {
                     $( this ).dialog( "close" );

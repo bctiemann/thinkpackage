@@ -297,6 +297,8 @@ ENFORCE_CLIENT_PASSWORD_EXPIRY = True
 
 GENERATE_QRCODE_IMAGES = False
 
+ALLOW_BYPASS_WAREHOUSE_SCAN = False
+
 LOG_AUTH = False
 
 # Workaround Safari email click-tracking issue for password reset links

@@ -4,7 +4,23 @@
 <div class="form_header dark">
 <button class="actionbtn floatright" id="generate_bol" onClick="window.open('{% url "warehouse:bill-of-lading" shipment_id=shipment.id %}?inline')">BOL</button>
 {% if shipment.status == shipment.Status.READY or shipment.pallet_set.count > 0 %}
-    {% if shipment.status != shipment.Status.SHIPPED %}<button class="actionbtn floatright" id="ship_shipment" onClick="shipShipment({{ shipment.id }})">Shipped</button>{% endif %}
+    {% if shipment.status != shipment.Status.SHIPPED %}
+        <button
+            class="actionbtn floatright"
+            id="ship_shipment"
+            onClick="shipShipment({{ shipment.id }})"
+        >
+            Shipped
+        </button>
+    {% endif %}
+{% elif allow_bypass_warehouse_scan %}
+    <button
+        class="actionbtn floatright"
+        id="mark_shipment_ready"
+        onClick="markShipmentReady({{ shipment.id }})"
+    >
+        Mark Ready
+    </button>
 {% endif %}
 
 <div class="shipping_info">

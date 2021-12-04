@@ -200,6 +200,37 @@ class ShipmentUpdate(AjaxableResponseMixin, UpdateView):
     def get_object(self):
         return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allow_bypass_warehouse_scan'] = settings.ALLOW_BYPASS_WAREHOUSE_SCAN
+        return context
+
+
+class ShipmentMarkReady(AjaxableResponseMixin, UpdateView):
+    model = Shipment
+    fields = []
+    template_name = 'warehouse/shipment_details.html'
+
+    def get_object(self, **kwargs):
+        return get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
+
+    def form_valid(self, form):
+        data = {
+            'success': False,
+        }
+
+        for product_transaction in self.object.transaction_set.all():
+            product_transaction.cases_remaining = product_transaction.product.cases_available
+            product_transaction.is_scanned_to_pallet = False
+            product_transaction.save()
+
+        self.object.status = Shipment.Status.READY
+        self.object.save()
+
+        logger.info(f'{self.request.user} used warehouse portal to mark shipment {self.object} Ready To Ship')
+        data['success'] = True
+        return JsonResponse(data)
+
 
 class ShipmentShip(AjaxableResponseMixin, UpdateView):
     model = Shipment

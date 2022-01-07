@@ -19,7 +19,7 @@ ConcurrentLogHandler==0.9.1
 qrcode==6.0
 Pillow==7.0.0
 celery==5.2.3
-redis==3.2.1
+redis==4.1.0
 twilio==6.22.0
 python-dateutil==2.8.0
 PyYAML==5.3.1

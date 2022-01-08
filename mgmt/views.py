@@ -188,7 +188,7 @@ def inventory_list(request, client_id=None):
 
     filter_clients = [c['obj'] for c in client.children]
     products = Product.objects.filter(client__in=filter_clients, is_deleted=False)
-    products = products.order_by('client_tag', 'item_number',)
+    products = products.order_by('client_tag', 'name', 'item_number')
 
     if active_filter:
         products = products.filter(is_active=True)

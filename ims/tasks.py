@@ -237,6 +237,7 @@ def generate_client_inventory_list(async_task_id, client_id, ondate):
         pass
 
     products = Product.objects.filter(client__in=client_tree, is_deleted=False, is_active=True)
+    products = products.order_by('client_tag', 'name', 'item_number')
 
     timestamp = timezone.now().strftime('%m-%d-%Y %H%M%S')
     as_of_timestamp = date_on.strftime('%m-%d-%Y')

@@ -734,6 +734,12 @@ console.log(todate);
     fromdate = fromdate ? fromdate : '';
     todate = todate ? todate : '';
     $('.product_detail').html('');
+
+    $('#product_history').empty().append($('<img>', {
+        src: '/static/images/loading_bar.gif',
+        class: 'loading',
+    }));
+
 //    var url = cgiroot+'ajax_product_history.cfm?productid='+productid+'&fromdate='+fromdate+'&todate='+todate;
     var url = cgiroot + 'product/' + productid + '/history/?fromdate=' + fromdate + '&todate=' + todate;
     $('#product_history').load(url,function() {

@@ -619,7 +619,7 @@ class Product(models.Model):
     def get_history(self, date_from):
         history = self.transaction_set.all()
         history = history.annotate(date_requested=Trunc(Coalesce('receivable__date_created', 'date_created'), 'day'))
-        history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_created'), 'day'))
+        history = history.annotate(date_in_out=Trunc(Coalesce('shipment__date_shipped', 'date_completed', 'date_created'), 'day'))
         history_since = history.filter(date_in_out__gt=date_from)
         history_prior = history.filter(date_in_out__lte=date_from).order_by('-date_in_out')
         if history_prior.exists():

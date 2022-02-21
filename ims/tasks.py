@@ -397,7 +397,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    transactions = Transaction.objects.filter(client__in=client_tree, date_created__gt=date_from, date_created__lte=date_to)
+    transactions = Transaction.objects.filter(client__in=client_tree, date_completed__gt=date_from, date_completed__lte=date_to)
 
     rows = []
     status_update_interval = transactions.count() / 20
@@ -411,6 +411,7 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
         if transaction.receivable or transaction.is_transfer:
             cases = transaction.cases
             units = transaction.total_quantity
+            purchase_order = ''
             if transaction.is_transfer:
                 if transaction.is_outbound:
                     purchase_order = 'TRANSFER OUT'
@@ -422,9 +423,9 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
                 purchase_order = transaction.receivable.purchase_order
 
             rows.append({
-                'date': transaction.date_created.date(),
-                'month': transaction.date_created.month,
-                'year': transaction.date_created.year,
+                'date': transaction.date_completed.date(),
+                'month': transaction.date_completed.month,
+                'year': transaction.date_completed.year,
                 'purchase_order': purchase_order,
                 'shipment_order': transaction.shipment_order,
                 'item_number': transaction.product.item_number_force_string,

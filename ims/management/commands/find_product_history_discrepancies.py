@@ -13,7 +13,7 @@ class Command(BaseCommand):
         products_with_discrepancies = []
 
         date_from = datetime.strptime(self.START_DATE, '%m/%d/%Y')
-        all_active_products = Product.objects.filter(is_active=True).order_by('client', 'id')
+        all_active_products = Product.objects.filter(is_active=True).exclude(client__is_active=False).order_by('client', 'id')
 
         for product in all_active_products:
             history = product.get_history(date_from)

@@ -296,8 +296,8 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
 
     transactions = Transaction.objects.filter(
         client__in=client_tree,
-        shipment__date_shipped__gt=date_from,
-        shipment__date_shipped__lte=date_to,
+        shipment__date_shipped__date__gt=date_from,
+        shipment__date_shipped__date__lte=date_to,
         shipment__status=Shipment.Status.SHIPPED
     )
 

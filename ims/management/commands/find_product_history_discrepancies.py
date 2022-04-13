@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
@@ -34,5 +35,4 @@ class Command(BaseCommand):
                 })
 
         print(f'{len(products_with_discrepancies)}/{all_active_products.count()} total active products have discrepancies')
-        for product in products_with_discrepancies:
-            print(product)
+        print(json.dumps(products_with_discrepancies))

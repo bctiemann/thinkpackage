@@ -24,9 +24,11 @@ class Command(BaseCommand):
             initial_cases = transaction.cases or 0
             if transaction.cases_remaining_differential != initial_cases:
                 products_with_discrepancies.append({
-                    'product': product,
+                    'product': product.name,
                     'product_id': product.id,
+                    'product_item_id': product.item_number,
                     'client': product.client.company_name,
+                    'client_id': product.client.id,
                     'initial_cases': initial_cases,
                     'differential_cases': transaction.cases_remaining_differential,
                 })

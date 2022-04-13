@@ -627,7 +627,7 @@ class Product(models.Model):
             history = history_since | last_prior
         else:
             history = history_since
-        history = history.order_by('-date_in_out', '-shipment__id')
+        history = history.order_by('-date_in_out', '-shipment__id', '-id')
 
         cases_balance_differential = self.cases_inventory
         for transaction in history:

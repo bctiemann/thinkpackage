@@ -23,16 +23,19 @@ class Command(BaseCommand):
             for transaction in history:
                 pass
             initial_cases = transaction.cases or 0
+            append_data = {
+                'product': product.name,
+                'product_id': product.id,
+                'product_item_number': product.item_number,
+                'client': product.client.company_name,
+                'client_id': product.client.id,
+                'initial_cases': initial_cases,
+                'differential_cases': transaction.cases_remaining_differential,
+            }
+            # if product.id == 4315:
+            #     print(append_data)
             if transaction.cases_remaining_differential != initial_cases:
-                products_with_discrepancies.append({
-                    'product': product.name,
-                    'product_id': product.id,
-                    'product_item_number': product.item_number,
-                    'client': product.client.company_name,
-                    'client_id': product.client.id,
-                    'initial_cases': initial_cases,
-                    'differential_cases': transaction.cases_remaining_differential,
-                })
+                products_with_discrepancies.append(append_data)
 
         print(f'{len(products_with_discrepancies)}/{all_active_products.count()} total active products have discrepancies')
         print(json.dumps(products_with_discrepancies))

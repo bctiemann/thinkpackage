@@ -26,7 +26,7 @@ class Command(BaseCommand):
                 products_with_discrepancies.append({
                     'product': product.name,
                     'product_id': product.id,
-                    'product_item_id': product.item_number,
+                    'product_item_number': product.item_number,
                     'client': product.client.company_name,
                     'client_id': product.client.id,
                     'initial_cases': initial_cases,

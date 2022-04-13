@@ -21,12 +21,13 @@ class Command(BaseCommand):
                 continue
             for transaction in history:
                 pass
-            if transaction.cases_remaining_differential != transaction.cases:
+            initial_cases = transaction.cases or 0
+            if transaction.cases_remaining_differential != initial_cases:
                 products_with_discrepancies.append({
                     'product': product,
                     'product_id': product.id,
                     'client': product.client.company_name,
-                    'initial_cases': transaction.cases,
+                    'initial_cases': initial_cases,
                     'differential_cases': transaction.cases_remaining_differential,
                 })
 

@@ -62,14 +62,14 @@ History for Item {{ product.item_number }}: {{ product.name }}</span>
         </td>
         <td class="text">
             {% if transaction.cases == None %}
-                <input type="text" id="PO_{{ transaction.product.id }}" value="{{ transaction.receivable.purchase_order }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" />
+                <input type="text" id="PO_{{ transaction.receivable.id }}" value="{{ transaction.receivable.purchase_order }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" />
             {% else %}
                 {{ transaction.receivable.purchase_order }}
             {% endif %}
         </td>
         <td class="text">
             {% if transaction.cases == None %}
-                <input type="text" id="SO_{{ transaction.product_id }}" value="{{ transaction.shipment_order }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" />
+                <input type="text" id="SO_{{ transaction.receivable.id }}" value="{{ transaction.shipment_order }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" />
             {% else %}
                 {{ transaction.shipment_order }}
             {% endif %}

@@ -777,8 +777,8 @@ function execute_saveTransaction() {
         receivableid:     globals['receivableid'],
         productid:        globals['productid'],
         cases:            Math.floor($('#cases_'+globals['receivableid']).val()),
-        shipment_order:   $('#SO_'+globals['productid']).val(),
-        purchase_order:   $('#PO_'+globals['productid']).val(),
+        shipment_order:   $('#SO_'+globals['receivableid']).val(),
+        purchase_order:   $('#PO_'+globals['receivableid']).val(),
     }
 
 console.log(transaction);

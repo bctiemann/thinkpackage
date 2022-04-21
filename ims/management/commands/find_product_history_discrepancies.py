@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 
 from ims.models import Product
@@ -39,3 +40,8 @@ class Command(BaseCommand):
 
         print(f'{len(products_with_discrepancies)}/{all_active_products.count()} total active products have discrepancies')
         print(json.dumps(products_with_discrepancies))
+
+        now = timezone.now()
+        filename = now.strftime('%Y%d%m-%H%M%S.json')
+        with open(f'product_history/{filename}', 'a') as file:
+            json.dump(products_with_discrepancies, file)

@@ -44,3 +44,8 @@ class LogCsrfTokenNode(Node):
 @register.tag
 def log_csrf_token(parser, token):
     return LogCsrfTokenNode()
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

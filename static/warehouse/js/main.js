@@ -17,7 +17,7 @@ function refreshShipments(shipmentid) {
     }
     globals['startFrom'] = 0;
 //    var url = cgiroot+'ajax_shipments_list.cfm?shipped_filter='+globals['shipped_filter'];
-    var url = `${cgiroot}shipments/list/?shipped_filter=${globals['shipped_filter']}`;
+    var url = `${cgiroot}shipments/list/?shipped_filter=${globals['shipped_filter']}&sort=${globals['sort']}`;
     $('#list_shipments').load(url,function(data) {
         $('.shipment_detail').html('');
         fetchShipments(shipmentid);
@@ -26,7 +26,7 @@ function refreshShipments(shipmentid) {
 
 function fetchShipments(shipmentid='') {
     globals['fetching'] = true;
-    var url = `${cgiroot}shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}&shipment_id=${shipmentid}`;
+    var url = `${cgiroot}shipments/fetch/?shipped_filter=${globals['shipped_filter']}&start=${globals['startFrom']}&shipment_id=${shipmentid}&sort=${globals['sort']}`;
     $.get(url, function(html) {
         globals['fetching'] = false;
         $('#list_shipments tbody').append(html);

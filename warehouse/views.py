@@ -42,6 +42,14 @@ company_info = {
     'phone_number': settings.COMPANY_PHONE_NUMBER,
 }
 
+sort_columns = {
+    'id': '',
+    'date_created': '-',
+    'client__name': '',
+}
+
+default_sort = ('status', '-date_created')
+
 
 class LoginView(LoginView):
     template_name = 'warehouse/login.html'
@@ -73,6 +81,8 @@ def shipments(request):
     logger.info(f'{request.user} viewed warehouse shipments page')
 
     context = {
+        'shipped_filter': request.GET.get('shipped_filter', '0'),
+        'sort': request.GET.get('sort', '')
     }
     return render(request, 'warehouse/shipments.html', context)
 
@@ -84,8 +94,21 @@ def shipments_list(request):
     except:
         shipped_filter = 1
 
+    sort_by = request.GET.get('sort', '')
+    sort_icon = '↑'
+    sort_target_prefix = '-'
+    if sort_by and sort_by[0] == '-':
+        sort_icon = '↓'
+        sort_target_prefix = ''
+    sort_col = sort_by.replace('-', '')
+
     context = {
         'shipped_filter': shipped_filter,
+        'sort_by': sort_by,
+        'sort_col': sort_col,
+        'sort_target_prefix': sort_target_prefix,
+        'sort_icon': sort_icon,
+        'sort_columns': sort_columns,
     }
     return render(request, 'warehouse/shipments_list.html', context)
 
@@ -101,7 +124,9 @@ def shipments_fetch(request):
     start = int(request.GET.get('start', 0))
     end = start + page_size
 
-    shipments = Shipment.objects.all().order_by('status', '-date_created')
+    sort_by = request.GET.get('sort')
+    sort_by = (sort_by,) if sort_by in sort_columns.keys() else default_sort
+    shipments = Shipment.objects.all().order_by(*sort_by)
 
     # three_weeks_ago = timezone.now() - timedelta(days=21)
 

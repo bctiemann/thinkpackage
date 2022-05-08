@@ -1,3 +1,5 @@
+{% load filters %}
+
 <ul class="mode_toggle">
 <a href="javascript:nop()" onClick="showStatus(0)"><li {% if status_filter == 0 %}class="selected"{% endif %}>INVQ</li></a>
 <a href="javascript:nop()" onClick="showStatus(1)"><li {% if status_filter == 1 %}class="selected"{% endif %}>pending</li></a>
@@ -9,11 +11,47 @@
 <table class="infotable alternating shipments editable scrollable">
     <thead>
         <tr>
-            <th style="width: 125px" class="text">Shipped Date</th>
+            <th style="width: 125px" class="text">
+                <a
+                    class="sortable-header"
+                    href="?status_filter={{ status_filter }}&sort={% if sort_col == "date_created" %}{{ sort_target_prefix }}{% else %}{{ sort_columns|get_item:"date_created" }}{% endif %}date_created"
+                >
+                    Shipped Date
+                    <span class="sort-arrow">
+                        {% if sort_col == "date_created" %}
+                            {{ sort_icon }}
+                        {% endif %}
+                    </span>
+                </a>
+            </th>
             <th style="width: 45px" class="numeric">INV #</th>
-            <th style="width: 45px" class="numeric">DL #</th>
+            <th style="width: 45px" class="numeric">
+                <a
+                    class="sortable-header"
+                    href="?status_filter={{ status_filter }}&sort={% if sort_col == "id" %}{{ sort_target_prefix }}{% else %}{{ sort_columns|get_item:"id" }}{% endif %}id"
+                >
+                    DL #
+                    <span class="sort-arrow">
+                        {% if sort_col == "id" %}
+                            {{ sort_icon }}
+                        {% endif %}
+                    </span>
+                </a>
+            </th>
             <th style="width: 134px" class="spacer20"></th>
-            <th style="width: 125px" class="text">Client Name</th>
+            <th style="width: 125px" class="text">
+                <a
+                    class="sortable-header"
+                    href="?status_filter={{ status_filter }}&sort={% if sort_col == "client__name" %}{{ sort_target_prefix }}{% else %}{{ sort_columns|get_item:"client__name" }}{% endif %}client__name"
+                >
+                    Client Name
+                    <span class="sort-arrow">
+                        {% if sort_col == "client__name" %}
+                            {{ sort_icon }}
+                        {% endif %}
+                    </span>
+                </a>
+            </th>
             <th style="width: 199px" class="text">Location</th>
             <th style="width: 100px" class="numeric">Total Cases</th>
             <th style="width: 420px" class="spacer20"></th>

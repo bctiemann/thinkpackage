@@ -380,6 +380,11 @@ table.infotable td.editable {
 	padding: 0px;
 }
 
+table.infotable th a {
+	display: block;
+	text-decoration: none;
+}
+
 table.infotable.small td,
 table.infotable.small th {
     font-size: 12px;

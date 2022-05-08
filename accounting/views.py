@@ -29,6 +29,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+sort_columns = {
+    'id': '',
+    'date_created': '-',
+    'client__name': '',
+}
+
+default_sort = ('-id', '-date_created', '-invoice_number')
+
+
 class LoginView(LoginView):
     template_name = 'accounting/login.html'
     home_url = reverse_lazy('accounting:home')
@@ -47,6 +56,8 @@ def shipments(request):
     #    locations = Location.objects.filter(client__in=[c['obj'] for c in request.selected_client.children], is_active=True).order_by('name')
 
     context = {
+        'status_filter': request.GET.get('status_filter', '0'),
+        'sort': request.GET.get('sort', '')
     }
     return render(request, 'accounting/shipments.html', context)
 
@@ -54,12 +65,25 @@ def shipments(request):
 def shipments_list(request):
 
     try:
-        status_filter = int(request.GET.get('status_filter', 1))
+        status_filter = int(request.GET.get('status_filter', 0))
     except:
-        status_filter = 1
+        status_filter = 0
+
+    sort_by = request.GET.get('sort', '')
+    sort_icon = '↑'
+    sort_target_prefix = '-'
+    if sort_by and sort_by[0] == '-':
+        sort_icon = '↓'
+        sort_target_prefix = ''
+    sort_col = sort_by.replace('-', '')
 
     context = {
         'status_filter': status_filter,
+        'sort_by': sort_by,
+        'sort_col': sort_col,
+        'sort_target_prefix': sort_target_prefix,
+        'sort_icon': sort_icon,
+        'sort_columns': sort_columns,
     }
     return render(request, 'accounting/shipments_list.html', context)
 
@@ -67,15 +91,17 @@ def shipments_list(request):
 def shipments_fetch(request):
 
     try:
-        status_filter = int(request.GET.get('status_filter', 1))
+        status_filter = int(request.GET.get('status_filter', 0))
     except:
-        status_filter = 1
+        status_filter = 0
 
     page_size = settings.INFINITE_SCROLL_PAGE_SIZE
     start = int(request.GET.get('start', 0))
     end = start + page_size
 
-    shipments = Shipment.objects.all()
+    sort_by = request.GET.get('sort')
+    sort_by = (sort_by,) if sort_by in sort_columns.keys() else default_sort
+    shipments = Shipment.objects.all().order_by(*sort_by)
 
     shipment_id = request.GET.get('shipment_id')
     if shipment_id and shipment_id.isnumeric():
@@ -88,7 +114,7 @@ def shipments_fetch(request):
     )\
     .filter(location__isnull=False)
 
-    shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
+    # shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
 
     # three_months_ago = timezone.now() - timedelta(days=90)
 

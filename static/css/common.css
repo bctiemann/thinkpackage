@@ -380,7 +380,7 @@ table.infotable td.editable {
 	padding: 0px;
 }
 
-table.infotable th a {
+table.infotable th a.sortable-header {
 	display: block;
 	text-decoration: none;
 }

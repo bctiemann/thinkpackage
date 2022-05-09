@@ -114,6 +114,8 @@ def shipments_fetch(request):
     )\
     .filter(location__isnull=False)
 
+    shipments = shipments.distinct()
+
     # shipments = shipments.distinct().order_by('-id', '-date_created', '-invoice_number')
 
     # three_months_ago = timezone.now() - timedelta(days=90)

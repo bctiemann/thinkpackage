@@ -81,7 +81,7 @@ def shipments(request):
     logger.info(f'{request.user} viewed warehouse shipments page')
 
     context = {
-        'shipped_filter': request.GET.get('shipped_filter', '0'),
+        'shipped_filter': request.GET.get('shipped_filter', '1'),
         'sort': request.GET.get('sort', '')
     }
     return render(request, 'warehouse/shipments.html', context)

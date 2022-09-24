@@ -296,7 +296,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
 
     transactions = Transaction.objects.filter(
         client__in=client_tree,
-        shipment__date_shipped__date__gt=date_from,
+        shipment__date_shipped__date__gte=date_from,
         shipment__date_shipped__date__lte=date_to,
         shipment__status=Shipment.Status.SHIPPED
     )
@@ -397,7 +397,11 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
     except:
         pass
 
-    transactions = Transaction.objects.filter(client__in=client_tree, date_completed__gt=date_from, date_completed__lte=date_to)
+    transactions = Transaction.objects.filter(
+        client__in=client_tree,
+        date_completed__gt=date_from,
+        date_completed__lte=date_to
+    )
 
     rows = []
     status_update_interval = transactions.count() / 20

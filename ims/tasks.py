@@ -402,8 +402,8 @@ def generate_incoming_list(async_task_id, client_id, fromdate, todate):
 
     transactions = Transaction.objects.filter(
         client__in=client_tree,
-        date_completed__gte=date_from,
-        date_completed__lte=date_to
+        date_completed__date__gte=date_from,
+        date_completed__date__lte=date_to
     )
 
     rows = []

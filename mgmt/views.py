@@ -205,11 +205,12 @@ def inventory_list(request, client_id=None):
 
 def shipments(request, client_id=None, shipment_id=None):
     client = get_object_or_404(Client, pk=client_id)
+    filter_clients = [c['obj'] for c in client.children]
 
     shipment = None
     if shipment_id:
         try:
-            shipment = Shipment.objects.get(pk=shipment_id, client=client)
+            shipment = Shipment.objects.get(pk=shipment_id, client__in=filter_clients)
         except Shipment.DoesNotExist:
             pass
 
@@ -237,6 +238,7 @@ def shipments_list(request, client_id=None):
 
 def shipments_fetch(request, client_id=None):
     client = get_object_or_404(Client, pk=client_id)
+    filter_clients = [c['obj'] for c in client.children]
 
     try:
         shipped_filter = int(request.GET.get('shipped_filter', 0))
@@ -247,7 +249,7 @@ def shipments_fetch(request, client_id=None):
     start = int(request.GET.get('start', 0))
     end = start + page_size
 
-    shipments = client.shipment_set.all().order_by('status', '-date_created')
+    shipments = Shipment.objects.filter(client__in=filter_clients).order_by('status', '-date_created')
 
     shipment_id = request.GET.get('shipment_id')
     if shipment_id and shipment_id.isnumeric():

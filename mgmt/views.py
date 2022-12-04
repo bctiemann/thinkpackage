@@ -126,11 +126,14 @@ def notifications_inbound_receivables(request):
 
 
 def notifications_invq(request):
-    invq = Shipment.objects.filter(status=Shipment.Status.SHIPPED, transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ, accounting_status__in=[Shipment.AccountingStatus.INVQ, Shipment.AccountingStatus.PENDING]) \
-        .order_by('-date_created') \
-        .annotate(date=Func(F('date_created'), function='DATE')) \
-        .values('date', 'id', 'client__company_name', 'location__name', 'client__id') \
-        .annotate(count=Count('date'))
+    invq = Shipment.objects.filter(
+        status=Shipment.Status.SHIPPED,
+        transaction__product__accounting_prepay_type__in=Product.INVQ_TYPES,
+        accounting_status__in=[Shipment.AccountingStatus.INVQ, Shipment.AccountingStatus.PENDING],
+    ).order_by('-date_created')
+    invq = invq.annotate(date=Func(F('date_created'), function='DATE'))
+    invq = invq.values('date', 'id', 'client__company_name', 'location__name', 'client__id')
+    invq = invq.annotate(count=Count('date'))
 
     context = {
         'invq': invq,

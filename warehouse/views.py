@@ -351,7 +351,7 @@ class PurchaseOrderView(AbstractPDFView):
         context = super(PurchaseOrderView, self).get_context_data(**kwargs)
         shipment = get_object_or_404(Shipment, pk=self.kwargs['shipment_id'])
         context['shipment'] = shipment
-        context['invq_transactions'] = shipment.transaction_set.filter(product__accounting_prepay_type=Product.AccountingPrepayType.INVQ)
+        context['invq_transactions'] = shipment.transaction_set.filter(product__accounting_prepay_type__in=Product.INVQ_TYPES)
         context['total_pages'] = int(math.ceil(float(shipment.transaction_set.count()) / float(self.max_products_per_page)))
         context['pages'] = list(range(context['total_pages']))
         context['max_products_per_page'] = self.max_products_per_page

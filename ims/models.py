@@ -476,6 +476,9 @@ class Product(models.Model):
     class AccountingPrepayType(models.IntegerChoices):
         INVQ = 1, _('INVQ')
         PREPAID = 2, _('Prepaid')
+        THREEPL = 3, _('3PL')
+
+    INVQ_TYPES = (AccountingPrepayType.INVQ, AccountingPrepayType.THREEPL)
 
     id = models.AutoField(primary_key=True, db_column='productid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)

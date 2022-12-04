@@ -108,7 +108,7 @@ def shipments_fetch(request):
         shipments = shipments.filter(pk=int(shipment_id))
 
     shipments = shipments.filter(
-        Q(transaction__product__accounting_prepay_type=Product.AccountingPrepayType.INVQ) | Q(delivery_charge__gt=0),
+        Q(transaction__product__accounting_prepay_type__in=Product.INVQ_TYPES) | Q(delivery_charge__gt=0),
         status=Shipment.Status.SHIPPED,
         accounting_status=status_filter
     )\

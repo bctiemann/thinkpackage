@@ -56,8 +56,9 @@ def shipment_doc(request, doc_id=None):
     shipment_doc = get_object_or_404(ShipmentDoc, pk=doc_id)
 
     if not request.user.is_authenticated or not (
-            request.user.is_authorized_for_docs or
-            request.user.is_authorized_for_client(shipment_doc.shipment.client)
+        request.user.is_authorized_for_docs or (
+            shipment_doc.shipment.client and request.user.is_authorized_for_client(shipment_doc.shipment.client)
+        )
     ):
         raise PermissionDenied
 

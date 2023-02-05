@@ -15,8 +15,6 @@ from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from django_pdfkit import PDFView
-
 #from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 #from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 

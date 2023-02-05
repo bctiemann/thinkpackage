@@ -18,7 +18,7 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LogoutView, INTERNAL_RESET_SESSION_TOKEN
 
-from django_pdfkit import PDFView
+from ims.pdf import PDFView
 
 from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm

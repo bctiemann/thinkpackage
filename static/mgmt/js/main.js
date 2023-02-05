@@ -1699,7 +1699,7 @@ $(document).ready(function() {
         position: { my: "top", at: "top+200", of: window },
         buttons: {
             Generate: function() {
-                execute_productList(globals['customerid']);
+                // execute_productList(globals['customerid']);
                 executeReport(
                     'product_list',
                     `${cgiroot}report/product_list/`,

@@ -27,7 +27,7 @@
 
 <li><a class="tnav" href="#" onClick="setupSearch();">Search</a></li>
 <li><a class="tnav" href="#" onClick="setupItemLookup();">Global Item Lookup</a></li>
-<li><a class="tnav" href="#" onClick="setupProductList({{ client.id }});">Product List</a></li>
+<li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'product_list');">Product List</a></li>
 
 {% if client %}
 <li><a class="tnav" href="#" onClick="setupReport({{ client.id }}, 'inventory_list');">Internal - Inventory List</a></li>

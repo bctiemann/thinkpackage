@@ -313,7 +313,9 @@ def inventory_request_delivery(request):
         total_cases += product['cases']
 
     # Send a notification email to the configured delivery admin
-    email_delivery_request.delay(shipment_id=shipment.id, shipment_updated=shipment_updated)
+    email_delivery_request.delay(
+        shipment_id=shipment.id, shipment_updated=shipment_updated, client_email=request.user.email
+    )
     logger.info('Launched email_delivery_request task')
 
     # Generate PO PDF and email to PO address

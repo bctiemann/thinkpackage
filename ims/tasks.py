@@ -639,6 +639,7 @@ def generate_product_list(async_task_id, client_id=None):
 @shared_task
 def send_templated_email(recipients,
                          context,
+                         from_email=settings.SITE_EMAIL,
                          subject=None,
                          text_template=None,
                          html_template=None,
@@ -654,7 +655,7 @@ def send_templated_email(recipients,
     for recipient in recipients:
         text_content = plaintext_template.render(context)
         html_content = html_template.render(context)
-        msg = mail.EmailMultiAlternatives(subject, text_content, settings.SITE_EMAIL, [recipient], cc=cc, bcc=bcc)
+        msg = mail.EmailMultiAlternatives(subject, text_content, from_email, [recipient], cc=cc, bcc=bcc)
         msg.attach_alternative(html_content, "text/html")
         if attachments:
             for attachment in attachments:
@@ -669,25 +670,42 @@ def send_templated_email(recipients,
 
 
 @shared_task
-def email_delivery_request(shipment_id, shipment_updated=False):
+def email_delivery_request(shipment_id, shipment_updated=False, client_email=None):
     try:
         shipment = Shipment.objects.get(pk=shipment_id)
     except Shipment.DoesNotExist:
         return None
+
+    email_recipients = [settings.DELIVERY_EMAIL, settings.PO_EMAIL]
+    if client_email:
+        email_recipients.append(client_email)
 
     context = {
         'shipment': shipment,
         'shipment_updated': shipment_updated,
     }
 
-    send_templated_email(
-        [settings.DELIVERY_EMAIL],
-        context,
-        'Delivery Order #{0} - {1}'.format(shipment.id, shipment.client.company_name),
-        'email/delivery_request.txt',
-        'email/delivery_request.html',
-        # cc=[request.user.email],
-    )
+    if shipment.location:
+        client_name = shipment.location.name
+    else:
+        client_name = shipment.client.company_name
+
+    default_subject = 'Delivery Order #{0} - {1}'.format(shipment.id, client_name)
+    subject_map = {
+        settings.DELIVERY_EMAIL: 'TPDL #{0} - {1}'.format(shipment.id, client_name),
+        settings.PO_EMAIL: 'TPPO #{0} - {1}'.format(shipment.id, client_name),
+    }
+
+    for recipient in email_recipients:
+        send_templated_email(
+            [recipient],
+            context,
+            subject=subject_map.get(recipient) or default_subject,
+            from_email=settings.PO_EMAIL if recipient == client_email else client_email,
+            text_template='email/delivery_request.txt',
+            html_template='email/delivery_request.html',
+            # cc=[request.user.email],
+        )
 
     return 'done'
 

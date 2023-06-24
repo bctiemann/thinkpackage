@@ -1,8 +1,14 @@
 {% load humanize %}
 
-<p>The following delivery request from {{ shipment.client.company_name }} ({{ shipment.user.first_name }} {{ shipment.user.last_name }} {{ shipment.user.email }}) was
-{% if shipment_updated %}updated{% else %}submitted{% endif %}.</p>
-            
+<p>
+    Dear Client,
+</p>
+
+<p>
+    Your delivery order has been received and has been processed for fulfillment. Please see below for your
+    order detail confirmation and the following:
+</p>
+
     <table style="background-color: ##eee; border-bottom: 5px solid ##aaa; border-top: 1px solid ##aaa;">
         <tr>
             <th>Order #</th>
@@ -40,6 +46,96 @@
         {% endfor %}
     </table>
     </div>
-            
-<p>This email was automatically sent.</p>
 
+<ul>
+    <li class="main-bullet">
+        <h3>Order Modifications:</h3>
+        <p>
+            To ensure the accuracy and prompt processing of your order, we are unable to make any changes
+            to your order at this stage. For any additional items, please submit a new purchase order or
+            delivery order request. Otherwise, please carefully review before submitting your order.
+        </p>
+    </li>
+
+    <li class="main-bullet">
+        <h3>Inspection upon Delivery:</h3>
+        <p>
+            Please inspect all packages and goods at the time of delivery. It is the responsibility of the
+            receiving party to examine the products at the time of delivery.
+        </p>
+        <ul>
+            <li>
+                <p>
+                    DAMAGES: If the merchandise is damaged, please refuse and do not accept the product at
+                    the time of delivery. Must indicate “DAMAGED”, the item # and the total number of cases
+                    that are deemed damaged on the bill of lading before signing off.
+                </p>
+            </li>
+            <li>
+                <p>
+                    SHORTAGES: Products that have NOT been delivered must be signed off as SHORT on the
+                    bill of lading. Please indicate the item # and the total number of cases it was shorted.
+                </p>
+            </li>
+        </ul>
+    </li>
+
+    <li class="main-bullet">
+        <h3>Reporting Damages or Missing Items:</h3>
+        <p>
+            To report any damage or missing cases, please notify our team right away. All emails must be
+            received within 48 hours of receiving your shipment. Claims made outside of this window will
+            not be accepted.
+        </p>
+        <ul>
+            <li>
+                <p>
+                    All emails must be sent to delivery@thinkpackage.com with subject header
+                    “Damages/Missing Cases – Delivery Order ID#”.
+                </p>
+            </li>
+            <li>
+                <p>
+                    Must include the Delivery Order ID# along with detailed photos and description of the
+                    issue.
+                </p>
+            </li>
+        </ul>
+
+    </li>
+
+    <li class="main-bullet">
+        <h3>Transit Time and Business Days:</h3>
+        <p>
+            Transit days exclusively refer to business days. Ground and Freight services do not include
+            the day of pickup, weekends, and holidays as transit days.
+        </p>
+    </li>
+
+    <li class="main-bullet">
+        <h3>Distribution Processing Center Closure:</h3>
+        <p>
+            Our Distribution Processing Center are closed on Sat-Sun and major holidays.
+        </p>
+    </li>
+
+    <li class="main-bullet">
+        <h3>Return and Restocking Fee:</h3>
+        <p>
+            A return and restocking fee of $5.00 per case will apply for any returns of refused or
+            non-accepted merchandise.
+        </p>
+    </li>
+</ul>
+
+<p>
+    Thank you,<br />
+    Fulfillment Team
+</p>
+
+<p>
+    THINK[PACKAGE]<br />
+    20 West 22nd St. Suite #706 New York, NY 10010<br />
+    telephone:  +1 646-690-5167 | fax: +1212-229-0703<br />
+    www.thinkpackage.com
+</p>

@@ -1,2 +1,2 @@
-The following delivery request from {{ shipment.client.company_name }} ({{ shipment.user.first_name }} {{ shipment.user.last_name }} {{ shipment.user.email }}) was
-{% if shipment_updated %}updated{% else %}submitted{% endif %}.
+Your delivery order has been received and has been processed for fulfillment. Please see below for your
+order detail confirmation and the following:

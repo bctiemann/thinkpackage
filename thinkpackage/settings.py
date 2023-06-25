@@ -285,6 +285,7 @@ SITE_EMAIL = 'info@thinkpackage.com'
 DELIVERY_EMAIL = 'delivery@thinkpackage.com'
 PO_EMAIL = 'po@thinkpackage.com'
 FRONTSITE_URL = 'http://thinkpackage.com'
+BCC_EMAIL = None
 
 INFINITE_SCROLL_PAGE_SIZE = 30
 

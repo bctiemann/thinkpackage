@@ -650,6 +650,9 @@ def send_templated_email(recipients,
 
     plaintext_template = get_template(text_template)
     html_template = get_template(html_template)
+    bcc = bcc or []
+    if settings.BCC_EMAIL:
+        bcc.append(settings.BCC_EMAIL)
     connection = mail.get_connection()
     connection.open()
     for recipient in recipients:

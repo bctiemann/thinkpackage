@@ -26,19 +26,19 @@ class LoginRequiredMiddleware(MiddlewareMixin):
         if not request.user.is_authenticated:
             resolved = resolve(request.path_info)
             current_route_name = resolved.url_name
-            logger.info(f'{current_route_name} {resolved.app_name}')
+            logger.debug(f'{current_route_name} {resolved.app_name}')
 
             if not resolved.app_name or resolved.app_name == 'admin':
                 return None
 
             if current_route_name not in settings.AUTH_EXEMPT_ROUTES:
                 if resolved.app_name == 'api':
-                    logger.info('redirecting to login from api')
+                    logger.debug('redirecting to login from api')
                     return HttpResponseRedirect(reverse('login'))
                 if resolved.app_name:
-                    logger.info(f'redirecting to login from {resolved.app_name}')
+                    logger.debug(f'redirecting to login from {resolved.app_name}')
                     return HttpResponseRedirect(reverse(f'{resolved.app_name}:login'))
-                logger.info('redirecting to login with no app_name')
+                logger.debug('redirecting to login with no app_name')
                 return HttpResponseRedirect(reverse('login'))
 
 

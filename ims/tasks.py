@@ -689,22 +689,11 @@ def email_delivery_request(shipment_id, shipment_updated=False, client_email=Non
         'delivery_email': settings.DELIVERY_EMAIL,
     }
 
-    if shipment.location:
-        client_name = shipment.location.name
-    else:
-        client_name = shipment.client.company_name
-
-    default_subject = 'Delivery Order #{0} - {1}'.format(shipment.id, client_name)
-    subject_map = {
-        settings.DELIVERY_EMAIL: 'TPDL #{0} - {1}'.format(shipment.id, client_name),
-        settings.PO_EMAIL: 'TPPO #{0} - {1}'.format(shipment.id, client_name),
-    }
-
     for recipient in email_recipients:
         send_templated_email(
             [recipient],
             context,
-            subject=subject_map.get(recipient) or default_subject,
+            subject=shipment.get_email_subject(recipient),
             from_email=settings.PO_EMAIL if recipient == client_email else client_email,
             text_template='email/delivery_request.txt',
             html_template='email/delivery_request.html',

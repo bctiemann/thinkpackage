@@ -807,8 +807,32 @@ class Shipment(models.Model):
             requested_products.append({'obj': transaction.product, 'cases': transaction.cases})
         return requested_products
 
+    @property
+    def client_name(self):
+        if self.location:
+            return self.location.name
+        return self.client.company_name
+
     def __str__(self):
         return '{0}'.format(self.id)
+
+    def get_email_subject(self, recipient):
+        default_subject_prefix = 'Delivery Order#'
+        subject_prefix_map = {
+            settings.DELIVERY_EMAIL: 'TPDL#',
+            settings.PO_EMAIL: 'TPPO#',
+        }
+
+        subject_prefix = subject_prefix_map.get(recipient) or default_subject_prefix
+        subject_parts = [f'{subject_prefix} {self.id}', self.client_name]
+
+        if self.purchase_order_number:
+            subject_parts.append(f'PO# {self.purchase_order_number}')
+        if self.purchase_order_deadline and recipient in subject_prefix_map.keys():
+            deadline_str = self.purchase_order_deadline.strftime('%m/%d/%y')
+            subject_parts.append(f'DLD {deadline_str}')
+
+        return ' - '.join(subject_parts)
 
     def get_absolute_url(self):
         return reverse('warehouse:shipment-details', kwargs={'shipment_id': self.id})

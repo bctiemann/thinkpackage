@@ -302,11 +302,11 @@ def inventory_request_delivery(request):
     total_cases = 0
     for product in requested_products:
         transaction = Transaction(
-            product = product['obj'],
-            is_outbound = True,
-            shipment = shipment,
-            client = request.selected_client,
-            cases = product['cases'],
+            product=product['obj'],
+            is_outbound=True,
+            shipment=shipment,
+            client=request.selected_client,
+            cases=product['cases'],
         )
         transaction.save()
         logger.info(f'{transaction.cases}\t{transaction.product}')
@@ -314,7 +314,7 @@ def inventory_request_delivery(request):
 
     # Send a notification email to the configured delivery admin
     email_delivery_request.delay(
-        shipment_id=shipment.id, shipment_updated=shipment_updated, client_email=request.user.email
+        shipment_id=shipment.id, shipment_updated=shipment_updated, client_email=requesting_user.email
     )
     logger.info('Launched email_delivery_request task')
 

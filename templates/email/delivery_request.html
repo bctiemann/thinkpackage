@@ -52,26 +52,26 @@
     order detail confirmation and the following:
 </p>
 
-    <table style="background-color: ##eee; border-bottom: 5px solid ##aaa; border-top: 1px solid ##aaa;">
+    <table style="background-color: #eee; border-bottom: 5px solid #aaa; border-top: 1px solid ##aaa;">
         <tr>
             <th>Order #</th>
             <th>Client Name</th>
             <th>Location</th>
+            <th></th>
+            <th></th>
             <th>Total Cases</th>
         </tr>
         <tr>
             <td>{{ shipment.id }}</td>   
             <td>{{ shipment.client.company_name }}</td>
             <td>{{ shipment.location.name }}</td>
+            <td></td>
+            <td></td>
             <td>{{ shipment.total_cases }}</td>
         </tr>
-    </table>
-    
-    <div style="margin-left: 20px;">
-    <table>
         <tr> 
             <th>Item #</th>
-            <th>Description</th>
+            <th colspan="2">Description</th>
             <th>Invoice</th>
             <th>Packing</th>
             <th>Cases</th>
@@ -80,7 +80,7 @@
             {% if product.cases > 0 %}
                 <tr>
                     <td>{{ product.obj.item_number }}</td>
-                    <td>{{ product.obj.name }}</td>
+                    <td colspan="2">{{ product.obj.name }}</td>
                     <td>{{ product.obj.get_accounting_prepay_type_display|default_if_none:"" }}</td>
                     <td>{{ product.obj.packing|intcomma }}</td>
                     <td>{{ product.cases }}</td>
@@ -88,7 +88,6 @@
             {% endif %}
         {% endfor %}
     </table>
-    </div>
 
 <ul>
     <li class="main-bullet">

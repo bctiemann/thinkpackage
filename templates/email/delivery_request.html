@@ -54,36 +54,36 @@
 
     <table>
         <tr>
-            <th>Order #</th>
-            <th>Client Name</th>
-            <th>Location</th>
-            <th></th>
-            <th></th>
-            <th>Total Cases</th>
+            <th height="20">Order #</th>
+            <th height="20">Client Name</th>
+            <th height="20">Location</th>
+            <th height="20"></th>
+            <th height="20"></th>
+            <th height="20">Total Cases</th>
         </tr>
         <tr>
-            <td>{{ shipment.id }}</td>   
-            <td>{{ shipment.client.company_name }}</td>
-            <td>{{ shipment.location.name }}</td>
-            <td></td>
-            <td></td>
-            <td>{{ shipment.total_cases }}</td>
+            <td height="20">{{ shipment.id }}</td>
+            <td height="20">{{ shipment.client.company_name }}</td>
+            <td height="20">{{ shipment.location.name }}</td>
+            <td height="20"></td>
+            <td height="20"></td>
+            <td height="20">{{ shipment.total_cases }}</td>
         </tr>
         <tr> 
-            <th>Item #</th>
-            <th colspan="2">Description</th>
-            <th>Invoice</th>
-            <th>Packing</th>
-            <th>Cases</th>
+            <th height="20">Item #</th>
+            <th height="20" colspan="2">Description</th>
+            <th height="20">Invoice</th>
+            <th height="20">Packing</th>
+            <th height="20">Cases</th>
         </tr>
         {% for product in shipment.requested_products %}
             {% if product.cases > 0 %}
                 <tr>
-                    <td>{{ product.obj.item_number }}</td>
-                    <td colspan="2">{{ product.obj.name }}</td>
-                    <td>{{ product.obj.get_accounting_prepay_type_display|default_if_none:"" }}</td>
-                    <td>{{ product.obj.packing|intcomma }}</td>
-                    <td>{{ product.cases }}</td>
+                    <td height="20">{{ product.obj.item_number }}</td>
+                    <td height="20" colspan="2">{{ product.obj.name }}</td>
+                    <td height="20">{{ product.obj.get_accounting_prepay_type_display|default_if_none:"" }}</td>
+                    <td height="20">{{ product.obj.packing|intcomma }}</td>
+                    <td height="20">{{ product.cases }}</td>
                 </tr>
             {% endif %}
         {% endfor %}

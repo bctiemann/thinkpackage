@@ -14,7 +14,7 @@ django-formtools==2.2
 pdfkit==1.0.0
 pycryptodome==3.9.7
 colorlog==2.10
-ConcurrentLogHandler==0.9.1
+concurrent-log-handler==0.9.24
 qrcode==6.0
 Pillow==7.0.0
 celery==5.2.3

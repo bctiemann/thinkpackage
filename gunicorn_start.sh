@@ -4,10 +4,10 @@
 NAME="thinkpackage"
 
 # Django project directory
-DJANGODIR=/usr/local/www/thinkpackage-dj
+DJANGODIR=/usr/local/www/thinkpackage
 
 # we will communicte using this unix socket
-SOCKFILE=/usr/local/www/thinkpackage-dj/run/gunicorn.sock
+SOCKFILE=/usr/local/www/thinkpackage/run/gunicorn.sock
 
 # the user to run as
 USER=www

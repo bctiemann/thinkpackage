@@ -13,3 +13,4 @@ data.json
 env.yaml
 env.prod.yaml
 certs
+product_history

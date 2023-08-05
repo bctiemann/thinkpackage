@@ -42,6 +42,6 @@ class Command(BaseCommand):
         print(json.dumps(products_with_discrepancies))
 
         now = timezone.now()
-        filename = now.strftime('%Y%d%m-%H%M%S.json')
+        filename = now.strftime('%Y%m%d-%H%M%S.json')
         with open(f'product_history/{filename}', 'a') as file:
             json.dump(products_with_discrepancies, file)

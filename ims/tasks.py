@@ -758,9 +758,9 @@ def email_purchase_order(request, shipment_id):
     send_templated_email(
         [settings.PO_EMAIL],
         email_context,
-        'Purchase Order for {0} - DL {1}'.format(shipment.client.company_name, shipment.id),
-        'email/purchase_order.txt',
-        'email/purchase_order.html',
+        subject='Purchase Order for {0} - DL {1}'.format(shipment.client.company_name, shipment.id),
+        text_template='email/purchase_order.txt',
+        html_template='email/purchase_order.html',
         attachments=attachments,
     )
 

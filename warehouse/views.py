@@ -362,10 +362,6 @@ class SendPurchaseOrder(APIView):
     def post(self, request, shipment_id):
         shipment = get_object_or_404(Shipment, pk=shipment_id)
 
-        request_dict = {
-            'scheme': self.request.scheme,
-            'host': self.request.get_host(),
-        }
-        email_purchase_order.delay(request=request_dict, shipment_id=shipment.id)
+        email_purchase_order.delay(shipment_id=shipment.id)
 
         return Response({'success': True})

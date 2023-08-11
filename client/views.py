@@ -319,11 +319,7 @@ def inventory_request_delivery(request):
     logger.info('Launched email_delivery_request task')
 
     # Generate PO PDF and email to PO address
-    request_dict = {
-        'scheme': request.scheme,
-        'host': request.get_host(),
-    }
-    email_purchase_order.delay(request=request_dict, shipment_id=shipment.id)
+    email_purchase_order.delay(shipment_id=shipment.id)
     logger.info('Launched email_purchase_order task')
 
     # Submit shipment payload to SPS

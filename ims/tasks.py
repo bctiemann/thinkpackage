@@ -704,7 +704,7 @@ def email_delivery_request(shipment_id, shipment_updated=False, client_email=Non
 
 
 @shared_task
-def email_purchase_order(request, shipment_id):
+def email_purchase_order(shipment_id):
 
     template_name = 'warehouse/purchase_order.html'
     max_products_per_page = 20
@@ -714,8 +714,8 @@ def email_purchase_order(request, shipment_id):
     except Shipment.DoesNotExist:
         return None
 
-    static_url = '%s://%s%s' % (request['scheme'], request['host'], settings.STATIC_URL)
-    media_url = '%s://%s%s' % (request['scheme'], request['host'], settings.MEDIA_URL)
+    static_url = '%s%s' % (settings.SERVER_BASE_URL, settings.STATIC_URL)
+    media_url = '%s%s' % (settings.SERVER_BASE_URL, settings.MEDIA_URL)
 
     with override_settings(STATIC_URL=static_url, MEDIA_URL=media_url):
         template = get_template(template_name)

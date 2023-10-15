@@ -20,8 +20,8 @@
         <th class="numeric">Packing pcs/cs</th>
         <th class="numeric">Cases</th>
         <th class="numeric">Pallets</th>
-        <th class="numeric">Gross weight (kg)</th>
-        <th class="text">Ctn dimensions (cm, l &times; w &times; h)</th>
+        <th class="numeric">Gross weight (lb)</th>
+        <th class="text">Ctn dimensions (in, l &times; w &times; h)</th>
     </tr>
     </thead>
     <tbody>
@@ -37,8 +37,8 @@
         <td class="numeric">{{ transaction.product.packing }}</td>
         <td class="numeric">{{ transaction.cases }}</td> 
         <td class="numeric">{{ transaction.pallet_share }}</td>
-        <td class="numeric">{{ transaction.total_weight|floatformat:1 }}</td>
-        <td class="text">{{ transaction.product.length|floatformat:1 }} &times; {{ transaction.product.width|floatformat:1 }} &times; {{ transaction.product.height|floatformat:1 }}</td>
+        <td class="numeric">{{ transaction.total_weight_imperial|floatformat:1 }}</td>
+        <td class="text">{{ transaction.product.length_imperial|floatformat:1 }} &times; {{ transaction.product.width_imperial|floatformat:1 }} &times; {{ transaction.product.height_imperial|floatformat:1 }}</td>
     </tr>   
         
     {% endfor %}

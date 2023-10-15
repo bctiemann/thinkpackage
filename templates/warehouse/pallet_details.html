@@ -14,8 +14,8 @@
         <th class="text">Description</th>
         <th class="numeric">pcs/cs</th>
         <th class="numeric">Cases</th>
-        <th class="numeric">Gross weight (kg)</th>
-        <th class="text">Ctn dimensions (cm, l &times; w &times; h)</th>
+        <th class="numeric">Gross weight (lb)</th>
+        <th class="text">Ctn dimensions (in, l &times; w &times; h)</th>
     </tr>
     </thead>
     <tbody>
@@ -26,8 +26,8 @@
         <td class="text" style="width: 400px;">{{ pallet_contents.product.name }}</td>
         <td class="numeric">{{ pallet_contents.product.packing|intcomma }}</td>
         <td class="numeric">{{ pallet_contents.cases }}</td>
-        <td class="numeric">{{ pallet_contents.gross_weight }}</td>
-        <td class="text">{{ pallet_contents.product.length|floatformat:1 }} &times; {{ pallet_contents.product.width|floatformat:1 }} &times; {{ pallet_contents.product.height|floatformat:1 }}</td>
+        <td class="numeric">{{ pallet_contents.gross_weight_imperial }}</td>
+        <td class="text">{{ pallet_contents.product.length_imperial|floatformat:1 }} &times; {{ pallet_contents.product.width_imperial|floatformat:1 }} &times; {{ pallet_contents.product.height_imperial|floatformat:1 }}</td>
     </tr>
     {% endfor %}
     </tbody>

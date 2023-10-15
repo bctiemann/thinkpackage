@@ -3,7 +3,7 @@ var apiroot = '/api/';
 var keyinput = '';
 var keyinput_timeout = null;
 var filter_popup_timeout = 2000;
-var units = 'metric';
+var units = 'imperial';
 
 
 $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
@@ -413,6 +413,10 @@ function selectProduct(productid,load_details,elem) {
             $('.switch-units.weight').html(units == 'metric' ? 'kg' : 'lb');
             $('.switch-units.length').html(units == 'metric' ? 'cm' : 'in');
             $('#product_details').load(url,function() {
+                $('#id_length').val($(`#length_${units}`).val());
+                $('#id_width').val($(`#width_${units}`).val());
+                $('#id_height').val($(`#height_${units}`).val());
+                $('#id_gross_weight').val($(`#gross_weight_${units}`).val());
                 $('.switch-units').click(function() {
                     units = units == 'metric' ? 'imperial' : 'metric';
                     $('#id_length').val($('#length_' + units).val());

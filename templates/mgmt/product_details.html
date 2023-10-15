@@ -19,13 +19,13 @@ Order details for Item {{ product.item_number }}: {{ product.name }}</span>
         <th style="width: 90px;" class="numeric">Cases</th>
         <th style="width: 94px;" class="numeric">Unit price</th>
         <th style="width: 114px;" class="numeric">Total price</th>
-        <th style="width: 110px;" class="numeric">GW (<a class="switch-units weight">kg</a>)</th>
-        <th style="width: 291px;" class="text">Ctn dimensions (<a class="switch-units length">cm</a>)</th>
+        <th style="width: 110px;" class="numeric">GW (<a class="switch-units weight">lb</a>)</th>
+        <th style="width: 291px;" class="text">Ctn dimensions (<a class="switch-units length">in</a>)</th>
         <th style="width: 135px;" class="text">Lead Time</th>
     </tr>
     </thead>
     <tbody>
-    <tr class="detail" id="productdetail_#URL.productid#">
+    <tr class="detail" id="productdetail_{{ product.id }}">
         <td style="width: 70px;" class="text">{{ product.last_receivable.purchase_order }}</td>
         <td style="width: 70px;" class="text">{{ product.last_receivable.shipment_order }}</td>
         <td style="width: 70px;" class="text">

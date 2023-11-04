@@ -20,7 +20,8 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmVie
 
 from ims.pdf import PDFView
 
-from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
+from two_factor.views import LoginView, DisableView
+from two_factor.plugins.phonenumber.views import PhoneSetupView, PhoneDeleteView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
 
 from rest_framework.views import APIView

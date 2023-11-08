@@ -262,6 +262,11 @@ class ShipmentShip(AjaxableResponseMixin, UpdateView):
 
     def form_valid(self, form):
         response = super(ShipmentShip, self).form_valid(form)
+
+        # Prevent duplicate submissions, or at least prevent new transactions from being created.
+        if self.object.status == Shipment.Status.SHIPPED:
+            return response
+
         self.object.date_shipped = timezone.now()
         self.object.status = Shipment.Status.SHIPPED
         self.object.save()

@@ -665,7 +665,10 @@ def send_templated_email(recipients,
             for attachment in attachments:
                 msg.attach(**attachment)
 
-        msg.send()
+        try:
+            msg.send()
+        except Exception as e:
+            mail.mail_admins(f'Failure to send email: "{subject}" to {recipient}', str(e))
         logger.info(f'Sent email "{subject}" to {recipient}')
 
     connection.close()

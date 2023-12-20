@@ -656,6 +656,7 @@ def send_templated_email(recipients,
     connection = mail.get_connection()
     connection.open()
     for recipient in recipients:
+        logger.info(f'Sending email "{subject}" to {recipient}')
         text_content = plaintext_template.render(context)
         html_content = html_template.render(context)
         msg = mail.EmailMultiAlternatives(subject, text_content, from_email, [recipient], cc=cc, bcc=bcc)

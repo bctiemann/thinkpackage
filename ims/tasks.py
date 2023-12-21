@@ -669,6 +669,8 @@ def send_templated_email(recipients,
             msg.send()
         except Exception as e:
             mail.mail_admins(f'Failure to send email: "{subject}" to {recipient}', str(e))
+            logger.error(f'Failed to send email: "{subject}" to {recipient}')
+            logger.error(e)
         logger.info(f'Sent email "{subject}" to {recipient}')
 
     connection.close()

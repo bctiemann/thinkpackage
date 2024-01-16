@@ -89,7 +89,7 @@ def generate_inventory_list(async_task_id, client_id, fromdate, todate):
 
     products = Product.objects.filter(client__in=client_tree, is_deleted=False)
     transactions = Transaction.objects.filter(
-        client__in=client_tree,
+        product__client__in=client_tree,
         date_created__gte=date_from
     )
 
@@ -298,7 +298,7 @@ def generate_delivery_list(async_task_id, client_id, fromdate, todate):
         pass
 
     transactions = Transaction.objects.filter(
-        client__in=client_tree,
+        product__client__in=client_tree,
         shipment__date_shipped__date__gte=date_from,
         shipment__date_shipped__date__lte=date_to,
         shipment__status=Shipment.Status.SHIPPED

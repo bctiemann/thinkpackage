@@ -1,4 +1,4 @@
-Django==3.2.23
+Django==3.2.25
 PyMySQL==1.0.2
 #mysqlclient==1.4.6
 djangorestframework==3.14.0
@@ -12,7 +12,7 @@ django-tables2==2.5.1
 django-formtools==2.2
 #django-filter==2.0.0
 pdfkit==1.0.0
-pycryptodome==3.9.7
+pycryptodome==3.20.0
 colorlog==2.10
 concurrent-log-handler==0.9.24
 qrcode==6.0

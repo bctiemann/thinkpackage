@@ -208,6 +208,15 @@ LOGGING = {
             'backupCount': 5,
             'formatter': 'colored',
         },
+        'crunchtime_logfile': {
+            'level': 'INFO',
+            'filters': [],
+            'class': 'logging.handlers.ConcurrentRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'crunchtime.log'),
+            'maxBytes': 1024 * 1024 * 64,  # 64mb
+            'backupCount': 5,
+            'formatter': 'colored',
+        },
         'console': {
             'level': 'DEBUG',
             'filters': [],
@@ -226,6 +235,11 @@ LOGGING = {
         # Log all app logger messages to the central logfile
         '': {
             'handlers': ['logfile'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'crunchtime': {
+            'handlers': ['crunchtime_logfile'],
             'level': 'INFO',
             'propagate': True,
         },

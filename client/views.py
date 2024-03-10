@@ -1,27 +1,20 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
+import json
+import re
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseForbidden
-from django.db.models import Sum
+from django.http import JsonResponse, Http404
 from django.contrib.auth import authenticate, login
 
-#from two_factor.views import LoginView, PhoneSetupView, PhoneDeleteView, DisableView
-#from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
-
 from ims.models import Product, Transaction, Shipment, Client, ClientUser, Location
-from ims.forms import UserLoginForm
-from ims.views import LoginView
-from ims.tasks import email_purchase_order, email_delivery_request, sps_submit_shipment
-from ims.sps import SPSService
-
-from datetime import datetime, timedelta
-import json
-import re
+from ims.views import LoginView as BaseLoginView
+from ims.shipment import add_products_to_shipment, send_shipment_notifications, RequestedProduct
 
 import logging
 logger = logging.getLogger(__name__)
@@ -38,26 +31,9 @@ company_info = {
 }
 
 
-class LoginView(LoginView):
+class LoginView(BaseLoginView):
     template_name = 'client/login.html'
     home_url = reverse_lazy('client:home')
-#    form_list = (
-#        ('auth', UserLoginForm),
-#        ('token', AuthenticationTokenForm),
-#        ('backup', BackupTokenForm),
-#    )
-
-
-#class PhoneSetupView(PhoneSetupView):
-#    success_url = reverse_lazy('two_factor:profile')
-
-
-#class PhoneDeleteView(PhoneDeleteView):
-#    success_url = reverse_lazy('two_factor:profile')
-
-
-#class DisableView(DisableView):
-#    success_url = reverse_lazy('two_factor:profile')
 
 
 def home(request):
@@ -241,10 +217,8 @@ def inventory_request_delivery(request):
         if requested_product['cases'] > product.cases_available:
             logger.info(f"Invalid product quantity requested: {requested_product['cases']} for {product}")
             return JsonResponse({'success': False, 'message': 'Invalid number of cases requested for product {0}.'.format(product.item_number)})
-        requested_products.append({
-            'obj': product,
-            'cases': requested_product['cases'],
-        })
+
+        requested_products.append(RequestedProduct(product=product, cases=requested_product['cases']))
 
     # Validate location of delivery
     try:
@@ -264,6 +238,7 @@ def inventory_request_delivery(request):
         except ClientUser.DoesNotExist:
             pass
 
+    # TODO: Move the below into shipment.create_or_update_shipment (maybe)
     # If we're editing a previous shipment request, pull that shipment and clear
     # out all transactions. Otherwise, create a new shipment
     shipment_updated = False
@@ -290,6 +265,14 @@ def inventory_request_delivery(request):
         pass
     shipment.save()
 
+    add_products_to_shipment(
+        shipment=shipment,
+        requested_products=requested_products,
+        client=request.selected_client,
+    )
+
+    send_shipment_notifications(shipment, shipment_updated, requesting_user.email)
+
     if shipment_updated:
         logger.info(f'{request.user} {request.META.get("HTTP_X_FORWARDED_FOR")} updated delivery request {shipment} for {request.selected_client}')
     else:
@@ -297,35 +280,6 @@ def inventory_request_delivery(request):
     logger.info(f'Location: {location}')
     if on_behalf_of:
         logger.info(f'On behalf of {requesting_user}')
-
-    # Create new transactions for each requested product
-    total_cases = 0
-    for product in requested_products:
-        transaction = Transaction(
-            product=product['obj'],
-            is_outbound=True,
-            shipment=shipment,
-            client=request.selected_client,
-            cases=product['cases'],
-        )
-        transaction.save()
-        logger.info(f'{transaction.cases}\t{transaction.product}')
-        total_cases += product['cases']
-
-    # Send a notification email to the configured delivery admin
-    email_delivery_request.delay(
-        shipment_id=shipment.id, shipment_updated=shipment_updated, client_email=requesting_user.email
-    )
-    logger.info('Launched email_delivery_request task')
-
-    # Generate PO PDF and email to PO address
-    email_purchase_order.delay(shipment_id=shipment.id)
-    logger.info('Launched email_purchase_order task')
-
-    # Submit shipment payload to SPS
-    if settings.SPS_ENABLE and settings.SPS_SUBMIT_ON_CREATE:
-        sps_submit_shipment.delay(shipment.id)
-        logger.info('Launched sps_submit_shipment task')
 
     logger.info(f'Shipment {shipment.id} submitted successfully.')
     return JsonResponse({'success': True, 'shipment_id': shipment.id})

@@ -79,8 +79,8 @@ class CrunchtimeService:
         self.port = self.config['PORT']
         self.username = self.config['USER']
         self.password = self.config['PASSWORD']
-        self.po_dir = self.config['PO_DIR']
-        self.inbound_dir = self.config['INBOUND_DIR']
+        self.po_dir = self.config.get('PO_DIR') or self.po_dir
+        self.inbound_dir = self.config.get('INBOUND_DIR') or self.inbound_dir
         self.local_file_dir = self.config.get('LOCAL_FILE_DIR') or self.local_file_dir
         self.ssh_client = paramiko.SSHClient()
         self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -97,12 +97,13 @@ class CrunchtimeService:
 
     def get_new_purchase_orders(self):
         new_purchase_orders = []
-        files = self.list_files(self.po_dir)
-        for filename in files:
+        po_files = self.list_files(self.po_dir)
+        inbound_files = self.list_files(self.inbound_dir)
+        for filename in po_files:
             if re.match(self.RE_PO_FILENAME, filename):
                 purchase_order_number = self.get_purchase_order_number_from_filename(filename)
                 confirmation_file = self.get_confirmation_filename(purchase_order_number)
-                if confirmation_file not in files:
+                if confirmation_file not in inbound_files:
                     new_purchase_orders.append(filename)
         return new_purchase_orders
 
@@ -144,7 +145,7 @@ class CrunchtimeService:
     def get_purchase_order_data(self, filename):
         header_data = {}
         detail_data = []
-        po_filename = filename
+        po_filename = os.path.join(self.po_dir, filename)
         try:
             po_file = self.get_file(po_filename)
         except Exception as e:
@@ -248,5 +249,6 @@ class CrunchtimeService:
                 print(e)
                 continue
             print(purchase_order)
+            logger.info(purchase_order)
             shipment = self.create_shipment(purchase_order)
             self.confirm_receipt(purchase_order, shipment)

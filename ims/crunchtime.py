@@ -8,6 +8,8 @@ import os
 import re
 from dataclasses import dataclass
 
+from django.conf import settings
+
 from ims.models import Location, Client, Product, Shipment, User
 from ims.shipment import RequestedProduct, add_products_to_shipment, send_shipment_notifications
 
@@ -43,8 +45,11 @@ class CrunchtimeService:
     username = None
     password = None
     port = None
+    config = None
     ssh_client = None
     local_file_dir = "/tmp"
+    po_dir = "po"
+    inbound_dir = "inbound"
 
     PO_HEADER_FIELDS = [
         "line_type_indicator",
@@ -68,28 +73,31 @@ class CrunchtimeService:
     # PO filename format: CTPO_20240305_022301_VO1235.txt
     RE_PO_FILENAME = re.compile(r"^CTPO_[0-9]{8}_[0-9]{6}_VO[0-9]+\.txt$")
 
-    def __init__(self, host, username, password, port, local_file_dir=None):
-        self.host = host
-        self.username = username
-        self.password = password
-        self.port = port
-        self.local_file_dir = local_file_dir or self.local_file_dir
+    def __init__(self, config):
+        self.config = settings.CRUNCHTIME_SFTP.get(config)
+        self.host = self.config['HOST']
+        self.port = self.config['PORT']
+        self.username = self.config['USER']
+        self.password = self.config['PASSWORD']
+        self.po_dir = self.config['PO_DIR']
+        self.inbound_dir = self.config['INBOUND_DIR']
+        self.local_file_dir = self.config.get('LOCAL_FILE_DIR') or self.local_file_dir
         self.ssh_client = paramiko.SSHClient()
         self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     def connect(self):
         self.ssh_client.connect(self.host, self.port, username=self.username, password=self.password)
 
-    def list_files(self):
+    def list_files(self, path=''):
         self.connect()
         ftp = self.ssh_client.open_sftp()
-        files = ftp.listdir()
+        files = ftp.listdir(path=path)
         ftp.close()
         return files
 
     def get_new_purchase_orders(self):
         new_purchase_orders = []
-        files = self.list_files()
+        files = self.list_files(self.po_dir)
         for filename in files:
             if re.match(self.RE_PO_FILENAME, filename):
                 purchase_order_number = self.get_purchase_order_number_from_filename(filename)
@@ -124,11 +132,12 @@ class CrunchtimeService:
         self.ssh_client.close()
         return local_file_path
 
-    def put_file(self, filename):
+    def put_file(self, filename, remote_dir=''):
         self.connect()
         ftp = self.ssh_client.open_sftp()
         local_file_path = self.get_local_file_path(filename)
-        result = ftp.put(local_file_path, filename)
+        remote_path = os.path.join(remote_dir, filename)
+        result = ftp.put(local_file_path, remote_path)
         ftp.close()
         return result
 
@@ -227,7 +236,7 @@ class CrunchtimeService:
 
         with open(local_file_path, 'w') as f:
             f.write(confirmation_content)
-        self.put_file(filename)
+        self.put_file(filename, self.inbound_dir)
 
     def process_new_purchase_orders(self):
         new_purchase_orders = self.get_new_purchase_orders()

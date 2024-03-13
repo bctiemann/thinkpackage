@@ -330,6 +330,9 @@ SPS_ENABLE = False
 SPS_SUBMIT_ON_CREATE = True
 SPS_SUBMIT_ON_SHIP = False
 
+# CrunchTime SFTP hosts
+CRUNCHTIME_SFTP = {}
+
 os.environ['WKHTMLTOPDF_BIN'] = '/usr/local/bin/wkhtmltopdf'
 
 

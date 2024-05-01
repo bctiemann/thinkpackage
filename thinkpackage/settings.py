@@ -284,6 +284,7 @@ SUPPORT_EMAIL = 'hello@thinkpackage.com'
 SITE_EMAIL = 'info@thinkpackage.com'
 DELIVERY_EMAIL = 'delivery@thinkpackage.com'
 PO_EMAIL = 'po@thinkpackage.com'
+NO_REPLY_EMAIL = 'no-reply@thinkpackage.com'
 FRONTSITE_URL = 'http://thinkpackage.com'
 BCC_EMAIL = None
 

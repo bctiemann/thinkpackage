@@ -700,12 +700,15 @@ def email_delivery_request(shipment_id, shipment_updated=False, client_email=Non
     }
 
     for recipient in email_recipients:
+        reply_to = None
+        if client_email:
+            reply_to = [settings.SITE_EMAIL] if recipient == client_email else [client_email]
         send_templated_email(
             [recipient],
             context,
             subject=shipment.get_email_subject(recipient),
             from_email=settings.NO_REPLY_EMAIL,
-            reply_to=settings.SITE_EMAIL if recipient == client_email else client_email,
+            reply_to=reply_to,
             text_template='email/delivery_request.txt',
             html_template='email/delivery_request.html',
             # cc=[request.user.email],

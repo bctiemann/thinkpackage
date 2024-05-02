@@ -773,6 +773,7 @@ def email_purchase_order(shipment_id):
         [settings.PO_EMAIL],
         email_context,
         subject='Purchase Order for {0} - DL {1}'.format(shipment.client.company_name, shipment.id),
+        from_email=settings.NO_REPLY_EMAIL,
         text_template='email/purchase_order.txt',
         html_template='email/purchase_order.html',
         attachments=attachments,

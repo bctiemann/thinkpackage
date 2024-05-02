@@ -640,7 +640,7 @@ def generate_product_list(async_task_id, client_id=None):
 def send_templated_email(
         recipients,
         context,
-        from_email=settings.SITE_EMAIL,
+        from_email=settings.NO_REPLY_EMAIL,
         subject=None,
         text_template=None,
         html_template=None,
@@ -773,7 +773,6 @@ def email_purchase_order(shipment_id):
         [settings.PO_EMAIL],
         email_context,
         subject='Purchase Order for {0} - DL {1}'.format(shipment.client.company_name, shipment.id),
-        from_email=settings.NO_REPLY_EMAIL,
         text_template='email/purchase_order.txt',
         html_template='email/purchase_order.html',
         attachments=attachments,

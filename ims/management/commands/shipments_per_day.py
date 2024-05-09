@@ -8,14 +8,21 @@ from ims.models import Shipment
 class Command(BaseCommand):
     START_DATE = date(2013, 1, 1)
 
+    def add_arguments(self, parser):
+        parser.add_argument('--days', dest='days',)
+
     @staticmethod
     def daterange(start_date, end_date):
         for n in range(int((end_date - start_date).days) + 1):
             yield start_date + timedelta(n)
 
     def handle(self, *args, **options):
+        days = options.get('days', None)
 
-        start_date = Shipment.objects.order_by('date_created').first().date_created.date()
+        if days:
+            start_date = date.today() - timedelta(days=int(days))
+        else:
+            start_date = Shipment.objects.order_by('date_created').first().date_created.date()
         end_date = datetime.now().date()
 
         shipments_per_day = {}

@@ -238,12 +238,17 @@ def inventory_request_delivery(request):
         if not request.selected_client.id in product.client.ancestors:
             logger.info(f"Selected client not in product client hierarchy: {request.selected_client.id} {product}")
             return JsonResponse({'success': False, 'message': 'Invalid product ID {0}.'.format(requested_product['productid'])})
-        if requested_product['cases'] > product.cases_available:
-            logger.info(f"Invalid product quantity requested: {requested_product['cases']} for {product}")
+
+        requested_cases = int(requested_product.get('cases', 0) or 0)
+        if requested_cases == 0:
+            continue
+
+        if requested_cases > product.cases_available or requested_cases < 0:
+            logger.info(f"Invalid product quantity requested: {requested_cases} for {product}")
             return JsonResponse({'success': False, 'message': 'Invalid number of cases requested for product {0}.'.format(product.item_number)})
         requested_products.append({
             'obj': product,
-            'cases': requested_product['cases'],
+            'cases': requested_cases,
         })
 
     # Validate location of delivery

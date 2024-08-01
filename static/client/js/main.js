@@ -281,6 +281,7 @@ console.log(data);
             $('.dialog-request-spinner').removeClass('nodisplay');
         } else {
             alert(data.message);
+            location.reload();
         }
 //        location.reload();
     },'json');

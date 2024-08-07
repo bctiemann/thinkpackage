@@ -23,7 +23,6 @@ urlpatterns = [
     path('recovery/password_reset/',
         ims_views.PasswordResetView.as_view(
             template_name='accounts/password_reset_form.html',
-            from_email=settings.SUPPORT_EMAIL,
             extra_email_context={
                 'site_name': settings.COMPANY_NAME
             },

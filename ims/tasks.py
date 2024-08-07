@@ -637,16 +637,18 @@ def generate_product_list(async_task_id, client_id=None):
 
 
 @shared_task
-def send_templated_email(recipients,
-                         context,
-                         from_email=settings.SITE_EMAIL,
-                         subject=None,
-                         text_template=None,
-                         html_template=None,
-                         attachments=None,
-                         cc=None,
-                         bcc=None,
-                        ):
+def send_templated_email(
+        recipients,
+        context,
+        from_email=settings.NO_REPLY_EMAIL,
+        subject=None,
+        text_template=None,
+        html_template=None,
+        attachments=None,
+        reply_to=None,
+        cc=None,
+        bcc=None,
+):
 
     plaintext_template = get_template(text_template)
     html_template = get_template(html_template)
@@ -659,7 +661,9 @@ def send_templated_email(recipients,
         logger.info(f'Sending email "{subject}" to {recipient}')
         text_content = plaintext_template.render(context)
         html_content = html_template.render(context)
-        msg = mail.EmailMultiAlternatives(subject, text_content, from_email, [recipient], cc=cc, bcc=bcc)
+        msg = mail.EmailMultiAlternatives(
+            subject, text_content, from_email, [recipient], cc=cc, bcc=bcc, reply_to=reply_to
+        )
         msg.attach_alternative(html_content, "text/html")
         if attachments:
             for attachment in attachments:
@@ -696,11 +700,15 @@ def email_delivery_request(shipment_id, shipment_updated=False, client_email=Non
     }
 
     for recipient in email_recipients:
+        reply_to = None
+        if client_email:
+            reply_to = [settings.SITE_EMAIL] if recipient == client_email else [client_email]
         send_templated_email(
             [recipient],
             context,
             subject=shipment.get_email_subject(recipient),
-            from_email=settings.PO_EMAIL if recipient == client_email else client_email,
+            from_email=settings.NO_REPLY_EMAIL,
+            reply_to=reply_to,
             text_template='email/delivery_request.txt',
             html_template='email/delivery_request.html',
             # cc=[request.user.email],

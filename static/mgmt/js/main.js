@@ -435,7 +435,7 @@ function saveProduct(productid) {
     var product = {
         client:                  $('#product_'+productid).attr('client_id'),
         item_number:             $('#itemnum_'+productid).val(),
-        location:                $('#location_'+productid).val() || null,
+        distribution_center:     $('#distribution_center_'+productid).val() || null,
         client_tag:              $('#ctag_'+productid).val(),
         name:                    $('#pname_'+productid).val(),
         packing:                 Math.floor($('#packing_'+productid).val()),

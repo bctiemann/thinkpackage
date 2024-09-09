@@ -232,6 +232,7 @@ class ProductForm(forms.ModelForm):
             'height',
             'is_domestic',
             'location',
+            'distribution_center',
         ]
         widgets = {
             'accounting_prepay_type': forms.Select(attrs={'style': 'display: block;'}),

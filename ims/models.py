@@ -480,6 +480,10 @@ class Product(models.Model):
 
     INVQ_TYPES = (AccountingPrepayType.INVQ, AccountingPrepayType.THREEPL)
 
+    class DistributionCenter(models.TextChoices):
+        CASTLE = ('castle', 'Castle')
+        COUNTY = ('county', 'County')
+
     id = models.AutoField(primary_key=True, db_column='productid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
     product_id = models.CharField(max_length=10, default=generate_code, unique=True, db_column='PRID', db_index=True)
@@ -501,6 +505,7 @@ class Product(models.Model):
     item_number = models.CharField(max_length=12, blank=True, db_column='itemnum')
     location = models.ForeignKey('Location', null=True, blank=True, db_column='locationid', on_delete=models.SET_NULL)
     accounting_prepay_type = models.IntegerField(choices=AccountingPrepayType.choices, null=True, blank=True, db_column='account')
+    distribution_center = models.CharField(max_length=50, blank=True, choices=DistributionCenter.choices)
 
     objects = ProductManager()
 

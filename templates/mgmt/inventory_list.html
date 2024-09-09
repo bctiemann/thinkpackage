@@ -10,7 +10,7 @@
         <tr>
             <th style="width: 88px;" class="text">Item #</th>
             <th style="width: 99px;" class="text">Client ID</th>
-            <th style="width: 99px;" class="text" id="location_header">Location<div id="location_filter"></div></th>
+            <th style="width: 99px;" class="text" id="location_header">Dist. Center</th>
             <th style="width: 433px;" class="text">Description</th>
             <th style="width: 112px;" class="numeric">Packing (pcs/cs)</th>
             <th style="width: 132px;" class="numeric">Curr. inventory (cs)</th>
@@ -26,7 +26,15 @@
         <tr class="product {% if not product.is_active %}deleted{% endif %}" id="product_{{ product.id }}" client_id="{{ product.client.id }}" location_id="{% if product.location %}{{ product.location.id }}{% else %}0{% endif %}">
             <td style="width: 100px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="itemnum_{{ product.id }}" value="{{ product.item_number }}"  productid="{{ product.id }}" style="width: 80px;" maxlength="12" /></td>
             <td style="width: 110px;" class="text editable clickable" productid="{{ product.id }}"><input type="text" id="ctag_{{ product.id }}" value="{{ product.client_tag }}" productid="{{ product.id }}" style="width: 100px;" maxlength="16" /></td>
-            <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text clickable location" location_id="{{ product.location.id }}" productid="{{ product.id }}">{{ product.location.name }}</td>
+            <td style="width: 94px; max-width: 94px; overflow: hidden; text-overflow: ellipsis;" class="text editable clickable location" location_id="{{ product.location.id }}" productid="{{ product.id }}">
+                <select type="text" id="distribution_center_{{ product.id }}" productid="{{ product.id }}">
+                    <option value="">---</option>
+                    {% for distribution_center in distribution_center_choices %}
+                        <option value="{{ distribution_center.0 }}" {% if product.distribution_center == distribution_center.0 %}selected{% endif %}>{{ distribution_center.1 }}</option>
+                    {% endfor %}
+                </select>
+                <span class="selected-item-label account-label">{{ product.get_distribution_center_display }}</span>
+            </td>
             <td style="width: 434px;" class="text editable clickable" productid="{{ product.id }}">
                 <input type="text" id="pname_{{ product.id }}" value="{{ product.name }}" productid="{{ product.id }}" style="width: 280px;" maxlength="500" />
                 <span class="account-label">{{ product.get_accounting_prepay_type_display|default_if_none:"" }}</span>
@@ -56,12 +64,10 @@
             <td style="width: 100px;" class="text editable" productid="new"><input type="text" id="itemnum_new" productid="new" style="width: 80px;" maxlength="12" /></td>
             <td style="width: 110px;" class="text editable" productid="new"><input type="text" id="ctag_new" productid="new" style="width: 100px;" maxlength="16" /></td>
             <td style="width: 94px;" class="text" productid="new">
-                <select id="location_new" style="width: 70px">
-                    <option value="">(None)</option>
-                    {% for location in client.location_set.all %}
-                       {% if location.is_active %}
-                        <option value="{{ location.id }}">{{ location.name }}</option>
-                        {% endif %}
+                <select type="text" id="distribution_center_new">
+                    <option value="">---</option>
+                    {% for distribution_center in distribution_center_choices %}
+                        <option value="{{ distribution_center.0 }}">{{ distribution_center.1 }}</option>
                     {% endfor %}
                 </select>
             </td>

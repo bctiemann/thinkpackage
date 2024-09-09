@@ -897,6 +897,12 @@ table.infotable.alternating > tbody > tr.selected:nth-child(odd) input:disabled 
 .infotable.editable tr.selected select {
 	display: block;
 }
+.infotable.editable tr .selected-item-label {
+	display: block;
+}
+.infotable.editable tr.selected .selected-item-label {
+	display: none;
+}
 
 table.infotable.alternating > tbody > tr.selected:nth-child(even) input,
 table.infotable.alternating > tbody > tr.selected:nth-child(odd) input {

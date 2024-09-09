@@ -202,6 +202,7 @@ def inventory_list(request, client_id=None):
         'client': client,
         'products': products,
         'active_filter': active_filter,
+        'distribution_center_choices': Product.DistributionCenter.choices,
     }
     return render(request, 'mgmt/inventory_list.html', context)
 

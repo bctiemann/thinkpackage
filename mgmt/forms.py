@@ -171,7 +171,8 @@ class LocationForm(forms.ModelForm):
     STATE_CHOICES_BLANK = list(STATE_PROVINCE_CHOICES)
     STATE_CHOICES_BLANK.insert(0, ('', '(Select state)'))
 
-    netsuite_id = forms.CharField(label='Internal ID', widget=forms.TextInput(attrs={'placeholder': 'Internal ID'}))
+    netsuite_address_id = forms.CharField(label='NetSuite Address ID', widget=forms.TextInput(attrs={'placeholder': 'NetSuite Address ID'}))
+    netsuite_client_id = forms.CharField(label='NetSuite Client ID', widget=forms.TextInput(attrs={'placeholder': 'NetSuite Client ID'}))
     netsuite_submit_enabled = forms.BooleanField(required=False, label='Netsuite submission enabled')
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'placeholder': 'Location name'}))
     state = forms.CharField(required=False, widget=forms.Select(choices=STATE_CHOICES_BLANK))
@@ -188,7 +189,7 @@ class LocationForm(forms.ModelForm):
 
     class Meta:
         model = Location
-        fields = ['client', 'netsuite_id', 'netsuite_submit_enabled', 'name', 'contact_user',
+        fields = ['client', 'netsuite_address_id', 'netsuite_client_id', 'netsuite_submit_enabled', 'name', 'contact_user',
                   'address', 'address_2', 'city', 'state', 'country', 'postal_code', 'receiving_hours',
                   'notes']
 

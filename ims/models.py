@@ -425,7 +425,8 @@ class WarehouseUser(models.Model):
 class Location(models.Model):
     id = models.AutoField(primary_key=True, db_column='locationid')
     client = models.ForeignKey('Client', db_column='customerid', on_delete=models.CASCADE)
-    netsuite_id = models.CharField(max_length=50)
+    netsuite_address_id = models.CharField(max_length=50, blank=True)
+    netsuite_client_id = models.CharField(max_length=50, blank=True)
     netsuite_submit_enabled = models.BooleanField(default=True)
     name = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=30, blank=True, db_column='tel')
@@ -447,8 +448,8 @@ class Location(models.Model):
 
     @property
     def combined_location_name(self):
-        if self.netsuite_id:
-            return f'{self.netsuite_id}: {self.name}'
+        if self.netsuite_client_id:
+            return f'{self.netsuite_client_id}: {self.name}'
         return self.name
 
     def __str__(self):

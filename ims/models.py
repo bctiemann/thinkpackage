@@ -309,7 +309,7 @@ class Client(models.Model):
             super(Client, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = 'Customers'
+        db_table = 'customers'
         ordering = ('company_name',)
 
 
@@ -355,7 +355,7 @@ class CustContact(models.Model):
         return reverse('mgmt:profile', kwargs={'client_id': self.client.id})
 
     class Meta:
-        db_table = 'CustContacts'
+        db_table = 'custcontacts'
         ordering = ['-is_primary', 'last_name']
 
 
@@ -459,7 +459,7 @@ class Location(models.Model):
         return reverse('mgmt:location-update', kwargs={'location_id': self.pk})
 
     class Meta:
-        db_table = 'Locations'
+        db_table = 'locations'
         ordering = ['name']
 
 
@@ -677,7 +677,7 @@ class Product(models.Model):
                 self.save(*args, **kwargs)
 
     class Meta:
-        db_table = 'Products'
+        db_table = 'products'
         # ordering = ['item_number']
 
 
@@ -844,7 +844,7 @@ class Shipment(models.Model):
         return reverse('warehouse:shipment-details', kwargs={'shipment_id': self.id})
 
     class Meta:
-        db_table = 'Shipments'
+        db_table = 'shipments'
 
 
 class Receivable(models.Model):
@@ -869,7 +869,7 @@ class Receivable(models.Model):
         return reverse('mgmt:inventory', kwargs={'client_id': self.client.id})
 
     class Meta:
-        db_table = 'Receivables'
+        db_table = 'receivables'
 
 
 class Transaction(models.Model):
@@ -995,7 +995,7 @@ class Transaction(models.Model):
         return ('{0}'.format(self.id))
 
     class Meta:
-        db_table = 'Transactions'
+        db_table = 'transactions'
         ordering = ['product__item_number']
 
 
@@ -1017,7 +1017,7 @@ class ReturnedProduct(models.Model):
         })
 
     class Meta:
-        db_table = 'Returns'
+        db_table = 'returns'
 
 
 class Pallet(models.Model):
@@ -1084,7 +1084,7 @@ class Pallet(models.Model):
 
 
     class Meta:
-        db_table = 'Pallets'
+        db_table = 'pallets'
 
 
 class PalletContents(models.Model):
@@ -1101,7 +1101,7 @@ class PalletContents(models.Model):
         return ('{0}'.format(self.id))
 
     class Meta:
-        db_table = 'OnPallet'
+        db_table = 'onpallet'
         verbose_name_plural = 'pallet contents'
 
 
@@ -1126,7 +1126,7 @@ class ShipmentDoc(models.Model):
         return ('{0}.{1}'.format(self.basename, self.ext))
 
     class Meta:
-        db_table = 'ShipmentDocs'
+        db_table = 'shipmentdocs'
 
 
 class ActionLog(models.Model):
@@ -1162,7 +1162,7 @@ class BulkOrder(models.Model):
     shipment = models.ForeignKey('Shipment', null=True, blank=True, db_column='shipmentid', on_delete=models.SET_NULL)
 
     class Meta:
-        db_table = 'BulkOrders'
+        db_table = 'bulkorders'
 
 
 class BulkOrderItem(models.Model):
@@ -1181,7 +1181,7 @@ class BulkOrderItem(models.Model):
     bid_price = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True, db_column='bidprice')
 
     class Meta:
-        db_table = 'BulkOrderItems'
+        db_table = 'bulkorderitems'
 
 
 class AsyncTask(models.Model):

@@ -317,10 +317,12 @@ SPS_ENABLE = False
 SPS_SUBMIT_ON_CREATE = True
 SPS_SUBMIT_ON_SHIP = False
 
-os.environ['WKHTMLTOPDF_BIN'] = '/usr/local/bin/wkhtmltopdf'
+WKHTMLTOPDF_BIN = '/usr/local/bin/wkhtmltopdf'
 
 
 # Local overrides from env.yaml
 with open(os.path.join(BASE_DIR, 'env.yaml')) as f:
     local_settings = yaml.load(f, Loader=yaml.FullLoader)
 globals().update(local_settings)
+
+os.environ['WKHTMLTOPDF_BIN'] = WKHTMLTOPDF_BIN

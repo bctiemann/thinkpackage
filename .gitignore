@@ -12,5 +12,6 @@ data.json
 .env*
 env.yaml
 env.prod.yaml
+gunicorn_start.sh
 certs
 product_history

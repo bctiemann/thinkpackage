@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.urls import path, register_converter
 from django.contrib import admin
 from django.contrib.staticfiles.storage import staticfiles_storage

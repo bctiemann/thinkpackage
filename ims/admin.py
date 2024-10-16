@@ -6,9 +6,9 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib.admin.models import LogEntry
-from phonenumber_field.modelfields import PhoneNumberField
+from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from ims.models import *
@@ -141,9 +141,9 @@ class CustContactAdmin(admin.ModelAdmin):
     list_editable = ()
     list_filter = ()
     search_fields = ('first_name', 'last_name', 'email',)
-    formfield_overrides = {
-        PhoneNumberField: {'widget': PhoneNumberPrefixWidget(initial='US'), }
-    }
+    # formfield_overrides = {
+    #     PhoneNumberField: {'widget': PhoneNumberPrefixWidget(initial='US'), }
+    # }
 admin.site.register(CustContact, CustContactAdmin)
 
 

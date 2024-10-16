@@ -8,13 +8,12 @@ from django.db.models import F, FloatField, Sum
 from django.db.models.functions import Lower, Coalesce, Trunc
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.module_loading import import_string
 from django.utils.text import get_valid_filename
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from django_countries.fields import CountryField
-from jsonfield import JSONField
 from localflavor.us.us_states import STATE_CHOICES
 from localflavor.ca.ca_provinces import PROVINCE_CHOICES
 from two_factor.utils import default_device
@@ -265,7 +264,7 @@ class Client(models.Model):
     company_name = models.CharField(max_length=150, blank=True, db_column='coname')
     has_warehousing = models.BooleanField(default=True, db_column='warehousing')
     parent = models.ForeignKey('Client', null=True, blank=True, db_column='parent', on_delete=models.SET_NULL)
-    ancestors = JSONField(null=True, blank=True)
+    ancestors = models.JSONField(null=True, blank=True)
 
     objects = ClientManager()
 

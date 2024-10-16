@@ -1,4 +1,3 @@
-from django.conf.urls import url, include
 from django.urls import path, re_path, register_converter
 from django.contrib.auth import views as auth_views
 

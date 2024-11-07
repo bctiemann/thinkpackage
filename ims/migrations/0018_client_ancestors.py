@@ -3,7 +3,7 @@
 
 
 from django.db import migrations
-import jsonfield.fields
+from django.db.models import JSONField
 
 
 class Migration(migrations.Migration):
@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='client',
             name='ancestors',
-            field=jsonfield.fields.JSONField(blank=True, null=True),
+            field=JSONField(blank=True, null=True),
         ),
     ]

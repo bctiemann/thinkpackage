@@ -14,7 +14,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import (
-    login, authenticate, get_user_model, password_validation, update_session_auth_hash,
+    login, authenticate, get_user_model, password_validation, update_session_auth_hash, logout as auth_logout,
 )
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LogoutView, INTERNAL_RESET_SESSION_TOKEN
 
@@ -271,9 +271,21 @@ class LoginView(LoginView):
 
 class LogoutView(LogoutView):
 
+    http_method_names = ["get", "post", "options"]
+
     def dispatch(self, request, *args, **kwargs):
         logger.info(f'{request.user} logged out.')
         return super().dispatch(request, *args, **kwargs)
+
+    # TODO: Make this a POST from all templates and eliminate this method
+    def get(self, request, *args, **kwargs):
+        """Logout may be done via POST."""
+        auth_logout(request)
+        redirect_to = self.get_success_url()
+        if redirect_to != request.get_full_path():
+            # Redirect to target page once the session has been cleared.
+            return HttpResponseRedirect(redirect_to)
+        return super().get(request, *args, **kwargs)
 
 
 class PasswordChangeView(UpdateView):

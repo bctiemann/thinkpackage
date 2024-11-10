@@ -38,11 +38,15 @@ class AjaxableResponseMixin(object):
     Mixin to add AJAX support to a form.
     Must be used with an object-based FormView (e.g. CreateView)
     """
+    @property
+    def is_ajax(self):
+        return self.request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
     def form_invalid(self, form):
         logger.warning(form.data)
         logger.warning(form.errors.as_json())
-        response = super(AjaxableResponseMixin, self).form_invalid(form)
-        if self.request.is_ajax():
+        response = super().form_invalid(form)
+        if self.is_ajax:
             return HttpResponse(form.errors.as_json())
 #            return HttpResponse(form.errors.as_json(), content_type='application/json')
         else:
@@ -52,8 +56,8 @@ class AjaxableResponseMixin(object):
         # We make sure to call the parent's form_valid() method because
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).
-        response = super(AjaxableResponseMixin, self).form_valid(form)
-        if self.request.is_ajax():
+        response = super().form_valid(form)
+        if self.is_ajax:
             data = {
                 'success': True,
                 'pk': self.object.pk,

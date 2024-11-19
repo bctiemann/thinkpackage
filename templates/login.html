@@ -47,7 +47,7 @@
 
 {#   <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>#}
 
-  <form action="" method="post">{% csrf_token %}{% log_csrf_token %}
+  <form action="" method="post">{% csrf_token %}
     <div class="loginform">
 
   {% if wizard.steps.current == 'auth' %}

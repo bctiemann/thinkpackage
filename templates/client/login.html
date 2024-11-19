@@ -78,7 +78,6 @@
 
 <form method="post" class="medium-button-style-outline">
 {% csrf_token %}
-{% log_csrf_token %}
 
 <input type="hidden" name="login_view-current_step" value="{{ wizard.steps.current }}" id="id_login_view-current_step" />
 

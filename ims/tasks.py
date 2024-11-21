@@ -696,7 +696,7 @@ def email_delivery_request(shipment_id, shipment_updated=False, client_email=Non
     context = {
         'shipment': shipment,
         'shipment_updated': shipment_updated,
-        'delivery_email': settings.DELIVERY_EMAIL,
+        'claims_email': settings.CLAIMS_EMAIL,
     }
 
     for recipient in email_recipients:

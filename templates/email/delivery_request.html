@@ -27,15 +27,19 @@
         white-space: nowrap;
     }
 
+    ul {
+        margin: 0px 0px 10px;
+    }
     li {
         font-size: 12px;
     }
     li.main-bullet {
         margin-bottom: 10px;
     }
-    li h3 {
+    h3 {
         margin: 0px;
         font-style: italic;
+        font-size: 14px;
     }
     li p {
         font-style: italic;
@@ -49,7 +53,7 @@
 
 <p>
     Your delivery order has been received and processed for fulfillment. Please see below for your
-    order detail confirmation and the following:
+    order detail confirmation< and the following:
 </p>
 
     <table>
@@ -89,89 +93,113 @@
         {% endfor %}
     </table>
 
+<h3>Order Modifications:</h3>
 <ul>
-    <li class="main-bullet">
-        <h3>Order Modifications:</h3>
+    <li>
         <p>
-            To ensure the accuracy and prompt processing of your order, we are unable to make any changes
-            to your order at this stage.
-        </p>
-        <p>
-            For any additional items, please submit a new purchase order or
-            delivery order request. Otherwise, please carefully review before submitting your order.
+            To ensure accurate and timely processing, no modifications can be made to orders once they have been 
+            submitted. If additional items are required, please submit a new purchase order (PO) or delivery 
+            request order (DL). Carefully review your order before submission to avoid any issues.
         </p>
     </li>
+</ul>
 
-    <li class="main-bullet">
-        <h3>Inspection upon Delivery:</h3>
+<h3>Inspection upon Delivery:</h3>
+<ul>
+    <li>
         <p>
-            Please inspect all packages and goods at the time of delivery. It is the responsibility of the
-            receiving party to examine the products at the time of delivery.
-        </p>
-        <ul>
-            <li>
-                <p>
-                    <em>DAMAGES:</em> If the merchandise is damaged, please refuse and do not accept the
-                    product at the time of delivery.
-                </p>
-                <p>
-                    Must indicate &ldquo;DAMAGED&rdquo;, the item # and the total number of cases
-                    that are deemed damaged on the bill of lading before signing off.
-                </p>
-            </li>
-            <li>
-                <p>
-                    <em>SHORTAGES:</em> Products that have NOT been delivered must be signed off as SHORT on the
-                    bill of lading. Please indicate the item # and the total number of cases it was shorted.
-                </p>
-            </li>
-        </ul>
-    </li>
-
-    <li class="main-bullet">
-        <h3>Reporting Damages or Missing Items:</h3>
-        <p>
-            To report any damage or missing cases, please notify our team right away. All emails must be
-            received within 48 hours of receiving your shipment. Claims made outside of this window will
-            not be accepted.
-        </p>
-        <ul>
-            <li>
-                <p>
-                    All emails must be sent to {{ delivery_email }} with subject header
-                    &ldquo;Damages/Missing Cases - Delivery Order ID#&rdquo;.
-                </p>
-            </li>
-            <li>
-                <p>
-                    Must include the Delivery Order ID# along with detailed photos and description of the
-                    issue.
-                </p>
-            </li>
-        </ul>
-
-    </li>
-
-    <li class="main-bullet">
-        <h3>Transit Time and Business Days:</h3>
-        <p>
-            Transit days exclusively refer to business days. Ground and Freight services do not include
-            the day of pickup, weekends, and holidays as transit days.
+            It is the responsibility of the receiving party to thoroughly inspect all packages and goods 
+            immediately upon delivery. Any discrepancies must be noted in the delivery documents (bill of 
+            lading) at the time of receipt. In the event of any discrepancies, please capture photos of 
+            the pallet and its wrapping as additional documentation.
         </p>
     </li>
+</ul>
 
-    <li class="main-bullet">
-        <h3>Distribution Processing Center Closure:</h3>
+<h3>DAMAGES:</h3>
+<ul>
+    <li>
         <p>
-            Our Distribution Processing Center are closed on Sat-Sun and major holidays.
+            If any merchandise appears damaged, please clearly mark “DAMAGED” along with the item number and 
+            total number of affected cases on the bill of lading before signing. Also, take photos of the pallet’s 
+            condition upon delivery, along with close-up images of any damaged goods. Retain a copy of the bill of 
+            lading with this information for your records. Please keep all damaged boxes until the claim is 
+            resolved.
         </p>
     </li>
-
-    <li class="main-bullet">
-        <h3>Return and Restocking Fee:</h3>
+</ul>
+    
+<h3>SHORTAGES:</h3>
+<ul>
+    <li>
         <p>
-            A return and restocking fee of $5.00 per case will apply for any returns of refused or
-            non-accepted merchandise.
+            If any products are missing, please sign the bill of lading with the notation “SHORT,” specifying 
+            the item number and quantity shorted. Please retain a copy of the bill of lading for your records. 
+            In the event of any shortages, please also take detailed photos of the pallet and its wrapping.
+        </p>
+    </li>
+</ul>
+
+<h3>Reporting Damages or Missing Items:</h3>
+<ul>
+    <li>
+        <p>
+            All reports of damages or missing items must be submitted within 48 hours of delivery receipt to 
+            be eligible for review. Claims outside this period will not be accepted.
+        </p>
+    </li>
+    <li>
+        <p>
+            Email all reports to {{ delivery_email }} with the subject line: “Damages/Missing Cases - 
+            Delivery Order ID#”.
+        </p>
+    </li>
+    <li>
+        <p>
+            Include the Delivery Order ID#, detailed photographs, and a description of the issue for prompt 
+            processing of your claim.
+        </p>
+    </li>
+</ul>
+
+<h3>Transit Time and Business Days:</h3>
+<ul>
+    <li>
+        <p>
+            Please note that transit times apply to business days only. Ground and freight services exclude 
+            the day of pickup, weekends, and holidays from transit calculations.
+        </p>
+    </li>
+</ul>
+
+<h3>Distribution Processing Center Closure:</h3>
+<ul>
+    <li>
+        <p>
+            Our Distribution Processing Center is closed on Saturdays, Sundays, and recognized holidays. 
+            Orders placed on these days will be processed on the next business day.
+        </p>
+    </li>
+</ul>
+
+<h3>Return and Restocking Fee:</h3>
+<ul>
+    <li>
+        <p>
+            A return and restocking fee of $5.00 per case will apply for any returns or refused merchandise, 
+            including items returned due to damage or shortages not previously reported.
+        </p>
+    </li>
+</ul>
+
+<h3>Return and Restocking Fee:</h3>
+<ul>
+    <li>
+        <p>
+            Thinkpackage is not liable for any delays, misdeliveries, or damages that may occur during transit 
+            once products leave our Distribution Processing Center. If you experience any shipping issues, 
+            please contact us and we will address your delivery concerns to mitigate any potential impacts on 
+            your order.
         </p>
     </li>
 </ul>

@@ -43,8 +43,8 @@ class AjaxableResponseMixin(object):
         return self.request.headers.get('x-requested-with') == 'XMLHttpRequest'
 
     def form_invalid(self, form):
-        logger.warning(form.data)
-        logger.warning(form.errors.as_json())
+        logger.debug(form.data)
+        logger.debug(form.errors.as_json())
         response = super().form_invalid(form)
         if self.is_ajax:
             return HttpResponse(form.errors.as_json())

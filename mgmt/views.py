@@ -869,12 +869,12 @@ class ReceivableConfirm(AjaxableResponseMixin, UpdateView):
         data = {
             'success': True,
         }
-        logger.info(f'Receivable processed by {self.request.user} via {self.request.resolver_match.app_name}')
-        logger.info(form.data)
-        logger.info(form.cleaned_data)
-#        self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
-#        self.object.purchase_order = form.cleaned_data['purchase_order']
-#        self.object.shipment_order = form.cleaned_data['shipment_order']
+        logger.info(f'Receivable {form.instance} processed by {self.request.user} via {self.request.resolver_match.app_name}')
+        # logger.info(form.data)
+        # logger.info(form.cleaned_data)
+        # self.object.units_inventory = int(form.data['cases_inventory']) * int(form.data['packing'])
+        # self.object.purchase_order = form.cleaned_data['purchase_order']
+        # self.object.shipment_order = form.cleaned_data['shipment_order']
         self.object.cases = form.initial['cases']
 
         # If we received more cases than expected, return an error
